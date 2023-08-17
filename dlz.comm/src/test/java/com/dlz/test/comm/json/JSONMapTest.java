@@ -11,15 +11,36 @@ import java.util.HashMap;
 import java.util.List;
 
 public class JSONMapTest {
+	/**
+	 * 基础用法
+	 */
 	@Test
-	public void test0(){
+	public void test1(){
+		JSONMap paras = new JSONMap("{\"a\":{\"b\":1}}");
+		System.out.println(paras); 
+		//输出：{"a":{"b":1}}
+		String strB = paras.getStr("a.b");//取得String
+		Integer intB = paras.getInt("a.b");//取得Integer
+		System.out.println(strB.getClass()+":"+strB);
+		//输出：class java.lang.String:1
+		System.out.println(intB.getClass()+":"+intB);
+		//输出：class java.lang.Integer:1
+	}
+	@Test
+	public void test2(){
 		JSONMap paras = new JSONMap("a",new JSONMap("b",new JSONMap("c1","22","c2","221"),"b2",new JSONMap("c21","22","c22","221")));
 		System.out.println(paras);
+		//输出：{"a":{"b2":{"c22":"221","c21":"22"},"b":{"c1":"22","c2":"221"}}}
 		String str = paras.getStr("a.b");
+		System.out.println(str);
+		//输出：{"c1":"22","c2":"221"}
+		
+		//设置数据
 		HashMap<String, Object> objectObjectHashMap = new HashMap<>();
 		objectObjectHashMap.put("d",1);
 		paras.set("a.b.c.d",objectObjectHashMap);
 		System.out.println(paras);
+		//输出：{"a":{"b2":{"c22":"221","c21":"22"},"b":{"c":{"d":{"d":1}},"c1":"22","c2":"221"}}}
 	}
 	@Test
 	public void test01(){
@@ -54,10 +75,10 @@ public class JSONMapTest {
 	}
 	
 	/**
-	 * 类型转换
+	 * 数字类型转换
 	 */
 	@Test
-	public void test2(){
+	public void test13(){
 		JSONMap paras = new JSONMap();
 		paras.put("puid", "1111111111111111123123123213413333333333333333333333333333333333333333333333333333333333333333333333234124312341431324.21352345324534253");
 		System.out.println(paras.getBigDecimal("puid"));
@@ -69,7 +90,7 @@ public class JSONMapTest {
 		System.out.println(paras.getBigDecimal("puid3"));
 		paras.put("puid4", 123.1);
 		System.out.println(paras.getBigDecimal("puid4"));
-		
+
 		JSONMap paras2 = new JSONMap(null);
 		System.out.println(paras2.getFloat("puid4"));
 		System.out.println(paras2.getLong("puid4"));
