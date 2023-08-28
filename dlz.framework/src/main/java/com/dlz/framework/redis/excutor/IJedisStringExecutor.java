@@ -70,7 +70,7 @@ public interface IJedisStringExecutor extends IJedisExecutor {
      * @param delta 要增加几(大于0)
      * @return
      */
-    default long incr(String key, long delta) {
+    default long incrBy(String key, long delta) {
         if (delta < 0) {
             throw new RuntimeException("递增因子必须大于0");
         }
@@ -84,7 +84,7 @@ public interface IJedisStringExecutor extends IJedisExecutor {
      * @param delta 要减少几(小于0)
      * @return
      */
-    default long decr(String key, long delta) {
+    default long decrBy(String key, long delta) {
         if (delta < 0) {
             throw new RuntimeException("递减因子必须大于0");
         }

@@ -11,6 +11,11 @@ import net.sf.ehcache.Element;
 
 import java.io.Serializable;
 import java.lang.reflect.Type;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * 使用ehcache实现缓存
@@ -81,4 +86,35 @@ public class CacheEhcahe implements ICache {
     public void removeAll(String name) {
         getCache(name).removeAll();
     }
+
+    @Override
+    public Set<String> keys(String name,String keyPrefix) {
+        Stream<String> stream = getCache(name).getKeys().stream().map(key -> ValUtil.getStr(key));
+        if("*".equals(keyPrefix)||".*".equals(keyPrefix)){
+            return stream.collect(Collectors.toSet());
+        }
+        String keyMatch=keyPrefix.replaceAll("\\.\\*","*").replaceAll("\\*",".*");
+        return stream.filter(key->key.matches(keyMatch)).collect(Collectors.toSet());
+    }
+
+    @Override
+    public Map<String,Serializable> all(String name, String keyPrefix){
+        Cache cache = getCache(name);
+        Set<String> keys = keys(name, keyPrefix);
+        Map<String,Serializable> map=new HashMap<>();
+        keys.forEach(key->{
+            Element element = cache.get(key);
+            if(element != null){
+                map.put(key,(Serializable)element.getObjectValue());
+            }
+        });
+        return map;
+    }
+
+//    public static void main(String[] args) {
+//        String s="asdas";
+//        String keyPrefix="asd.*";
+//        keyPrefix=keyPrefix.replaceAll("\\.\\*","*").replaceAll("\\*",".*");
+//        System.out.println(s.matches(keyPrefix)+" "+keyPrefix);
+//    }
 }

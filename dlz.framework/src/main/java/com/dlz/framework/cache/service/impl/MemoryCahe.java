@@ -3,6 +3,7 @@ package com.dlz.framework.cache.service.impl;
 import com.dlz.comm.util.JacksonUtil;
 import com.dlz.comm.util.ValUtil;
 import com.dlz.framework.cache.ICache;
+import com.dlz.framework.redis.util.JedisKeyUtils;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.Serializable;
@@ -10,7 +11,10 @@ import java.lang.reflect.Type;
 import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * 使用内存实现缓存
@@ -78,6 +82,38 @@ public class MemoryCahe implements ICache {
     @Override
     public void removeAll(String name) {
         getCache(name).clear();
+    }
+
+    @Override
+    public Set<String> keys(String name, String keyPrefix) {
+        Stream<String> stringStream = getCache(name).keySet().stream()
+                .map(key -> ValUtil.getStr(key));
+        if("*".equals(keyPrefix)||".*".equals(keyPrefix)){
+            return stringStream
+                    .collect(Collectors.toSet());
+        }
+        String keyMatch=keyPrefix.replaceAll("\\.\\*","*").replaceAll("\\*",".*");
+        return stringStream.filter(key->key.matches(keyMatch)).collect(Collectors.toSet());
+    }
+
+    @Override
+    public Map<String,Serializable> all(String name,String keyPrefix){
+        Map<Serializable, Element> cache = getCache(name);
+        Map<String,Serializable> map=new HashMap<>();
+        if("*".equals(keyPrefix)||".*".equals(keyPrefix)){
+            cache.entrySet().forEach(item->{
+                map.put(ValUtil.getStr(item.getKey()),item.getValue().item);
+            });
+        }else{
+            String keyMatch=keyPrefix.replaceAll("\\.\\*","*").replaceAll("\\*",".*");
+            cache.entrySet().forEach(item->{
+                String key = ValUtil.getStr(item.getKey());
+                if(key.matches(keyMatch)){
+                    map.put(key,item.getValue().item);
+                }
+            });
+        }
+        return map;
     }
 
     class Element {

@@ -95,11 +95,6 @@ public class JedisKeyUtils {
         }
         return newkeys;
     }
-    public static Stream<String> getClientKeyStream(Stream<String> key) {
-        return key.map(o -> getClientKey(o));
-    }
-
-
     public static void main(String[] args) {
         init(new RedisKeyMaker());
 //        System.out.println(getRedisKey(":xxx:xxx::"));

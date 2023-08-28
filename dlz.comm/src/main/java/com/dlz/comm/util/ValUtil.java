@@ -314,6 +314,9 @@ public class ValUtil {
         if (input == null) {
             return null;
         }
+        if (javaType == null) {
+            return (T)input;
+        }
         Class classs = javaType.getRawClass();
 
         if (classs.isAssignableFrom(input.getClass())) {

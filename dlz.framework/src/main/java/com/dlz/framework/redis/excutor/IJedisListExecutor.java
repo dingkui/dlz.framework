@@ -20,9 +20,8 @@ public interface IJedisListExecutor extends IJedisExecutor {
      * @param end   结束 0 到 -1代表所有值
      * @return
      */
-    default List<String> lGet(String key, long start, long end) {
-        Stream<String> t = excuteByJedis(j -> j.lrange(JedisKeyUtils.getRedisKey(key), start, end)).stream();
-        return JedisKeyUtils.getClientKeyStream(t).collect(Collectors.toList());
+    default List<String> lrange(String key, long start, long end) {
+        return excuteByJedis(j -> j.lrange(JedisKeyUtils.getRedisKey(key), start, end));
     }
 
     /**

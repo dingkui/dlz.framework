@@ -7,6 +7,7 @@ import com.dlz.framework.cache.CacheHolder;
 import com.dlz.framework.cache.CacheUtil;
 import com.dlz.framework.cache.ICache;
 import com.dlz.framework.holder.SpringHolder;
+import com.dlz.framework.redis.excutor.JedisExecutor;
 import com.dlz.framework.redis.service.impl.CacheRedisJsonHash;
 import com.dlz.framework.redis.service.impl.CacheRedisJsonKey;
 import com.dlz.framework.redis.service.impl.CacheRedisSerialHash;
@@ -133,4 +134,63 @@ public class TestCache extends BaseTest {
 		System.out.println(SpringHolder.getBeans(ICache.class));
 	}
 
+	@Test
+	public void t18(){
+		TraceUtil.setTraceId();
+		ICache cache=SpringHolder.createBean(CacheRedisJsonKey.class);
+		cache.remove("jsonkey","xx1");
+		cache.remove("jsonkey","xx2");
+		cache=SpringHolder.createBean(CacheRedisJsonHash.class);
+		cache.remove("jsonhash","xx1");
+		cache.remove("jsonhash","xx2");
+		cache=SpringHolder.createBean(CacheRedisSerialKey.class);
+		cache.remove("serialkey","xx1");
+		cache.remove("serialkey","xx2");
+		cache=SpringHolder.createBean(CacheRedisSerialHash.class);
+		cache.remove("serialhash","xx1");
+		cache.remove("serialhash","xx2");
+		cache=SpringHolder.createBean(CacheRedisJsonKey.class);
+		cache.remove("jsonkey2","xx1");
+		cache.remove("jsonkey2","xx2");
+		System.out.println(SpringHolder.getBeans(ICache.class));
+	}
+
+	@Test
+	public void t19(){
+		TraceUtil.setTraceId();
+		ICache cache=SpringHolder.createBean(CacheRedisJsonKey.class);
+		cache.removeAll("jsonkey");
+		cache=SpringHolder.createBean(CacheRedisJsonHash.class);
+		cache.removeAll("jsonhash");
+		cache=SpringHolder.createBean(CacheRedisSerialKey.class);
+		cache.removeAll("serialkey");
+		cache=SpringHolder.createBean(CacheRedisSerialHash.class);
+		cache.removeAll("serialhash");
+		cache=SpringHolder.createBean(CacheRedisJsonKey.class);
+		cache.removeAll("jsonkey2");
+	}
+	@Test
+	public void t20(){
+		TraceUtil.setTraceId();
+		ICache cache=SpringHolder.createBean(CacheRedisJsonKey.class);
+		System.out.println("CacheRedisJsonKey.......");
+		System.out.println(cache.keys("jsonkey"));
+		System.out.println(cache.all("jsonkey"));
+		cache=SpringHolder.createBean(CacheRedisJsonHash.class);
+		System.out.println("CacheRedisJsonHash.......");
+		System.out.println(cache.keys("jsonhash"));
+		System.out.println(cache.all("jsonhash"));
+		cache=SpringHolder.createBean(CacheRedisSerialKey.class);
+		System.out.println("CacheRedisSerialKey.......");
+		System.out.println(cache.keys("serialkey"));
+		System.out.println(cache.all("serialkey"));
+		cache=SpringHolder.createBean(CacheRedisSerialHash.class);
+		System.out.println("CacheRedisSerialHash.......");
+		System.out.println(cache.keys("serialhash"));
+		System.out.println(cache.all("serialhash"));
+		cache=SpringHolder.createBean(CacheRedisJsonKey.class);
+		System.out.println("CacheRedisJsonKey.......");
+		System.out.println(cache.keys("jsonkey2"));
+		System.out.println(cache.all("jsonkey2"));
+	}
 }

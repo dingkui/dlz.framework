@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import java.io.Serializable;
 import java.lang.reflect.Type;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * 使用Redis实现缓存
@@ -16,8 +17,6 @@ import java.util.Set;
  * @author dk
  */
 public class CacheRedisJsonKey implements ICache {
-//    @Autowired
-//    RedisKeyMaker keyMaker;
     @Autowired
     JedisExecutor jedisExecutor;
     @Override
@@ -32,7 +31,7 @@ public class CacheRedisJsonKey implements ICache {
 
     @Override
     public void remove(String name, Serializable key) {
-        jedisExecutor.del(JedisKeyUtils.getRedisKey(name,key));
+        jedisExecutor.del(JedisKeyUtils.getKey(name,key));
     }
 
     @Override
@@ -44,5 +43,10 @@ public class CacheRedisJsonKey implements ICache {
             }
             return true;
         });
+    }
+
+    @Override
+    public Set<String> keys(String name,String keyPrefix) {
+        return jedisExecutor.keys(name ,keyPrefix);
     }
 }

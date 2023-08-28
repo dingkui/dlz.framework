@@ -2,9 +2,8 @@ package com.dlz.framework.redis.excutor;
 
 import com.dlz.framework.redis.util.JedisKeyUtils;
 
-import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 /**
  * Redis 执行器：Key（键）
@@ -17,7 +16,7 @@ public interface IJedisKeyExecutor extends IJedisExecutor {
      * 指定缓存失效时间
      *
      * @param key  键
-     * @param time 时间(秒)
+     * @param seconds 时间(秒)
      */
     default Boolean expire(String key, int seconds) {
         if (seconds > 0) {
@@ -41,12 +40,12 @@ public interface IJedisKeyExecutor extends IJedisExecutor {
      * @param pattern key
      * @return /
      */
-    default List<String> keys(String pattern) {
-        Stream<String> stream = excuteByJedis(j -> {
-//                ScanResult<String> scan = j.scan(pattern);
-            return j.keys(JedisKeyUtils.getRedisKey(pattern));
-        }).stream();
-        return JedisKeyUtils.getClientKeyStream(stream).collect(Collectors.toList());
+    default Set<String> keys(String name,String pattern) {
+        int len=name.length()+1;
+        return excuteByJedis(j -> j.keys(JedisKeyUtils.getRedisKey(name,pattern)))
+                .stream()
+                .map(o -> JedisKeyUtils.getClientKey(o).substring(len))
+                .collect(Collectors.toSet());
     }
 
     /**

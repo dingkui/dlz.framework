@@ -20,8 +20,7 @@ public interface IJedisSetExecutor extends IJedisExecutor {
      * @return
      */
     default Set<String> smembers(String key) {
-        Stream<String> stream = excuteByJedis(j -> j.smembers(JedisKeyUtils.getRedisKey(key))).stream();
-        return JedisKeyUtils.getClientKeyStream(stream).collect(Collectors.toSet());
+        return excuteByJedis(j -> j.smembers(JedisKeyUtils.getRedisKey(key)));
     }
 
     /**

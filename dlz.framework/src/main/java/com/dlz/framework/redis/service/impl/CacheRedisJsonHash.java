@@ -10,6 +10,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import java.io.Serializable;
 import java.lang.reflect.Type;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * 使用Redis实现缓存
@@ -19,27 +24,53 @@ import java.lang.reflect.Type;
  */
 @Slf4j
 public class CacheRedisJsonHash implements ICache {
-//    @Autowired
-//    RedisKeyMaker keyMaker;
     @Autowired
     JedisExecutor jedisExecutor;
     @Override
     public <T extends Serializable> T get(String name, Serializable key, Type type) {
-        return jedisExecutor.hgetSo(JedisKeyUtils.getRedisKey(name), ValUtil.getStr(key),type);
+        return jedisExecutor.hgetSo(name, ValUtil.getStr(key),type);
     }
 
     @Override
     public void put(String name, Serializable key, Serializable value, int seconds) {
-        jedisExecutor.hsetSo(JedisKeyUtils.getRedisKey(name), ValUtil.getStr(key),  value, seconds);
+        jedisExecutor.hsetSo(name, ValUtil.getStr(key),  value, seconds);
     }
 
     @Override
     public void remove(String name, Serializable key) {
-        jedisExecutor.hdel(JedisKeyUtils.getRedisKey(name), ValUtil.getStr(key));
+        jedisExecutor.hdel(name, ValUtil.getStr(key));
     }
 
     @Override
     public void removeAll(String name) {
-        jedisExecutor.del(JedisKeyUtils.getRedisKey(name));
+        jedisExecutor.del(name);
+    }
+
+    @Override
+    public Set<String> keys(String name,String keyPrefix) {
+        Stream<String> stream = jedisExecutor.hgetAll(name).keySet().stream().map(key -> ValUtil.getStr(key));
+        if("*".equals(keyPrefix)||".*".equals(keyPrefix)){
+            return stream.collect(Collectors.toSet());
+        }
+        String keyMatch=keyPrefix.replaceAll("\\.\\*","*").replaceAll("\\*",".*");
+        return stream.filter(key->key.matches(keyMatch)).collect(Collectors.toSet());
+    }
+    @Override
+    public Map<String,Serializable> all(String name, String keyPrefix){
+        Map<String,String> re = jedisExecutor.hgetAll(name);
+        Map<String,Serializable> map=new HashMap<>();
+        if("*".equals(keyPrefix)||".*".equals(keyPrefix)){
+            re.entrySet().forEach(item->{
+                map.put(item.getKey(),JedisKeyUtils.getResult(item.getValue(), null));
+            });
+        }else{
+            String keyMatch=keyPrefix.replaceAll("\\.\\*","*").replaceAll("\\*",".*");
+            re.entrySet().forEach(item->{
+                if(item.getKey().matches(keyMatch)){
+                    map.put(item.getKey(),JedisKeyUtils.getResult(item.getValue(), null));
+                }
+            });
+        }
+        return map;
     }
 }

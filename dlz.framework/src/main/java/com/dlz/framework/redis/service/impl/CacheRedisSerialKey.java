@@ -1,6 +1,7 @@
 package com.dlz.framework.redis.service.impl;
 
 import com.dlz.framework.cache.ICache;
+import com.dlz.framework.redis.RedisKeyMaker;
 import com.dlz.framework.redis.excutor.JedisExecutor;
 import com.dlz.framework.redis.util.JedisKeyUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import java.io.Serializable;
 import java.lang.reflect.Type;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * 使用Redis实现缓存
@@ -15,44 +17,22 @@ import java.util.Set;
  * @author dk
  */
 public class CacheRedisSerialKey implements ICache {
-//    @Autowired
-//    RedisKeyMaker keyMaker;
     @Autowired
     JedisExecutor jedisExecutor;
 
     @Override
     public <T extends Serializable> T get(String name, Serializable key, Type type) {
         return jedisExecutor.getSe(JedisKeyUtils.getKey(name,key),type);
-//        return jedisExecutor.excuteByJedis(j -> {
-//            final byte[] result = j.get(getRedisByteKey(name, key));
-//            if (result==null){
-//                return null;
-//            }
-//            Object obj = SerializeUtil.deserialize(result);
-//            if (type==null){
-//                return (T)obj;
-//            }
-//            return ValUtil.getObj(obj, JacksonUtil.getJavaType(type));
-//        });
     }
 
     @Override
     public void put(String name, Serializable key, Serializable value, int seconds) {
         jedisExecutor.setSe(JedisKeyUtils.getKey(name, key),value,seconds);
-//        jedisExecutor.excuteByJedis(j -> {
-//            byte[] key1 = getRedisByteKey(name, key);
-//            String set = j.set(key1, SerializeUtil.serialize(value));
-//            if (seconds > -1) {
-//                j.expire(key1, seconds);
-//            }
-//            return set;
-//        });
     }
 
     @Override
     public void remove(String name, Serializable key) {
-        jedisExecutor.del(JedisKeyUtils.getRedisKey(name, key));
-//        jedisExecutor.excuteByJedis(j -> j.del(JedisKeyUtils.getRedisByteKey(name, key)));
+        jedisExecutor.del(JedisKeyUtils.getKey(name, key));
     }
 
     @Override
@@ -64,5 +44,9 @@ public class CacheRedisSerialKey implements ICache {
             }
             return true;
         });
+    }
+    @Override
+    public Set<String> keys(String name,String keyPrefix) {
+        return jedisExecutor.keys(name ,keyPrefix);
     }
 }
