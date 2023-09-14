@@ -188,7 +188,7 @@ public class ValUtil {
         if (Date.class.isAssignableFrom(input.getClass())) {
             return (Date) input;
         }
-        return DateUtil.getDate(getStr(input), format);
+        return DateUtil.getDateStr(getStr(input), format);
     }
 
     public static void main(String[] args) {
@@ -207,9 +207,9 @@ public class ValUtil {
             return "";
         }
         if (format == null) {
-            return DateUtil.getDateTime((Date) input);
+            return DateUtil.getDateTimeStr((Date) input);
         }
-        return DateUtil.getDateStr((Date) input, format);
+        return DateUtil.format((Date) input, format);
     }
 
     public static String getDateStr(Object input) {

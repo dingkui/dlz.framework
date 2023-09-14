@@ -12,14 +12,14 @@ import java.util.regex.Pattern;
 
 @Slf4j
 public class DateUtil {
-    public static String getDateStr(Date date, String pattern) {
+    public static String format(Date date, String pattern) {
         SimpleDateFormat format = new SimpleDateFormat(pattern);
         if (date == null) {
             return "";
         }
         return format.format(date);
     }
-	private static Date transDate(String dateStr, String pattern) {
+	private static Date parse(String dateStr, String pattern) {
 		SimpleDateFormat format = new SimpleDateFormat(pattern);
 		try {
 			return format.parse(dateStr);
@@ -35,12 +35,12 @@ public class DateUtil {
      * @param date date
      * @return String
      */
-    public static String getDate(Date date) {
-        return getDateStr(date,"yyyy-MM-dd");
+    public static String getDateStr(Date date) {
+        return format(date,"yyyy-MM-dd");
     }
 
-    public static String getDate() {
-        return getDateStr(new Date(),"yyyy-MM-dd");
+    public static String getDateStr() {
+        return format(new Date(),"yyyy-MM-dd");
     }
 
     /**
@@ -49,16 +49,15 @@ public class DateUtil {
      * @param date date
      * @return String
      */
-    static public String getDateTime(Date date) {
-        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        return getDateStr(date,"yyyy-MM-dd HH:mm:ss");
+    static public String getDateTimeStr(Date date) {
+        return format(date,"yyyy-MM-dd HH:mm:ss");
     }
 
-    static public String getDateTime() {
-        return getDateStr(new Date(),"yyyy-MM-dd HH:mm:ss");
+    static public String getDateTimeStr() {
+        return format(new Date(),"yyyy-MM-dd HH:mm:ss");
     }
 
-	public static Date toUTCDate(String dateVal) {
+	public static Date parseUTCDate(String dateVal) {
 		SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
 		// 设置时区UTC
 		formatter.setTimeZone(TimeZone.getTimeZone("UTC"));
@@ -69,34 +68,33 @@ public class DateUtil {
 		}
 	}
 
-	private final static Map<String,Pattern> date_trans = new LinkedHashMap<>();
-	static {
-		date_trans.put("yyyy-MM-dd HH:mm:ss",Pattern.compile("^\\d{4}-[0,1]?\\d-[0-3]?\\d \\d{2}:\\d{2}:\\d{2}.*"));
-		date_trans.put("yyyy-MM-dd",Pattern.compile("^\\d{4}-\\d{1,2}-\\d{1,2}$"));
-		date_trans.put("yyyy-MM",Pattern.compile("^\\d{4}-\\d{1,2}$"));
-		date_trans.put("yyyy-MM-dd HH:mm",Pattern.compile("^\\d{4}-\\d{1,2}-\\d{1,2} \\d{1,2}:\\d{1,2}$"));
-		date_trans.put("yyyy年MM月dd日 HH时mm分ss秒",Pattern.compile("^\\d{4}年[0,1]?\\d月[0-3]?\\d日 \\d{2}时\\d{2}分\\d{2}秒"));
-	}
+	private final static KV<String,Pattern>[] date_trans = new KV[]{
+		new KV("yyyy-MM-dd HH:mm:ss",Pattern.compile("^\\d{4}-[0,1]?\\d-[0-3]?\\d \\d{2}:\\d{2}:\\d{2}.*")),
+		new KV("yyyy-MM-dd",Pattern.compile("^\\d{4}-\\d{1,2}-\\d{1,2}$")),
+		new KV("yyyy-MM",Pattern.compile("^\\d{4}-\\d{1,2}$")),
+		new KV("yyyy-MM-dd HH:mm",Pattern.compile("^\\d{4}-\\d{1,2}-\\d{1,2} \\d{1,2}:\\d{1,2}$")),
+		new KV("yyyy年MM月dd日 HH时mm分ss秒",Pattern.compile("^\\d{4}年[0,1]?\\d月[0-3]?\\d日 \\d{2}时\\d{2}分\\d{2}秒"))
+	};
 
-	public static Date getDate(String input,String format){
+	public static Date getDateStr(String input, String format){
 		if(input==null){
 			return null;
 		}
 		if(format!=null){
-			return transDate(input,format);
+			return parse(input,format);
 		}
 		String input2 = input.replaceAll("/", "-").replaceAll("\"", "");
-		for(Map.Entry<String,Pattern> entry: date_trans.entrySet()){
-			if(entry.getValue().matcher(input2).matches()){
-				return transDate(input2,entry.getKey());
+		for (int i = 0; i < date_trans.length; i++) {
+			if(date_trans[i].v.matcher(input2).matches()){
+				return parse(input2,date_trans[i].k);
 			}
 		}
 		if (input2.matches("^\\d{1,2}:\\d{1,2}$")) {
-			return transDate(DateUtil.getDate()+ " " + input2, "yyyy-MM-dd HH:mm");
+			return parse(DateUtil.getDateStr()+ " " + input2, "yyyy-MM-dd HH:mm");
 		} else if (input2.matches("^\\d{1,2}:\\d{1,2}:\\d{1,2}$")) {
-			return transDate(DateUtil.getDate()+ " " + input2, "yyyy-MM-dd HH:mm:ss");
+			return parse(DateUtil.getDateStr()+ " " + input2, "yyyy-MM-dd HH:mm:ss");
 		}else if(input2.matches("^\\d{4}-\\d{1,2}-\\d{1,2}T\\d{1,2}:\\d{1,2}:\\d{1,2}.\\d{3}Z$")){
-			return toUTCDate(input2);
+			return parseUTCDate(input2);
 		}
 		log.error("转换日期格式未识别："+input);
 		return null;

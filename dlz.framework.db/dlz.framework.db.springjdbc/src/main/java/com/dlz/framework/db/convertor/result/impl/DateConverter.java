@@ -16,7 +16,7 @@ public class DateConverter extends AClassConverter<Date,String,DateFormatEnum> {
 
 	@Override
 	public String conver2Str(Date o) {
-		return DateUtil.getDateStr(o,para.getFormatStr());
+		return DateUtil.format(o,para.getFormatStr());
 	}
 
 	@Override
@@ -26,6 +26,6 @@ public class DateConverter extends AClassConverter<Date,String,DateFormatEnum> {
 	
 	@Override
 	public Date conver2Db(String o) {
-		return DateUtil.getDate(o,para.getFormatStr());
+		return DateUtil.getDateStr(o,para.getFormatStr());
 	}
 }

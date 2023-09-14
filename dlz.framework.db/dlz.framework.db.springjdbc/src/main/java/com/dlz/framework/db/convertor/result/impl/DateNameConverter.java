@@ -14,10 +14,10 @@ public class DateNameConverter extends ANameConverter<Date,String,DateFormatEnum
 	}
 	@Override
 	public String conver2Str(Date o) {
-		return DateUtil.getDateStr(o,getPara().getFormatStr());
+		return DateUtil.format(o,getPara().getFormatStr());
 	}
 	@Override
 	public Date conver2Db(String o) {
-		return DateUtil.getDate(o,getPara().getFormatStr());
+		return DateUtil.getDateStr(o,getPara().getFormatStr());
 	}
 }

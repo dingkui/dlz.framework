@@ -13,7 +13,6 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.*;
 
-@SuppressWarnings({"rawtypes"})
 @Slf4j
 public class MapUtil {
 	/**
@@ -22,7 +21,6 @@ public class MapUtil {
 	private MapUtil() {
 
 	}
-	@SuppressWarnings("unchecked")
 	public static Map convertBean(Object bean)
             throws IntrospectionException, IllegalAccessException, InvocationTargetException {
         Class type = bean.getClass();

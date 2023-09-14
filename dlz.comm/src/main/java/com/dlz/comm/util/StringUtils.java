@@ -163,8 +163,17 @@ public class StringUtils {
         }
         return false;
     }
-
-    public static boolean isBlank(CharSequence cs) {
+    /**
+     * 判断输入的字符是否为空或纯空格
+     * <pre class="code">
+     * StringUtils.isBlank(null) = true
+     * StringUtils.isBlank("") = true
+     * StringUtils.isBlank(" ") = true
+     * StringUtils.isBlank("12345") = false
+     * StringUtils.isBlank(" 12345 ") = false
+     * </pre>
+     */
+    public static boolean isBlank(final CharSequence cs) {
         int strLen;
         if (cs == null || (strLen = cs.length()) == 0) {
             return true;
@@ -308,27 +317,45 @@ public class StringUtils {
     }
 
     /**
-     * 转换数据库键名 aa_bb_cc→aaBbCc
-     *
-     * @param clumn
+     * 下划线转驼峰 aa_bb_cc→aaBbCc
+     * @param key
      * @return
      * @author dk 2015-04-09
      */
-    public static String converClumnStr2Str(String clumn) {
-        if (clumn == null) {
+    public static String underScoreToCamel(String key) {
+        if (key == null) {
             return "";
         }
-        clumn = clumn.toLowerCase();
-        Matcher mat = Pattern.compile("_([a-z])").matcher(clumn);
+        key = key.toLowerCase();
+        Matcher mat = Pattern.compile("_([a-z])").matcher(key);
         while (mat.find()) {
-            clumn = clumn.replace("_" + mat.group(1), mat.group(1).toUpperCase());
+            key = key.replace("_" + mat.group(1), mat.group(1).toUpperCase());
         }
-        return clumn.replaceAll("_", "");
+        return key.replaceAll("_", "");
     }
+
+    /**
+     * 驼峰转下划线 aaBbCc→aa_bb_cc<br>
+     * 如果参数含有_则不做转换
+     * @param key
+     * @author dk 2015-04-10
+     * @return
+     */
+    public static String camelToUnderScore(String key) {
+        if(key==null){
+            return null;
+        }
+        if(key.indexOf("_")>-1){
+            return key;
+        }
+        return key.replaceAll("([A-Z])", "_$1").toLowerCase(Locale.ROOT);
+    }
+
      public static void main(String[] args) {
          log.debug(repeat('2',3));
-         log.debug(converClumnStr2Str("aa_bb_cc"));
-         log.debug(converClumnStr2Str("A_CC_VV_c"));
+         log.debug(underScoreToCamel("aa_bb_cc"));
+         log.debug(camelToUnderScore("A_CC_VV_c"));
+         log.debug(camelToUnderScore("aaBbCc"));
          log.debug("{}",isLongOrInt("-111"));
          log.debug("{}",isLongOrInt("1111"));
          log.debug("{}",isLongOrInt("+111.11"));
