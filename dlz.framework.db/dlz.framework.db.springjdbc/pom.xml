@@ -30,5 +30,10 @@
 				</exclusion>
 			</exclusions>
 		</dependency>
+		<dependency>
+			<groupId>com.baomidou</groupId>
+			<artifactId>mybatis-plus-annotation</artifactId>
+			<version>3.5.1</version>
+		</dependency>
 	</dependencies>
 </project>
