@@ -3,7 +3,7 @@
 	<parent>
 		<groupId>com.dlz</groupId>
 		<artifactId>dlz-dependencies</artifactId>
-		<version>5.4.3</version>
+		<version>5.5.0</version>
 	</parent>
 	<artifactId>dlz.plugin</artifactId>
 	<packaging>pom</packaging>
