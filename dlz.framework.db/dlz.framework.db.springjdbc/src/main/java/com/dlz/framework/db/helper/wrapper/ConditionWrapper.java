@@ -73,14 +73,6 @@ public abstract class ConditionWrapper {
 	}
 
 	public String buildColumn(String column, Class<?> clazz) {
-//		if (clazz.equals(Integer.class) || clazz.equals(Long.class) || clazz.equals(Short.class) || clazz.equals(Double.class) || clazz.equals(Float.class) || clazz.equals(Boolean.class)) {
-//			return "CAST(`" + DbNameUtil.dbName(column) + "` AS DECIMAL(30,10))";
-//		}
-//
-//		if (clazz.equals(String.class) || clazz.equals(Boolean.class) || clazz.equals(Collection.class)) {
-//			return "`" + DbNameUtil.dbName(column) + "`";
-//		}
-
 		return "`" + DbNameUtil.getDbClumnName(column) + "`";
 	}
 
@@ -89,13 +81,11 @@ public abstract class ConditionWrapper {
 		for (Object obj : (Collection<?>) value) {
 			ask.add("?");
 		}
-
 		if (ask.size() > 0) {
 			return " (" + StringUtils.join(",", ask) + ") ";
 		} else {
 			return " (null) ";
 		}
-
 	}
 
 	/**

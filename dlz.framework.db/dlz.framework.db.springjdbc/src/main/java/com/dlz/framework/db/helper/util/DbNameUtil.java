@@ -3,7 +3,6 @@ package com.dlz.framework.db.helper.util;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.dlz.comm.util.StringUtils;
-import com.dlz.framework.db.convertor.ConvertUtil;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import org.springframework.stereotype.Component;
@@ -14,10 +13,23 @@ import java.lang.reflect.Field;
 public class DbNameUtil {
     public static String getDbTableName(Class<?> clazz) {
         TableName name = clazz.getAnnotation(TableName.class);
+        String tName=null;
+        String schema=null;
         if (name != null) {
-            return StringUtils.isEmpty(name.schema()) ? name.value() : (name.schema() + "." + name.value());
+            if(name.value().length()>0){
+                tName = name.value();
+            }
+            if(name.schema().length()>0){
+                schema = name.schema();
+            }
         }
-        return getDbClumnName(clazz.getSimpleName());
+        if(tName == null){
+            tName = getDbClumnName(clazz.getSimpleName());
+        }
+        if(schema != null){
+            tName = schema+"."+tName;
+        }
+        return tName;
     }
 
     public static String getTableCommont(Class<?> clazz) {
@@ -42,11 +54,7 @@ public class DbNameUtil {
     }
 
     public static String getDbClumnName(String field) {
-//        if (beanKey == null||beanKey.indexOf("_") > -1) {
-//            return beanKey;
-//        }
-//        return beanKey.replaceAll("([A-Z])", "_$1").toUpperCase();
-        return ConvertUtil.str2Clumn(field).toUpperCase();
+        return StringUtils.camelToUnderScore(field).toUpperCase();
     }
 
     public static String getClumnCommont(Field field) {

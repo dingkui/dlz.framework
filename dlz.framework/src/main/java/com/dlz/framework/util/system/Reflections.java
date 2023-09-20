@@ -513,7 +513,7 @@ public class Reflections {
         throw new NoSuchFieldError(fieldName);
     }
 
-    public static <R, T> String getFieldName(Function<T, R> property) {
+    public static String getFieldName(Function<?, ?> property) {
         Field field = getField(property);
         return field == null ? null : field.getName();
     }

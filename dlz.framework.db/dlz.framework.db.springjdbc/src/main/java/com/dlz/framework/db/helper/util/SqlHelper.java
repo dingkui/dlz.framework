@@ -1,9 +1,9 @@
 package com.dlz.framework.db.helper.util;
 
 import com.dlz.comm.util.StringUtils;
+import com.dlz.framework.db.modal.Page;
 import com.dlz.framework.util.system.Reflections;
 import lombok.AllArgsConstructor;
-import com.dlz.framework.db.helper.bean.Page;
 import com.dlz.framework.db.helper.bean.Sort;
 import com.dlz.framework.db.helper.bean.Update;
 import com.dlz.framework.db.helper.support.IDbOp;
@@ -336,7 +336,7 @@ public class SqlHelper{
 	public Page findPage(ConditionWrapper conditionWrapper, Sort sort, Page page, Class<?> clazz) {
 		List<String> values = new ArrayList<String>();
 		// 查询出一共的条数
-		Long count = findCountByQuery(conditionWrapper, clazz);
+		Integer count = findCountByQuery(conditionWrapper, clazz);
 
 		String sql = "SELECT * FROM `" + DbNameUtil.getDbTableName(clazz) + "`";
 		if (conditionWrapper != null && conditionWrapper.notEmpty()) {
@@ -347,11 +347,11 @@ public class SqlHelper{
 		} else {
 			sql += " ORDER BY id DESC";
 		}
-		sql += dbOp.getLimitSql(page.getCurr(),page.getLimit());
+		sql += dbOp.getLimitSql(page.getPageSize() * page.getPageIndex(),page.getPageSize());
 
 		page.setCount(count);
 
-		page.setRecords(buildObjects(jdbcTemplate.queryForList(sql, values.toArray()), clazz));
+		page.setData(buildObjects(jdbcTemplate.queryForList(sql, values.toArray()), clazz));
 
 		return page;
 	}
@@ -606,14 +606,14 @@ public class SqlHelper{
 	/**
 	 * 查找数量
 	 */
-	public Long findCountByQuery(ConditionWrapper conditionWrapper, Class<?> clazz) {
+	public Integer findCountByQuery(ConditionWrapper conditionWrapper, Class<?> clazz) {
 		List<String> values = new ArrayList<String>();
 		String sql = "SELECT COUNT(*) FROM `" + DbNameUtil.getDbTableName(clazz) + "`";
 		if (conditionWrapper != null && conditionWrapper.notEmpty()) {
 			sql += " WHERE " + conditionWrapper.build(values);
 		}
 
-		return jdbcTemplate.queryForObject(sql, values.toArray(), Long.class);
+		return jdbcTemplate.queryForObject(sql, values.toArray(), Integer.class);
 	}
 
 	/**
@@ -622,7 +622,7 @@ public class SqlHelper{
 	 * @param clazz 类
 	 * @return Long 数量
 	 */
-	public Long findAllCount(Class<?> clazz) {
+	public Integer findAllCount(Class<?> clazz) {
 		return findCountByQuery(null, clazz);
 	}
 

@@ -33,45 +33,41 @@ public class Sort {
 
         orderList.add(order);
     }
-
+    public Sort asc(String column) {
+        return this.add(column,Direction.ASC);
+    }
+    public Sort asc(Function<?, ?>  column) {
+        return this.add(column,Direction.ASC);
+    }
+    public Sort desc(String column) {
+        return this.add(column,Direction.DESC);
+    }
+    public Sort desc(Function<?, ?>  column) {
+        return this.add(column,Direction.DESC);
+    }
     public Sort add(String column, Direction direction) {
         Order order = new Order();
         order.setColumn(column);
         order.setDirection(direction);
-
         orderList.add(order);
-
         return this;
     }
 
-    public <T, R> Sort add(Function<T, R> column, Direction direction) {
+    public Sort add(Function<?, ?> column, Direction direction) {
         Order order = new Order();
         order.setColumn(Reflections.getFieldName(column));
         order.setDirection(direction);
-
         orderList.add(order);
-
         return this;
     }
 
     public String toString() {
         List<String> sqlList = new ArrayList<>();
         for (Order order : orderList) {
-
             String sql = DbNameUtil.getDbClumnName(order.getColumn());
-
-            if (order.getDirection() == Direction.ASC) {
-                sql += " ASC";
-            }
-            if (order.getDirection() == Direction.DESC) {
-                sql += " DESC";
-            }
-
-            sqlList.add(sql);
+            sqlList.add(sql+" "+order.getDirection().toString());
         }
 
         return " ORDER BY " + StringUtils.join(",", sqlList);
     }
-
-
 }
