@@ -5,8 +5,6 @@ import lombok.extern.slf4j.Slf4j;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.LinkedHashMap;
-import java.util.Map;
 import java.util.TimeZone;
 import java.util.regex.Pattern;
 
@@ -68,12 +66,12 @@ public class DateUtil {
 		}
 	}
 
-	private final static KV<String,Pattern>[] date_trans = new KV[]{
-		new KV("yyyy-MM-dd HH:mm:ss",Pattern.compile("^\\d{4}-[0,1]?\\d-[0-3]?\\d \\d{2}:\\d{2}:\\d{2}.*")),
-		new KV("yyyy-MM-dd",Pattern.compile("^\\d{4}-\\d{1,2}-\\d{1,2}$")),
-		new KV("yyyy-MM",Pattern.compile("^\\d{4}-\\d{1,2}$")),
-		new KV("yyyy-MM-dd HH:mm",Pattern.compile("^\\d{4}-\\d{1,2}-\\d{1,2} \\d{1,2}:\\d{1,2}$")),
-		new KV("yyyy年MM月dd日 HH时mm分ss秒",Pattern.compile("^\\d{4}年[0,1]?\\d月[0-3]?\\d日 \\d{2}时\\d{2}分\\d{2}秒"))
+	private final static VAL<String,Pattern>[] date_trans = new VAL[]{
+		new VAL("yyyy-MM-dd HH:mm:ss",Pattern.compile("^\\d{4}-[0,1]?\\d-[0-3]?\\d \\d{2}:\\d{2}:\\d{2}.*")),
+		new VAL("yyyy-MM-dd",Pattern.compile("^\\d{4}-\\d{1,2}-\\d{1,2}$")),
+		new VAL("yyyy-MM",Pattern.compile("^\\d{4}-\\d{1,2}$")),
+		new VAL("yyyy-MM-dd HH:mm",Pattern.compile("^\\d{4}-\\d{1,2}-\\d{1,2} \\d{1,2}:\\d{1,2}$")),
+		new VAL("yyyy年MM月dd日 HH时mm分ss秒",Pattern.compile("^\\d{4}年[0,1]?\\d月[0-3]?\\d日 \\d{2}时\\d{2}分\\d{2}秒"))
 	};
 
 	public static Date getDateStr(String input, String format){
@@ -85,8 +83,8 @@ public class DateUtil {
 		}
 		String input2 = input.replaceAll("/", "-").replaceAll("\"", "");
 		for (int i = 0; i < date_trans.length; i++) {
-			if(date_trans[i].v.matcher(input2).matches()){
-				return parse(input2,date_trans[i].k);
+			if(date_trans[i].v2.matcher(input2).matches()){
+				return parse(input2,date_trans[i].v1);
 			}
 		}
 		if (input2.matches("^\\d{1,2}:\\d{1,2}$")) {
