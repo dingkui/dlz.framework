@@ -1,9 +1,10 @@
 package com.dlz.framework.util.system;
 
 import com.dlz.comm.exception.SystemException;
+import com.dlz.comm.util.ExceptionUtils;
 import com.dlz.comm.util.StringUtils;
 import com.dlz.comm.util.ValUtil;
-import org.slf4j.Logger;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.aop.support.AopUtils;
 import org.springframework.util.Assert;
 import org.springframework.util.ClassUtils;
@@ -24,6 +25,7 @@ import java.util.stream.Collectors;
  *
  * @author calvin
  */
+@Slf4j
 public class Reflections {
     private static final String SETTER_PREFIX = "set";
 
@@ -31,7 +33,6 @@ public class Reflections {
 
     private static final String CGLIB_CLASS_SEPARATOR = "$$";
 
-    private static Logger logger = org.slf4j.LoggerFactory.getLogger(Reflections.class);
 
     /**
      * 调用Getter方法.
@@ -63,7 +64,7 @@ public class Reflections {
         try {
             result = field.get(obj);
         } catch (IllegalAccessException e) {
-            logger.error("不可能抛出的异常{}", e.getMessage());
+            log.error("不可能抛出的异常{}", e.getMessage());
         }
         return result;
     }
@@ -77,7 +78,7 @@ public class Reflections {
         try {
             result = field.get(obj);
         } catch (IllegalAccessException e) {
-            logger.error("不可能抛出的异常{}", e.getMessage());
+            log.error("不可能抛出的异常{}", e.getMessage());
         }
         return result;
     }
@@ -85,12 +86,18 @@ public class Reflections {
     /**
      * 直接设置对象属性值, 无视private/protected修饰符, 不经过setter函数.
      */
-    public static void setFieldValue(final Object obj, final String fieldName, final Object value) {
+    public static void setFieldValue(final Object obj, final String fieldName, final Object value, final boolean ignore) {
         Field field = getAccessibleField(obj, fieldName);
-        if (field == null) {
+        if (field == null && !ignore) {
             throw new IllegalArgumentException("Could not find field [" + fieldName + "] on target [" + obj + "]");
         }
-        setFieldValue(obj, field, value);
+        setFieldValue(obj, field, ValUtil.getObj(value, field.getType()));
+    }
+    /**
+     * 直接设置对象属性值, 无视private/protected修饰符, 不经过setter函数.
+     */
+    public static void setFieldValue(final Object obj, final String fieldName, final Object value) {
+        setFieldValue(obj, fieldName, value, false);
     }
 
     /**
@@ -103,7 +110,7 @@ public class Reflections {
         try {
             field.set(obj, value);
         } catch (IllegalAccessException e) {
-            logger.error("不可能抛出的异常:{}", e.getMessage());
+            log.error("不可能抛出的异常:{}", e.getMessage());
         }
     }
 
@@ -159,7 +166,7 @@ public class Reflections {
                 // Field不在当前类定义,继续向上转型
             }
         }
-        logger.error("NoSuchField:" + obj.getClass() + "." + fieldName);
+        log.warn("NoSuchField:" + obj.getClass() + "." + fieldName);
         return null;
     }
 
@@ -181,7 +188,7 @@ public class Reflections {
                 // Method不在当前类定义,继续向上转型
             }
         }
-        logger.error("NoSuchMethod:" + obj.getClass() + "." + methodName);
+        log.error("NoSuchMethod:" + obj.getClass() + "." + methodName);
         return null;
     }
 
@@ -334,19 +341,19 @@ public class Reflections {
         Type genType = clazz.getGenericSuperclass();
 
         if (!(genType instanceof ParameterizedType)) {
-            logger.warn(clazz.getSimpleName() + "'s superclass not ParameterizedType");
+            log.warn(clazz.getSimpleName() + "'s superclass not ParameterizedType");
             return Object.class;
         }
 
         Type[] params = ((ParameterizedType) genType).getActualTypeArguments();
 
         if (index >= params.length || index < 0) {
-            logger.warn("Index: " + index + ", Size of " + clazz.getSimpleName() + "'s Parameterized Type: "
+            log.warn("Index: " + index + ", Size of " + clazz.getSimpleName() + "'s Parameterized Type: "
                     + params.length);
             return Object.class;
         }
         if (!(params[index] instanceof Class)) {
-            logger.warn(clazz.getSimpleName() + " not set the actual class on superclass generic parameter");
+            log.warn(clazz.getSimpleName() + " not set the actual class on superclass generic parameter");
             return Object.class;
         }
 
@@ -516,5 +523,17 @@ public class Reflections {
     public static String getFieldName(Function<?, ?> property) {
         Field field = getField(property);
         return field == null ? null : field.getName();
+    }
+    public static <T> T newInstance(Class<T> classz,Object ... para) {
+        Class<?>[] aClass = new Class[para.length];
+        for (int i = 0; i < para.length; i++) {
+            aClass[i] = para[i].getClass();            
+        }
+        try {
+            return classz.getConstructor(aClass).newInstance(para);
+        } catch (Exception e) {
+            log.error(ExceptionUtils.getStackTrace(e));
+        }
+        return null;
     }
 }
