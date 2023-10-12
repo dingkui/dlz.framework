@@ -188,6 +188,9 @@ public class ValUtil {
         if (Date.class.isAssignableFrom(input.getClass())) {
             return (Date) input;
         }
+        if (Number.class.isAssignableFrom(input.getClass())) {
+            return new Date(((Number) input).longValue());
+        }
         return DateUtil.getDateStr(getStr(input), format);
     }
 
