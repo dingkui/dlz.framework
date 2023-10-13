@@ -1,11 +1,15 @@
 package com.dlz.test.comm.util;
 
 import com.dlz.comm.util.ExceptionTrace;
+import com.dlz.comm.util.ExceptionUtils;
+import com.dlz.comm.util.encry.TraceUtil;
 import com.dlz.comm.util.web.HttpEnum;
+import lombok.extern.slf4j.Slf4j;
 import org.junit.Test;
 
 import java.util.regex.Pattern;
 
+@Slf4j
 public class ExceptionUtilTest {
 	private static Pattern COMPILE = Pattern.compile("^com\\.dlz");
 	@Test
@@ -36,5 +40,13 @@ public class ExceptionUtilTest {
 		System.out.println(new ExceptionTrace(throwable, true,COMPILE).getStackTrace(null));
 		System.out.println(new ExceptionTrace(throwable, false,COMPILE).getStackTrace(null));
 	}
+	public void getTraceCaller2Test(){
+		TraceUtil.setCaller();
+		log.debug("1111");
+	}
 
+	@Test
+	public void getTraceCaller(){
+		getTraceCaller2Test();
+	}
 }

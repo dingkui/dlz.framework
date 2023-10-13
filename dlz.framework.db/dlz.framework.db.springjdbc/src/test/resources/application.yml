@@ -29,4 +29,6 @@ dlz:
       showKeySql: true
     jdbcSql: true
     use-db-sql: false
-
+    helper:
+      auto-update: false
+    showCaller: true

@@ -29,6 +29,10 @@ public class DlzDbProperties {
      */
     private boolean showRunSql = false;
     /**
+     * 日志中是否显示运行sql
+     */
+    private boolean showCaller = false;
+    /**
      * 数据库类型
      */
     private DbTypeEnum dbtype = DbTypeEnum.MYSQL;
