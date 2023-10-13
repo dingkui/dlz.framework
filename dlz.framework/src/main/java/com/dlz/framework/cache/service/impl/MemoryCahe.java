@@ -3,7 +3,6 @@ package com.dlz.framework.cache.service.impl;
 import com.dlz.comm.util.JacksonUtil;
 import com.dlz.comm.util.ValUtil;
 import com.dlz.framework.cache.ICache;
-import com.dlz.framework.redis.util.JedisKeyUtils;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.Serializable;
