@@ -3,21 +3,23 @@ package com.dlz.framework.db.holder;
 import com.dlz.comm.util.ExceptionUtils;
 import com.dlz.framework.db.config.DlzDbProperties;
 import com.dlz.framework.db.dao.IDlzDao;
-import com.dlz.framework.db.modal.BaseParaMap;
 import com.dlz.framework.db.modal.ResultMap;
+import com.dlz.framework.holder.SpringHolder;
 import lombok.extern.slf4j.Slf4j;
 import org.dom4j.Document;
 import org.dom4j.DocumentException;
 import org.dom4j.Element;
 import org.dom4j.io.SAXReader;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 import org.springframework.core.io.support.ResourcePatternResolver;
 
 import javax.annotation.PostConstruct;
 import java.io.*;
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 
 /**
  * 数据库配置信息
@@ -29,10 +31,8 @@ import java.util.*;
 @Slf4j
 public class DefaultSqlholder implements ISqlHolder {
     final DlzDbProperties properties;
-    final IDlzDao dao;
 
-    public DefaultSqlholder(IDlzDao dao,DlzDbProperties properties) {
-        this.dao = dao;
+    public DefaultSqlholder(DlzDbProperties properties) {
         this.properties = properties;
     }
 
@@ -122,15 +122,6 @@ public class DefaultSqlholder implements ISqlHolder {
         }catch (Exception e){
             log.error(ExceptionUtils.getStackTrace(e));
         }
-        try {
-            ResourceBundle dbConfig = ResourceBundle.getBundle("db");
-            for (Enumeration<String> enums = dbConfig.getKeys(); enums.hasMoreElements(); ) {
-                String name = enums.nextElement();
-                conf.put(name,dbConfig.getString(name).trim());
-            }
-        }catch (Exception e){
-            log.info("db.properties not exists");
-        }
         properties.getSqllist().stream().forEach(item->{
             conf.put("sqllist.sql."+item,"1");
         });
@@ -153,10 +144,8 @@ public class DefaultSqlholder implements ISqlHolder {
         });
         if(properties.isUseDbSql()){
             String sql = clearSql(properties.getSql());
-            BaseParaMap baseParaMap = new BaseParaMap("");
-            baseParaMap.getSqlItem().setSqlJdbc(sql);
             try {
-                List<ResultMap> mapList = dao.getList(baseParaMap);
+                List<ResultMap> mapList = SpringHolder.getBean(IDlzDao.class).getList(sql);
                 mapList.forEach(item->addSqlSetting("key."+item.getStr("key"),item.getStr("sql")));
             }catch (Exception e){
                 log.warn("取得数据库配置无效：sql="+sql);
