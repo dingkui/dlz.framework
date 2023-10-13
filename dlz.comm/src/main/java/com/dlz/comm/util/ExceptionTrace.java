@@ -101,6 +101,9 @@ public class ExceptionTrace {
         if (traceInfo.indexOf("CGLIB$") > -1) {
             return null;
         }
+        if (!onlyShowAppLog||marchPattern==null) {
+            return traceInfo;
+        }
 //        if(traceInfo.contains("org.springframework.aop")){
 //            return;
 //        }
@@ -128,10 +131,10 @@ public class ExceptionTrace {
 //        if(traceInfo.contains("java.util.concurrent")){
 //            return;
 //        }
-        if (onlyShowAppLog && !marchPattern.matcher(traceInfo).find()) {
-            return null;
+        if (marchPattern.matcher(traceInfo).find()) {
+            return traceInfo;
         }
-        return  traceInfo;
+        return  null;
     }
     /**
      * 过滤掉不需要打印的日志

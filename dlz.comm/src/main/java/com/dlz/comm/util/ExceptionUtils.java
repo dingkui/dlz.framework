@@ -19,19 +19,6 @@ public class ExceptionUtils {
         return getStackTrace(null,throwable, true,COMPILE);
     }
 
-//    /**
-//     * 只显示app相关的堆栈
-//     * @return
-//     */
-//    public static String getTraceCaller() {
-//        ExceptionUtils exceptionUtils = new ExceptionUtils(new Throwable(), true);
-//        StackTraceElement[] trace = exceptionUtils.throwable.getStackTrace();
-//        for (StackTraceElement traceElement : trace)
-//            printTraceElement("", traceElement);
-//
-//
-//    }
-
     /**
      * 只显示app相关的堆栈
      * @param throwable

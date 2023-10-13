@@ -7,7 +7,6 @@ import com.dlz.framework.db.convertor.dbtype.ATableCloumnMapper;
 import com.dlz.framework.db.convertor.dbtype.TableCloumnMapper;
 import com.dlz.framework.db.dao.DaoOperator;
 import com.dlz.framework.db.dao.IDlzDao;
-import com.dlz.framework.db.dao.MyJdbcTemplate;
 import com.dlz.framework.db.holder.DefaultSqlholder;
 import com.dlz.framework.db.holder.ISqlHolder;
 import com.dlz.framework.db.service.ICommService;
@@ -36,14 +35,14 @@ public class DlzDbConfig {
     @Bean
     @Lazy
     public DbOprationCache dbOprationCache() {
-        log.debug("default DbOprationCache init ...");
+        log.info("default DbOprationCache init ...");
         return new DbOprationCache();
     }
 
     @Bean
     @Lazy
     public TableInfoCache tableInfoCache() {
-        log.debug("default TableInfoCache init ...");
+        log.info("default TableInfoCache init ...");
         return new TableInfoCache();
     }
 
@@ -51,7 +50,7 @@ public class DlzDbConfig {
     @Lazy
     @ConditionalOnMissingBean(name = "tableCloumnMapper")
     public ATableCloumnMapper tableCloumnMapper() {
-        log.debug("default tableCloumnMapper init ...");
+        log.info("default tableCloumnMapper init ...");
         return new TableCloumnMapper();
     }
 
@@ -59,33 +58,32 @@ public class DlzDbConfig {
     @Lazy
     @ConditionalOnMissingBean(name = "dbInfo")
     public DbInfo dbInfo(ISqlHolder sql,DlzDbProperties dbProperties) {
-        log.debug("default dbInfo init ...");
+        log.info("default dbInfo init ...");
         return new DbInfo(sql, dbProperties);
     }
 
     @Bean(name = "dlzDao")
     @Lazy
+    @DependsOn({"dbInfo"})
     @ConditionalOnMissingBean(name = "dlzDao")
-    public IDlzDao dlzDao(JdbcTemplate jdbc) {
-        log.debug("default dlzDao init ...");
-        return new DaoOperator(jdbc);
+    public IDlzDao dlzDao(JdbcTemplate jdbc,DlzDbProperties dbProperties) {
+        log.info("default dlzDao init ...");
+        return new DaoOperator(jdbc,dbProperties.getDbtype());
     }
-
 
     @Bean(name = "sqlHolder")
     @Lazy
     @ConditionalOnMissingBean(name = "sqlHolder")
-    public ISqlHolder sqlHolder(IDlzDao dao,DlzDbProperties dbProperties) {
-        log.debug("default sqlHolder init ...");
-        return new DefaultSqlholder(dao,dbProperties);
+    public ISqlHolder sqlHolder(DlzDbProperties dbProperties) {
+        log.info("default sqlHolder init ...");
+        return new DefaultSqlholder(dbProperties);
     }
 
     @Bean(name = "commService")
     @Lazy
-    @DependsOn({"dbInfo"})
     @ConditionalOnMissingBean(name = "commService")
     public ICommService commService(IDlzDao dao,DlzDbProperties dbProperties) {
-        log.debug("default commService init ...");
+        log.info("default commService init ...");
         return new CommServiceImpl(dao,dbProperties);
     }
 
@@ -93,7 +91,7 @@ public class DlzDbConfig {
     @Lazy
     @ConditionalOnMissingBean(name = "JdbcTemplate")
     public JdbcTemplate JdbcTemplate(DataSource dataSource) {
-        log.debug("default JdbcTemplate init ...");
-        return new MyJdbcTemplate(dataSource);
+        log.info("default MyJdbcTemplate init ...");
+        return new JdbcTemplate(dataSource);
     }
 }
