@@ -11,6 +11,7 @@ import com.dlz.framework.db.convertor.ConvertUtil;
 import com.dlz.framework.db.enums.ParaTypeEnum;
 import com.dlz.framework.db.modal.BaseParaMap;
 import com.dlz.framework.db.modal.Page;
+import com.dlz.framework.db.modal.SearchParaMap;
 import com.dlz.framework.db.modal.items.SqlItem;
 import lombok.extern.slf4j.Slf4j;
 
@@ -162,7 +163,7 @@ public class SqlUtil {
         int index=0;
         while (mat.find()) {
             String _startStr = jdbcSql.substring(beginIndex, mat.start());
-            Object jdbcParaItem = paraList[index];
+            Object jdbcParaItem = paraList[index++];
             beginIndex = mat.end();
             sbRunSql.append(_startStr);
             if(jdbcParaItem instanceof Number){
@@ -184,6 +185,9 @@ public class SqlUtil {
      * @author dk 2015-04-09
      */
     public static SqlItem dealParm(BaseParaMap paraMap) {
+        if(paraMap instanceof SearchParaMap){
+            ((SearchParaMap) paraMap).setWhere();
+        }
         SqlItem sqlItem = paraMap.getSqlItem();
         String sql = sqlItem.getSqlDeal();
         String sqlInput = sqlItem.getSqlKey();

@@ -5,7 +5,7 @@ package com.dlz.framework.db.modal;
  * @author dingkui
  *
  */
-public class DeleteParaMap extends CreateSqlParaMap{
+public class DeleteParaMap extends SearchParaMap{
 
 	private static final long serialVersionUID = 8374167270612933157L;
 	private static final String SQL="key.comm.deleteTable";

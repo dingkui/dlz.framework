@@ -1,6 +1,11 @@
 package com.dlz.framework.db.modal;
 
 import com.dlz.framework.db.convertor.ConvertUtil;
+import com.dlz.framework.db.warpper.Condition;
+
+import java.util.Map;
+
+import static com.dlz.framework.db.enums.DbOprateEnum.where;
 
 
 /**
@@ -26,5 +31,33 @@ public class SearchParaMap extends CreateSqlParaMap{
 	public SearchParaMap(String tableName,String colums){
 		super(SQL,tableName,null);
 		addPara(STR_COLUMS, ConvertUtil.str2Clumn(colums));
+	}
+
+	private Condition condition=where.mk();
+
+	public void setWhere(String where){
+		addPara(STR_WHERE, where);
+	}
+
+	public Condition condition(){
+		return condition;
+	}
+	public void setWhere(){
+		if(this.condition!=null) {
+			String whereSql = this.condition.getRunsql(this);
+			if (whereSql!=where.condition) {
+				setWhere(whereSql);
+			}
+		}
+	}
+	/**
+	 * 添加要更新的值和更新条件集合
+	 * @param conditionValues
+	 * @return
+	 */
+	public void eqs(Map<String,Object> conditionValues){
+		for(String str:conditionValues.keySet()){
+			condition().eq(str, conditionValues.get(str));
+		}
 	}
 }

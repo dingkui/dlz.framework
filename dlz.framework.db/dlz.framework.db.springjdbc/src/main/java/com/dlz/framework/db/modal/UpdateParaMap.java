@@ -12,7 +12,7 @@ import java.util.Map;
  * @author dingkui
  *
  */
-public class UpdateParaMap extends CreateSqlParaMap{
+public class UpdateParaMap extends SearchParaMap{
 
 	private static Logger logger=LoggerFactory.getLogger(UpdateParaMap.class);
 	private static final long serialVersionUID = 8374167270612933157L;

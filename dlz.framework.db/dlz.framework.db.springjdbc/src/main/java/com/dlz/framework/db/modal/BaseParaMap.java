@@ -8,6 +8,8 @@ import com.dlz.framework.db.enums.ParaTypeEnum;
 import com.dlz.framework.db.modal.items.CacheItem;
 import com.dlz.framework.db.modal.items.SqlItem;
 import com.dlz.framework.db.SqlUtil;
+import com.dlz.framework.util.system.MFunction;
+import com.dlz.framework.util.system.Reflections;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import java.io.Serializable;
@@ -68,7 +70,9 @@ public class BaseParaMap implements Serializable {
 		para.put(key, value == null ? "" : value);
         return this;
     }
-
+    public <T> BaseParaMap addPara(MFunction<T, ?> column, Object value){
+        return addPara(Reflections.getFieldName(column),value);
+    }
 
     /**
      * 添加指定类型的参数（根据类型自动转换）

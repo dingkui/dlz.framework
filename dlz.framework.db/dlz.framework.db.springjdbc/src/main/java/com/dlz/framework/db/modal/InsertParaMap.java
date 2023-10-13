@@ -1,7 +1,8 @@
 package com.dlz.framework.db.modal;
 
-import com.dlz.framework.db.SqlUtil;
 import com.dlz.framework.db.convertor.ConvertUtil;
+import com.dlz.framework.util.system.MFunction;
+import com.dlz.framework.util.system.Reflections;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -21,6 +22,10 @@ public class InsertParaMap extends CreateSqlParaMap{
 	private static final String STR_VALUES="values";
 	public InsertParaMap(String tableName){
 		super(SQL,tableName,null);
+	}
+
+	public <T> void addValue(MFunction<T, ?>  column, Object value){
+		addValue(Reflections.getFieldName(column),value);
 	}
 	public void addValue(String key,Object value){
 		String paraName = ConvertUtil.str2Clumn(key);

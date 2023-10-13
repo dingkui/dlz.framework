@@ -91,16 +91,7 @@ public class CreateSqlParaMap extends BaseParaMap{
 		return ConvertUtil.isClumnExists(tableName, clumnName);
 	}
 
-	/**
-	 * 添加要更新的值和更新条件集合
-	 * @param conditionValues
-	 * @return
-	 */
-	public void addEqConditions(Map<String,Object> conditionValues){
-		for(String str:conditionValues.keySet()){
-			addCondition(str,DbOprateEnum.eq, conditionValues.get(str));
-		}
-	}
+
 	/**
 	 * 添加要更新的值和更新条件集合
 	 * @param paraName
