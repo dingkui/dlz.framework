@@ -1,4 +1,4 @@
-package com.dlz.test.framework;
+package com.dlz.test.framework.db;
 
 //import com.dlz.framework.db.DbInfo;
 import com.dlz.framework.db.service.ICommService;

@@ -1,7 +1,7 @@
-package com.dlz.test.db.mapper;
+package com.dlz.test.framework.db.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import com.dlz.test.db.entity.Dict;
+import com.dlz.test.framework.db.entity.Dict;
 import org.apache.ibatis.annotations.Mapper;
 
 /**

@@ -23,7 +23,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 
-        <spring.boot.version>2.3.12.RELEASE</spring.boot.version>
+        <spring.boot.version>2.6.2</spring.boot.version>
         <spring.platform.version>Cairo-SR8</spring.platform.version>
 
         <swagger.models.version>1.5.21</swagger.models.version>

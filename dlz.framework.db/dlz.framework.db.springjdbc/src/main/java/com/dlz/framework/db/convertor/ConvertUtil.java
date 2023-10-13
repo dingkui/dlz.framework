@@ -1,12 +1,16 @@
 package com.dlz.framework.db.convertor;
 
 import com.dlz.comm.util.JacksonUtil;
+import com.dlz.comm.util.ValUtil;
 import com.dlz.framework.db.convertor.clumnname.ColumnNameCamel;
 import com.dlz.framework.db.convertor.clumnname.AColumnNameConvertor;
 import com.dlz.framework.db.convertor.dbtype.ATableCloumnMapper;
 import com.dlz.framework.db.convertor.result.Convert;
 import com.dlz.comm.exception.DbException;
 import com.dlz.framework.db.modal.ResultMap;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * 数据库信息转换器
@@ -56,6 +60,24 @@ public class ConvertUtil {
 	public static boolean isClumnExists(String tableName,String clumnName) {
 		return tableCloumnMapper.isClumnExists(tableName, clumnName);
 	}
+
+	/**
+	 * 从数据库中取得单个字段数据
+	 */
+	public static <T> T getColum(List<ResultMap> list, Class<T> classs) {
+		if (list.size() == 0) {
+			return null;
+		} else if (list.size() > 1) {
+			throw new DbException("查询结果为多条", 1004);
+		} else {
+			return ValUtil.getObj(ConvertUtil.getFistClumn(list.get(0)), classs);
+		}
+	}
+
+	public static <T> List<T> getColumList(List<ResultMap> r, Class<T> classs) {
+		return r.stream().map((m) -> classs == null ? (T) m : ValUtil.getObj(ConvertUtil.getFistClumn(m), classs)).collect(Collectors.toList());
+	}
+
 	/**
 	 * 从Map里取得字符串
 	 * @param m

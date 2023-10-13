@@ -1,18 +1,25 @@
-package com.dlz.test.framework.db;
+package com.dlz.test.framework.db.cases.service;
 
 import com.dlz.framework.db.modal.Page;
 import com.dlz.framework.db.modal.ParaMap;
 import com.dlz.framework.db.service.ICommService;
-import com.dlz.test.framework.BaseTest;
+import com.dlz.test.framework.db.cons.TestConst;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.junit4.SpringRunner;
 
 
 /**
  * 单元测试支撑类<br>
  * @author dk
  */
-public class DbUtilContitionTest extends BaseTest {
+@RunWith(SpringRunner.class)
+@SpringBootTest
+@SpringBootApplication(scanBasePackages = TestConst.SCAN_BASE_PACKAGES)
+public class DbUtilContitionTest{
 	@Autowired
 	ICommService commService;
 

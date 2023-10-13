@@ -62,6 +62,9 @@ public class Sort {
     }
 
     public String toString() {
+        if(orderList.size()== 0){
+            return "";
+        }
         List<String> sqlList = new ArrayList<>();
         for (Order order : orderList) {
             String sql = DbNameUtil.getDbClumnName(order.getColumn());

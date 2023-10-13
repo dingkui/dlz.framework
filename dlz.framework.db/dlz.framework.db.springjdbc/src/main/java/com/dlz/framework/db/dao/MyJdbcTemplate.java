@@ -1,22 +1,27 @@
 package com.dlz.framework.db.dao;
 
-import com.dlz.framework.db.DbInfo;
+import com.dlz.framework.db.config.DlzDbProperties;
 import com.dlz.framework.db.convertor.rowMapper.MySqlColumnMapRowMapper;
 import com.dlz.framework.db.convertor.rowMapper.OracleColumnMapRowMapper;
+import com.dlz.framework.db.convertor.rowMapper.ResultMapRowMapper;
 import com.dlz.framework.db.enums.DbTypeEnum;
+import com.dlz.framework.db.modal.ResultMap;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataAccessException;
+import org.springframework.jdbc.SQLWarningException;
 import org.springframework.jdbc.core.*;
 import org.springframework.jdbc.datasource.DataSourceUtils;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.JdbcUtils;
+import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.lang.Nullable;
 import org.springframework.util.Assert;
 
 import javax.sql.DataSource;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 
 /**
@@ -27,96 +32,64 @@ import java.sql.SQLException;
  * 2018-10-17 dk 覆盖query和execute，去掉过多的sql debug日志,添加异常时的sql日志
  */
 @Slf4j
-public class MyJdbcTemplate extends JdbcTemplate {
-	public MyJdbcTemplate(DataSource dataSource) {
-		super(dataSource);
+
+public class MyJdbcTemplate{
+	private DlzDbProperties dbProperties;
+	private JdbcTemplate jdbcTemplate;
+
+	public MyJdbcTemplate(JdbcTemplate jdbcTemplate, DlzDbProperties dbProperties) {
+		this.dbProperties = dbProperties;
+		this.jdbcTemplate = jdbcTemplate;
 	}
 
-	@Override
-	protected RowMapper getColumnMapRowMapper() {
-		if(DbInfo.getDbtype()== DbTypeEnum.ORACLE){
+	protected RowMapper<ResultMap> getMyColumnMapRowMapper() {
+		if(dbProperties.getDbtype()== DbTypeEnum.ORACLE){
 			return new OracleColumnMapRowMapper();
-		}else if(DbInfo.getDbtype()== DbTypeEnum.MYSQL||DbInfo.getDbtype()== DbTypeEnum.POSTGRESQL){
+		}else if(dbProperties.getDbtype()== DbTypeEnum.MYSQL||dbProperties.getDbtype()== DbTypeEnum.POSTGRESQL){
 			return new MySqlColumnMapRowMapper();
 		}else{
-			return new ColumnMapRowMapper();
+			return new ResultMapRowMapper();
 		}
 	}
-	
-	@Override
-	@Nullable
-	public <T> T query(
-			PreparedStatementCreator psc, @Nullable final PreparedStatementSetter pss, final ResultSetExtractor<T> rse)
-			throws DataAccessException {
-		Assert.notNull(rse, "ResultSetExtractor must not be null");
+	public List<ResultMap> myqueryForList(String sql, Object... args) throws DataAccessException {
+		if(args.length>0){
+			return  jdbcTemplate.query(sql, getMyColumnMapRowMapper(),args);
+		}
+		return jdbcTemplate.query(sql, getMyColumnMapRowMapper());
+	}
+	public <T> List<T> myqueryForList(String sql, Class<T> requiredType, Object... args)  {
+		if(args.length>0){
+			return jdbcTemplate.queryForList(sql, requiredType,args);
+		}
+		return jdbcTemplate.queryForList(sql, requiredType);
+	}
+	public <T> T myqueryForObject(String sql, Class<T> requiredType, Object... args)  {
+		if(args.length>0){
+			return jdbcTemplate.queryForObject(sql, requiredType,args);
+		}
+		return jdbcTemplate.queryForObject(sql, requiredType);
+	}
+	public int myupdate(String sql, Object... args){
+		if(args.length>0){
+			return jdbcTemplate.update(sql, args);
+		}
+		return jdbcTemplate.update(sql);
+	}
+	public Number myupdateForId(String sql, Object... args){
+		KeyHolder keyHolder = new GeneratedKeyHolder();
+		jdbcTemplate.update(con -> {
+			PreparedStatement ps = con.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+			int i = 1;
+			for (Object arg : args) {
+				ps.setObject(i++, arg);
+			}
+			return ps;
+		}, keyHolder);
+		return keyHolder.getKey();
+	}
+	public void myexecute(final String sql){
+		jdbcTemplate.execute(sql);
+	}
 
-		return execute(psc, new PreparedStatementCallback<T>() {
-			@Override
-			@Nullable
-			public T doInPreparedStatement(PreparedStatement ps) throws SQLException {
-				ResultSet rs = null;
-				try {
-					if (pss != null) {
-						pss.setValues(ps);
-					}
-					rs = ps.executeQuery();
-					return rse.extractData(rs);
-				}
-				finally {
-					JdbcUtils.closeResultSet(rs);
-					if (pss instanceof ParameterDisposer) {
-						((ParameterDisposer) pss).cleanupParameters();
-					}
-				}
-			}
-		});
-	}
-	
-	private static String getSql(Object sqlProvider) {
-		if (sqlProvider instanceof SqlProvider) {
-			return ((SqlProvider) sqlProvider).getSql();
-		}
-		else {
-			return null;
-		}
-	}
-	
-	@Override
-	@Nullable
-	public <T> T execute(PreparedStatementCreator psc, PreparedStatementCallback<T> action)
-			throws DataAccessException {
-		Assert.notNull(psc, "PreparedStatementCreator must not be null");
-		Assert.notNull(action, "Callback object must not be null");
 
-		Connection con = DataSourceUtils.getConnection(obtainDataSource());
-		PreparedStatement ps = null;
-		try {
-			ps = psc.createPreparedStatement(con);
-			applyStatementSettings(ps);
-			T result = action.doInPreparedStatement(ps);
-			handleWarnings(ps);
-			return result;
-		}
-		catch (SQLException ex) {
-			// Release Connection early, to avoid potential connection pool deadlock
-			// in the case when the exception translator hasn't been initialized yet.
-			if (psc instanceof ParameterDisposer) {
-				((ParameterDisposer) psc).cleanupParameters();
-			}
-			String sql = getSql(psc);
-			JdbcUtils.closeStatement(ps);
-			ps = null;
-			DataSourceUtils.releaseConnection(con, getDataSource());
-			con = null;
-			log.error("Executing prepared SQL statement error:" + (sql != null ? " [" + sql + "]" : ""));
-			throw translateException("PreparedStatementCallback", sql, ex);
-		}
-		finally {
-			if (psc instanceof ParameterDisposer) {
-				((ParameterDisposer) psc).cleanupParameters();
-			}
-			JdbcUtils.closeStatement(ps);
-			DataSourceUtils.releaseConnection(con, getDataSource());
-		}
-	}
 }

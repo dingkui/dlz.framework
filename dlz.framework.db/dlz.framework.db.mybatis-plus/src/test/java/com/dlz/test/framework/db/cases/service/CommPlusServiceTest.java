@@ -1,16 +1,13 @@
-package com.dlz.test.service;
+package com.dlz.test.framework.db.cases.service;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.dlz.framework.db.service.ICommPlusService;
 import com.dlz.framework.db.service.ICommService;
-import com.dlz.framework.holder.SpringHolder;
-import com.dlz.test.db.entity.Dict;
+import com.dlz.test.framework.db.entity.Dict;
 import lombok.extern.slf4j.Slf4j;
-import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.support.DefaultListableBeanFactory;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 

@@ -26,6 +26,10 @@ import java.util.stream.Collectors;
 public class CommServiceImpl implements ICommService {
     private IDlzDao dao;
     private DlzDbProperties dbProperties;
+    @Override
+    public IDlzDao getDao() {
+        return dao;
+    }
 
     private void dealJdbc(BaseParaMap paraMap, int dealType) {
         SqlItem sqlItem = paraMap.getSqlItem();
@@ -71,7 +75,7 @@ public class CommServiceImpl implements ICommService {
         SqlItem sqlItem = paraMap.getSqlItem();
         try {
             dealJdbc(paraMap, 1);
-            int r = dao.updateSql(paraMap);
+            int r = dao.update(sqlItem.getSqlJdbc(), sqlItem.getSqlJdbcPara());
             if (dbProperties.isShowResult() && log.isInfoEnabled()) {
                 log.info("result:" + r);
             }
@@ -94,7 +98,7 @@ public class CommServiceImpl implements ICommService {
         SqlItem sqlItem = paraMap.getSqlItem();
         try {
             dealJdbc(paraMap, 2);
-            int cnt = ValUtil.getInt(ConvertUtil.getFistClumn(dao.getList(paraMap).get(0)));
+            int cnt = ValUtil.getInt(ConvertUtil.getFistClumn(dao.getList(sqlItem.getSqlJdbc(), sqlItem.getSqlJdbcPara()).get(0)));
             paraMap.getCacheItem().saveCache(cnt);
             return cnt;
         } catch (Exception e) {
@@ -123,7 +127,7 @@ public class CommServiceImpl implements ICommService {
         try {
             dealJdbc(paraMap, 3);
 
-            List<ResultMap> list = dao.getList(paraMap);
+            List<ResultMap> list = dao.getList(sqlItem.getSqlJdbc(), sqlItem.getSqlJdbcPara());
             List<ResultMap> list2 = list.stream().map(r -> ConvertUtil.converResultMap(r, paraMap.getConvert())).collect(Collectors.toList());
             paraMap.getCacheItem().saveCache(list2);
             return list2;
@@ -134,4 +138,6 @@ public class CommServiceImpl implements ICommService {
             throw new DbException(e.getMessage() + " " + sqlItem.getSqlKey() + ":" + sqlItem.getSqlPage() + " para:" + paraMap.getPara(), 1003, e);
         }
     }
+
+
 }

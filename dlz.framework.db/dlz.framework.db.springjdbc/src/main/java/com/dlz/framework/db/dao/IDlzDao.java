@@ -1,9 +1,16 @@
 package com.dlz.framework.db.dao;
 
+import com.dlz.framework.db.enums.DbTypeEnum;
 import com.dlz.framework.db.modal.BaseParaMap;
 import com.dlz.framework.db.modal.ResultMap;
+import com.dlz.framework.db.modal.items.SqlItem;
 import org.springframework.context.annotation.Lazy;
+import org.springframework.dao.DataAccessException;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
+import org.springframework.jdbc.support.KeyHolder;
 
+import java.sql.PreparedStatement;
+import java.sql.Statement;
 import java.util.HashMap;
 import java.util.List;
 
@@ -18,11 +25,17 @@ import java.util.List;
  */
 @Lazy
 public interface IDlzDao {
-    List<ResultMap> getList(BaseParaMap paraMap);
+    DbTypeEnum getDbtype();
 
-    int getCnt(BaseParaMap paraMap);
+    List<ResultMap> getList(String sql, Object... args);
+    <T> List<T> getList(String sql, Class<T> requiredType, Object... args);
+    <T> T getObj(String sql, Class<T> requiredType, Object... args);
 
-    int updateSql(BaseParaMap paraMap);
+    int update(String sql, Object... args);
+    Long updateForId(String sql, Object... args);
+    void execute(final String sql,Object ... args);
+
+    int[] batchUpdate(String sql, List<Object[]> batchArgs);
 
     HashMap<String, Integer> getTableColumsInfo(String tableName);
 }

@@ -1,7 +1,7 @@
 server:
   port: 80021
 
-appname: dlz-framwork-db
+appname: dlz.framework.db.springjdbc
 spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver

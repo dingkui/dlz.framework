@@ -13,7 +13,7 @@ import java.util.Set;
 @EnableAsync
 @AllArgsConstructor
 public class AsyncUtils {
-	IDbOp dbOp;
+	SqlHelper dbOp;
 	// 同步执行
 	public void initTableSync(Class<?> clazz) {
 		initTable(clazz);
