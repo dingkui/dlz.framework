@@ -1,12 +1,12 @@
 package com.dlz.framework.db.helper.bean;
 
 import com.dlz.comm.util.StringUtils;
-import com.dlz.framework.util.system.Reflections;
 import com.dlz.framework.db.helper.util.DbNameUtil;
+import com.dlz.framework.util.system.MFunction;
+import com.dlz.framework.util.system.Reflections;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.Function;
 
 public class Sort {
     List<Order> orderList = new ArrayList<>();
@@ -26,23 +26,22 @@ public class Sort {
         this.orderList.addAll(orderList);
     }
 
-    public <T, R> Sort(Function<T, R> column, Direction direction) {
+    public <T, R> Sort(MFunction<T, R> column, Direction direction) {
         Order order = new Order();
         order.setColumn(Reflections.getFieldName(column));
         order.setDirection(direction);
-
         orderList.add(order);
     }
     public Sort asc(String column) {
         return this.add(column,Direction.ASC);
     }
-    public Sort asc(Function<?, ?>  column) {
+    public <T> Sort asc(MFunction<T, ?>  column) {
         return this.add(column,Direction.ASC);
     }
     public Sort desc(String column) {
         return this.add(column,Direction.DESC);
     }
-    public Sort desc(Function<?, ?>  column) {
+    public Sort desc(MFunction<?, ?>  column) {
         return this.add(column,Direction.DESC);
     }
     public Sort add(String column, Direction direction) {
@@ -53,7 +52,7 @@ public class Sort {
         return this;
     }
 
-    public Sort add(Function<?, ?> column, Direction direction) {
+    public <T> Sort add(MFunction<T, ?> column, Direction direction) {
         Order order = new Order();
         order.setColumn(Reflections.getFieldName(column));
         order.setDirection(direction);

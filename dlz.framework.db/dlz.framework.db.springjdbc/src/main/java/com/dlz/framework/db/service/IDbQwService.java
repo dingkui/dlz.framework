@@ -1,10 +1,17 @@
 package com.dlz.framework.db.service;
 
 import com.dlz.comm.exception.DbException;
+import com.dlz.comm.util.JacksonUtil;
+import com.dlz.comm.util.VAL;
+import com.dlz.framework.db.SqlUtil;
 import com.dlz.framework.db.convertor.ConvertUtil;
+import com.dlz.framework.db.helper.util.DbNameUtil;
+import com.dlz.framework.db.modal.BaseParaMap;
+import com.dlz.framework.db.modal.Page;
 import com.dlz.framework.db.modal.ResultMap;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -17,20 +24,21 @@ import java.util.List;
  */
 public interface IDbQwService extends IBaseDbService{
 	default <T> List<T> getBeanList(Wrapper<T> wrapper) {
-		return getDao().getList(wrapper.getSqlJdbc(), wrapper.getBeanClass(), wrapper.getSqlJdbcPara());
+		return DbNameUtil.coverResult2Bean(getMapList(wrapper),wrapper.getBeanClass());
 	}
 	default <T> T getBean(Wrapper<T> wrapper,boolean throwEx) {
-		List<T> list = getBeanList(wrapper);
+		List<ResultMap> list = getMapList(wrapper);
 		if(list.size()==0){
 			return null;
 		}else if(list.size()>1 && throwEx){
 			throw new DbException("查询结果为多条",1004);
 		}else{
-			return list.get(0);
+			return DbNameUtil.coverResult2Bean(list.get(0),wrapper.getBeanClass());
 		}
 	}
 	default List<ResultMap> getMapList(Wrapper wrapper) {
-		return getDao().getList(wrapper.getSqlJdbc(), wrapper.getSqlJdbcPara());
+		VAL<String, Object[]> sqlJdbc = wrapper.getSqlJdbc();
+		return getDao().getList(sqlJdbc.v1, sqlJdbc.v2);
 	}
 
 	default ResultMap getMap(Wrapper wrapper, Boolean throwEx){
@@ -84,5 +92,29 @@ public interface IDbQwService extends IBaseDbService{
 	}
 	default List<Double> getDoubleList(Wrapper wrapper){
 		return ConvertUtil.getColumList(getMapList(wrapper),Double.class);
+	}
+	default <T> int getCnt(Wrapper<T> wrapper){
+		VAL<String, Object[]> sqlJdbc = wrapper.getCntJdbc();
+		return getDao().getClumn(sqlJdbc.v1, Integer.class, sqlJdbc.v2);
+	}
+	default <T> Page<T> getPage(Wrapper<T> wrapper) {
+		Page<T> page = wrapper.page();
+		//是否需要查询列表（需要统计条数并且条数是0的情况不查询，直接返回空列表）
+		boolean needList = true;
+
+		int cnt = getCnt(wrapper);
+		page.setCount(cnt);
+		if (page.getCount() == 0) {
+			needList = false;
+		}
+		if(page.getPageIndex()==-1){
+			page.setPageIndex(0);
+		}
+		if (needList) {
+			page.setData(getBeanList(wrapper));
+		} else {
+			page.setData(new ArrayList<T>());
+		}
+		return page;
 	}
 }

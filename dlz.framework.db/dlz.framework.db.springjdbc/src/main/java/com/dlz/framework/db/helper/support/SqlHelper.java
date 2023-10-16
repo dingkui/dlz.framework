@@ -13,15 +13,11 @@ import com.dlz.framework.db.helper.wrapper.ConditionAndWrapper;
 import com.dlz.framework.db.helper.wrapper.ConditionWrapper;
 import com.dlz.framework.db.modal.Page;
 import com.dlz.framework.db.modal.ResultMap;
+import com.dlz.framework.util.system.MFunction;
 import com.dlz.framework.util.system.Reflections;
-import org.springframework.jdbc.support.GeneratedKeyHolder;
-import org.springframework.jdbc.support.KeyHolder;
 
 import java.lang.reflect.Field;
-import java.sql.PreparedStatement;
-import java.sql.Statement;
 import java.util.*;
-import java.util.function.Function;
 
 public abstract class SqlHelper {
     protected final IDlzDao dao;
@@ -95,7 +91,7 @@ public abstract class SqlHelper {
 //        return dao.getList(sql, args);
 //    }
     public <T> List<T> queryForList(String sql, Class<T> requiredType, Object... args){
-        return buildObjects(dao.getList(sql, args),requiredType);
+        return DbNameUtil.coverResult2Bean(dao.getList(sql, args),requiredType);
     }
 //    public <T> T queryForObject(String sql, Class<T> requiredType, Object... args){
 //        return dao.getObj(sql,requiredType, args);
@@ -312,7 +308,7 @@ public abstract class SqlHelper {
      * 累加某一个字段的数量,原子操作
      *
      */
-    public <T, R> void addCountById(String id, Function<T, R> property, Long count, Class<?> clazz) {
+    public <T, R> void addCountById(String id, MFunction<T, R> property, Long count, Class<?> clazz) {
         addCountById(id, Reflections.getFieldName(property), count, clazz);
     }
 
@@ -535,7 +531,7 @@ public abstract class SqlHelper {
     /**
      * 根据条件查找某个属性
      */
-    public <T, R> List<T> findPropertiesByQuery(ConditionWrapper conditionWrapper, Class<?> documentClass, Function<T, R> property, Class<T> propertyClass) {
+    public <T, R> List<T> findPropertiesByQuery(ConditionWrapper conditionWrapper, Class<?> documentClass, MFunction<T, R> property, Class<T> propertyClass) {
         return findPropertiesByQuery(conditionWrapper, documentClass, Reflections.getFieldName(property), propertyClass);
     }
 
@@ -549,7 +545,7 @@ public abstract class SqlHelper {
     /**
      * 根据条件查找某个属性
      */
-    public <T, R> List<String> findPropertiesByQuery(ConditionWrapper conditionWrapper, Class<?> documentClass, Function<T, R> property) {
+    public <T, R> List<String> findPropertiesByQuery(ConditionWrapper conditionWrapper, Class<?> documentClass, MFunction<T, R> property) {
         return findPropertiesByQuery(conditionWrapper, documentClass, Reflections.getFieldName(property), String.class);
     }
 
@@ -570,7 +566,7 @@ public abstract class SqlHelper {
     /**
      * 根据id查找某个属性
      */
-    public <T, R> List<String> findPropertiesByIds(Collection<String> ids, Class<?> documentClass, Function<T, R> property) {
+    public <T, R> List<String> findPropertiesByIds(Collection<String> ids, Class<?> documentClass, MFunction<T, R> property) {
         return findPropertiesByIds(ids, documentClass, Reflections.getFieldName(property));
     }
 
@@ -584,7 +580,7 @@ public abstract class SqlHelper {
     /**
      * 根据id查找某个属性
      */
-    public <T, R> List<String> findPropertiesByIds(String[] ids, Class<?> documentClass, Function<T, R> property) {
+    public <T, R> List<String> findPropertiesByIds(String[] ids, Class<?> documentClass, MFunction<T, R> property) {
         return findPropertiesByIds(Arrays.asList(ids), documentClass, Reflections.getFieldName(property));
     }
 
@@ -674,7 +670,7 @@ public abstract class SqlHelper {
         }
 
 
-        return dao.getObj(sql, Integer.class, values.toArray());
+        return dao.getClumn(sql, Integer.class, values.toArray());
     }
 
     /**
@@ -707,46 +703,4 @@ public abstract class SqlHelper {
         return new ArrayList<T>(rs);
     }
 
-    /**
-     * Map转Bean
-     *
-     * @param <T>
-     * @param queryForList
-     * @param clazz
-     * @return
-     */
-    private <T> List<T> buildObjects(List<ResultMap> queryForList, Class<T> clazz) {
-        List<T> list = new ArrayList<T>();
-        try {
-            Field[] fields = Reflections.getFields(clazz);
-
-            for (Map<String, Object> map : queryForList) {
-                Object obj = clazz.getDeclaredConstructor().newInstance();
-
-                for (Map.Entry<String, Object> entry : map.entrySet()) {
-                    String mapKey = entry.getKey();
-                    Object mapValue = entry.getValue();
-
-                    for (Field field : fields) {
-                        String dbClumnName = DbNameUtil.getDbClumnName(field);
-                        if(dbClumnName==null){
-                            continue;
-                        }
-                        if (dbClumnName.equals(mapKey)) {
-                            Reflections.setFieldValue(obj, field, mapValue);
-                            break;
-                        }
-                    }
-
-                }
-
-                list.add((T) obj);
-            }
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        return list;
-    }
 }

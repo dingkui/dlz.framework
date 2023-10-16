@@ -1,10 +1,10 @@
 package com.dlz.framework.db.helper.wrapper;
 
+import com.dlz.framework.util.system.MFunction;
 import com.dlz.framework.util.system.Reflections;
 
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.function.Function;
 
 /**
  * 查询语句生成器 AND连接
@@ -40,7 +40,7 @@ public class ConditionAndWrapper extends ConditionWrapper {
 	 * @param params 参数
 	 * @return ConditionWrapper
 	 */
-	public <T, R> ConditionAndWrapper eq(Function<T, R> column, Object params) {
+	public <T, R> ConditionAndWrapper eq(MFunction<T, R> column, Object params) {
 		super.eq(Reflections.getFieldName(column), params);
 		return this;
 	}
@@ -64,7 +64,7 @@ public class ConditionAndWrapper extends ConditionWrapper {
 	 * @param params 参数
 	 * @return ConditionAndWrapper
 	 */
-	public <T, R> ConditionAndWrapper ne(Function<T, R> column, Object params) {
+	public <T, R> ConditionAndWrapper ne(MFunction<T, R> column, Object params) {
 		super.ne(Reflections.getFieldName(column), params);
 		return this;
 	}
@@ -88,7 +88,7 @@ public class ConditionAndWrapper extends ConditionWrapper {
 	 * @param params 参数
 	 * @return ConditionAndWrapper
 	 */
-	public <T, R> ConditionAndWrapper lt(Function<T, R> column, Object params) {
+	public <T, R> ConditionAndWrapper lt(MFunction<T, R> column, Object params) {
 		super.lt(Reflections.getFieldName(column), params);
 		return this;
 	}
@@ -112,7 +112,7 @@ public class ConditionAndWrapper extends ConditionWrapper {
 	 * @param params 参数
 	 * @return ConditionAndWrapper
 	 */
-	public <T, R> ConditionAndWrapper lte(Function<T, R> column, Object params) {
+	public <T, R> ConditionAndWrapper lte(MFunction<T, R> column, Object params) {
 		super.lte(Reflections.getFieldName(column), params);
 		return this;
 	}
@@ -136,7 +136,7 @@ public class ConditionAndWrapper extends ConditionWrapper {
 	 * @param params 参数
 	 * @return ConditionAndWrapper
 	 */
-	public <T, R> ConditionAndWrapper gt(Function<T, R> column, Object params) {
+	public <T, R> ConditionAndWrapper gt(MFunction<T, R> column, Object params) {
 		super.gt(Reflections.getFieldName(column), params);
 		return this;
 	}
@@ -160,7 +160,7 @@ public class ConditionAndWrapper extends ConditionWrapper {
 	 * @param params 参数
 	 * @return ConditionAndWrapper
 	 */
-	public <T, R> ConditionAndWrapper gte(Function<T, R> column, Object params) {
+	public <T, R> ConditionAndWrapper gte(MFunction<T, R> column, Object params) {
 		super.gte(Reflections.getFieldName(column), params);
 		return this;
 	}
@@ -184,7 +184,7 @@ public class ConditionAndWrapper extends ConditionWrapper {
 	 * @param params 参数
 	 * @return ConditionAndWrapper
 	 */
-	public <T, R> ConditionAndWrapper like(Function<T, R> column, String params) {
+	public <T, R> ConditionAndWrapper like(MFunction<T, R> column, String params) {
 		super.like(Reflections.getFieldName(column), params);
 		return this;
 	}
@@ -208,7 +208,7 @@ public class ConditionAndWrapper extends ConditionWrapper {
 	 * @param params 参数
 	 * @return ConditionAndWrapper
 	 */
-	public <T, R> ConditionAndWrapper in(Function<T, R> column, Collection<?> params) {
+	public <T, R> ConditionAndWrapper in(MFunction<T, R> column, Collection<?> params) {
 		super.in(Reflections.getFieldName(column), params);
 		return this;
 	}
@@ -232,7 +232,7 @@ public class ConditionAndWrapper extends ConditionWrapper {
 	 * @param params 参数
 	 * @return ConditionAndWrapper
 	 */
-	public <T, R> ConditionAndWrapper in(Function<T, R> column, Object[] params) {
+	public <T, R> ConditionAndWrapper in(MFunction<T, R> column, Object[] params) {
 		super.in(Reflections.getFieldName(column), Arrays.asList(params));
 		return this;
 	}
@@ -256,7 +256,7 @@ public class ConditionAndWrapper extends ConditionWrapper {
 	 * @param params 参数
 	 * @return ConditionAndWrapper
 	 */
-	public <T, R> ConditionAndWrapper nin(Function<T, R> column, Collection<?> params) {
+	public <T, R> ConditionAndWrapper nin(MFunction<T, R> column, Collection<?> params) {
 		super.nin(Reflections.getFieldName(column), params);
 		return this;
 	}
@@ -280,7 +280,7 @@ public class ConditionAndWrapper extends ConditionWrapper {
 	 * @param params 参数
 	 * @return ConditionAndWrapper
 	 */
-	public <T, R> ConditionAndWrapper nin(Function<T, R> column, Object[] params) {
+	public <T, R> ConditionAndWrapper nin(MFunction<T, R> column, Object[] params) {
 		super.nin(Reflections.getFieldName(column), Arrays.asList(params));
 		return this;
 	}
@@ -304,7 +304,7 @@ public class ConditionAndWrapper extends ConditionWrapper {
 	 * @param column 字段
 	 * @return ConditionAndWrapper
 	 */
-	public <T, R> ConditionAndWrapper isNull(Function<T, R> column) {
+	public <T, R> ConditionAndWrapper isNull(MFunction<T, R> column) {
 		super.isNull(Reflections.getFieldName(column));
 		return this;
 	}
@@ -328,7 +328,7 @@ public class ConditionAndWrapper extends ConditionWrapper {
 	 * @param column 字段
 	 * @return ConditionAndWrapper
 	 */
-	public <T, R> ConditionAndWrapper isNotNull(Function<T, R> column) {
+	public <T, R> ConditionAndWrapper isNotNull(MFunction<T, R> column) {
 		super.isNotNull(Reflections.getFieldName(column));
 		return this;
 	}

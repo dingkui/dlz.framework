@@ -17,7 +17,7 @@ public class Page<T> implements Serializable {
     private static final int DEFAULT_PAGE_SIZE = 20;
 
     @ApiModelProperty(value = "当前页码", position = 1)
-    private int pageIndex=0;
+    private int pageIndex=-1;
     @ApiModelProperty(value = "每页条数", position = 2)
     private int pageSize = DEFAULT_PAGE_SIZE;
     @ApiModelProperty(value = "数据总条数", position = 3)

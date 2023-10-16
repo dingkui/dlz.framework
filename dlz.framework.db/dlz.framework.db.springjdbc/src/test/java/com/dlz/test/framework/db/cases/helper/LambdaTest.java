@@ -1,5 +1,7 @@
 package com.dlz.test.framework.db.cases.helper;
 
+import com.dlz.framework.db.helper.util.DbNameUtil;
+import com.dlz.framework.util.system.MFunction;
 import com.dlz.framework.util.system.Reflections;
 import com.dlz.test.framework.db.entity.Dict;
 
@@ -18,9 +20,6 @@ public class LambdaTest {
 //          //反射调用
 //        Object sl = writeReplace.invoke(func);
 //        java.lang.invoke.SerializedLambda serializedLambda = (java.lang.invoke.SerializedLambda) sl;
-        return Reflections.getFieldName(func);
+        return DbNameUtil.getDbClumnName(func);
     }
-}
-@FunctionalInterface
-interface MFunction<T, R> extends Function<T, R>, Serializable {
 }

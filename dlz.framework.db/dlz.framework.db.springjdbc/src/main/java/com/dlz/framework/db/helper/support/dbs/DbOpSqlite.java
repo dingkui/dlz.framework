@@ -55,7 +55,7 @@ public class DbOpSqlite extends SqlHelper {
     @Override
     public void updateDefaultValue(String tableName, String columnName, String value) {
         String sql = "SELECT COUNT(*) FROM " + tableName + " WHERE `" + columnName + "` IS NULL";
-        Long count = dao.getObj(sql, Long.class);
+        Long count = dao.getClumn(sql, Long.class);
         if (count > 0) {
             sql = "UPDATE " + tableName + " SET `" + columnName + "` = ? WHERE `" + columnName + "` IS NULL";
             dao.update(sql, value);

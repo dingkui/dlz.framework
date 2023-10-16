@@ -180,20 +180,37 @@ public class SqlUtil {
      * 转换参数
      *
      * @param paraMap
+     * @param dealType 1:普通sql 2:查询条数 3：翻页
      * @return
      * @throws Exception
      * @author dk 2015-04-09
      */
-    public static SqlItem dealParm(BaseParaMap paraMap) {
+    public static SqlItem dealParm(BaseParaMap paraMap,int dealType,boolean jdbc) {
         if(paraMap instanceof SearchParaMap){
             ((SearchParaMap) paraMap).setWhere();
         }
         SqlItem sqlItem = paraMap.getSqlItem();
-        String sql = sqlItem.getSqlDeal();
-        String sqlInput = sqlItem.getSqlKey();
-        if (sql == null && sqlInput != null) {
-            sql = createSqlDeal(paraMap.getPara(), sqlInput);
-            sqlItem.setSqlDeal(sql);
+        if (sqlItem.getSqlKey() != null){
+            String sql = sqlItem.getSqlDeal();
+            String sqlInput = sqlItem.getSqlKey();
+            if (sql == null && sqlInput != null) {
+                sql = createSqlDeal(paraMap.getPara(), sqlInput);
+                sqlItem.setSqlDeal(sql);
+            }
+            switch (dealType) {
+                case 1:
+                    sqlItem.setSqlRun(sqlItem.getSqlDeal());
+                    break;
+                case 2:
+                    sqlItem.setSqlRun(SqlUtil.getCntSql(sqlItem));
+                    break;
+                case 3:
+                    sqlItem.setSqlRun(SqlUtil.getPageSql(paraMap));
+                    break;
+            }
+        }
+        if (jdbc) {
+            dealParmToJdbc(paraMap);
         }
         return sqlItem;
     }
@@ -254,6 +271,10 @@ public class SqlUtil {
 			String _orderBy = StringUtils.isEmpty(page.getSortField()) ? null : (ConvertUtil.str2Clumn(page.getSortField()) + " " + (page.getSortOrder() == null ? "" : page.getSortOrder()));
 			Integer _begin = null;
 			Integer _end = null;
+
+            if (page.getPageIndex() == -1) {
+                page.setPageIndex(0);
+            }
 
 			if (page.getPageIndex() == 0) {
 				_begin = null;

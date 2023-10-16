@@ -1,5 +1,6 @@
 package com.dlz.test.framework.db.entity;
 
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -15,6 +16,7 @@ public class Dict {
     @ApiModelProperty("xasd：啊实打实\n\"xas\"")
     private String dictStatus;
     @ApiModelProperty("int")
+    @TableField("xxss")
     private int a2;
     @ApiModelProperty("boolean：")
     private boolean a3;

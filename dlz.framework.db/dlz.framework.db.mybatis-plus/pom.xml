@@ -24,6 +24,12 @@
 			<groupId>com.dlz</groupId>
 			<artifactId>dlz.framework.db.springjdbc</artifactId>
 			<version>${dlz.framework.version}</version>
+			<exclusions>
+				<exclusion>
+					<artifactId>mybatis-plus-annotation</artifactId>
+					<groupId>com.baomidou</groupId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 		<!-- PostgreSql -->
 		<dependency>

@@ -1,6 +1,7 @@
 package com.dlz.framework.db.modal;
 
 import com.dlz.comm.json.JSONMap;
+import com.dlz.comm.util.VAL;
 import com.dlz.framework.db.convertor.result.Convert;
 import com.dlz.framework.db.convertor.result.impl.DateConverter;
 import com.dlz.framework.db.enums.DateFormatEnum;
@@ -115,6 +116,18 @@ public class BaseParaMap implements Serializable {
 
     public SqlItem getSqlItem() {
         return sqlItem;
+    }
+    public VAL<String,Object[]> getJdbcSql() {
+        SqlUtil.dealParm(this,1,true);
+        return new VAL(sqlItem.getSqlJdbc(),sqlItem.getSqlJdbcPara());
+    }
+    public VAL<String,Object[]> getCntJdbc() {
+        SqlUtil.dealParm(this,2,true);
+        return new VAL(sqlItem.getSqlJdbc(),sqlItem.getSqlJdbcPara());
+    }
+    public VAL<String,Object[]> getPageJdbc() {
+        SqlUtil.dealParm(this,3,true);
+        return new VAL(sqlItem.getSqlJdbc(),sqlItem.getSqlJdbcPara());
     }
 
     public JSONMap getPara() {

@@ -68,7 +68,7 @@ public class DlzDbConfig {
     @ConditionalOnMissingBean(name = "dlzDao")
     public IDlzDao dlzDao(JdbcTemplate jdbc,DlzDbProperties dbProperties) {
         log.info("default dlzDao init ...");
-        return new DaoOperator(jdbc,dbProperties.getDbtype());
+        return new DaoOperator(jdbc,dbProperties);
     }
 
     @Bean(name = "sqlHolder")
@@ -82,9 +82,9 @@ public class DlzDbConfig {
     @Bean(name = "commService")
     @Lazy
     @ConditionalOnMissingBean(name = "commService")
-    public ICommService commService(IDlzDao dao,DlzDbProperties dbProperties) {
+    public ICommService commService(IDlzDao dao) {
         log.info("default commService init ...");
-        return new CommServiceImpl(dao,dbProperties);
+        return new CommServiceImpl(dao);
     }
 
     @Bean(name = "JdbcTemplate")

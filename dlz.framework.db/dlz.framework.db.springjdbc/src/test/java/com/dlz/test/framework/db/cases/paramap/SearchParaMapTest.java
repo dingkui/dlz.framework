@@ -46,7 +46,7 @@ public class SearchParaMapTest {
         ;
 
 
-        SqlUtil.dealParm(paraMap);
+        SqlUtil.dealParm(paraMap,1,true);
         SqlItem sqlItem = paraMap.getSqlItem();
         sqlItem.setSqlRun(sqlItem.getSqlDeal());
         SqlUtil.dealParmToJdbc(paraMap);
@@ -68,8 +68,7 @@ public class SearchParaMapTest {
                 .or().in(Dict::getA2, "sql:select 2 from dual")
         ;
 
-
-        SqlUtil.dealParm(paraMap);
+        SqlUtil.dealParm(paraMap,1,true);
         SqlItem sqlItem = paraMap.getSqlItem();
         sqlItem.setSqlRun(sqlItem.getSqlDeal());
         SqlUtil.dealParmToJdbc(paraMap);

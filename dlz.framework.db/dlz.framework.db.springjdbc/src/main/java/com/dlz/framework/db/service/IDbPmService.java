@@ -2,14 +2,19 @@ package com.dlz.framework.db.service;
 
 import com.dlz.comm.exception.DbException;
 import com.dlz.comm.util.JacksonUtil;
+import com.dlz.comm.util.VAL;
+import com.dlz.comm.util.ValUtil;
 import com.dlz.framework.db.convertor.ConvertUtil;
+import com.dlz.framework.db.helper.util.DbNameUtil;
 import com.dlz.framework.db.modal.BaseParaMap;
 import com.dlz.framework.db.modal.Page;
 import com.dlz.framework.db.modal.ResultMap;
+import com.dlz.framework.db.modal.items.SqlItem;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 
 /**
@@ -29,7 +34,18 @@ public interface IDbPmService extends IBaseDbService {
      * @return
      * @throws Exception
      */
-    int excuteSql(BaseParaMap paraMap);
+    default int excuteSql(BaseParaMap paraMap) {
+        VAL<String, Object[]> jdbcSql = paraMap.getJdbcSql();
+        try {
+            return getDao().update(jdbcSql.v1, jdbcSql.v2);
+        } catch (Exception e) {
+            if (e instanceof DbException) {
+                throw e;
+            }
+            SqlItem sqlItem = paraMap.getSqlItem();
+            throw new DbException(sqlItem.getSqlKey() + ":" + sqlItem.getSqlRun() + " para:" + paraMap.getPara(), 1003, e);
+        }
+    }
 
     /**
      * 从数据库中取得map类型列表如：[{AD_ENDDATE=2015-04-08 13:47:12.0}]
@@ -39,9 +55,45 @@ public interface IDbPmService extends IBaseDbService {
      * @return
      * @throws Exception
      */
-    List<ResultMap> getMapList(BaseParaMap paraMap);
+    default List<ResultMap> getMapList(BaseParaMap paraMap) {
+        Page cache = paraMap.getCacheItem().getCache("list", paraMap);
+        if (cache != null) {
+            return cache.getData();
+        }
+        try {
+            VAL<String, Object[]> jdbcSql = paraMap.getPageJdbc();
+            List<ResultMap> list = getDao().getList(jdbcSql.v1, jdbcSql.v2);
+            List<ResultMap> list2 = list.stream().map(r -> ConvertUtil.converResultMap(r, paraMap.getConvert())).collect(Collectors.toList());
+            paraMap.getCacheItem().saveCache(list2);
+            return list2;
+        } catch (Exception e) {
+            if (e instanceof DbException) {
+                throw e;
+            }
+            SqlItem sqlItem = paraMap.getSqlItem();
+            throw new DbException(e.getMessage() + " " + sqlItem.getSqlKey() + ":" + sqlItem.getSqlPage() + " para:" + paraMap.getPara(), 1003, e);
+        }
+    }
 
-    int getCnt(BaseParaMap paraMap);
+    default int getCnt(BaseParaMap paraMap) {
+        Page cache = paraMap.getCacheItem().getCache("cnt", paraMap);
+        if (cache != null) {
+            return cache.getCount();
+        }
+        try {
+            VAL<String, Object[]> jdbcSql = paraMap.getCntJdbc();
+//            dealJdbc(paraMap, 2);
+            int cnt = ValUtil.getInt(ConvertUtil.getFistClumn(getDao().getList(jdbcSql.v1, jdbcSql.v2).get(0)));
+            paraMap.getCacheItem().saveCache(cnt);
+            return cnt;
+        } catch (Exception e) {
+            if (e instanceof DbException) {
+                throw e;
+            }
+            SqlItem sqlItem = paraMap.getSqlItem();
+            throw new DbException(sqlItem.getSqlKey() + ":" + sqlItem.getSqlCnt() + " para:" + paraMap.getPara(), 1003, e);
+        }
+    }
 
     /**
      * 从数据库中取得单个字段数据
@@ -140,15 +192,16 @@ public interface IDbPmService extends IBaseDbService {
 
     default <T> List<T> getBeanList(BaseParaMap paraMap, Class<T> t) {
         List<ResultMap> list = getMapList(paraMap);
-        List<T> l = new ArrayList<T>();
-        for (ResultMap r : list) {
-            try {
-                l.add(JacksonUtil.coverObj(r, t));
-            } catch (Exception e) {
-                throw new DbException(e.getMessage(), 1005, e);
-            }
-        }
-        return l;
+//        List<T> l = new ArrayList<T>();
+//        for (ResultMap r : list) {
+//            try {
+//                l.add(JacksonUtil.coverObj(r, t));
+//            } catch (Exception e) {
+//                throw new DbException(e.getMessage(), 1005, e);
+//            }
+//        }
+//        return l;
+        return DbNameUtil.coverResult2Bean(list,t);
     }
 
     /**
@@ -177,11 +230,7 @@ public interface IDbPmService extends IBaseDbService {
         }
 
         if (needList) {
-            if (t == ResultMap.class) {
-                page.setData((List<T>) getMapList(paraMap));
-            } else {
-                page.setData(getBeanList(paraMap, t));
-            }
+            page.setData(getBeanList(paraMap, t));
         } else {
             page.setData(new ArrayList<T>());
         }

@@ -28,8 +28,8 @@ public interface IDlzDao {
     DbTypeEnum getDbtype();
 
     List<ResultMap> getList(String sql, Object... args);
-    <T> List<T> getList(String sql, Class<T> requiredType, Object... args);
-    <T> T getObj(String sql, Class<T> requiredType, Object... args);
+    <T> List<T> getClumnList(String sql, Class<T> requiredType, Object... args);
+    <T> T getClumn(String sql, Class<T> requiredType, Object... args);
 
     int update(String sql, Object... args);
     Long updateForId(String sql, Object... args);
