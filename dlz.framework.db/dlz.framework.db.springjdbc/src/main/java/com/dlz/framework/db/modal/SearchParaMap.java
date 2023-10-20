@@ -1,7 +1,6 @@
 package com.dlz.framework.db.modal;
 
 import com.dlz.framework.db.convertor.ConvertUtil;
-import com.dlz.framework.db.helper.bean.Sort;
 import com.dlz.framework.db.warpper.Condition;
 
 import java.util.Map;
@@ -35,8 +34,6 @@ public class SearchParaMap extends CreateSqlParaMap{
 	}
 
 	private Condition condition=where.mk();
-	//排序条件
-	private Sort sort = new Sort();
 
 	public void setWhere(String where){
 		addPara(STR_WHERE, where);
@@ -44,9 +41,6 @@ public class SearchParaMap extends CreateSqlParaMap{
 
 	public Condition condition(){
 		return condition;
-	}
-	public Sort sort(){
-		return sort;
 	}
 	public void setWhere(){
 		String whereSql = this.condition.getRunsql(this);
