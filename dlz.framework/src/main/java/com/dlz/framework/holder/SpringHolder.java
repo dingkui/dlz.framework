@@ -84,7 +84,24 @@ public class SpringHolder {
     public static <T> T getBean(Class<T> clazz) {
         checkApplicationContext();
         try {
-            return (T) beanFactory.getBean(clazz);
+            return beanFactory.getBean(clazz);
+        } catch (NoSuchBeanDefinitionException e) {
+            logger.warn("NoSuchBeanDefinition" + clazz.getName());
+            return null;
+        }
+    }
+
+
+    /**
+     * 从静态变量ApplicationContext中取得Bean, 如果取不到则注册一个单例bean.
+     */
+    public static <T> T getBeanWithRegister(Class<T> clazz) {
+        checkApplicationContext();
+        try {
+            if ( !beanFactory.getBeansOfType(clazz).isEmpty()) {
+                return beanFactory.getBean(clazz);
+            }
+            return registerBean(clazz);
         } catch (NoSuchBeanDefinitionException e) {
             logger.warn("NoSuchBeanDefinition" + clazz.getName());
             return null;

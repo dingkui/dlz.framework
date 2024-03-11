@@ -1,6 +1,6 @@
 package com.dlz.framework.redis.service.impl;
 
-import com.dlz.framework.cache.ICache;
+import com.dlz.comm.cache.ICache;
 import com.dlz.framework.redis.excutor.JedisExecutor;
 import com.dlz.framework.redis.util.JedisKeyUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,7 +8,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import java.io.Serializable;
 import java.lang.reflect.Type;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 /**
  * 使用Redis实现缓存

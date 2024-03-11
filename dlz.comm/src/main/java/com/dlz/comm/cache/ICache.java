@@ -1,4 +1,4 @@
-package com.dlz.framework.cache;
+package com.dlz.comm.cache;
 
 import java.io.Serializable;
 import java.lang.reflect.Type;

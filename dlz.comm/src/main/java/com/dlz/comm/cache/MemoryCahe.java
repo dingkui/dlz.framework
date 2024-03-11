@@ -1,8 +1,7 @@
-package com.dlz.framework.cache.service.impl;
+package com.dlz.comm.cache;
 
 import com.dlz.comm.util.JacksonUtil;
 import com.dlz.comm.util.ValUtil;
-import com.dlz.framework.cache.ICache;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.Serializable;

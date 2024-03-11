@@ -1,8 +1,8 @@
-package com.dlz.framework.cache.service.impl;
+package com.dlz.framework.cache;
 
+import com.dlz.comm.cache.ICache;
 import com.dlz.comm.util.JacksonUtil;
 import com.dlz.comm.util.ValUtil;
-import com.dlz.framework.cache.ICache;
 import com.dlz.framework.holder.SpringHolder;
 import lombok.extern.slf4j.Slf4j;
 import net.sf.ehcache.Cache;

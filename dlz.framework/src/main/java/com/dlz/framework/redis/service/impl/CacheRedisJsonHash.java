@@ -1,9 +1,8 @@
 package com.dlz.framework.redis.service.impl;
 
+import com.dlz.comm.cache.ICache;
 import com.dlz.comm.util.ValUtil;
-import com.dlz.framework.cache.ICache;
 import com.dlz.framework.redis.excutor.JedisExecutor;
-import com.dlz.framework.redis.RedisKeyMaker;
 import com.dlz.framework.redis.util.JedisKeyUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -1,8 +1,6 @@
-package com.dlz.framework.cache;
+package com.dlz.comm.cache;
 
 import com.dlz.comm.exception.SystemException;
-import com.dlz.framework.cache.service.impl.MemoryCahe;
-import com.dlz.framework.holder.SpringHolder;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.Map;
@@ -27,18 +25,8 @@ public class CacheHolder {
         CacheSet.get(cacheName).removeAll(cacheName);
     }
 
-    public static ICache get(String cacheName, Class<? extends ICache> cacheClass) {
-        if (CacheSet.containsKey(cacheName)) {
-            return CacheSet.get(cacheName);
-        }
-        ICache cache;
-        if (cacheClass == null) {
-            cache = SpringHolder.registerBean(MemoryCahe.class);
-        } else {
-            cache = SpringHolder.registerBean(cacheClass);
-        }
-        CacheSet.put(cacheName, cache);
-        return cache;
+    public static ICache get(String cacheName) {
+        return CacheSet.get(cacheName);
     }
 
     public static ICache get(String cacheName, ICache cache) {

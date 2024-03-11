@@ -1,8 +1,8 @@
 package com.dlz.framework.config;
 
-import com.dlz.framework.cache.ICache;
+import com.dlz.comm.cache.ICache;
+import com.dlz.comm.cache.MemoryCahe;
 import com.dlz.framework.cache.aspect.CacheAspect;
-import com.dlz.framework.cache.service.impl.MemoryCahe;
 import com.dlz.framework.holder.SpringHolder;
 import com.dlz.framework.redis.RedisKeyMaker;
 import com.dlz.framework.redis.excutor.JedisExecutor;

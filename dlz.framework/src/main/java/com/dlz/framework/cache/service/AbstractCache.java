@@ -1,9 +1,9 @@
 package com.dlz.framework.cache.service;
 
+import com.dlz.comm.cache.CacheHolder;
+import com.dlz.comm.cache.ICache;
 import com.dlz.comm.util.ExceptionUtils;
 import com.dlz.comm.util.StringUtils;
-import com.dlz.framework.cache.CacheHolder;
-import com.dlz.framework.cache.ICache;
 import com.dlz.framework.holder.SpringHolder;
 import com.dlz.framework.util.system.Reflections;
 import lombok.extern.slf4j.Slf4j;
@@ -49,10 +49,6 @@ public abstract class AbstractCache<KEY extends Serializable, T extends Serializ
      */
     private String cacheName;
     /**
-     * 缓存处理器
-     */
-    protected ICache cache;
-    /**
      * 缓存对象
      */
     private Class<T> resultClass = (Class<T>) Reflections.getActualType(getClass(), 1);
@@ -74,7 +70,6 @@ public abstract class AbstractCache<KEY extends Serializable, T extends Serializ
         if (cache == null) {
             cache = SpringHolder.getBean("dlzCache");
         }
-        this.cache = cache;
 
         if (timeToLiveSeconds > 0) {
             this.timeToLiveSeconds = timeToLiveSeconds;
@@ -90,7 +85,7 @@ public abstract class AbstractCache<KEY extends Serializable, T extends Serializ
             };
         }
 
-        CacheHolder.add(this.cacheName, this.cache);
+        CacheHolder.add(this.cacheName, cache);
     }
 
     public AbstractCache(String cacheName, ICache cache) {
@@ -109,7 +104,12 @@ public abstract class AbstractCache<KEY extends Serializable, T extends Serializ
         this(null, null, 0);
     }
 
+    protected ICache getCache() {
+        return CacheHolder.get(this.cacheName);
+    }
+
     public String toString() {
+        ICache cache = getCache();
         return this.cacheName + "：" + (cache == null ? "未初始化" : cache.toString());
     }
 
@@ -171,7 +171,7 @@ public abstract class AbstractCache<KEY extends Serializable, T extends Serializ
      * 缓存中读取对象，取不到则返回空
      */
     public T getFromCache(KEY key) {
-        return cache.get(cacheName, key, resultClass);
+        return getCache().get(cacheName, key, resultClass);
     }
 
     /**
@@ -188,7 +188,7 @@ public abstract class AbstractCache<KEY extends Serializable, T extends Serializ
      */
     public void put(KEY key, T value, int exp) {
         try {
-            cache.put(cacheName, key, value, exp);
+            getCache().put(cacheName, key, value, exp);
         } catch (Exception e) {
             log.error(ExceptionUtils.getStackTrace(e));
         }
@@ -199,7 +199,7 @@ public abstract class AbstractCache<KEY extends Serializable, T extends Serializ
      */
     public void remove(KEY key) {
         try {
-            cache.remove(cacheName, key);
+            getCache().remove(cacheName, key);
         } catch (Exception e) {
             log.error(ExceptionUtils.getStackTrace(e));
         }
@@ -209,7 +209,7 @@ public abstract class AbstractCache<KEY extends Serializable, T extends Serializ
      * 清空缓存
      */
     public void clear() {
-        cache.removeAll(cacheName);
+        getCache().removeAll(cacheName);
     }
 
     /**

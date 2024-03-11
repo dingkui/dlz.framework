@@ -1,7 +1,6 @@
-package com.dlz.framework.cache;
+package com.dlz.comm.cache;
 
 import com.dlz.comm.util.ExceptionUtils;
-import com.dlz.framework.holder.SpringHolder;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.Serializable;
@@ -14,10 +13,10 @@ import java.util.concurrent.Callable;
  */
 @Slf4j
 public class CacheUtil {
-    private static Class<? extends ICache> cacheClass;
-    public static void init(Class<? extends ICache> c) {
+    private static ICache cache;
+    public static void init(ICache c) {
         if (c != null) {
-            cacheClass = c;
+            cache = c;
         }
     }
 
@@ -27,9 +26,20 @@ public class CacheUtil {
      * @return Cache
      */
     public static ICache getCache(String cacheName) {
-        return CacheHolder.get(cacheName,cacheClass);
+        return getCache(cacheName,cache);
     }
 
+    /**
+     * 获取缓存对象
+     *
+     * @return Cache
+     */
+    public static ICache getCache(String cacheName,ICache cache) {
+        if(cache == null){
+            cache = new MemoryCahe();
+        }
+        return CacheHolder.get(cacheName,cache);
+    }
 
     /**
      * 获取缓存
