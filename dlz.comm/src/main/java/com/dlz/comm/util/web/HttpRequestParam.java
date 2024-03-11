@@ -25,7 +25,7 @@ public class HttpRequestParam<T> {
     private final Class<T> tClass;
     private final Map<String, String> headers = new HashMap<>();
 
-    private ResponseHandler responseHandler = DEFAULT_RESPONSE_HANDLER;
+    private ResponseHandler<T> responseHandler = DEFAULT_RESPONSE_HANDLER;
     /**
      * 参数
      */

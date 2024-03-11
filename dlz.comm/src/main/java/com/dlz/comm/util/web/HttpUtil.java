@@ -43,6 +43,9 @@ public class HttpUtil {
 //        HttpClient httpClient = HttpConnUtil.wrapClient(param.getUrl(),param.getRequestConfig());
         CloseableHttpClient httpClient = HttpClients.createDefault();
         Map<String, String> headers = param.getHeaders();
+        if(param.getRequestConfig()!=null){
+            request.setConfig(param.getRequestConfig());
+        }
         headers.forEach(request::addHeader);
         try {
             if (request instanceof HttpEntityEnclosingRequestBase) {
