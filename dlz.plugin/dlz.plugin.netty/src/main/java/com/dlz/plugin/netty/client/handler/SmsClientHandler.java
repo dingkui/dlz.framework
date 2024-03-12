@@ -5,16 +5,18 @@ import com.dlz.plugin.netty.base.codec.ICoder;
 import com.dlz.plugin.netty.base.handler.BaseHandler;
 import com.dlz.plugin.netty.base.listener.ISocketListener;
 import com.dlz.plugin.netty.client.NettyClient;
+import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
+import java.nio.charset.Charset;
 
 @Slf4j
-public class ClientHandler extends BaseHandler {
+public class SmsClientHandler extends BaseHandler {
     private final NettyClient client;
 
-    public ClientHandler(ISocketListener lisner, ICoder coder, NettyClient instance) {
+    public SmsClientHandler(ISocketListener lisner, ICoder coder, NettyClient instance) {
 		super(lisner, coder);
 		this.client=instance;
 	}
@@ -49,6 +51,23 @@ public class ClientHandler extends BaseHandler {
             }else{
                 log.error(cause.getMessage());
                 log.error(ctx.channel().remoteAddress().toString());
+            }
+        }
+    }
+    public final Charset GBK=Charset.forName("GBK");
+    /**
+     * 处理客户端websocket请求的核心方法
+     */
+    @Override
+    public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
+        if(msg != null){
+            ByteBuf msg1 = (ByteBuf) msg;
+            byte[] re=new byte[msg1.readableBytes()];
+            msg1.readBytes(re);
+            String m = new String(re,GBK);
+            Object o = coder.mkOut(lisner.deal(m, ctx.channel().id().asLongText()));
+            if(o!=null){
+                ctx.writeAndFlush(o);
             }
         }
     }

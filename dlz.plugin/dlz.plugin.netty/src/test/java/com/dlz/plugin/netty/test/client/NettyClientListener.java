@@ -17,7 +17,7 @@ public class NettyClientListener implements ISocketListener {
 	 * @return
 	 */
 	public String deal(String reciveStr,String channelId){
-		System.out.println("NettyClientListener deal:msg="+reciveStr.substring(reciveStr.length()-30));
+		System.out.println("NettyClientListener deal:msg="+reciveStr);
 		if(reciveStr.indexOf("answer")>-1){
 			return null;
 		}
