@@ -30,7 +30,7 @@
 		</dependency>
 		<dependency>
 			<groupId>com.dlz</groupId>
-			<artifactId>dlz.framework</artifactId>
+			<artifactId>dlz.comm</artifactId>
 			<version>${dlz.framework.version}</version>
 		</dependency>
 <!--		<dependency>-->
