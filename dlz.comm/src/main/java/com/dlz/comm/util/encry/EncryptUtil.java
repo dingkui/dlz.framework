@@ -12,14 +12,6 @@ public class EncryptUtil {
 	 * all set GLOBAL_AUTH_KEY
 	 */
 	public static String GLOBAL_AUTH_KEY = "e317b362fafa0c96c20b8543d054b850";
-	
-	public static String simpleDecry(String codes) {
-		return EncryptDlz.decryAsString(codes,null);
-	}
-	public static String simpleEncry(String input) {
-		return EncryptDlz.encry(input,null);
-	}
-
 
 	public static String decode(String $string, String $key) {
 		$key=($key==null||"".equals($key))?GLOBAL_AUTH_KEY:$key;
