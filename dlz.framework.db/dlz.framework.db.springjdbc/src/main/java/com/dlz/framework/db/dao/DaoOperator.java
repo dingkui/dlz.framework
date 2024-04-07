@@ -98,9 +98,9 @@ public class DaoOperator implements IDlzDao {
         long t=System.currentTimeMillis();
         try {
             int r = args.length > 0 ? dao.update(sql, args) : dao.update(sql);
-            return i;
+            return r;
         }finally {
-            logInfo(sql, args, "update",t,r);
+            logInfo(sql, args, "update",t);
         }
     }
     public Long updateForId(String sql, Object... args){
