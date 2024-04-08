@@ -4,8 +4,8 @@ import com.dlz.comm.exception.SystemException;
 import com.dlz.comm.util.ExceptionUtils;
 import com.dlz.comm.util.ValUtil;
 import com.dlz.comm.util.encry.TraceUtil;
-import com.dlz.framework.redis.RedisKeyMaker;
 import com.dlz.framework.redis.queue.annotation.AnnoRedisQueueConsumer;
+import com.dlz.framework.redis.util.IKeyMaker;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import redis.clients.jedis.Jedis;
@@ -31,7 +31,7 @@ public abstract class ARedisQueueConsumer<T> {
     public abstract void doConsume(T message);
 
     @Autowired
-    RedisKeyMaker keyMaker;
+    IKeyMaker keyMaker;
 
     @Autowired
     private JedisPool jedisPool;
@@ -47,7 +47,7 @@ public abstract class ARedisQueueConsumer<T> {
         }
         String queueName = annotation.value();
         SystemException.notEmpty(queueName, () -> "消费者未配置队列名字:" + this.getClass());
-        redisQueueName = keyMaker.getRedisKey(queueName);
+        redisQueueName = keyMaker.getKeyWithPrefix(queueName);
 
         Type superClass = getClass().getGenericSuperclass();
         Type type = ((ParameterizedType) superClass).getActualTypeArguments()[0];

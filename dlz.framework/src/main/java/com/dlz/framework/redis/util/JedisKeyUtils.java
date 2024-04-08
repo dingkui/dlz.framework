@@ -3,14 +3,11 @@ package com.dlz.framework.redis.util;
 import com.dlz.comm.exception.SystemException;
 import com.dlz.comm.util.JacksonUtil;
 import com.dlz.comm.util.ValUtil;
-import com.dlz.framework.holder.SpringHolder;
-import com.dlz.framework.redis.RedisKeyMaker;
 import com.fasterxml.jackson.databind.JavaType;
 
 import java.io.Serializable;
 import java.util.Hashtable;
 import java.util.Map;
-import java.util.stream.Stream;
 
 public class JedisKeyUtils {
     private static final String SPL = "$CLASS$";
@@ -57,36 +54,18 @@ public class JedisKeyUtils {
         return key.getBytes();
     }
 
-    private static RedisKeyMaker keyMaker;
-    public static void init(RedisKeyMaker km) {
-        if (km != null) {
-            keyMaker = km;
-        }
-    }
-    public static <T extends RedisKeyMaker> void init(Class<T> kmc) {
-        if (kmc != null) {
-            keyMaker = SpringHolder.createBean(kmc);
-        }
-    }
-    /**
-     * 获取缓存对象
-     *
-     * @return Cache
-     */
-    public static RedisKeyMaker getKeyMaker() {
-        if (keyMaker == null) {
-            keyMaker = SpringHolder.getBean(RedisKeyMaker.class);
-        }
-        return keyMaker;
+    private static IKeyMaker keyMaker;
+    public static void init(IKeyMaker km) {
+        keyMaker = km;
     }
     public static String getClientKey(String key) {
-        return getKeyMaker().getClientKey(key);
+        return keyMaker.getClientKey(key);
     }
     public static String getRedisKey(String key, Serializable... othrer) {
-        return getKeyMaker().getRedisKey(key,othrer);
+        return keyMaker.getKeyWithPrefix(key,othrer);
     }
     public static String getKey(String key, Serializable... othrer) {
-        return getKeyMaker().getKey(key,othrer);
+        return keyMaker.getKey(key,othrer);
     }
     public static String[] getRedisKeyArray(String... keys) {
         String[] newkeys=new String[keys.length];
@@ -95,15 +74,15 @@ public class JedisKeyUtils {
         }
         return newkeys;
     }
-    public static void main(String[] args) {
-        init(new RedisKeyMaker());
-//        System.out.println(getRedisKey(":xxx:xxx::"));
-//        System.out.println(getRedisKey(":xxx::xxx::"));
-//        System.out.println(getRedisKey(":xxx::xxx::","aa"));
-//        System.out.println(getRedisKey(":xxx::xxx::",":aa:"));
-//        System.out.println(getRedisKey(":xxx::xxx::","aa:"));
-//        System.out.println(getRedisKey(":xxx::xxx::", "*:"));
-//        System.out.println(getClientKey("auto::xxx:xxx::"));
-        System.out.println(getRedisKey("auto::xxx:xxx::","ss","xxx"));
-    }
+//    public static void main(String[] args) {
+//        init(new RedisKeyMaker());
+////        System.out.println(getRedisKey(":xxx:xxx::"));
+////        System.out.println(getRedisKey(":xxx::xxx::"));
+////        System.out.println(getRedisKey(":xxx::xxx::","aa"));
+////        System.out.println(getRedisKey(":xxx::xxx::",":aa:"));
+////        System.out.println(getRedisKey(":xxx::xxx::","aa:"));
+////        System.out.println(getRedisKey(":xxx::xxx::", "*:"));
+////        System.out.println(getClientKey("auto::xxx:xxx::"));
+//        System.out.println(getRedisKey("auto::xxx:xxx::","ss","xxx"));
+//    }
 }

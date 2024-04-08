@@ -25,7 +25,6 @@ public class JedisConfig {
     @Value("${spring.redis.database:0}")
     private int database;
 
-    @Bean
     public JedisPool redisPoolFactory() {
         JedisPoolConfig jedisPoolConfig = new JedisPoolConfig();
         jedisPoolConfig.setMaxTotal(maxTotal);

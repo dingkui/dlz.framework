@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.Supplier;
 
 /**
  * 缓存记录
@@ -30,10 +31,11 @@ public class CacheHolder {
     }
 
     public static ICache get(String cacheName, ICache cache) {
-        if (CacheSet.containsKey(cacheName)) {
-            return CacheSet.get(cacheName);
+        ICache iCache = CacheSet.get(cacheName);
+        if (iCache != null) {
+            return iCache;
         }
-        SystemException.notNull(cache, () -> "缓存已经存在，不能重复定义：" + cacheName);
+        SystemException.notNull(cache, () -> "ICache不能为空：" + cacheName);
         CacheSet.put(cacheName, cache);
         return cache;
     }
