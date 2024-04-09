@@ -17,6 +17,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 public class DbNameUtil {
     public static String getDbTableName(Class<?> clazz) {
@@ -80,16 +81,11 @@ public class DbNameUtil {
      * @return
      */
     public static <T> T coverResult2Bean(ResultMap map, Class<T> clazz) {
-        try {
-            if (clazz.isAssignableFrom(Map.class)) {
-                return (T) map;
-            }
-            return coverMap2Bean(map, clazz, null);
-        } catch (Exception e) {
-            throw new SystemException("转换失败", e);
+        if (Map.class.isAssignableFrom(clazz)) {
+            return coverMap2Map(map, clazz);
         }
+        return coverMap2Bean(map, clazz, getFieldsInfos(clazz));
     }
-
 
     /**
      * Map转Bean
@@ -100,35 +96,40 @@ public class DbNameUtil {
      * @return
      */
     public static <T> List<T> coverResult2Bean(List<ResultMap> queryForList, Class<T> clazz) {
-        List<T> list = new ArrayList<>();
-        try {
-            if (clazz.isAssignableFrom(Map.class)) {
-                for (int i = 0; i < queryForList.size(); i++) {
-                    list.add((T) queryForList.get(i));
-                }
-                return list;
-            }
-
-            Map<String, VAL<String, Field>> fieldsInfo = getFieldsInfos(clazz);
-            for (ResultMap map : queryForList) {
-                list.add(coverMap2Bean(map, clazz, fieldsInfo));
-            }
-        } catch (Exception e) {
-            throw new SystemException("转换失败", e);
+        if (Map.class.isAssignableFrom(clazz)) {
+            return queryForList.stream().map(map -> coverMap2Map(map, clazz)).collect(Collectors.toList());
         }
-        return list;
+
+        Map<String, Field> fieldsInfo = getFieldsInfos(clazz);
+        return queryForList.stream().map(map -> coverMap2Bean(map, clazz, fieldsInfo)).collect(Collectors.toList());
     }
 
-    private static Map<String, VAL<String, Field>> getFieldsInfos(Class<?> clazz) {
+    private static Map<String, Field> getFieldsInfos(Class<?> clazz) {
         Field[] fields = Reflections.getFields(clazz);
-        Map<String, VAL<String, Field>> fieldsInfo = new HashMap<>();
+        Map<String, Field> fieldsInfo = new HashMap<>();
         for (int i = 0; i < fields.length; i++) {
-            String dbClumnName = DbNameUtil.getDbClumnName(fields[i]);
-            fieldsInfo.put(dbClumnName, new VAL(dbClumnName, fields[i]));
+//            String dbClumnName = DbNameUtil.getDbClumnName(fields[i]);
+            String dbClumnName = fields[i].getName();
+            fieldsInfo.put(dbClumnName, fields[i]);
         }
         return fieldsInfo;
     }
 
+    private final static <T> T coverMap2Map(final ResultMap map,final Class<T> clazz) {
+        try {
+            if (clazz.isAssignableFrom(ResultMap.class)) {
+                return (T) map;
+            }
+            if (clazz == Map.class) {
+                return (T) map;
+            }
+            T t = clazz.newInstance();
+            ((Map)t).putAll(map);
+            return t;
+        } catch (Exception e) {
+            throw new SystemException("转换失败", e);
+        }
+    }
     /**
      * Map转Bean
      *
@@ -137,18 +138,17 @@ public class DbNameUtil {
      * @param clazz
      * @return
      */
-    private static <T> T coverMap2Bean(ResultMap map, Class<T> clazz, Map<String, VAL<String, Field>> fieldsInfo) {
+    private final static <T> T coverMap2Bean(ResultMap map,final Class<T> clazz,final Map<String, Field> fieldsInfo) {
         try {
-            if (fieldsInfo == null) {
-                fieldsInfo = getFieldsInfos(clazz);
-            }
             Object obj = clazz.getDeclaredConstructor().newInstance();
             for (Map.Entry<String, Object> entry : map.entrySet()) {
                 String mapKey = entry.getKey();
-                VAL<String, Field> val = fieldsInfo.get(mapKey);
-                if (val != null) {
+                Field field = fieldsInfo.get(mapKey);
+                if (field != null) {
                     Object mapValue = entry.getValue();
-                    Reflections.setFieldValue(obj, val.v2, ValUtil.getObj(mapValue, val.v2.getType()));
+                    Reflections.makeAccessible(field);
+                    field.set(obj, ValUtil.getObj(mapValue, field.getType()));
+//                  Reflections.invokeSetter(obj, field.v2.getName(), ValUtil.getObj(mapValue, field.v2.getType()));
                 }
             }
             return (T) obj;

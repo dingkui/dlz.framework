@@ -75,9 +75,7 @@ public class DlzFwConfig {
 	@Lazy
 	public IKeyMaker redisKeyMaker() {
 		log.info("default redisKeyMaker init ...");
-		RedisKeyMaker redisKeyMaker = new RedisKeyMaker();
-		JedisKeyUtils.init(redisKeyMaker);
-		return redisKeyMaker;
+		return new RedisKeyMaker();
 	}
 
 	@Bean(name = "redisPool")
