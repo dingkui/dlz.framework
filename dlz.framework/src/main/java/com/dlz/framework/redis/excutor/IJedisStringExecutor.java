@@ -56,7 +56,7 @@ public interface IJedisStringExecutor extends IJedisExecutor {
             String key1 = JedisKeyUtils.getRedisKey(key);
             j.set(key1, value);
             if (seconds > 0) {
-                j.expire(key1, (long)seconds);
+                j.expire(key1, seconds);
             }
             return true;
         });
@@ -127,7 +127,7 @@ public interface IJedisStringExecutor extends IJedisExecutor {
             byte[] key1 = SafeEncoder.encode(JedisKeyUtils.getRedisKey(key));
             j.set(key1, SerializeUtil.serialize(value));
             if (seconds > 0) {
-                j.expire(key1, (long)seconds);
+                j.expire(key1, seconds);
             }
             return true;
         });
