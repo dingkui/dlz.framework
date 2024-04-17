@@ -103,7 +103,9 @@ public class ValUtil {
         return getBoolean(input, false);
     }
 
-
+    public static String toStr(Object input) {
+        return getStr(input,"");
+    }
     public static String getStr(Object input, String defaultV) {
         if (input == null) {
             return defaultV;
