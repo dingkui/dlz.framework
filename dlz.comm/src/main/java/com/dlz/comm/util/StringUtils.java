@@ -2,6 +2,7 @@ package com.dlz.comm.util;
 
 import lombok.extern.slf4j.Slf4j;
 
+import java.lang.reflect.Array;
 import java.util.*;
 import java.util.function.Function;
 import java.util.regex.Matcher;
@@ -133,26 +134,26 @@ public class StringUtils {
      * </pre>
      */
     @SuppressWarnings({"rawtypes"})
-    public static boolean isEmpty(Object cs) {
-        if (cs == null) {
+    public static boolean isEmpty(Object obj) {
+        if (obj == null) {
             return true;
         }
-        if (cs instanceof Collection) {
-            return ((Collection) cs).isEmpty();
-        } else if (cs instanceof Map) {
-            return ((Map) cs).isEmpty();
-        } else if (cs.getClass().isArray()) {
-            return ((Object[]) cs).length == 0;
-        } else if (cs instanceof CharSequence) {
-            return ((CharSequence) cs).length() == 0;
-//        } else if (cs instanceof Date) {
-//            return false;
-//        } else if (cs instanceof Number) {
-//            return false;
-        } else {
-            return false;
-            // throw new IllegalArgumentException("检验空参数有误：" + cs.getClass());
+        if (obj instanceof Optional) {
+            return !((Optional<?>) obj).isPresent();
         }
+        if (obj instanceof CharSequence) {
+            return ((CharSequence) obj).length() == 0;
+        }
+        if (obj.getClass().isArray()) {
+            return Array.getLength(obj) == 0;
+        }
+        if (obj instanceof Collection) {
+            return ((Collection<?>) obj).isEmpty();
+        }
+        if (obj instanceof Map) {
+            return ((Map<?, ?>) obj).isEmpty();
+        }
+        return false;
     }
 
     public static boolean isAnyEmpty(Object... cs) {
