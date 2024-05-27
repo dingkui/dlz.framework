@@ -22,7 +22,7 @@ public class ResultMapRowMapper implements RowMapper<ResultMap> {
 		int columnCount = rsmd.getColumnCount();
 		ResultMap mapOfColValues = new ResultMap();
 		for (int i = 1; i <= columnCount; i++) {
-			String key = getColumnKey(JdbcUtils.lookupColumnName(rsmd, i));
+			String key = getColumnKey(JdbcUtils.lookupColumnName(rsmd, i).toLowerCase());
 			Object obj = getColumnValue(rs, i);
 			mapOfColValues.put(key, obj);
 		}

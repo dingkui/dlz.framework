@@ -63,9 +63,9 @@ public interface IDbPmService extends IBaseDbService {
         try {
             VAL<String, Object[]> jdbcSql = paraMap.getPageJdbc();
             List<ResultMap> list = getDao().getList(jdbcSql.v1, jdbcSql.v2);
-            List<ResultMap> list2 = list.stream().map(r -> ConvertUtil.converResultMap(r, paraMap.getConvert())).collect(Collectors.toList());
-            paraMap.getCacheItem().saveCache(list2);
-            return list2;
+//            List<ResultMap> list2 = list.stream().map(r -> ConvertUtil.converResultMap(r, paraMap.getConvert())).collect(Collectors.toList());
+            paraMap.getCacheItem().saveCache(list);
+            return list;
         } catch (Exception e) {
             if (e instanceof DbException) {
                 throw e;
