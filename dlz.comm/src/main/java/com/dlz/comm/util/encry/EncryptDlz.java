@@ -1,9 +1,9 @@
 package com.dlz.comm.util.encry;
 
+import com.dlz.comm.util.StringUtils;
 import com.dlz.comm.util.ValUtil;
 import lombok.extern.slf4j.Slf4j;
 
-import java.nio.ByteBuffer;
 
 /**
  * 加密工具
@@ -20,8 +20,7 @@ public class EncryptDlz {
                 43, 47, 53, 59, 61, 67, 71, 73, 79, 83,
                 89, 97, 101, 103, 107, 109, 113, 127, 131, 137,
                 139, 149, 151, 157, 163, 167, 173, 179, 181, 191};
-        String FIXSTR = "0123456789abcdef0123456789abcdef";
-        String CHECK_PASS_EMPUTY = "nkabcdef";
+        String FIXSTR = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz-_";
         char CHECK_PASS_SPLIT = ',';
     }
 
@@ -31,14 +30,55 @@ public class EncryptDlz {
      * @author dk 2024-03-14
      */
     public static class XorEncryption {
-        final byte[] key;
+        final byte[] pk;
 
         public XorEncryption(String key) {
             if (key != null) {
-                this.key = ByteUtil.getBytes(Md5Util.md5(key));
+                this.pk = ByteUtil.getBytes(Md5Util.md5(key));
             } else {
-                this.key = null;
+                this.pk = null;
             }
+        }
+        private byte[] getBytes(Object para){
+            if(StringUtils.isEmpty(para)){
+                return null;
+            }
+            byte[] key;
+            if(para instanceof byte[]){
+                key = (byte[])para;
+            }else{
+                key = ByteUtil.getBytes(ValUtil.getStr(para));
+            }
+            return key;
+        }
+        /**
+         * 使用XOR加密
+         *
+         * @return 加密后的字节数组
+         */
+        public byte[] xor(byte[] input, byte[] key) {
+            if (input==null || key == null) {
+                return input;
+            }
+            if (this.pk != null) {
+                for (int i = 0; i < key.length && i < this.pk.length; i++) {
+                    key[i] ^= this.pk[i];
+                }
+            }
+
+            byte[] encryptedBytes = new byte[input.length];
+            for (int i = 0; i < input.length; i++) {
+                int inputByte = input[i];
+                if (i < key.length) {
+                    for (int j = i; j < key.length; j++) {
+                        inputByte ^= key[j];
+                    }
+                } else {
+                    inputByte ^= key[i % key.length];
+                }
+                encryptedBytes[i] = (byte) inputByte;
+            }
+            return encryptedBytes;
         }
 
         /**
@@ -46,63 +86,25 @@ public class EncryptDlz {
          *
          * @return 加密后的字节数组
          */
-        public byte[] xor(byte[] input, byte[] KEY) {
-            if (KEY == null) {
-                return input;
-            }
-            if (this.key != null) {
-                for (int i = 0; i < KEY.length && i < this.key.length; i++) {
-                    KEY[i] ^= this.key[i];
-                }
-            }
-
-            byte[] encryptedBytes = new byte[input.length];
-            for (int i = 0; i < input.length; i++) {
-                int inputByte = input[i];
-                if (i < KEY.length) {
-                    for (int j = i; j < KEY.length; j++) {
-                        inputByte ^= KEY[j];
-                    }
-                } else {
-                    inputByte ^= KEY[i % KEY.length];
-                }
-                encryptedBytes[i] = (byte) inputByte;
-            }
-            return encryptedBytes;
+        public byte[] xor(Object input, Object key) {
+            return xor(getBytes(input), getBytes(key));
         }
 
-        public byte[] xor(long input, byte[] KEY) {
-            ByteBuffer buffer = ByteBuffer.allocate(Long.BYTES).putLong(input);
-            return xor(buffer.array(), KEY);
-        }
-
-        public byte[] xor(long input, String KEY) {
-            return xor(input, KEY == null ? null : ByteUtil.getBytes(KEY));
-        }
-
-        public byte[] xor(byte[] input, String KEY) {
-            return xor(input, KEY == null ? null : ByteUtil.getBytes(KEY));
-        }
-
-        public byte[] xor(String input, byte[] KEY) {
-            return xor(ByteUtil.getBytes(input), KEY);
-        }
-
-        public byte[] xor(String input, String KEY) {
-            return xor(ByteUtil.getBytes(input), KEY == null ? null : ByteUtil.getBytes(KEY));
-        }
-
-        /**
-         * 使用XOR加密字符串
-         *
-         * @return 加密后的字节数组
-         */
-        public long xorAsLong(byte[] input, byte[] KEY) {
-            ByteBuffer buffer = ByteBuffer.allocate(8);
-            buffer.put(xor(input, KEY));
-            buffer.flip(); // 切换到读模式
-            return buffer.getLong();
-        }
+//        public byte[] xor(long input, byte[] KEY) {
+//            ByteBuffer buffer = ByteBuffer.allocate(Long.BYTES).putLong(input);
+//            return xor(buffer.array(), KEY);
+//        }
+//        /**
+//         * 使用XOR解密成long
+//         *
+//         * @return 加密后的字节数组
+//         */
+//        public long xorAsLong(byte[] input, byte[] KEY) {
+//            ByteBuffer buffer = ByteBuffer.allocate(8);
+//            buffer.put(xor(input, KEY));
+//            buffer.flip(); // 切换到读模式
+//            return buffer.getLong();
+//        }
 
         /**
          * 使用XOR加密,如果密码为空则不加密直接返回base64编码
@@ -111,18 +113,7 @@ public class EncryptDlz {
          * @param {Uint8Array | String} key - 密钥字节数组
          * @return {String} 加密后的密文（base64编码）
          */
-        public String encry(String input, String key) {
-            return encry(ByteUtil.getBytes(input), key);
-        }
-
-        /**
-         * 使用XOR加密,如果密码为空则不加密直接返回base64编码
-         *
-         * @param {Uint8Array | String} input - 输入字节数组
-         * @param {Uint8Array | String} key - 密钥字节数组
-         * @return {String} 加密后的密文（base64编码）
-         */
-        public String encry(byte[] input, String key) {
+        public String encry(Object input, Object key) {
             return Base64.encode2Str(this.xor(input, key))
                     .replace("=", ".")
                     .replace("+", "-")
@@ -226,7 +217,7 @@ public class EncryptDlz {
             if (expiryTime == null) {
                 return true;
             }
-            return Long.parseLong(expiryTime, 16) < System.currentTimeMillis() / 1000;
+            return Long.parseLong(expiryTime, 16)  < System.currentTimeMillis() / 1000;
         }
 
         default String makeExpireTime(long expiry) {
@@ -257,15 +248,18 @@ public class EncryptDlz {
         }
 
         private String generateRandom(int prefixLength) {
-            double base = Math.pow(10, prefixLength - 1);
-            return ValUtil.getInt(Math.floor(base + Math.random() * base * 9)).toString();
+            StringBuilder sb = new StringBuilder();
+            while(prefixLength-->0){
+                sb.append(Const.FIXSTR.charAt(ValUtil.getInt(Math.random() * 64)));
+            }
+            return sb.toString();
         }
 
         /**
          * 加密内容
          * 1.xor加密
          * 2.转换成base64
-         * 3.天机校验信息
+         * 3.添加校验信息
          * 4.打乱顺序
          *
          * @param inputBytes
@@ -275,23 +269,35 @@ public class EncryptDlz {
          */
         public String encry(byte[] inputBytes, String key, int expiry) {
             //取得随机数,每次加密时，随机数的长度为4位
-            String[] prifixs = new String[]{generateRandom(4), Const.CHECK_PASS_EMPUTY, ""};
-            if (key != null) {
-                key = Md5Util.md5(key + prifixs[0]);
-                prifixs[1] = Md5Util.md5(key).substring(0, 8);
+            String random = generateRandom(2);
+            String checkPass;
+            String expiryTimeStr = "";
+
+            String xorKey=null;
+            if (key != null &&  key.length() > 0) {
+                xorKey = Md5Util.md5(key + random);
             }
             if (expiry > 0) {
-                prifixs[2] = xor.encry(expire.makeExpireTime(expiry), key);
+                if(xorKey==null){
+                    xorKey = Md5Util.md5(random);
+                }
+                expiryTimeStr = xor.encry(expire.makeExpireTime(expiry), xorKey);
             }
 
-            String xorEncryedStr = xor.encry(inputBytes, key);
-            return mix.encode(prifixs[0] + prifixs[1] + prifixs[2] + Const.CHECK_PASS_SPLIT + xorEncryedStr);
+            String out = xor.encry(inputBytes, xorKey);
+            if(xorKey != null){
+                checkPass = Md5Util.md5(xorKey).substring(0, 6);
+                out = random + checkPass + expiryTimeStr + Const.CHECK_PASS_SPLIT + out;
+            }
+            return mix.encode(out);
         }
 
         /**
          * 解密成byte[]
          * 1.乱序恢复
-         * 2.
+         * 2.校验密码和有效期
+         * 3.base64恢复成byte[]
+         * 4.xor解密
          *
          * @param {String} input - 打乱的密文（base64编码）
          * @param {String} key - 密钥
@@ -300,36 +306,31 @@ public class EncryptDlz {
         public byte[] decry(String input, String key) {
             String result = mix.decode(input);
             String base64str = result;
+            String xorKey = null;
 
             int hasPass = result.indexOf(Const.CHECK_PASS_SPLIT);
             if (hasPass > -1) {
-                String prefix = result.substring(0, hasPass);
                 base64str = result.substring(hasPass + 1);
 
-                String random = result.substring(0, 4);
-                String checkPass = result.substring(4, 12);
-                String expiryTimeStr = prefix.substring(12);
+                String random = result.substring(0, 2);
+                String checkPass = result.substring(2, 8);
+                String expiryTimeStr = result.substring(8,hasPass);
 
-                if (checkPass.equals(Const.CHECK_PASS_EMPUTY)) {
-                    key = null;
-                } else {
-                    key = Md5Util.md5(key + random);
-                    if (!checkPass.equals(Md5Util.md5(key).substring(0, 8))) {
-                        log.warn("解密失败，key错误");
-                        return null;
-                    }
+                xorKey = Md5Util.md5((key==null?"":key) + random);
+                if (!Md5Util.md5(xorKey).startsWith(checkPass)) {
+                    log.warn("解密失败，key错误");
+                    return null;
                 }
 
                 if (expiryTimeStr.length() > 0) {
-                    if (expire.isExpired(xor.decryAsStr(expiryTimeStr, key))) {
+                    String expiryTime = xor.decryAsStr(expiryTimeStr, xorKey);
+                    if (expire.isExpired(expiryTime)) {
                         log.warn("解密失败，过期失效");
                         return null;
                     }
                 }
-            } else {
-                key = null;
             }
-            return xor.decry(base64str, key);
+            return xor.decry(base64str, xorKey);
         }
 
         /**

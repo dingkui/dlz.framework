@@ -52,11 +52,19 @@ const byteUtil = {
         return input
     }
 }
-
+const Const = {
+    START_HCAR: 97,
+    ES: [7, 11, 13, 17, 19, 23, 29, 31, 37, 41,
+        43, 47, 53, 59, 61, 67, 71, 73, 79, 83,
+        89, 97, 101, 103, 107, 109, 113, 127, 131, 137,
+        139, 149, 151, 157, 163, 167, 173, 179, 181, 191],
+    FIXSTR: "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz",
+    CHECK_PASS_SPLIT: ","
+}
 class XorEncryption {
     constructor(key) {
         if (key) {
-            this.key = byteUtil.getBytes(md5(key));
+            this.pk = byteUtil.getBytes(md5(key));
         }
     }
 
@@ -72,9 +80,9 @@ class XorEncryption {
             return input;
         }
         key = byteUtil.getBytes(key);
-        if (this.key) {
-            for (let i = 0; i < key.length && i < this.key.length; i++) {
-                key[i] ^= this.key[i];
+        if (this.pk) {
+            for (let i = 0; i < key.length && i < this.pk.length; i++) {
+                key[i] ^= this.pk[i];
             }
         }
         let encryptedBytes = new Uint8Array(input.length);
@@ -125,16 +133,7 @@ class XorEncryption {
     }
 }
 
-const Const = {
-    START_HCAR: 97,
-    ES: [7, 11, 13, 17, 19, 23, 29, 31, 37, 41,
-        43, 47, 53, 59, 61, 67, 71, 73, 79, 83,
-        89, 97, 101, 103, 107, 109, 113, 127, 131, 137,
-        139, 149, 151, 157, 163, 167, 173, 179, 181, 191],
-    FIXSTR: "0123456789abcdef0123456789abcdef",
-    CHECK_PASS_EMPUTY: "nkabcdef",
-    CHECK_PASS_SPLIT: ","
-}
+
 
 //位置混淆
 class MixEncryption {
@@ -211,8 +210,11 @@ class AdvancedEncryption {
     }
 
     generateRandom(prefixLength) {
-        let base = Math.pow(10, prefixLength - 1)
-        return Math.floor(base + Math.random() * base * 9).toString();
+        let sb = "";
+        while(prefixLength-->0){
+            sb+=Const.FIXSTR.charAt(Math.floor(Math.random() * 64));
+        }
+        return sb;
     }
 
     /**
@@ -224,17 +226,28 @@ class AdvancedEncryption {
      * @return {string} 加密后的字符串（打乱的base64编码）
      */
     encry(inputStr, key = "", expiry = 0) {
-        let prifixs = [this.generateRandom(4), Const.CHECK_PASS_EMPUTY, ''];
+        //取得随机数,每次加密时，随机数的长度为4位
+        let random = this.generateRandom(2);
+        let checkPass;
+        let expiryTimeStr = "";
+
+        let xorKey;
         if (key) {
-            key = this.encodePass(key + prifixs[0]);
-            prifixs[1] = this.encodePass(key).substring(0, 8);//用来校验密码是否正确
+            xorKey = this.encodePass(key + random);
         }
         if (expiry > 0) {
-            let expiryTime = this.makeExpireTime(expiry);
-            prifixs[2] = this.xor.encry(expiryTime, key);
+            if(!xorKey){
+                xorKey = this.encodePass(random);
+            }
+            expiryTimeStr = this.xor.encry(this.makeExpireTime(expiry), xorKey);
         }
-        let xorEncryedStr = this.xor.encry(inputStr, key);
-        return this.mix.encode(prifixs.join('') + Const.CHECK_PASS_SPLIT + xorEncryedStr);
+
+        let out = this.xor.encry(inputStr, xorKey);
+        if(xorKey != null){
+            checkPass = this.encodePass(xorKey).substring(0, 6);
+            out = random + checkPass + expiryTimeStr + Const.CHECK_PASS_SPLIT + out;
+        }
+        return mix.encode(out);
     }
 
     /**
@@ -246,38 +259,30 @@ class AdvancedEncryption {
     decry(input, key) {
         let result = this.mix.decode(input);
         let base64str = result;
+        let xorKey = "";
 
-        let parts = result.split(Const.CHECK_PASS_SPLIT);
-        if (parts.length > 1) {
-            let prefix = parts[0];
-            base64str = parts[1];
+        let hasPass = result.indexOf(Const.CHECK_PASS_SPLIT);
+        if (hasPass > -1) {
+            base64str = result.substring(hasPass + 1);
+            const random = result.substring(0, 2);
+            const checkPass = result.substring(2, 8);
+            const expiryTimeStr = result.substring(8,hasPass);
+            xorKey = this.encodePass(((key==null||typeof key=="undefined")?"":key) + random);
 
-            const random = prefix.substring(0, 4);
-            const checkPass = prefix.substring(4, 12);
-            const expiryTimeStr = prefix.substring(12);
-
-
-            if (checkPass == Const.CHECK_PASS_EMPUTY) {
-                key = "";
-            } else {
-                key = this.encodePass(key + random);
-                if (checkPass !== this.encodePass(key).substring(0, 8)) {
-                    console.warn("解密失败，key错误");
-                    return null;
-                }
+            if (!this.encodePass(xorKey).startsWith(checkPass)) {
+                console.warn("解密失败，key错误");
+                return null;
             }
 
             if (expiryTimeStr) {
-                const expiry = this.xor.decry(expiryTimeStr, key);
+                const expiry = this.xor.decry(expiryTimeStr, xorKey);
                 if (this.isExpired(expiry)) {
                     console.warn('解密失败，过期失效');
                     return null;
                 }
             }
-        } else {
-            key = "";
         }
-        return this.xor.decry(base64str, key);
+        return this.xor.decry(base64str, xorKey);
     }
 }
 
@@ -286,18 +291,20 @@ const mix = new MixEncryption();
 const coder = new AdvancedEncryption(xor,mix);
 
 // function test(text="中文_１２ａｂＡＢ＆＊（）_12abAB&*()_■△◎∧∨ "){
-//     let message = coder.encry(text,"123",10);
+//     let message = coder.encry(text,"123",30);
 //     console.log("加密后："+message)
+//     console.log("解密后："+coder.decry("message","123"))
+//     console.log("解密后错误："+coder.decry(message,"xx"))
 //     let t2 =setInterval(()=>{
 //         let input=message;
-//         // input=".eiW3,mOq5sxrr9rhtL9-O1H6qmF545w9-4M_gW6WeZf9JLjg0UlIudb_xaYCLRKD3nUpEym47_e2gqNSLKM2zPCqckgsH4ejrENquV.26_eakhti6";
+//         // let input="35vPLbo_3gE7f-qdzOSrzqzbgyAusaU184t2Hbp6ijLdeOa4W,2-g42e21NOjJHbubAj3Lgpo0WEbnao2pG72tqLZl6b9.6Z.cym-ui0E39Ree";
 //         let decry = coder.decry(input,"123");
 //         let res = decry==text
 //         console.log("解密结果2：",res,decry)
 //         if(!res){
 //             clearInterval(t2)
 //         }
-//     },5000)
+//     },3000)
 // }
 // test()
 

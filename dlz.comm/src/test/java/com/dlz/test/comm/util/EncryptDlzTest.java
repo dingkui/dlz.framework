@@ -80,8 +80,8 @@ public class EncryptDlzTest {
     }
     @Test
     public void testWithpass2() throws InterruptedException {
-        String encry1 = EncryptDlz.encry(str, pass, 5);
-        System.out.println("有密-5秒：" + encry1);
+        String encry1 = EncryptDlz.encry(str, pass, 50);
+        System.out.println("有密-5秒：" + encry1.length()+" "+encry1);
         System.out.println("解密-5秒：" + EncryptDlz.decryAsStr(encry1, pass));
         System.out.println("解密-错误密码：" + EncryptDlz.decryAsStr(encry1, "xx"));
         for (int i = 0; i < 3; i++) {
@@ -102,7 +102,8 @@ public class EncryptDlzTest {
     }
     @Test
     public void testWithpassFromJs() throws InterruptedException {
-        String input=".eiA2,Gro774fe8L2oL8K+3D8lCAs1ty4O8pr7TdL7OH7WTD21XkIOb-_53PWORdj8HB9wwkcuwu0nKZeeeKTx3H+ByvtSkr2/INabV.226Lag2+72";
+//        String input=".eiA2,Gro774fe8L2oL8K+3D8lCAs1ty4O8pr7TdL7OH7WTD21XkIOb-_53PWORdj8HB9wwkcuwu0nKZeeeKTx3H+ByvtSkr2/INabV.226Lag2+72";
+        String input="5ovfeL_x3lR7Keq7zYG7mtSOj6ZL5IA53071XOq7uGJVbua5T,nOhgGe3jpe3Jyb-bCwjbisMUWRGn58WiCrjyGuZ0yur.7P.ZmqLLi4F38DaP";
         System.out.println("解密-5秒：" + EncryptDlz.decryAsStr(input, pass));
         System.out.println("解密-错误密码：" + EncryptDlz.decryAsStr(input, "xx"));
         for (int i = 0; i < 10; i++) {
