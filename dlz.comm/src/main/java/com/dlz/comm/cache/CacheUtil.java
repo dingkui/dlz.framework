@@ -58,17 +58,10 @@ public class CacheUtil {
     /**
      * 获取缓存
      */
-    public static <T> T get(String cacheName, String key, Callable<T> valueLoader) {
+    public static <T extends Serializable> T get(String cacheName, String key, Callable<T> valueLoader) {
         try {
             ICache cache = getCache(cacheName);
-            T re = cache.get(cacheName, key, null);
-            if (re == null && valueLoader != null) {
-                re = valueLoader.call();
-                if (re != null) {
-                    cache.put(cacheName, key, (Serializable)re, -1);
-                }
-            }
-            return re;
+            return cache.getAndSetForever(cacheName, key, valueLoader);
         } catch (Exception e) {
             log.error(ExceptionUtils.getStackTrace(e));
             return null;
