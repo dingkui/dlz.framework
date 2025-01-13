@@ -8,4 +8,7 @@ public class VAL<V1, V2> {
 		this.v1 = v1;
 		this.v2 = v2;
 	}
+	public static <V1, V2> VAL<V1, V2> of(V1 v1, V2 v2) {
+		return new VAL<>(v1, v2);
+	}
 }
