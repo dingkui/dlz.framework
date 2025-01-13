@@ -12,14 +12,14 @@ import java.util.concurrent.Callable;
 
 public interface ICache {
     <T extends Serializable> T get(String name, Serializable key, Type tClass);
-    default <T extends Serializable> T getAndSet(String name, Serializable key, Callable<VAL<T,Integer>> valueLoader){
+    default <T> T getAndSet(String name, Serializable key, Callable<VAL<T,Integer>> valueLoader){
         try {
             T re = get(name, key, null);
             if (re == null && valueLoader != null) {
                 VAL<T,Integer> v = valueLoader.call();
                 if (v != null) {
                     re= v.v1;
-                    put(name, key, re, v.v2);
+                    put(name, key, (Serializable)re, v.v2);
                 }
             }
             return re;
@@ -28,7 +28,7 @@ public interface ICache {
             return null;
         }
     }
-    default <T extends Serializable> T getAndSetForever(String name, Serializable key, Callable<T> valueLoader){
+    default <T> T getAndSetForever(String name, Serializable key, Callable<T> valueLoader){
         try {
             return getAndSet(name, key, ()->VAL.of(valueLoader.call(), -1));
         } catch (Exception e) {
