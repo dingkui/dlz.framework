@@ -3,6 +3,8 @@ package com.dlz.framework.db.helper.support.dbs;
 import com.dlz.comm.util.StringUtils;
 import com.dlz.comm.util.ValUtil;
 import com.dlz.framework.db.dao.IDlzDao;
+import com.dlz.framework.db.helper.bean.ColumnInfo;
+import com.dlz.framework.db.helper.bean.TableInfo;
 import com.dlz.framework.db.helper.support.SqlHelper;
 import com.dlz.framework.db.helper.util.DbNameUtil;
 import com.dlz.framework.db.modal.ResultMap;
@@ -10,10 +12,7 @@ import com.dlz.framework.db.modal.ResultMap;
 import java.lang.reflect.Field;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 public class DbOpMysql extends SqlHelper {
     public DbOpMysql(IDlzDao jdbcTemplate) {
@@ -47,11 +46,57 @@ public class DbOpMysql extends SqlHelper {
         List<ResultMap> maps = dao.getList(sql);
         Set<String> re = new HashSet();
         maps.forEach(item -> {
-            re.add(ValUtil.getStr(item.get("Field"), "").toUpperCase());
-            re.add(ValUtil.getStr(item.get("field"), "").toUpperCase());
+            String field = ValUtil.getStr(item.get("Field"), "");
+            if(field.length()==0){
+                field = ValUtil.getStr(item.get("field"), "");
+            }
+            if(field.length()>0){
+                re.add(field.toUpperCase());
+            }
         });
         return re;
     }
+
+    @Override
+    public TableInfo getTableInfo(String tableName) {
+        // 构建查询表注释的SQL语句
+        String sql = "SELECT TABLE_COMMENT FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = ?";
+        // 执行查询并获取结果
+        TableInfo tableInfo = new TableInfo();
+        tableInfo.setTableName(tableName);
+        tableInfo.setTableComment(dao.getClumn(sql, String.class, tableName));
+
+        // 获取主键信息
+        // 构建查询主键的SQL语句
+        sql = "SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = ? AND CONSTRAINT_NAME = 'PRIMARY'";
+        // 执行查询并获取结果
+        List<ResultMap> maps = dao.getList(sql, tableName);
+        List<String> primaryKeys = new ArrayList<>();
+        for (ResultMap map : maps) {
+            primaryKeys.add(ValUtil.getStr(map.get("columnName"), ""));
+        }
+        tableInfo.setPrimaryKeys(primaryKeys);
+
+        // 构建查询字段信息的SQL语句
+        sql = "SELECT COLUMN_NAME, COLUMN_TYPE, COLUMN_COMMENT FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = ?";
+        // 执行查询并获取结果
+        maps = dao.getList(sql, tableName);
+        List<ColumnInfo> columnInfos = new ArrayList<>();
+
+        for (ResultMap map : maps) {
+            ColumnInfo columnInfo = new ColumnInfo();
+            columnInfo.setColumnName(ValUtil.getStr(map.get("columnName"), ""));
+            columnInfo.setColumnType(ValUtil.getStr(map.get("columnType"), ""));
+            columnInfo.setColumnComment(ValUtil.getStr(map.get("columnComment"), ""));
+            // 转换字段类型为Java类型
+            columnInfo.setJavaType(getJavaType(columnInfo.getColumnType()));
+            columnInfos.add(columnInfo);
+        }
+        tableInfo.setColumnInfos(columnInfos);
+        return tableInfo;
+    }
+
+
 
     @Override
     public List<ResultMap> getTableIndexs(String tableName) {
@@ -97,5 +142,25 @@ public class DbOpMysql extends SqlHelper {
             return "date";
         }
         return "text";
+    }
+    private Class<?> getJavaType(String columnType) {
+        columnType = columnType.toLowerCase();
+        if (columnType.startsWith("varchar") || columnType.startsWith("char")) {
+            return String.class;
+        } else if (columnType.startsWith("int")) {
+            return Integer.class;
+        } else if (columnType.startsWith("tinyint(1)")) {
+            return Boolean.class;
+        } else if (columnType.startsWith("bigint")) {
+            return Long.class;
+        } else if (columnType.startsWith("decimal") || columnType.startsWith("numeric")) {
+            return Double.class;
+        } else if (columnType.startsWith("date") || columnType.startsWith("datetime")) {
+            return Date.class;
+        } else if (columnType.startsWith("timestamp")) {
+            return LocalDateTime.class;
+        } else {
+            return Object.class; // 默认类型
+        }
     }
 }

@@ -3,6 +3,8 @@ package com.dlz.framework.db.helper.support.dbs;
 import com.dlz.comm.util.StringUtils;
 import com.dlz.comm.util.ValUtil;
 import com.dlz.framework.db.dao.IDlzDao;
+import com.dlz.framework.db.helper.bean.ColumnInfo;
+import com.dlz.framework.db.helper.bean.TableInfo;
 import com.dlz.framework.db.helper.support.SqlHelper;
 import com.dlz.framework.db.helper.util.DbNameUtil;
 import com.dlz.framework.db.modal.ResultMap;
@@ -11,10 +13,7 @@ import lombok.extern.slf4j.Slf4j;
 import java.lang.reflect.Field;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 @Slf4j
 public class DbOpPostgresql extends SqlHelper {
@@ -53,6 +52,57 @@ public class DbOpPostgresql extends SqlHelper {
             re.add(ValUtil.getStr(item.get("name"), "").toUpperCase());
         });
         return re;
+    }
+
+
+    @Override
+    public TableInfo getTableInfo(String tableName) {
+        // 构建查询表注释的SQL语句
+        String sql = "SELECT obj_description('public." + tableName + "'::regclass) AS TABLE_COMMENT";
+        // 执行查询并获取结果
+        TableInfo tableInfo = new TableInfo();
+        tableInfo.setTableName(tableName);
+        tableInfo.setTableComment(dao.getClumn(sql, String.class));
+
+        // 构建查询主键的SQL语句
+        sql = "SELECT kcu.column_name " +
+                "FROM information_schema.table_constraints tc " +
+                "JOIN information_schema.key_column_usage kcu " +
+                "ON tc.constraint_name = kcu.constraint_name " +
+                "AND tc.table_schema = kcu.table_schema " +
+                "WHERE tc.table_schema = 'public' " +
+                "AND tc.table_name = ? " +
+                "AND tc.constraint_type = 'PRIMARY KEY'";
+        // 执行查询并获取结果
+        List<ResultMap> maps = dao.getList(sql, tableName);
+        List<String> primaryKeys = new ArrayList<>();
+        for (ResultMap map : maps) {
+            primaryKeys.add(ValUtil.getStr(map.get("column_name"), ""));
+        }
+        tableInfo.setPrimaryKeys(primaryKeys);
+
+
+        // 构建查询字段信息的SQL语句
+        sql = "SELECT a.attname AS COLUMN_NAME, pg_catalog.format_type(a.atttypid, a.atttypmod) AS COLUMN_TYPE, pg_catalog.col_description(a.attrelid, a.attnum) AS COLUMN_COMMENT " +
+                "FROM pg_catalog.pg_attribute a " +
+                "JOIN pg_catalog.pg_class c ON a.attrelid = c.oid " +
+                "JOIN pg_catalog.pg_namespace n ON c.relnamespace = n.oid " +
+                "WHERE c.relname = ? AND n.nspname = 'public' AND a.attnum > 0 AND NOT a.attisdropped";
+        // 执行查询并获取结果
+        maps = dao.getList(sql, tableName);
+        List<ColumnInfo> columnInfos = new ArrayList<>();
+
+        for (ResultMap map : maps) {
+            ColumnInfo columnInfo = new ColumnInfo();
+            columnInfo.setColumnName(ValUtil.getStr(map.get("COLUMN_NAME"), ""));
+            columnInfo.setColumnType(ValUtil.getStr(map.get("COLUMN_TYPE"), ""));
+            columnInfo.setColumnComment(ValUtil.getStr(map.get("COLUMN_COMMENT"), ""));
+            // 转换字段类型为Java类型
+            columnInfo.setJavaType(getJavaType(columnInfo.getColumnType()));
+            columnInfos.add(columnInfo);
+        }
+        tableInfo.setColumnInfos(columnInfos);
+        return tableInfo;
     }
 
     @Override
@@ -112,5 +162,23 @@ public class DbOpPostgresql extends SqlHelper {
         return "text";
     }
 
-
+    private Class<?> getJavaType(String columnType) {
+        if (columnType.toLowerCase().startsWith("varchar") || columnType.toLowerCase().startsWith("char")) {
+            return String.class;
+        } else if (columnType.toLowerCase().startsWith("int") || columnType.toLowerCase().startsWith("integer")) {
+            return Integer.class;
+        } else if (columnType.toLowerCase().startsWith("boolean")) {
+            return Boolean.class;
+        } else if (columnType.toLowerCase().startsWith("bigint")) {
+            return Long.class;
+        } else if (columnType.toLowerCase().startsWith("decimal") || columnType.toLowerCase().startsWith("numeric")) {
+            return Double.class;
+        } else if (columnType.toLowerCase().startsWith("date")) {
+            return Date.class;
+        } else if (columnType.toLowerCase().startsWith("timestamp")) {
+            return LocalDateTime.class;
+        } else {
+            return Object.class; // 默认类型
+        }
+    }
 }

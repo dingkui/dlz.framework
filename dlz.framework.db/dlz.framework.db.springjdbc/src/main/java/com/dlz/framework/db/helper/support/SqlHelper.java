@@ -7,6 +7,7 @@ import com.dlz.comm.util.StringUtils;
 import com.dlz.comm.util.ValUtil;
 import com.dlz.framework.db.dao.IDlzDao;
 import com.dlz.framework.db.helper.bean.Sort;
+import com.dlz.framework.db.helper.bean.TableInfo;
 import com.dlz.framework.db.helper.bean.Update;
 import com.dlz.framework.db.helper.util.DbNameUtil;
 import com.dlz.framework.db.helper.wrapper.ConditionAndWrapper;
@@ -53,6 +54,13 @@ public abstract class SqlHelper {
      * @return
      */
     public abstract List<ResultMap> getTableIndexs(String tableName);
+
+    /**
+     * 获取表所有索引
+     * @param tableName
+     * @return
+     */
+    public abstract TableInfo getTableInfo(String tableName);
 
     /**
      * 根据bean属性创建字段
