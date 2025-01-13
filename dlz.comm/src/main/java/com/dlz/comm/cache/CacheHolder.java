@@ -4,8 +4,9 @@ import com.dlz.comm.exception.SystemException;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.function.Supplier;
+import java.util.stream.Collectors;
 
 /**
  * 缓存记录
@@ -15,6 +16,18 @@ import java.util.function.Supplier;
 @Slf4j
 public class CacheHolder {
     private static Map<String, ICache> CacheSet = new ConcurrentHashMap<>();
+
+
+    public static Map<String, ICache> getCacheSet() {
+        return CacheSet;
+    }
+    public static Set<String> cacheNames() {
+        return CacheSet.entrySet().stream().map(item -> item.getKey()).collect(Collectors.toSet());
+    }
+
+    public static Set<String> keys(String cacheName,String keyPrefix) {
+        return get(cacheName).keys(cacheName,keyPrefix);
+    }
 
     public static void clearAll() {
         for (Map.Entry<String, ICache> deal : CacheSet.entrySet()) {
