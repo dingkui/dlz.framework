@@ -6,14 +6,12 @@ import com.dlz.comm.util.StringUtils;
 import com.dlz.comm.util.ValUtil;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 /**
  * JSONMap
  * @author dk 2017-06-15
  *
  */
-@SuppressWarnings({ "rawtypes", "unchecked" })
 public class JSONMap extends HashMap<String,Object> implements IUniversalVals{
 	/**
 	 * 

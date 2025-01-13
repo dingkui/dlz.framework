@@ -48,29 +48,4 @@ public class CacheRedisSerialHash implements ICache {
         String keyMatch=keyPrefix.replaceAll("\\.\\*","*").replaceAll("\\*",".*");
         return stream.filter(key->key.matches(keyMatch)).collect(Collectors.toSet());
     }
-
-//    @Override
-//    public Map<String,Serializable> all(String name, String keyPrefix){
-//        Map<String,String> re = jedisExecutor.hgetAll(name);
-//        Map<String,Serializable> map=new HashMap<>();
-//        if("*".equals(keyPrefix)||".*".equals(keyPrefix)){
-//            re.entrySet().forEach(item->{
-//                byte[] hget = item.getValue().getBytes(StandardCharsets.UTF_8);
-//                if (hget!=null){
-//                    map.put(item.getKey(),(Serializable)SerializeUtil.deserialize(hget));
-//                }
-//            });
-//        }else{
-//            String keyMatch=keyPrefix.replaceAll("\\.\\*","*").replaceAll("\\*",".*");
-//            re.entrySet().forEach(item->{
-//                if(item.getKey().matches(keyMatch)){
-//                    byte[] hget = item.getValue().getBytes(StandardCharsets.UTF_8);
-//                    if (hget!=null){
-//                        map.put(item.getKey(),(Serializable)SerializeUtil.deserialize(hget));
-//                    }
-//                }
-//            });
-//        }
-//        return map;
-//    }
 }

@@ -87,8 +87,7 @@ public class MemoryCahe implements ICache {
         Stream<String> stringStream = getCache(name).keySet().stream()
                 .map(key -> ValUtil.getStr(key));
         if("*".equals(keyPrefix)||".*".equals(keyPrefix)){
-            return stringStream
-                    .collect(Collectors.toSet());
+            return stringStream.collect(Collectors.toSet());
         }
         String keyMatch=keyPrefix.replaceAll("\\.\\*","*").replaceAll("\\*",".*");
         return stringStream.filter(key->key.matches(keyMatch)).collect(Collectors.toSet());

@@ -323,7 +323,6 @@ public class ValUtil {
             return (T)input;
         }
         Class classs = javaType.getRawClass();
-
         if (classs.isAssignableFrom(input.getClass())) {
             return (T) input;
         } else if (classs == String.class) {
