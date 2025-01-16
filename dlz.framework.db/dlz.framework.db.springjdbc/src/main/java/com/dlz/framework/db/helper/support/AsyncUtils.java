@@ -25,9 +25,12 @@ public class AsyncUtils {
 		TableName table = clazz.getAnnotation(TableName.class);
 		if (table != null) {
 			String tableName = DbNameUtil.getDbTableName(clazz);
-			// 创建表
-			dbOp.createTable(tableName,clazz);
 			Set<String> columns = dbOp.getTableColumnNames(tableName);
+			if (columns.size()==0) {
+				// 创建表
+				dbOp.createTable(tableName,clazz);
+				return;
+			}
 			// 建立字段
 			Field[] fields = Reflections.getFields(clazz);
 			for (Field field : fields) {
