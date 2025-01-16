@@ -1,5 +1,6 @@
 package com.dlz.framework.db.cache;
 
+import com.dlz.comm.cache.MemoryCahe;
 import com.dlz.comm.json.JSONMap;
 import com.dlz.framework.cache.service.AbstractCache;
 import com.dlz.framework.db.dao.IDlzDao;
@@ -14,7 +15,7 @@ public class TableInfoCache extends AbstractCache<String, JSONMap> {
     IDlzDao dao;
 
     public TableInfoCache() {
-        super();
+        super(new MemoryCahe());
         dbOperator = new DbOperator() {
             protected JSONMap getFromDb(String tableName) {
                 return new JSONMap(dao.getTableColumsInfo(tableName));
