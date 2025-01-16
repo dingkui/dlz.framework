@@ -1,4 +1,4 @@
-package com.dlz.test.comm.json;
+package com.dlz.test.comm.json.setter;
 
 import com.dlz.comm.json.JSONMap;
 import org.junit.Test;

@@ -1,13 +1,14 @@
-package com.dlz.test.comm.json;
+package com.dlz.test.comm.json.setter;
 
 import com.dlz.comm.json.JSONMap;
+import com.dlz.test.comm.json.TestBean;
 import org.junit.Test;
 
 import java.util.*;
 import java.util.stream.Collectors;
 
 /**
- * JSONMap取得数据方法测试
+ * JSONMap取得值类型转换
  */
 public class JSONMapGetTest {
 	/**
@@ -61,19 +62,19 @@ public class JSONMapGetTest {
 	 */
 	@Test
 	public void test3(){
-		JSONMap paras = new JSONMap("{\"d\":[666,111, 222, 333, 444]}");
+		JSONMap paras = new JSONMap("{d1}");
 		System.out.println(paras);
 		//输出：{"d":[666,111,222,333,444]}
 
-		Integer intD0 = paras.getInt("d[0]");//根据子对象数组下标取得并转换类型
+		Integer intD0 = paras.getInt("d1[0]");//根据子对象数组下标取得并转换类型
 		System.out.println(intD0.getClass()+":"+intD0);
 		//输出：class java.lang.Integer:666
 
-		Integer intDlast = paras.getInt("d[-1]");//下标倒数第一个
+		Integer intDlast = paras.getInt("d1[-1]");//下标倒数第一个
 		System.out.println(intDlast.getClass()+":"+intDlast);
 		//输出：class java.lang.Integer:444
 
-		Integer intDlast2 = paras.getInt("d[-2]");//下标倒数第二个
+		String intDlast2 = paras.getStr("d1[-2]");//下标倒数第二个
 		System.out.println(intDlast2.getClass()+":"+intDlast2);
 		//输出：class java.lang.Integer:555
 	}

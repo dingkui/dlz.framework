@@ -1,4 +1,4 @@
-package com.dlz.test.comm.json;
+package com.dlz.test.comm.json.getter;
 
 import com.dlz.comm.json.JSONList;
 import com.dlz.comm.json.JSONMap;
@@ -10,15 +10,17 @@ import org.junit.Test;
 import java.util.HashMap;
 import java.util.List;
 
-public class JSONMapTest {
+/**
+ * JSONMap取得值类型转换
+ */
+public class JSONMapGetTest {
 	/**
 	 * 基础用法
 	 */
 	@Test
 	public void test1(){
+		//{"a":{"b":1}}
 		JSONMap paras = new JSONMap("{\"a\":{\"b\":1}}");
-		System.out.println(paras); 
-		//输出：{"a":{"b":1}}
 		String strB = paras.getStr("a.b");//取得String
 		Integer intB = paras.getInt("a.b");//取得Integer
 		System.out.println(strB.getClass()+":"+strB);
@@ -28,11 +30,9 @@ public class JSONMapTest {
 	}
 	@Test
 	public void test2(){
-		JSONMap paras = new JSONMap("a",new JSONMap("b",new JSONMap("c1","22","c2","221"),"b2",new JSONMap("c21","22","c22","221")));
-		System.out.println(paras);
-		//输出：{"a":{"b2":{"c22":"221","c21":"22"},"b":{"c1":"22","c2":"221"}}}
-		String str = paras.getStr("a.b");
-		System.out.println(str);
+		//{"a":{"b2":{"c22":"221","c21":"22"},"b":{"c1":"22","c2":"221"}}}
+		JSONMap paras = new JSONMap("{\"a\":{\"b2\":{\"c22\":\"221\",\"c21\":\"22\"},\"b\":{\"c1\":\"22\",\"c2\":\"221\"}}}");
+		System.out.println(paras.getStr("a.b"));
 		//输出：{"c1":"22","c2":"221"}
 		
 		//设置数据

@@ -1,4 +1,4 @@
-package com.dlz.test.comm.json;
+package com.dlz.test.comm.json.construct;
 
 import com.dlz.comm.json.JSONList;
 import lombok.extern.slf4j.Slf4j;
@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Slf4j
-public class JSONListTest {
+public class JSONListConstructTest {
 	@Test
 	public void test0(){
 		List<LinkedHashMap<String, Object>> index = Arrays.stream(new String[]{"1", "2", "3"}).map(item -> {
@@ -23,7 +23,6 @@ public class JSONListTest {
 		objects.asList().forEach(item->{
 			log.info("{}",item.getInt("index"));
 		});
-
 	}
 
 }

@@ -374,7 +374,7 @@ public class JacksonUtil {
         }
     }
 
-    private static Pattern JsonObjPattern = Pattern.compile("^\\{((\"[^\"]+\":.+)||)\\}$");
+    private static Pattern JsonObjPattern = Pattern.compile("^\\{(([\"\\w]+:.+)||)\\}$");
     private static Pattern JsonArrayPattern = Pattern.compile("^\\[[^\\[^\\]]*\\]$");
     public static boolean isJsonObj(String str) {
         return JsonObjPattern.matcher(str.replaceAll("\\s","")).matches();
