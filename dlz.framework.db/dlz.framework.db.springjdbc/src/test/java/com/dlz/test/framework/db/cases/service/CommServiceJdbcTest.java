@@ -17,7 +17,6 @@ import org.springframework.test.context.junit4.SpringRunner;
  */
 @RunWith(SpringRunner.class)
 @SpringBootTest
-@SpringBootApplication(scanBasePackages = TestConst.SCAN_BASE_PACKAGES)
 public class CommServiceJdbcTest{
     @Autowired
     ICommService commService;

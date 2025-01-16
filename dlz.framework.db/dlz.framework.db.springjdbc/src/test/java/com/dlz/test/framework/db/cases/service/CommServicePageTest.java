@@ -16,7 +16,6 @@ import java.util.List;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
-@SpringBootApplication(scanBasePackages = TestConst.SCAN_BASE_PACKAGES)
 public class CommServicePageTest {
 	@Autowired
 	ICommService commService;
