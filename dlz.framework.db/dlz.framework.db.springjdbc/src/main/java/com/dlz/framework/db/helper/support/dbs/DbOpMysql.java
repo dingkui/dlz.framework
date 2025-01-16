@@ -13,6 +13,7 @@ import java.lang.reflect.Field;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class DbOpMysql extends SqlHelper {
     public DbOpMysql(IDlzDao jdbcTemplate) {
@@ -41,20 +42,25 @@ public class DbOpMysql extends SqlHelper {
 
     @Override
     public Set<String> getTableColumnNames(String tableName) {
-        // 获取表所有字段
-        String sql = "SHOW COLUMNS FROM `" + tableName + "`";
-        List<ResultMap> maps = dao.getList(sql);
-        Set<String> re = new HashSet();
-        maps.forEach(item -> {
-            String field = ValUtil.getStr(item.get("Field"), "");
-            if(field.length()==0){
-                field = ValUtil.getStr(item.get("field"), "");
-            }
-            if(field.length()>0){
-                re.add(field.toUpperCase());
-            }
-        });
-        return re;
+//        // 获取表所有字段
+//        String sql = "SHOW COLUMNS FROM `" + tableName + "`";
+//        List<ResultMap> maps = dao.getList(sql);
+//        Set<String> re = new HashSet();
+//        maps.forEach(item -> {
+//            String field = ValUtil.getStr(item.get("Field"), "");
+//            if(field.length()==0){
+//                field = ValUtil.getStr(item.get("field"), "");
+//            }
+//            if(field.length()>0){
+//                re.add(field.toUpperCase());
+//            }
+//        });
+//        return re;
+
+        // 构建查询字段信息的SQL语句
+        String sql = "SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = ?";
+        // 执行查询并获取结果
+        return dao.getList(sql, tableName).stream().map(item -> item.getStr("columnName")).collect(Collectors.toSet());
     }
 
     @Override
@@ -70,28 +76,21 @@ public class DbOpMysql extends SqlHelper {
         // 构建查询主键的SQL语句
         sql = "SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = ? AND CONSTRAINT_NAME = 'PRIMARY'";
         // 执行查询并获取结果
-        List<ResultMap> maps = dao.getList(sql, tableName);
-        List<String> primaryKeys = new ArrayList<>();
-        for (ResultMap map : maps) {
-            primaryKeys.add(ValUtil.getStr(map.get("columnName"), ""));
-        }
+        List<String> primaryKeys = dao.getList(sql, tableName).stream().map(map -> map.getStr("columnName", "")).collect(Collectors.toList());
         tableInfo.setPrimaryKeys(primaryKeys);
 
         // 构建查询字段信息的SQL语句
         sql = "SELECT COLUMN_NAME, COLUMN_TYPE, COLUMN_COMMENT FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = ?";
         // 执行查询并获取结果
-        maps = dao.getList(sql, tableName);
-        List<ColumnInfo> columnInfos = new ArrayList<>();
-
-        for (ResultMap map : maps) {
+        List<ColumnInfo> columnInfos = dao.getList(sql, tableName).stream().map(map -> {
             ColumnInfo columnInfo = new ColumnInfo();
-            columnInfo.setColumnName(ValUtil.getStr(map.get("columnName"), ""));
-            columnInfo.setColumnType(ValUtil.getStr(map.get("columnType"), ""));
-            columnInfo.setColumnComment(ValUtil.getStr(map.get("columnComment"), ""));
+            columnInfo.setColumnName(map.getStr("columnName", ""));
+            columnInfo.setColumnType(map.getStr("columnType", ""));
+            columnInfo.setColumnComment(map.getStr("columnComment", ""));
             // 转换字段类型为Java类型
             columnInfo.setJavaType(getJavaType(columnInfo.getColumnType()));
-            columnInfos.add(columnInfo);
-        }
+            return columnInfo;
+        }).collect(Collectors.toList());
         tableInfo.setColumnInfos(columnInfos);
         return tableInfo;
     }
