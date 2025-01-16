@@ -26,4 +26,20 @@ public class SqlHelper2Test {
         TableInfo sys_test = dbOpMysql.getTableInfo("sys_code");
         System.out.println(sys_test);
     }
+    @Test
+    public void lamdaTest2() {
+        DriverManagerDataSource dataSource = new DriverManagerDataSource();
+        dataSource.setDriverClassName("com.mysql.cj.jdbc.Driver");
+        dataSource.setUrl("jdbc:mysql://192.168.1.126:3306/elec");
+        dataSource.setUsername("root");
+        dataSource.setPassword("1234qwer");
+
+        JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
+        DlzDbProperties dbProperties = new DlzDbProperties();
+        DaoOperator dao = new DaoOperator(jdbcTemplate, dbProperties);
+        DbOpMysql dbOpMysql = new DbOpMysql(dao);
+
+        TableInfo sys_test = dbOpMysql.getTableInfo("elec_graph");
+        System.out.println(sys_test);
+    }
 }
