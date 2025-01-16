@@ -11,7 +11,6 @@ import com.dlz.framework.db.convertor.ConvertUtil;
 import com.dlz.framework.db.enums.ParaTypeEnum;
 import com.dlz.framework.db.modal.BaseParaMap;
 import com.dlz.framework.db.modal.Page;
-import com.dlz.framework.db.modal.SearchParaMap;
 import com.dlz.framework.db.modal.items.SqlItem;
 import lombok.extern.slf4j.Slf4j;
 
@@ -186,9 +185,6 @@ public class SqlUtil {
      * @author dk 2015-04-09
      */
     public static SqlItem dealParm(BaseParaMap paraMap,int dealType,boolean jdbc) {
-        if(paraMap instanceof SearchParaMap){
-            ((SearchParaMap) paraMap).setWhere();
-        }
         SqlItem sqlItem = paraMap.getSqlItem();
         if (sqlItem.getSqlKey() != null){
             String sql = sqlItem.getSqlDeal();

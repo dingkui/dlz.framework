@@ -21,19 +21,19 @@ public class InsertParaMap extends CreateSqlParaMap{
 	private static final String STR_COLUMS="colums";
 	private static final String STR_VALUES="values";
 	public InsertParaMap(String tableName){
-		super(SQL,tableName,null);
+		super(SQL,tableName);
 	}
 
 	public <T> void addValue(MFunction<T, ?>  column, Object value){
 		addValue(Reflections.getFieldName(column),value);
 	}
-	public void addValue(String key,Object value){
+	public InsertParaMap addValue(String key,Object value){
 		String paraName = ConvertUtil.str2Clumn(key);
 		String clumnName = paraName.replaceAll("`", "");
 		boolean isClumnExists = isClumnExists(clumnName);
 		if(!isClumnExists){
 			logger.warn("clumn is not exists:"+paraName);
-			return;
+			return this;
 		}
 		
 		
@@ -64,12 +64,14 @@ public class InsertParaMap extends CreateSqlParaMap{
 				value="";
 			addClunmnValue(clumnName, value);
 		}
+		return this;
 	}
 	
-	public void addValues(Map<String,Object> values){
+	public InsertParaMap addValues(Map<String,Object> values){
 		for(String str:values.keySet()){
 			addValue(str, values.get(str));
 		}
+		return this;
 	}
 	
 }

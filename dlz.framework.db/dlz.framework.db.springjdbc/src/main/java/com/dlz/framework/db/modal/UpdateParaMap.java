@@ -1,8 +1,11 @@
 package com.dlz.framework.db.modal;
 
 import com.dlz.framework.db.convertor.ConvertUtil;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import com.dlz.framework.db.service.ICommService;
+import com.dlz.framework.db.warpper.Condition;
+import com.dlz.framework.util.system.MFunction;
+import com.dlz.framework.util.system.Reflections;
+import lombok.extern.slf4j.Slf4j;
 
 import java.util.Map;
 
@@ -12,14 +15,17 @@ import java.util.Map;
  * @author dingkui
  *
  */
-public class UpdateParaMap extends SearchParaMap{
-
-	private static Logger logger=LoggerFactory.getLogger(UpdateParaMap.class);
+@Slf4j
+public class UpdateParaMap extends CreateSqlParaMap{
 	private static final long serialVersionUID = 8374167270612933157L;
 	private static final String SQL="key.comm.updateTable";
 	private static final String STR_SETS="sets";
 	public UpdateParaMap(String tableName){
-		super(SQL,tableName,null);
+		super(SQL,tableName);
+	}
+
+	public <T> void set(MFunction<T, ?> column, Object value){
+		set(Reflections.getFieldName(column),value);
 	}
 	/**
 	 * 添加要更新的值
@@ -27,7 +33,7 @@ public class UpdateParaMap extends SearchParaMap{
 	 * @param value
 	 * @return
 	 */
-	public void addSetValue(String paraName,Object value){
+	public UpdateParaMap set(String paraName,Object value){
 		StringBuilder sbSets = (StringBuilder)this.getPara().get(STR_SETS);
 		if(sbSets==null){
 			sbSets=new StringBuilder();
@@ -38,8 +44,8 @@ public class UpdateParaMap extends SearchParaMap{
 		String clumnName = paraName.replaceAll("`", "");
 		boolean isClumnExists = isClumnExists(clumnName);
 		if(!isClumnExists){
-			logger.warn("clumn is not exists:"+paraName);
-			return;
+			log.warn("clumn is not exists:"+paraName);
+			return this;
 		}
 		
 		if(sbSets.length()>0){
@@ -59,15 +65,25 @@ public class UpdateParaMap extends SearchParaMap{
 			sbSets.append("#{").append(clumnName).append("}");
 			addClunmnValue(clumnName, value);
 		}
+		return this;
 	}
 	/**
 	 * 添加要更新的值集合
 	 * @param setValues
 	 * @return
 	 */
-	public void addSetValues(Map<String,Object> setValues){
+	public UpdateParaMap set(Map<String,Object> setValues){
 		for(String str:setValues.keySet()){
-			addSetValue(str, setValues.get(str));
+			set(str, setValues.get(str));
 		}
+		return this;
+	}
+
+	public UpdateParaMap where(Condition cond){
+		super.where(cond.getRunsql(this));
+		return this;
+	}
+	public int done(ICommService service){
+		return service.excuteSql(this);
 	}
 }

@@ -2,60 +2,37 @@ package com.dlz.framework.db.modal;
 
 import com.dlz.framework.db.convertor.ConvertUtil;
 import com.dlz.framework.db.warpper.Condition;
-
-import java.util.Map;
-
-import static com.dlz.framework.db.enums.DbOprateEnum.where;
-
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * 构造单表的查询操作sql
- * @author dingkui
  *
+ * @author dingkui
  */
+@Slf4j
 @SuppressWarnings("rawtypes")
-public class SearchParaMap extends CreateSqlParaMap{
+public class SearchParaMap extends CreateSqlParaMap {
+    private static final long serialVersionUID = 8374167270612933157L;
+    private static final String SQL = "key.comm.searchTable";
+    private static final String STR_COLUMS = "colums";
+    public SearchParaMap(String colums, String tableName) {
+        super(SQL, tableName);
+        addPara(STR_COLUMS, ConvertUtil.str2Clumn(colums));
+    }
+    public SearchParaMap(String tableName) {
+        this("*", tableName);
+    }
 
-	private static final long serialVersionUID = 8374167270612933157L;
-	private static final String SQL="key.comm.searchTable";
-	public SearchParaMap(String tableName, Page page){
-		this(tableName,"*",page);
-	}
-	public SearchParaMap(String tableName){
-		this(tableName,"*");
-	}
-	public SearchParaMap(String tableName, String colums, Page page){
-		super(SQL,tableName,page);
-		addPara(STR_COLUMS, ConvertUtil.str2Clumn(colums));
-	}
-	public SearchParaMap(String tableName,String colums){
-		super(SQL,tableName,null);
-		addPara(STR_COLUMS, ConvertUtil.str2Clumn(colums));
+    public SearchParaMap page(Page page) {
+        if (page != null) {
+            this.setPage(page);
+        }
+        return this;
+    }
+
+	public SearchParaMap where(Condition cond){
+		super.where(cond.getRunsql(this));
+		return this;
 	}
 
-	private Condition condition=where.mk();
-
-	public void setWhere(String where){
-		addPara(STR_WHERE, where);
-	}
-
-	public Condition condition(){
-		return condition;
-	}
-	public void setWhere(){
-		String whereSql = this.condition.getRunsql(this);
-		if (whereSql!=where.condition) {
-			setWhere(whereSql);
-		}
-	}
-	/**
-	 * 添加要更新的值和更新条件集合
-	 * @param conditionValues
-	 * @return
-	 */
-	public void eqs(Map<String,Object> conditionValues){
-		for(String str:conditionValues.keySet()){
-			condition().eq(str, conditionValues.get(str));
-		}
-	}
 }

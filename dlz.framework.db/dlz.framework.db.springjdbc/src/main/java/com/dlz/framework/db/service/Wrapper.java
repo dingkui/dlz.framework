@@ -1,6 +1,7 @@
 package com.dlz.framework.db.service;
 
 import com.dlz.comm.util.VAL;
+import com.dlz.framework.db.enums.DbBuildEnum;
 import com.dlz.framework.db.helper.util.DbNameUtil;
 import com.dlz.framework.db.modal.Page;
 import com.dlz.framework.db.modal.SearchParaMap;
@@ -33,7 +34,7 @@ public class Wrapper<T> {
 
 	public VAL<String,Object[]> getSqlJdbc() {
 		if(isGenerator && bean!=null){
-			Condition condition = pm.condition();
+			Condition condition = DbBuildEnum.where.build();
 			Field[] fields = Reflections.getFields(this.beanClass);
 			for (Field field : fields) {
 				Object fieldValue = Reflections.getFieldValue(bean, field.getName());
@@ -41,6 +42,7 @@ public class Wrapper<T> {
 					condition.eq(DbNameUtil.getDbClumnName(field), fieldValue);
 				}
 			}
+			pm.where(condition);
 		}
 		if(pm.getPage().getPageIndex()==-1){
 			return pm.getJdbcSql();
@@ -51,9 +53,6 @@ public class Wrapper<T> {
 		return pm.getCntJdbc();
 	}
 
-	public Condition condition() {
-		return pm.condition();
-	}
 	public Page<T> page() {
 		return pm.getPage();
 	}

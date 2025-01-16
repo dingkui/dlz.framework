@@ -1,15 +1,26 @@
 package com.dlz.framework.db.modal;
 
+import com.dlz.framework.db.service.ICommService;
+import com.dlz.framework.db.warpper.Condition;
+
 /**
  * 构造单表的删除操作sql
  * @author dingkui
  *
  */
-public class DeleteParaMap extends SearchParaMap{
+public class DeleteParaMap extends CreateSqlParaMap{
 
 	private static final long serialVersionUID = 8374167270612933157L;
 	private static final String SQL="key.comm.deleteTable";
 	public DeleteParaMap(String tableName){
-		super(SQL,tableName,null);
+		super(SQL,tableName);
+	}
+
+	public DeleteParaMap where(Condition cond){
+		super.where(cond.getRunsql(this));
+		return this;
+	}
+	public int done(ICommService service){
+		return service.excuteSql(this);
 	}
 }
