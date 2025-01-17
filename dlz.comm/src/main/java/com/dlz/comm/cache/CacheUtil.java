@@ -25,6 +25,15 @@ public class CacheUtil {
      *
      * @return Cache
      */
+    public static ICache getMemoCache() {
+        return getCache("memo",null);
+    }
+
+    /**
+     * 获取缓存对象
+     *
+     * @return Cache
+     */
     public static ICache getCache(String cacheName) {
         return getCache(cacheName,cache);
     }
