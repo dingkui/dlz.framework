@@ -2,6 +2,7 @@ package com.dlz.framework.db.dao;
 
 import com.dlz.comm.cache.CacheUtil;
 import com.dlz.comm.exception.SystemException;
+import com.dlz.comm.util.VAL;
 import com.dlz.framework.db.SqlUtil;
 import com.dlz.framework.db.convertor.ConvertUtil;
 import com.dlz.framework.db.convertor.rowMapper.MySqlColumnMapRowMapper;
@@ -62,6 +63,9 @@ public class DlzDao implements IDlzDao {
             logInfo(sql, args, "getList",t);
         }
     }
+
+
+
     public <T> List<T> getClumnList(String sql, Class<T> requiredType, Object... args)  {
         if(requiredType==null){
             throw new SystemException("requiredType can not be null");
@@ -146,7 +150,7 @@ public class DlzDao implements IDlzDao {
 
     @Override
     public HashMap<String, Integer> getTableColumnsInfo(String tableName) {
-        return CacheUtil.getMemoCache().getAndSetForever("tableColumnsInfo",tableName, () -> {
+        return CacheUtil.getMemoCache().getAndSet("tableColumnsInfo",tableName, () -> {
             // 查询表结构定义；返回表定义Map
             String sql = "select * from " + tableName + " limit 0";
             ResultSetExtractor<HashMap<String, Integer>> extractor = rs -> {
@@ -159,7 +163,7 @@ public class DlzDao implements IDlzDao {
                 }
                 return infos;
             };
-            return dao.query(sql, extractor);
+            return VAL.of(dao.query(sql, extractor),SqlHolder.properties.getTableCacheTime());
         });
     }
 }

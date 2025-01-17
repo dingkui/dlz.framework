@@ -52,4 +52,8 @@ public class DlzDbProperties {
      * 从数据库中取得sql配置是否开启
      **/
     private boolean useDbSql= false;
+    /**
+     * 数据库结构缓存时间，-1为不失效，单位为秒
+     **/
+    private int tableCacheTime= -1;
 }
