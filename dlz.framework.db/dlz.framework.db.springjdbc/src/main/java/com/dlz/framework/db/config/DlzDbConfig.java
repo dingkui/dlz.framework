@@ -4,7 +4,7 @@ import com.dlz.framework.db.DbInfo;
 import com.dlz.framework.db.cache.TableInfoCache;
 import com.dlz.framework.db.convertor.dbtype.ATableCloumnMapper;
 import com.dlz.framework.db.convertor.dbtype.TableCloumnMapper;
-import com.dlz.framework.db.dao.DaoOperator;
+import com.dlz.framework.db.dao.DlzDao;
 import com.dlz.framework.db.dao.IDlzDao;
 import com.dlz.framework.db.holder.DefaultSqlholder;
 import com.dlz.framework.db.holder.ISqlHolder;
@@ -61,7 +61,7 @@ public class DlzDbConfig {
     @ConditionalOnMissingBean(name = "dlzDao")
     public IDlzDao dlzDao(JdbcTemplate jdbc,DlzDbProperties dbProperties) {
         log.info("default dlzDao init ...");
-        return new DaoOperator(jdbc,dbProperties);
+        return new DlzDao(jdbc,dbProperties);
     }
 
     @Bean(name = "sqlHolder")

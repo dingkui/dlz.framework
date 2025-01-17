@@ -25,7 +25,7 @@ import java.util.HashMap;
 import java.util.List;
 
 @Slf4j
-public class DaoOperator implements IDlzDao {
+public class DlzDao implements IDlzDao {
     private JdbcTemplate dao;
     private RowMapper<ResultMap> rowMapper;
     private DlzDbProperties dbProperties;
@@ -34,7 +34,7 @@ public class DaoOperator implements IDlzDao {
         return dbProperties.getDbtype();
     }
 
-    public DaoOperator(JdbcTemplate jdbcTemplate, DlzDbProperties dbProperties) {
+    public DlzDao(JdbcTemplate jdbcTemplate, DlzDbProperties dbProperties) {
         this.dao = jdbcTemplate;
         this.dbProperties = dbProperties;
         DbTypeEnum dbtype = dbProperties.getDbtype();

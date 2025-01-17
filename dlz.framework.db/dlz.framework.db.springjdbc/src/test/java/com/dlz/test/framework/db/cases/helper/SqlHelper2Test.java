@@ -1,7 +1,7 @@
 package com.dlz.test.framework.db.cases.helper;
 
 import com.dlz.framework.db.config.DlzDbProperties;
-import com.dlz.framework.db.dao.DaoOperator;
+import com.dlz.framework.db.dao.DlzDao;
 import com.dlz.framework.db.helper.bean.TableInfo;
 import com.dlz.framework.db.helper.support.dbs.DbOpMysql;
 import org.junit.Test;
@@ -20,7 +20,7 @@ public class SqlHelper2Test {
 
         JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
         DlzDbProperties dbProperties = new DlzDbProperties();
-        DaoOperator dao = new DaoOperator(jdbcTemplate, dbProperties);
+        DlzDao dao = new DlzDao(jdbcTemplate, dbProperties);
         DbOpMysql dbOpMysql = new DbOpMysql(dao);
 
         TableInfo sys_test = dbOpMysql.getTableInfo("sys_code");
@@ -36,7 +36,7 @@ public class SqlHelper2Test {
 
         JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
         DlzDbProperties dbProperties = new DlzDbProperties();
-        DaoOperator dao = new DaoOperator(jdbcTemplate, dbProperties);
+        DlzDao dao = new DlzDao(jdbcTemplate, dbProperties);
         DbOpMysql dbOpMysql = new DbOpMysql(dao);
 
         TableInfo sys_test = dbOpMysql.getTableInfo("elec_graph");
