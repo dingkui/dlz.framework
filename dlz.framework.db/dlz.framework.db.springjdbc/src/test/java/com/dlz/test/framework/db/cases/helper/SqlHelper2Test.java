@@ -4,6 +4,7 @@ import com.dlz.framework.db.config.DlzDbProperties;
 import com.dlz.framework.db.dao.DlzDao;
 import com.dlz.framework.db.helper.bean.TableInfo;
 import com.dlz.framework.db.helper.support.dbs.DbOpMysql;
+import com.dlz.framework.db.holder.SqlHolder;
 import org.junit.Test;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
@@ -18,9 +19,9 @@ public class SqlHelper2Test {
         dataSource.setUsername("root");
         dataSource.setPassword("1234qwer");
 
+        SqlHolder.init(new DlzDbProperties());
         JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
-        DlzDbProperties dbProperties = new DlzDbProperties();
-        DlzDao dao = new DlzDao(jdbcTemplate, dbProperties);
+        DlzDao dao = new DlzDao(jdbcTemplate);
         DbOpMysql dbOpMysql = new DbOpMysql(dao);
 
         TableInfo sys_test = dbOpMysql.getTableInfo("sys_code");
@@ -34,9 +35,9 @@ public class SqlHelper2Test {
         dataSource.setUsername("root");
         dataSource.setPassword("1234qwer");
 
+        SqlHolder.init(new DlzDbProperties());
         JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
-        DlzDbProperties dbProperties = new DlzDbProperties();
-        DlzDao dao = new DlzDao(jdbcTemplate, dbProperties);
+        DlzDao dao = new DlzDao(jdbcTemplate);
         DbOpMysql dbOpMysql = new DbOpMysql(dao);
 
         TableInfo sys_test = dbOpMysql.getTableInfo("elec_graph");

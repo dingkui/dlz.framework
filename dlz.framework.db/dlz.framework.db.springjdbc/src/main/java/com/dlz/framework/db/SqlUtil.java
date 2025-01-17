@@ -9,6 +9,7 @@ import com.dlz.comm.util.StringUtils;
 import com.dlz.comm.util.ValUtil;
 import com.dlz.framework.db.convertor.ConvertUtil;
 import com.dlz.framework.db.enums.ParaTypeEnum;
+import com.dlz.framework.db.holder.SqlHolder;
 import com.dlz.framework.db.modal.BaseParaMap;
 import com.dlz.framework.db.modal.Page;
 import com.dlz.framework.db.modal.items.SqlItem;
@@ -55,18 +56,6 @@ public class SqlUtil {
      * 是否数字
      */
     private static Pattern PATTERN_ISNUM = Pattern.compile("^[\\d\\.-]+$");
-
-
-//    private static AColumnNameConvertor columnMapper = new ColumnNameCamel();
-//
-//    static void setMapper(AColumnNameConvertor mapper) {
-//        columnMapper = mapper;
-//    }
-
-
-    public static String getBlobCharsetname() {
-        return DbInfo.getBlob_charsetname();
-    }
 
     /**
      * 转换mybatisSQl为jdbcSql
@@ -238,7 +227,7 @@ public class SqlUtil {
      * @author dk 2015-04-09
      */
     private static String createSqlDeal(Map<String, Object> para, String sql) {
-        sql = DbInfo.getSql(sql);
+        sql = SqlHolder.getSql(sql);
         sql = getConditionStr(sql, para);
         sql = replaceSql(sql, para, 0);
         sql = sql.replaceAll("[\\s]+", " ");
@@ -252,44 +241,44 @@ public class SqlUtil {
      * @throws Exception
      */
     public static String getPageSql(BaseParaMap paraMap) {
-		SqlItem sqlItem = paraMap.getSqlItem();
-		String sqlDeal = sqlItem.getSqlDeal();
+        SqlItem sqlItem = paraMap.getSqlItem();
+        String sqlDeal = sqlItem.getSqlDeal();
         if(sqlDeal == null){
             throw new DbException("sqlDeal不应该为空", 1002);
         }
-		Page page = paraMap.getPage();
-		if (page == null) {
-			sqlItem.setSqlRun(sqlDeal);
-			return sqlDeal;
-		}
-		String sqlPage = sqlItem.getSqlPage();
-		if (sqlPage == null) {
-			String _orderBy = StringUtils.isEmpty(page.getSortField()) ? null : (ConvertUtil.str2Clumn(page.getSortField()) + " " + (page.getSortOrder() == null ? "" : page.getSortOrder()));
-			Integer _begin = null;
-			Integer _end = null;
+        Page page = paraMap.getPage();
+        if (page == null) {
+            sqlItem.setSqlRun(sqlDeal);
+            return sqlDeal;
+        }
+        String sqlPage = sqlItem.getSqlPage();
+        if (sqlPage == null) {
+            String _orderBy = StringUtils.isEmpty(page.getSortField()) ? null : (ConvertUtil.str2Clumn(page.getSortField()) + " " + (page.getSortOrder() == null ? "" : page.getSortOrder()));
+            Integer _begin = null;
+            Integer _end = null;
 
             if (page.getPageIndex() == -1) {
                 page.setPageIndex(0);
             }
 
-			if (page.getPageIndex() == 0) {
-				_begin = null;
-				_end = page.getPageSize();
-			} else {
-				_begin = page.getPageIndex() * page.getPageSize();
-				_end = _begin + page.getPageSize();
-			}
+            if (page.getPageIndex() == 0) {
+                _begin = null;
+                _end = page.getPageSize();
+            } else {
+                _begin = page.getPageIndex() * page.getPageSize();
+                _end = _begin + page.getPageSize();
+            }
 
-			Map<String, Object> p = new HashMap<String, Object>();
-			p.put("_sql", sqlDeal);
-			p.put("_begin", _begin);
-			p.put("_end", _end);
-			p.put("_pageSize", page.getPageSize());
-			p.put("_orderBy", _orderBy);
-			sqlPage = createSqlDeal(p, "key.comm.pageSql");
+            Map<String, Object> p = new HashMap<String, Object>();
+            p.put("_sql", sqlDeal);
+            p.put("_begin", _begin);
+            p.put("_end", _end);
+            p.put("_pageSize", page.getPageSize());
+            p.put("_orderBy", _orderBy);
+            sqlPage = createSqlDeal(p, "key.comm.pageSql");
             sqlItem.getSystemPara().putAll(p);
-		}
-		return sqlPage;
+        }
+        return sqlPage;
     }
 
     /**
@@ -301,12 +290,12 @@ public class SqlUtil {
     public static String getCntSql(SqlItem sqlItem) {
         String sqlCnt = sqlItem.getSqlCnt();
         if (sqlCnt == null) {
-			String sqlDeal = sqlItem.getSqlDeal();
+            String sqlDeal = sqlItem.getSqlDeal();
             int from = sqlDeal.toLowerCase().indexOf(" from ");
             if(from == -1){
                 throw new DbException("sql语句无from：" + sqlDeal, 1002);
             }
-			sqlCnt = "select count(1) from" + sqlDeal.substring(from + 5);
+            sqlCnt = "select count(1) from" + sqlDeal.substring(from + 5);
         }
         return sqlCnt;
     }
@@ -332,7 +321,7 @@ public class SqlUtil {
             String key = mat.group(1);
             Object o = JacksonUtil.at(m, key);
             if (o == null && key.startsWith("key.")) {
-                o = getConditionStr(DbInfo.getSql(key), m);
+                o = getConditionStr(SqlHolder.getSql(key), m);
             }
             String matStr = "";
             if (o != null) {
@@ -416,7 +405,7 @@ public class SqlUtil {
         try {
             switch (pte) {
                 case Blob:
-                    return value.getBytes(getBlobCharsetname());
+                    return value.getBytes(SqlHolder.properties.getBlob_charsetname());
                 case Date:
                     return ValUtil.getDate(value);
                 default:

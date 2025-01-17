@@ -3,12 +3,12 @@ package com.dlz.framework.db.dao;
 import com.dlz.comm.cache.CacheUtil;
 import com.dlz.comm.exception.SystemException;
 import com.dlz.framework.db.SqlUtil;
-import com.dlz.framework.db.config.DlzDbProperties;
 import com.dlz.framework.db.convertor.ConvertUtil;
 import com.dlz.framework.db.convertor.rowMapper.MySqlColumnMapRowMapper;
 import com.dlz.framework.db.convertor.rowMapper.OracleColumnMapRowMapper;
 import com.dlz.framework.db.convertor.rowMapper.ResultMapRowMapper;
 import com.dlz.framework.db.enums.DbTypeEnum;
+import com.dlz.framework.db.holder.SqlHolder;
 import com.dlz.framework.db.modal.ResultMap;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataAccessException;
@@ -29,16 +29,10 @@ import java.util.List;
 public class DlzDao implements IDlzDao {
     private JdbcTemplate dao;
     private RowMapper<ResultMap> rowMapper;
-    private DlzDbProperties dbProperties;
 
-    public DbTypeEnum getDbtype() {
-        return dbProperties.getDbtype();
-    }
-
-    public DlzDao(JdbcTemplate jdbcTemplate, DlzDbProperties dbProperties) {
+    public DlzDao(JdbcTemplate jdbcTemplate) {
         this.dao = jdbcTemplate;
-        this.dbProperties = dbProperties;
-        DbTypeEnum dbtype = dbProperties.getDbtype();
+        DbTypeEnum dbtype = SqlHolder.properties.getDbtype();
         if(dbtype == DbTypeEnum.ORACLE){
             rowMapper = new OracleColumnMapRowMapper();
         }else if(dbtype == DbTypeEnum.MYSQL|| dbtype == DbTypeEnum.POSTGRESQL){
@@ -47,12 +41,11 @@ public class DlzDao implements IDlzDao {
             rowMapper = new ResultMapRowMapper();
         }
     }
-//    private ResultSetExtractor<List<ResultMap>> extractor = JdbcUtil::buildResultMapList;
 
     private void logInfo(String sql, Object[] args,String methodName,long startTime){
         if(log.isDebugEnabled()) {
             long useTime = System.currentTimeMillis() - startTime;
-            if (dbProperties.isShowRunSql()) {
+            if (SqlHolder.properties.isShowRunSql()) {
                 log.info("{} {}ms sql:{}", methodName, useTime, SqlUtil.getRunSqlByJdbc(sql, args));
             } else {
                 log.info("{} {}ms sql:{} {}", methodName, useTime, sql, args);

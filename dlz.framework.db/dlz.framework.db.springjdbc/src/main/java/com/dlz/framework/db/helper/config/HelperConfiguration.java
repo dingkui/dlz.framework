@@ -7,6 +7,7 @@ import com.dlz.framework.db.helper.support.SqlHelper;
 import com.dlz.framework.db.helper.support.dbs.DbOpMysql;
 import com.dlz.framework.db.helper.support.dbs.DbOpPostgresql;
 import com.dlz.framework.db.helper.support.dbs.DbOpSqlite;
+import com.dlz.framework.db.holder.SqlHolder;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
@@ -41,11 +42,11 @@ public class HelperConfiguration {
     @ConditionalOnMissingBean(name = "dlzHelperDbOp")
     public SqlHelper dlzHelperDbOp(IDlzDao dao) {
         log.info("DbOp init dbType is:" + properties.getType());
-        if (dao.getDbtype() == DbTypeEnum.SQLITE) {
+        if (SqlHolder.properties.getDbtype() == DbTypeEnum.SQLITE) {
             return new DbOpSqlite(dao);
-        } else if (dao.getDbtype() == DbTypeEnum.MYSQL) {
+        } else if (SqlHolder.properties.getDbtype() == DbTypeEnum.MYSQL) {
             return new DbOpMysql(dao);
-        } else if (dao.getDbtype() == DbTypeEnum.POSTGRESQL) {
+        } else if (SqlHolder.properties.getDbtype() == DbTypeEnum.POSTGRESQL) {
             return new DbOpPostgresql(dao);
         }
         return new DbOpMysql(dao);

@@ -25,8 +25,6 @@ import java.util.List;
  */
 @Lazy
 public interface IDlzDao {
-    DbTypeEnum getDbtype();
-
     List<ResultMap> getList(String sql, Object... args);
     <T> List<T> getClumnList(String sql, Class<T> requiredType, Object... args);
     <T> T getClumn(String sql, Class<T> requiredType, Object... args);
