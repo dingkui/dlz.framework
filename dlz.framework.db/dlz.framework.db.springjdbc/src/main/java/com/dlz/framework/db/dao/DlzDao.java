@@ -151,7 +151,7 @@ public class DlzDao implements IDlzDao {
     }
 
     @Override
-    public HashMap<String, Integer> getTableColumsInfo(String tableName) {
+    public HashMap<String, Integer> getTableColumnsInfo(String tableName) {
         // 查询表结构定义；返回表定义Map
         String sql = "select * from " + tableName + " limit 0";
         ResultSetExtractor<HashMap<String, Integer>> extractor = rs -> {

@@ -37,5 +37,5 @@ public interface IDlzDao {
 
     int[] batchUpdate(String sql, List<Object[]> batchArgs);
 
-    HashMap<String, Integer> getTableColumsInfo(String tableName);
+    HashMap<String, Integer> getTableColumnsInfo(String tableName);
 }

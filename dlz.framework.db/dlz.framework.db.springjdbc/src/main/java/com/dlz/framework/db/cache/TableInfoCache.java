@@ -18,7 +18,7 @@ public class TableInfoCache extends AbstractCache<String, JSONMap> {
         super(new MemoryCahe());
         dbOperator = new DbOperator() {
             protected JSONMap getFromDb(String tableName) {
-                return new JSONMap(dao.getTableColumsInfo(tableName));
+                return new JSONMap(dao.getTableColumnsInfo(tableName));
             }
         };
     }
