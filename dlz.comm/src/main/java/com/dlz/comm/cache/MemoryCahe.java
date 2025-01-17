@@ -21,7 +21,7 @@ import java.util.stream.Stream;
  */
 @Slf4j
 public class MemoryCahe implements ICache {
-    private final static Map<String, Map<Serializable, Element>> CACHE = new HashMap<>();
+    private final static Map<String, Map<Serializable, Element>> CACHE = new ConcurrentHashMap<>();
     private static ExpiredRunnable Expired = null;
     private static Long BEGIN = System.currentTimeMillis() / 1000;
 
