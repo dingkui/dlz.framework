@@ -14,7 +14,6 @@ import com.dlz.framework.db.modal.items.SqlItem;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 
 /**
@@ -82,7 +81,6 @@ public interface IDbPmService extends IBaseDbService {
         }
         try {
             VAL<String, Object[]> jdbcSql = paraMap.getCntJdbc();
-//            dealJdbc(paraMap, 2);
             int cnt = ValUtil.getInt(ConvertUtil.getFistClumn(getDao().getList(jdbcSql.v1, jdbcSql.v2).get(0)));
             paraMap.getCacheItem().saveCache(cnt);
             return cnt;
@@ -232,7 +230,7 @@ public interface IDbPmService extends IBaseDbService {
         if (needList) {
             page.setData(getBeanList(paraMap, t));
         } else {
-            page.setData(new ArrayList<T>());
+            page.setData(new ArrayList<>());
         }
         paraMap.getCacheItem().saveCache(page);
 
