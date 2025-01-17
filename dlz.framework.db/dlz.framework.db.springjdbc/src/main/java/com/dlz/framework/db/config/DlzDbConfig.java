@@ -1,7 +1,6 @@
 package com.dlz.framework.db.config;
 
 import com.dlz.framework.db.DbInfo;
-import com.dlz.framework.db.cache.DbOprationCache;
 import com.dlz.framework.db.cache.TableInfoCache;
 import com.dlz.framework.db.convertor.dbtype.ATableCloumnMapper;
 import com.dlz.framework.db.convertor.dbtype.TableCloumnMapper;
@@ -32,12 +31,6 @@ import javax.sql.DataSource;
 @Setter
 @EnableConfigurationProperties({DlzDbProperties.class})
 public class DlzDbConfig {
-    @Bean
-    @Lazy
-    public DbOprationCache dbOprationCache() {
-        log.info("default DbOprationCache init ...");
-        return new DbOprationCache();
-    }
 
     @Bean
     @Lazy

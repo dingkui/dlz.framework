@@ -55,15 +55,10 @@ public interface IDbPmService extends IBaseDbService {
      * @throws Exception
      */
     default List<ResultMap> getMapList(BaseParaMap paraMap) {
-        Page cache = paraMap.getCacheItem().getCache("list", paraMap);
-        if (cache != null) {
-            return cache.getData();
-        }
         try {
             VAL<String, Object[]> jdbcSql = paraMap.getPageJdbc();
             List<ResultMap> list = getDao().getList(jdbcSql.v1, jdbcSql.v2);
 //            List<ResultMap> list2 = list.stream().map(r -> ConvertUtil.converResultMap(r, paraMap.getConvert())).collect(Collectors.toList());
-            paraMap.getCacheItem().saveCache(list);
             return list;
         } catch (Exception e) {
             if (e instanceof DbException) {
@@ -75,14 +70,9 @@ public interface IDbPmService extends IBaseDbService {
     }
 
     default int getCnt(BaseParaMap paraMap) {
-        Page cache = paraMap.getCacheItem().getCache("cnt", paraMap);
-        if (cache != null) {
-            return cache.getCount();
-        }
         try {
             VAL<String, Object[]> jdbcSql = paraMap.getCntJdbc();
             int cnt = ValUtil.getInt(ConvertUtil.getFistClumn(getDao().getList(jdbcSql.v1, jdbcSql.v2).get(0)));
-            paraMap.getCacheItem().saveCache(cnt);
             return cnt;
         } catch (Exception e) {
             if (e instanceof DbException) {
@@ -213,11 +203,6 @@ public interface IDbPmService extends IBaseDbService {
     }
 
     default <T> Page<T> getPage(BaseParaMap paraMap, Class<T> t) {
-        Page cache = paraMap.getCacheItem().getCache("page", paraMap);
-        if (cache != null) {
-            return cache;
-        }
-
         Page<T> page = paraMap.getPage();
         //是否需要查询列表（需要统计条数并且条数是0的情况不查询，直接返回空列表）
         boolean needList = true;
@@ -232,8 +217,6 @@ public interface IDbPmService extends IBaseDbService {
         } else {
             page.setData(new ArrayList<>());
         }
-        paraMap.getCacheItem().saveCache(page);
-
         return page;
     }
 }

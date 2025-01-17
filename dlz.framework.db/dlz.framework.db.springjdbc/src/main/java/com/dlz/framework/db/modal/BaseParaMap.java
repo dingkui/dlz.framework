@@ -6,7 +6,6 @@ import com.dlz.framework.db.convertor.result.Convert;
 import com.dlz.framework.db.convertor.result.impl.DateConverter;
 import com.dlz.framework.db.enums.DateFormatEnum;
 import com.dlz.framework.db.enums.ParaTypeEnum;
-import com.dlz.framework.db.modal.items.CacheItem;
 import com.dlz.framework.db.modal.items.SqlItem;
 import com.dlz.framework.db.SqlUtil;
 import com.dlz.framework.util.system.MFunction;
@@ -22,8 +21,6 @@ public class BaseParaMap implements Serializable {
     private static final long serialVersionUID = 8374167270612933157L;
     @JsonIgnore
     private Convert convert = new Convert();
-    @JsonIgnore
-    private CacheItem cacheItem = new CacheItem();
     private SqlItem sqlItem = new SqlItem();
     private Page page;
 
@@ -108,10 +105,6 @@ public class BaseParaMap implements Serializable {
 
     public void setPage(Page page) {
         this.page = page;
-    }
-
-    public CacheItem getCacheItem() {
-        return cacheItem;
     }
 
     public SqlItem getSqlItem() {
