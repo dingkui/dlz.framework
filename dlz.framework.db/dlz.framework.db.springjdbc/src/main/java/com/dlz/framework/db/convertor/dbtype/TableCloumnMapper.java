@@ -1,20 +1,20 @@
 package com.dlz.framework.db.convertor.dbtype;
 
-import com.dlz.comm.json.JSONMap;
 import com.dlz.comm.util.ValUtil;
-import com.dlz.framework.db.cache.TableInfoCache;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.dlz.framework.db.dao.IDlzDao;
+import lombok.AllArgsConstructor;
 
 import java.sql.Types;
+import java.util.Map;
 
-public class TableCloumnMapper extends ATableCloumnMapper {
-	@Autowired
-	TableInfoCache tableInfoCache;
+@AllArgsConstructor
+public class TableCloumnMapper implements ITableCloumnMapper {
+	final IDlzDao dao;
 	@Override
 	public Object converObj4Db(String tableName, String clumnName, Object value) {
-		JSONMap map = tableInfoCache.get(tableName);
+		Map<String, Integer> map = dao.getTableColumnsInfo(tableName);
 		if (map != null) {
-			Integer dbClass = map.getInt(clumnName.toUpperCase());
+			Integer dbClass = map.get(clumnName.toUpperCase());
 			if(dbClass==null){
 				return value;
 			}
@@ -24,7 +24,7 @@ public class TableCloumnMapper extends ATableCloumnMapper {
 	}
 	@Override
 	public boolean isClumnExists(String tableName, String clumnName) {
-		JSONMap map = tableInfoCache.get(tableName);
+		Map<String, Integer> map = dao.getTableColumnsInfo(tableName);
 		if (map == null) {
 			return false;
 		}

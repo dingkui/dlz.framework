@@ -1,8 +1,8 @@
 package com.dlz.framework.db.config;
 
 import com.dlz.framework.db.DbInfo;
-import com.dlz.framework.db.cache.TableInfoCache;
-import com.dlz.framework.db.convertor.dbtype.ATableCloumnMapper;
+import com.dlz.framework.db.convertor.ConvertUtil;
+import com.dlz.framework.db.convertor.dbtype.ITableCloumnMapper;
 import com.dlz.framework.db.convertor.dbtype.TableCloumnMapper;
 import com.dlz.framework.db.dao.DlzDao;
 import com.dlz.framework.db.dao.IDlzDao;
@@ -31,20 +31,14 @@ import javax.sql.DataSource;
 @Setter
 @EnableConfigurationProperties({DlzDbProperties.class})
 public class DlzDbConfig {
-
-    @Bean
-    @Lazy
-    public TableInfoCache tableInfoCache() {
-        log.info("default TableInfoCache init ...");
-        return new TableInfoCache();
-    }
-
     @Bean(name = "tableCloumnMapper")
     @Lazy
     @ConditionalOnMissingBean(name = "tableCloumnMapper")
-    public ATableCloumnMapper tableCloumnMapper() {
+    public ITableCloumnMapper tableCloumnMapper(IDlzDao dao) {
         log.info("default tableCloumnMapper init ...");
-        return new TableCloumnMapper();
+        TableCloumnMapper tableCloumnMapper = new TableCloumnMapper(dao);
+        ConvertUtil.tableCloumnMapper=tableCloumnMapper;
+        return tableCloumnMapper;
     }
 
     @Bean(name = "dbInfo")

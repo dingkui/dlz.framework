@@ -1,11 +1,6 @@
 package com.dlz.framework.db.convertor.dbtype;
 
-import com.dlz.framework.db.convertor.ConvertUtil;
-
-public abstract class ATableCloumnMapper {
-    public ATableCloumnMapper() {
-        ConvertUtil.tableCloumnMapper=this;
-    }
+public interface ITableCloumnMapper {
     /**
      * 取得字段对应的类型
      *
@@ -17,7 +12,7 @@ public abstract class ATableCloumnMapper {
      * @throws
      * @Title: converObj4Db
      */
-    public abstract Object converObj4Db(String tableName, String clumnName, Object value);
+     Object converObj4Db(String tableName, String clumnName, Object value);
 
     /**
      * 判断字符串是否在表中存在
@@ -29,5 +24,5 @@ public abstract class ATableCloumnMapper {
      * @throws
      * @Title: isClumnExists
      */
-    public abstract boolean isClumnExists(String tableName, String clumnName);
+    boolean isClumnExists(String tableName, String clumnName);
 }

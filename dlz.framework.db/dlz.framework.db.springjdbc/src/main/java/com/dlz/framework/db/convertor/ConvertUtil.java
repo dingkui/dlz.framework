@@ -4,7 +4,7 @@ import com.dlz.comm.util.JacksonUtil;
 import com.dlz.comm.util.ValUtil;
 import com.dlz.framework.db.convertor.clumnname.ColumnNameCamel;
 import com.dlz.framework.db.convertor.clumnname.AColumnNameConvertor;
-import com.dlz.framework.db.convertor.dbtype.ATableCloumnMapper;
+import com.dlz.framework.db.convertor.dbtype.ITableCloumnMapper;
 import com.dlz.framework.db.convertor.result.Convert;
 import com.dlz.comm.exception.DbException;
 import com.dlz.framework.db.modal.ResultMap;
@@ -14,9 +14,9 @@ import java.util.stream.Collectors;
 
 /**
  * 数据库信息转换器
- * 
+ *
  * @author dingkui 2017-06-26
- * 
+ *
  */
 public class ConvertUtil {
 	/**
@@ -26,16 +26,7 @@ public class ConvertUtil {
 	/**
 	 * 数据库字段信息及内容转换
 	 */
-	public static ATableCloumnMapper tableCloumnMapper = new ATableCloumnMapper(){
-		@Override
-		public Object converObj4Db(String tableName, String clumnName, Object value) {
-			return value;
-		}
-		@Override
-		public boolean isClumnExists(String tableName, String clumnName) {
-			return true;
-		}
-	};
+	public static ITableCloumnMapper tableCloumnMapper = null;
 
 
 	/**
@@ -48,7 +39,7 @@ public class ConvertUtil {
 	 * @return
 	 */
 	public static Object getVal4Db(String tableName,String clumnName,Object value) {
-		return tableCloumnMapper.converObj4Db(tableName, clumnName, value);
+		return tableCloumnMapper==null?value:tableCloumnMapper.converObj4Db(tableName, clumnName, value);
 	}
 	/**
 	 * 判断字段是否存在
@@ -58,7 +49,7 @@ public class ConvertUtil {
 	 * @return
 	 */
 	public static boolean isClumnExists(String tableName,String clumnName) {
-		return tableCloumnMapper.isClumnExists(tableName, clumnName);
+		return tableCloumnMapper==null?true:tableCloumnMapper.isClumnExists(tableName, clumnName);
 	}
 
 	/**
@@ -96,7 +87,7 @@ public class ConvertUtil {
 		}
 		return null;
 	}
-	
+
 	/**
 	 * 将Map转换成bean中对应字段的Map
 	 * @author dk 2015-04-15
@@ -112,7 +103,7 @@ public class ConvertUtil {
 		}
 		return c.convertMap(m2);
 	}
-	
+
 	/**
 	 * 将Map转换成bean中对应字段的Map
 	 * @author dk 2015-04-15
@@ -130,9 +121,9 @@ public class ConvertUtil {
 			}
 			throw new DbException("转换异常："+m.toString(),1004,e);
 		}
-		
+
 	}
-	
+
 	/**
 	 * 将Map转换成bean
 	 * @author dk 2018-01-19
