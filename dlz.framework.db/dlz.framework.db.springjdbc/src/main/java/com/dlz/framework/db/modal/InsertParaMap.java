@@ -1,6 +1,7 @@
 package com.dlz.framework.db.modal;
 
 import com.dlz.framework.db.convertor.ConvertUtil;
+import com.dlz.framework.db.service.ICommService;
 import com.dlz.framework.util.system.MFunction;
 import com.dlz.framework.util.system.Reflections;
 import org.slf4j.Logger;
@@ -73,5 +74,7 @@ public class InsertParaMap extends CreateSqlParaMap{
 		}
 		return this;
 	}
-	
+	public int excute(ICommService service){
+		return service.excuteSql(this);
+	}
 }

@@ -28,7 +28,7 @@ public class UpdateParaTest {
 				.where(Condition.where()
 					.eq("equipment_id", 1)
 					.eq("equipment_id2", 1)
-				).done(commService);
+				).excute(commService);
 	}
 	@Test
 	public void DeleteParaMapTest(){
@@ -41,6 +41,6 @@ public class UpdateParaTest {
 		ParaMapFactory
 				.delete("dh_room")
 				.where(where)
-				.done(commService);
+				.excute(commService);
 	}
 }

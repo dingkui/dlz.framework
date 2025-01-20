@@ -20,7 +20,7 @@ public class DeleteParaMap extends CreateSqlParaMap{
 		super.where(cond.getRunsql(this));
 		return this;
 	}
-	public int done(ICommService service){
+	public int excute(ICommService service){
 		return service.excuteSql(this);
 	}
 }
