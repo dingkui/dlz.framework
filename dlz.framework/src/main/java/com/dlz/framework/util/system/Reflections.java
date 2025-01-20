@@ -1,7 +1,6 @@
 package com.dlz.framework.util.system;
 
 import com.dlz.comm.exception.SystemException;
-import com.dlz.comm.json.JSONMap;
 import com.dlz.comm.util.ExceptionUtils;
 import com.dlz.comm.util.StringUtils;
 import com.dlz.comm.util.ValUtil;

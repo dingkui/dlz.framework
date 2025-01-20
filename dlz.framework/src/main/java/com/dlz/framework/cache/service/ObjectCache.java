@@ -1,7 +1,6 @@
 package com.dlz.framework.cache.service;
 
 import com.dlz.comm.cache.ICache;
-import com.dlz.framework.cache.service.AbstractCache;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.Serializable;

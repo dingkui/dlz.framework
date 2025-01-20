@@ -3,8 +3,6 @@ package com.dlz.framework.redis.excutor;
 import com.dlz.framework.redis.util.JedisKeyUtils;
 
 import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 /**
  * Redis key构建器

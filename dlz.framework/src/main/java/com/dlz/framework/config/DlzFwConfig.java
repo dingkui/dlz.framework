@@ -4,11 +4,10 @@ import com.dlz.comm.cache.ICache;
 import com.dlz.comm.cache.MemoryCahe;
 import com.dlz.framework.cache.aspect.CacheAspect;
 import com.dlz.framework.holder.SpringHolder;
-import com.dlz.framework.redis.util.IKeyMaker;
-import com.dlz.framework.redis.util.JedisKeyUtils;
-import com.dlz.framework.redis.util.RedisKeyMaker;
 import com.dlz.framework.redis.excutor.JedisExecutor;
 import com.dlz.framework.redis.queue.provider.RedisQueueProviderApiHandler;
+import com.dlz.framework.redis.util.IKeyMaker;
+import com.dlz.framework.redis.util.RedisKeyMaker;
 import com.dlz.framework.spring.iproxy.ApiProxyHandler;
 import com.dlz.framework.spring.iproxy.ApiScaner;
 import com.dlz.framework.spring.scaner.DlzSpringScaner;
@@ -21,7 +20,6 @@ import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Lazy;
-import org.springframework.core.env.Environment;
 import redis.clients.jedis.JedisPool;
 
 /**

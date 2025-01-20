@@ -3,7 +3,6 @@ package com.dlz.plugin.netty.test.client;
 
 import com.dlz.plugin.netty.client.NettyClient;
 import com.dlz.plugin.netty.test.codec.SmsCoder;
-import com.dlz.plugin.netty.test.codec.WaterStationCoder;
 import lombok.extern.slf4j.Slf4j;
 
 /**

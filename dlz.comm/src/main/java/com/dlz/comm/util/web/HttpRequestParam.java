@@ -3,7 +3,6 @@ package com.dlz.comm.util.web;
 import com.dlz.comm.json.JSONMap;
 import com.dlz.comm.util.ValUtil;
 import com.dlz.comm.util.web.handler.ResponseHandler;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 import org.apache.http.client.config.RequestConfig;

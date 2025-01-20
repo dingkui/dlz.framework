@@ -3,7 +3,6 @@ package com.dlz.comm.util.system;
 import com.dlz.comm.util.ExceptionUtils;
 import com.dlz.comm.util.StringUtils;
 import lombok.extern.slf4j.Slf4j;
-import org.slf4j.Logger;
 
 import java.beans.BeanInfo;
 import java.beans.IntrospectionException;

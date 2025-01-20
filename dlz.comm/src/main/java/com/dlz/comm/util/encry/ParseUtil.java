@@ -4,8 +4,6 @@ import com.dlz.comm.util.ExceptionUtils;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.Arrays;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 /**
  * 多进制转换

@@ -1,9 +1,6 @@
 package com.dlz.framework.spring.iproxy;
 
-import java.io.IOException;
-import java.util.LinkedHashSet;
-import java.util.Set;
-
+import com.dlz.framework.spring.iproxy.anno.AnnoApi;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.BeanDefinitionStoreException;
 import org.springframework.beans.factory.annotation.AnnotatedBeanDefinition;
@@ -21,7 +18,9 @@ import org.springframework.core.type.classreading.MetadataReader;
 import org.springframework.core.type.classreading.MetadataReaderFactory;
 import org.springframework.core.type.filter.AnnotationTypeFilter;
 
-import com.dlz.framework.spring.iproxy.anno.AnnoApi;
+import java.io.IOException;
+import java.util.LinkedHashSet;
+import java.util.Set;
 
 /**
  * 自定义扫描注册bean

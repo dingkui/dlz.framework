@@ -1,7 +1,6 @@
 package com.dlz.test.framework.redis.queue;
 
 import com.dlz.test.framework.BaseTest;
-import org.aspectj.weaver.World;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 

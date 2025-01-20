@@ -1,10 +1,10 @@
 package com.dlz.comm.json;
 
+import com.dlz.comm.util.ValUtil;
+
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
-
-import com.dlz.comm.util.ValUtil;
 
 /**
  * 万能取值器4列表
