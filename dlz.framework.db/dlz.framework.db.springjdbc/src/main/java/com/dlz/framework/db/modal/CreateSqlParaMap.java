@@ -1,8 +1,6 @@
 package com.dlz.framework.db.modal;
 
 import com.dlz.framework.db.convertor.ConvertUtil;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * 构造单表的增删改查操作sql

@@ -173,7 +173,7 @@ public class SqlUtil {
      * @throws Exception
      * @author dk 2015-04-09
      */
-    public static SqlItem dealParm(BaseParaMap paraMap,int dealType,boolean jdbc) {
+    public static SqlItem dealParm(BaseParaMap paraMap, int dealType, boolean jdbc) {
         SqlItem sqlItem = paraMap.getSqlItem();
         if (sqlItem.getSqlKey() != null){
             String sql = sqlItem.getSqlDeal();

@@ -1,9 +1,9 @@
 package com.dlz.framework.db.helper.support;
 
 import com.baomidou.mybatisplus.annotation.TableName;
+import com.dlz.framework.db.helper.util.DbNameUtil;
 import com.dlz.framework.util.system.Reflections;
 import lombok.AllArgsConstructor;
-import com.dlz.framework.db.helper.util.DbNameUtil;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.EnableAsync;
 

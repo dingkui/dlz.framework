@@ -1,13 +1,12 @@
 package com.dlz.framework.db.convertor.rowMapper;
 
 
+import com.dlz.framework.db.modal.ResultMap;
+import org.springframework.jdbc.support.JdbcUtils;
+
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
-
-import org.springframework.jdbc.support.JdbcUtils;
-
-import com.dlz.framework.db.modal.ResultMap;
 
 public class OracleColumnMapRowMapper  extends ResultMapRowMapper{
 

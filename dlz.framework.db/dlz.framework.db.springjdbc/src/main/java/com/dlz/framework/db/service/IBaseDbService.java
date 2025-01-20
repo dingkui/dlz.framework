@@ -1,7 +1,6 @@
 package com.dlz.framework.db.service;
 
 import com.dlz.framework.db.dao.IDlzDao;
-import com.dlz.framework.db.modal.BaseParaMap;
 
 /**
  * 从数据库中取得单条map类型数据：{adEnddate=2015-04-08 13:47:12.0}

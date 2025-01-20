@@ -5,7 +5,6 @@ import com.dlz.framework.util.system.Reflections;
 
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.function.Function;
 
 /**
  * 查询语句生成器 OR连接

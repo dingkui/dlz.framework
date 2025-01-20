@@ -6,7 +6,6 @@ import com.dlz.framework.db.convertor.result.impl.DateNameConverter;
 import com.dlz.framework.db.convertor.result.impl.DictConverter;
 import com.dlz.framework.db.enums.DateFormatEnum;
 import com.dlz.framework.db.modal.ResultMap;
-import org.slf4j.Logger;
 
 import java.util.HashMap;
 import java.util.List;

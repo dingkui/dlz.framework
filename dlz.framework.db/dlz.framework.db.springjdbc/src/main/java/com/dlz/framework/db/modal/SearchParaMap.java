@@ -31,7 +31,7 @@ public class SearchParaMap extends CreateSqlParaMap {
     }
 
 	public SearchParaMap where(Condition cond){
-		super.where(cond.getRunsql(this));
+		where(cond.getRunsql(this));
 		return this;
 	}
 

@@ -4,7 +4,6 @@ import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.dlz.comm.exception.SystemException;
 import com.dlz.comm.util.StringUtils;
-import com.dlz.comm.util.VAL;
 import com.dlz.comm.util.ValUtil;
 import com.dlz.framework.db.modal.ResultMap;
 import com.dlz.framework.util.system.MFunction;
@@ -13,7 +12,6 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 
 import java.lang.reflect.Field;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;

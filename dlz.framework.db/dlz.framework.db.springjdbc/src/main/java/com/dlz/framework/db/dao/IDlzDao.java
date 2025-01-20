@@ -1,16 +1,8 @@
 package com.dlz.framework.db.dao;
 
-import com.dlz.framework.db.enums.DbTypeEnum;
-import com.dlz.framework.db.modal.BaseParaMap;
 import com.dlz.framework.db.modal.ResultMap;
-import com.dlz.framework.db.modal.items.SqlItem;
 import org.springframework.context.annotation.Lazy;
-import org.springframework.dao.DataAccessException;
-import org.springframework.jdbc.support.GeneratedKeyHolder;
-import org.springframework.jdbc.support.KeyHolder;
 
-import java.sql.PreparedStatement;
-import java.sql.Statement;
 import java.util.HashMap;
 import java.util.List;
 

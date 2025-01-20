@@ -2,13 +2,7 @@ package com.dlz.test.framework.db.cases.helper;
 
 import com.dlz.framework.db.helper.util.DbNameUtil;
 import com.dlz.framework.util.system.MFunction;
-import com.dlz.framework.util.system.Reflections;
 import com.dlz.test.framework.db.entity.Dict;
-
-import java.io.Serializable;
-import java.lang.invoke.SerializedLambda;
-import java.lang.reflect.Method;
-import java.util.function.Function;
 public class LambdaTest {
     public static void main(String[] args) throws Exception {
         System.out.println("方法名：" + doSFunction(Dict::getA2));

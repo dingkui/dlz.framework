@@ -8,20 +8,14 @@ import com.dlz.framework.db.enums.DbTypeEnum;
 import com.dlz.framework.db.modal.ResultMap;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataAccessException;
-import org.springframework.jdbc.SQLWarningException;
-import org.springframework.jdbc.core.*;
-import org.springframework.jdbc.datasource.DataSourceUtils;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
-import org.springframework.jdbc.support.JdbcUtils;
 import org.springframework.jdbc.support.KeyHolder;
-import org.springframework.lang.Nullable;
-import org.springframework.util.Assert;
 
-import javax.sql.DataSource;
-import java.sql.*;
+import java.sql.PreparedStatement;
+import java.sql.Statement;
 import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 
 
 /**

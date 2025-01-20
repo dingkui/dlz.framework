@@ -3,7 +3,6 @@ package com.dlz.test.framework.db.cases.paramap;
 import com.dlz.comm.json.JSONMap;
 import com.dlz.framework.db.SqlUtil;
 import com.dlz.framework.db.enums.DbBuildEnum;
-import com.dlz.framework.db.helper.support.SqlHelper;
 import com.dlz.framework.db.modal.SearchParaMap;
 import com.dlz.framework.db.modal.items.SqlItem;
 import com.dlz.framework.db.service.ICommService;
@@ -15,7 +14,6 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.context.annotation.Lazy;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.test.context.junit4.SpringRunner;
 

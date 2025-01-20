@@ -1,7 +1,6 @@
 package com.dlz.framework.db.enums;
 
 import com.dlz.comm.exception.SystemException;
-import com.dlz.comm.json.JSONMap;
 import com.dlz.comm.util.ValUtil;
 import com.dlz.comm.util.encry.TraceUtil;
 import com.dlz.framework.db.SqlUtil;
