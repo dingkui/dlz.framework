@@ -5,7 +5,7 @@ appname: dlz.framework.db.springjdbc
 spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://192.168.1.2:3306/test?useSSL=false&useUnicode=true&characterEncoding=utf-8&zeroDateTimeBehavior=CONVERT_TO_NULL&transformedBitIsBoolean=true&serverTimezone=GMT%2B8&nullCatalogMeansCurrent=true&allowPublicKeyRetrieval=true
+    url: jdbc:mysql://192.168.1.126:3306/test?useSSL=false&useUnicode=true&characterEncoding=utf-8&zeroDateTimeBehavior=CONVERT_TO_NULL&transformedBitIsBoolean=true&serverTimezone=GMT%2B8&nullCatalogMeansCurrent=true&allowPublicKeyRetrieval=true
     username: root
     password: 1234qwer
   profiles:
@@ -28,7 +28,7 @@ dlz:
       showRunSql: false
       showKeySql: true
     jdbcSql: true
-    use-db-sql: false
+    use-db-sql: true
     helper:
       auto-update: false
     showCaller: true
