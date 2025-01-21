@@ -7,7 +7,7 @@ package com.dlz.framework.db.service;
  * @return
  * @throws Exception
  */
-public interface ICommService extends IDbJdbcService,IDbPmService{
+public interface ICommService extends IDbJdbcService,IDbPmService,IDbQwService{
 
 
 }

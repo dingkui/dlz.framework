@@ -1,4 +1,4 @@
-package com.dlz.test.framework.db.cases.service;
+package com.dlz.test.framework.db.cases.paramap;
 
 import com.dlz.framework.db.modal.ParaMapFactory;
 import com.dlz.framework.db.service.ICommService;

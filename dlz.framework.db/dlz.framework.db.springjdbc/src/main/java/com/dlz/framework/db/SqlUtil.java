@@ -309,7 +309,7 @@ public class SqlUtil {
      * @param replaceTimes
      * @return
      */
-    private static String replaceSql(String sql, Map<String, Object> m, int replaceTimes) {
+    public static String replaceSql(String sql, Map<String, Object> m, int replaceTimes) {
         int length = sql.length();
         if (length > 10000 || replaceTimes++ > 3000) {
             throw new DbException("sql过长或出现引用死循环！", 1002);
@@ -349,7 +349,7 @@ public class SqlUtil {
      * @param m
      * @return
      */
-    private static String getConditionStr(String sql, Map<String, Object> m) {
+    public static String getConditionStr(String sql, Map<String, Object> m) {
         Matcher mat = PATTERN_CONDITION.matcher(sql);
         int start = 0;
         StringBuffer sb = new StringBuffer();

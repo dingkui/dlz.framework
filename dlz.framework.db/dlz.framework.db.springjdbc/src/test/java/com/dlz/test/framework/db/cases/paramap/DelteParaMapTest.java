@@ -3,7 +3,9 @@ package com.dlz.test.framework.db.cases.paramap;
 import com.dlz.comm.json.JSONMap;
 import com.dlz.framework.db.SqlUtil;
 import com.dlz.framework.db.enums.DbBuildEnum;
-import com.dlz.framework.db.modal.SearchParaMap;
+import com.dlz.framework.db.modal.DeleteParaMap;
+import com.dlz.framework.db.modal.ParaMapFactory;
+import com.dlz.framework.db.modal.DeleteParaMap;
 import com.dlz.framework.db.modal.items.SqlItem;
 import com.dlz.framework.db.service.ICommService;
 import com.dlz.framework.db.warpper.Condition;
@@ -19,36 +21,28 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
-@SpringBootApplication(scanBasePackages = {"com.dlz.framework", "com.dlz.test.framework.db.config"})
 @EnableAsync
 @Slf4j
-public class SearchParaMapTest {
+public class DelteParaMapTest {
     @Autowired
     ICommService commService;
     @Test
     public void conditionSqlTest1() {
-        SearchParaMap paraMap = new SearchParaMap("t_b_dict");
+        DeleteParaMap paraMap = ParaMapFactory.delete("t_b_dict");
         paraMap.addPara(Dict::getA2, "1");
-        JSONMap param = new JSONMap("id","sql:id");
+        JSONMap param = new JSONMap("id","123");
         paraMap.where(Condition.where().sql("[id=#{id}]",param));
 //        paraMap.where(DbBuildEnum.where.build().eq(Dict::getA2, "3"));
 
-        SqlUtil.dealParm(paraMap,1,true);
-        SqlItem sqlItem = paraMap.getSqlItem();
-        sqlItem.setSqlRun(sqlItem.getSqlDeal());
-        SqlUtil.dealParmToJdbc(paraMap);
-        log.debug(sqlItem.toString());
-        log.debug(paraMap.getPara().toString());
-        log.debug(paraMap.getPara().getStr("xx"));
-        log.debug(SqlUtil.getRunSqlByJdbc(sqlItem.getSqlJdbc(), sqlItem.getSqlJdbcPara()));
+        ParaMapTestUtil.showSql(paraMap);
+        //delete from t_b_dict where (id='123')
     }
     @Test
     public void conditionSqlTest2() {
-        SearchParaMap paraMap = new SearchParaMap("t_b_dict");
+        DeleteParaMap paraMap = ParaMapFactory.delete("t_b_dict");
         paraMap.addPara(Dict::getA2, "1");
-        JSONMap param = new JSONMap("id","sql:id");
+        JSONMap param = new JSONMap("id","123");
         paraMap.where(Condition.where().sql("[id=#{id2}]",param));
-//        paraMap.where(DbBuildEnum.where.build().eq(Dict::getA2, "3"));
 
         SqlUtil.dealParm(paraMap,1,true);
         SqlItem sqlItem = paraMap.getSqlItem();
@@ -56,12 +50,12 @@ public class SearchParaMapTest {
         SqlUtil.dealParmToJdbc(paraMap);
         log.debug(sqlItem.toString());
         log.debug(paraMap.getPara().toString());
-        log.debug(paraMap.getPara().getStr("xx"));
         log.debug(SqlUtil.getRunSqlByJdbc(sqlItem.getSqlJdbc(), sqlItem.getSqlJdbcPara()));
+        //delete from t_b_dict where false
     }
     @Test
     public void conditionTest1() {
-        SearchParaMap paraMap = new SearchParaMap("t_b_dict");
+        DeleteParaMap paraMap = ParaMapFactory.delete("t_b_dict");
         paraMap.addPara(Dict::getA2, "1");
 //        paraMap.where(DbBuildEnum.where.build())
 
@@ -71,12 +65,11 @@ public class SearchParaMapTest {
         SqlUtil.dealParmToJdbc(paraMap);
         log.debug(sqlItem.toString());
         log.debug(paraMap.getPara().toString());
-        log.debug(paraMap.getPara().getStr("xx"));
         log.debug(SqlUtil.getRunSqlByJdbc(sqlItem.getSqlJdbc(), sqlItem.getSqlJdbcPara()));
     }
     @Test
     public void conditionTest() {
-        SearchParaMap paraMap = new SearchParaMap("t_b_dict");
+        DeleteParaMap paraMap = ParaMapFactory.delete("t_b_dict");
         paraMap.addPara(Dict::getA2, "1");
         paraMap.where(DbBuildEnum.where.build()
                 .ne(Dict::getA2, "3")
@@ -88,7 +81,6 @@ public class SearchParaMapTest {
                 .or(Condition.AND().eq(Dict::getA6, "10")
                         .eq(Dict::getA6, "10"))
                 .sql("exists (select 1 from dual where t_b_dict where 1=#{xx}) ",new JSONMap("xx",999)))
-
         ;
 
 
@@ -98,14 +90,13 @@ public class SearchParaMapTest {
         SqlUtil.dealParmToJdbc(paraMap);
         log.debug(sqlItem.toString());
         log.debug(paraMap.getPara().toString());
-        log.debug(paraMap.getPara().getStr("xx"));
         log.debug(SqlUtil.getRunSqlByJdbc(sqlItem.getSqlJdbc(), sqlItem.getSqlJdbcPara()));
     }
 
 
     @Test
     public void conditionTest2() {
-        SearchParaMap paraMap = new SearchParaMap("t_b_dict");
+        DeleteParaMap paraMap = ParaMapFactory.delete("t_b_dict");
         paraMap.addPara(Dict::getA2, "1");
         paraMap.where(DbBuildEnum.where.build()
                 .in(Dict::getA2, "3,4,5,6")

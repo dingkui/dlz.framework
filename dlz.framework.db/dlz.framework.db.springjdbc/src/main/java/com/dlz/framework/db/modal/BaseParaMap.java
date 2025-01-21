@@ -110,15 +110,15 @@ public class BaseParaMap implements Serializable {
     public SqlItem getSqlItem() {
         return sqlItem;
     }
-    public VAL<String,Object[]> getJdbcSql() {
+    public VAL<String,Object[]> jdbcSql() {
         SqlUtil.dealParm(this,1,true);
         return new VAL(sqlItem.getSqlJdbc(),sqlItem.getSqlJdbcPara());
     }
-    public VAL<String,Object[]> getCntJdbc() {
+    public VAL<String,Object[]> jdbcCnt() {
         SqlUtil.dealParm(this,2,true);
         return new VAL(sqlItem.getSqlJdbc(),sqlItem.getSqlJdbcPara());
     }
-    public VAL<String,Object[]> getPageJdbc() {
+    public VAL<String,Object[]> jdbcPage() {
         SqlUtil.dealParm(this,3,true);
         return new VAL(sqlItem.getSqlJdbc(),sqlItem.getSqlJdbcPara());
     }

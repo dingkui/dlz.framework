@@ -1,5 +1,6 @@
 package com.dlz.framework.db.modal;
 
+import com.dlz.comm.util.StringUtils;
 import com.dlz.framework.db.service.ICommService;
 import com.dlz.framework.db.warpper.Condition;
 
@@ -17,7 +18,11 @@ public class DeleteParaMap extends CreateSqlParaMap{
 	}
 
 	public DeleteParaMap where(Condition cond){
-		super.where(cond.getRunsql(this));
+		String runsql = cond.getRunsql(this);
+		if(StringUtils.isEmpty(runsql)){
+			runsql="where false";
+		}
+		super.where(runsql);
 		return this;
 	}
 	public int excute(ICommService service){

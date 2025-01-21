@@ -16,9 +16,9 @@ public class Dict {
     private String dictStatus;
     @ApiModelProperty("int")
     @TableField("xxss")
-    private int a2;
+    private Integer a2;
     @ApiModelProperty("boolean：")
-    private boolean a3;
+    private Boolean a3;
     @ApiModelProperty("Long：")
     private Long a4;
     @ApiModelProperty("Float：")

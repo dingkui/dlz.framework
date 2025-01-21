@@ -34,7 +34,7 @@ public interface IDbQwService extends IBaseDbService{
 		}
 	}
 	default List<ResultMap> getMapList(Wrapper wrapper) {
-		VAL<String, Object[]> sqlJdbc = wrapper.getSqlJdbc();
+		VAL<String, Object[]> sqlJdbc = wrapper.jdbcSql();
 		return getDao().getList(sqlJdbc.v1, sqlJdbc.v2);
 	}
 
@@ -91,7 +91,7 @@ public interface IDbQwService extends IBaseDbService{
 		return ConvertUtil.getColumList(getMapList(wrapper),Double.class);
 	}
 	default <T> int getCnt(Wrapper<T> wrapper){
-		VAL<String, Object[]> sqlJdbc = wrapper.getCntJdbc();
+		VAL<String, Object[]> sqlJdbc = wrapper.jdbcCnt();
 		return getDao().getClumn(sqlJdbc.v1, Integer.class, sqlJdbc.v2);
 	}
 	default <T> Page<T> getPage(Wrapper<T> wrapper) {

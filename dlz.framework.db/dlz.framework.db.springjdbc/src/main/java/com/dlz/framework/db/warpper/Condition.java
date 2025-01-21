@@ -1,6 +1,7 @@
 package com.dlz.framework.db.warpper;
 
 import com.dlz.comm.json.JSONMap;
+import com.dlz.framework.db.SqlUtil;
 import com.dlz.framework.db.enums.DbBuildEnum;
 import com.dlz.framework.db.enums.DbOprateEnum;
 import com.dlz.framework.db.modal.BaseParaMap;
@@ -14,7 +15,7 @@ import java.util.stream.Collectors;
 
 import static com.dlz.framework.db.enums.DbOprateEnum.*;
 
-public class Condition {
+public class Condition{
     boolean isMake = false;
     String runsql;
     JSONMap paras = new JSONMap();
@@ -36,19 +37,26 @@ public class Condition {
         isMake = true;
 
         if (builder != null) {
+            if (builder == DbBuildEnum.sql) {
+                pm.addParas(paras);
+                return;
+            }
             if (children.size() == 0) {
-                runsql = runsql.replace("sql", "false");
+                runsql="";
+//                runsql = runsql.replace("sql", "false");
                 return;
             }
             String join = builder == DbBuildEnum.muOr ? "or" : "and";
-            String sub = children.stream().map(item -> item.getRunsql(pm))
+            String sub = children.stream()
+                    .map(item -> item.getRunsql(pm))
+                    .filter(item -> item != null && !item.isEmpty())
                     .collect(Collectors.joining(" " + join + " "));
             sub = sub.replaceAll(join + " and", "and")
                     .replaceAll(join + " or", "or");
             if (children.size() > 1 && builder != DbBuildEnum.where) {
                 sub = "(" + sub + ")";
             }
-            runsql = runsql.replace("sql", sub);
+            runsql = builder.buildSql(sub);
             return;
         }
         pm.addParas(paras);
@@ -89,7 +97,7 @@ public class Condition {
         return this;
     }
 
-    private Condition addChildren(Condition child) {
+    public Condition addChildren(Condition child) {
         children.add(child);
         child.parent = this;
         return child;
@@ -100,9 +108,17 @@ public class Condition {
         addChildren(bt.mk(Reflections.getFieldName(column), new Object[]{value1, value2}));
         return this;
     }
+    public <T> Condition bt(MFunction<T, ?> column, Object value) {
+        addChildren(bt.mk(Reflections.getFieldName(column), value));
+        return this;
+    }
 
     public <T> Condition nb(MFunction<T, ?> column, Object value1, Object value2) {
         addChildren(nb.mk(Reflections.getFieldName(column), new Object[]{value1, value2}));
+        return this;
+    }
+    public <T> Condition nb(MFunction<T, ?> column, Object value) {
+        addChildren(nb.mk(Reflections.getFieldName(column), value));
         return this;
     }
 
@@ -173,6 +189,10 @@ public class Condition {
 
     public Condition bt(String clumnName, Object value1, Object value2) {
         addChildren(bt.mk(clumnName, new Object[]{value1, value2}));
+        return this;
+    }
+    public Condition bt(String clumnName, Object value) {
+        addChildren(bt.mk(clumnName, value));
         return this;
     }
 
@@ -280,7 +300,10 @@ public class Condition {
     }
 
     public Condition sql(String _sql, JSONMap paras) {
-        addChildren(DbBuildEnum.sql.build(_sql, paras));
+        String sql = _sql.replaceAll("\\$", "\\\\\\$");
+        sql = SqlUtil.getConditionStr(sql, paras);
+        sql = SqlUtil.replaceSql(sql, paras, 0);
+        addChildren(DbBuildEnum.sql.build(sql, paras));
         return this;
     }
 

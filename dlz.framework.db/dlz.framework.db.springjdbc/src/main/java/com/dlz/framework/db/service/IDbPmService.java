@@ -34,7 +34,7 @@ public interface IDbPmService extends IBaseDbService {
      * @throws Exception
      */
     default int excuteSql(BaseParaMap paraMap) {
-        VAL<String, Object[]> jdbcSql = paraMap.getJdbcSql();
+        VAL<String, Object[]> jdbcSql = paraMap.jdbcSql();
         try {
             return getDao().update(jdbcSql.v1, jdbcSql.v2);
         } catch (Exception e) {
@@ -56,7 +56,7 @@ public interface IDbPmService extends IBaseDbService {
      */
     default List<ResultMap> getMapList(BaseParaMap paraMap) {
         try {
-            VAL<String, Object[]> jdbcSql = paraMap.getPageJdbc();
+            VAL<String, Object[]> jdbcSql = paraMap.jdbcPage();
             List<ResultMap> list = getDao().getList(jdbcSql.v1, jdbcSql.v2);
 //            List<ResultMap> list2 = list.stream().map(r -> ConvertUtil.converResultMap(r, paraMap.getConvert())).collect(Collectors.toList());
             return list;
@@ -71,7 +71,7 @@ public interface IDbPmService extends IBaseDbService {
 
     default int getCnt(BaseParaMap paraMap) {
         try {
-            VAL<String, Object[]> jdbcSql = paraMap.getCntJdbc();
+            VAL<String, Object[]> jdbcSql = paraMap.jdbcCnt();
             int cnt = ValUtil.getInt(ConvertUtil.getFistClumn(getDao().getList(jdbcSql.v1, jdbcSql.v2).get(0)));
             return cnt;
         } catch (Exception e) {

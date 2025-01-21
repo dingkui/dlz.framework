@@ -16,7 +16,6 @@ public class CreateSqlParaMap extends BaseParaMap {
     protected CreateSqlParaMap(String Sql, String tableName) {
         super(Sql);
         table(tableName);
-        where(" where false");
     }
 
     protected void table(String tableName) {

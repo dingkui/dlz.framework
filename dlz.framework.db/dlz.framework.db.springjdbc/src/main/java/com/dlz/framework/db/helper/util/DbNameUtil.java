@@ -28,7 +28,7 @@ public class DbNameUtil {
             }
         }
         if (tName == null) {
-            tName = getDbClumnName(clazz.getSimpleName());
+            tName = getDbClumnName(clazz.getSimpleName()).replaceAll("^_","");
         }
         return tName;
     }
