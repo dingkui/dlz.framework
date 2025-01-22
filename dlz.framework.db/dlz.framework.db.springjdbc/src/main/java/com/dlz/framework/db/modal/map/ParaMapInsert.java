@@ -1,7 +1,7 @@
-package com.dlz.framework.db.modal;
+package com.dlz.framework.db.modal.map;
 
 import com.dlz.framework.db.convertor.ConvertUtil;
-import com.dlz.framework.db.service.ICommService;
+import com.dlz.framework.db.holder.ServiceHolder;
 import com.dlz.framework.util.system.MFunction;
 import com.dlz.framework.util.system.Reflections;
 import org.slf4j.Logger;
@@ -14,21 +14,21 @@ import java.util.Map;
  * @author dingkui
  *
  */
-public class InsertParaMap extends CreateSqlParaMap{
+public class ParaMapInsert extends ParaMapMaker {
 
-	private static Logger logger=LoggerFactory.getLogger(InsertParaMap.class);
+	private static Logger logger=LoggerFactory.getLogger(ParaMapInsert.class);
 	private static final long serialVersionUID = 8374167270612933157L;
 	private static final String SQL="key.comm.insertTable";
 	private static final String STR_COLUMS="colums";
 	private static final String STR_VALUES="values";
-	public InsertParaMap(String tableName){
+	public ParaMapInsert(String tableName){
 		super(SQL,tableName);
 	}
 
 	public <T> void value(MFunction<T, ?>  column, Object value){
 		value(Reflections.getFieldName(column),value);
 	}
-	public InsertParaMap value(String key,Object value){
+	public ParaMapInsert value(String key, Object value){
 		String paraName = ConvertUtil.str2Clumn(key);
 		String clumnName = paraName.replaceAll("`", "");
 		boolean isClumnExists = isClumnExists(clumnName);
@@ -68,13 +68,13 @@ public class InsertParaMap extends CreateSqlParaMap{
 		return this;
 	}
 	
-	public InsertParaMap value(Map<String,Object> values){
+	public ParaMapInsert value(Map<String,Object> values){
 		for(String str:values.keySet()){
 			value(str, values.get(str));
 		}
 		return this;
 	}
-	public int excute(ICommService service){
-		return service.excuteSql(this);
+	public int excute(){
+		return  ServiceHolder.getService().excuteSql(this);
 	}
 }

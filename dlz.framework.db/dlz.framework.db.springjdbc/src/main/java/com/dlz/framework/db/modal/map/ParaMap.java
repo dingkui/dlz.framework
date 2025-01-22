@@ -1,10 +1,11 @@
-package com.dlz.framework.db.modal;
+package com.dlz.framework.db.modal.map;
 
 import com.dlz.comm.util.StringUtils;
+import com.dlz.framework.db.modal.result.Page;
 
 import java.util.Map;
 
-public class ParaMap extends BaseParaMap{
+public class ParaMap extends ParaMapBase {
 
 	private static final long serialVersionUID = 8374167270612933157L;
 	
@@ -12,8 +13,9 @@ public class ParaMap extends BaseParaMap{
 	public ParaMap(String sql){
 		super(sql);
 	}
-	public ParaMap(String sql,Page page){
-		super(sql,page);
+	public ParaMap(String sql, Page page){
+		super(sql);
+		this.setPage(page);
 	}
 
 

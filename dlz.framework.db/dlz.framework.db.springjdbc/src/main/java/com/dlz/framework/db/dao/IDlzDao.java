@@ -1,6 +1,6 @@
 package com.dlz.framework.db.dao;
 
-import com.dlz.framework.db.modal.ResultMap;
+import com.dlz.framework.db.modal.result.ResultMap;
 import org.springframework.context.annotation.Lazy;
 
 import java.util.HashMap;

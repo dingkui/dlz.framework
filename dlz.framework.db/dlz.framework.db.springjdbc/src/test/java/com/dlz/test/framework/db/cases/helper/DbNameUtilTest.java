@@ -2,7 +2,7 @@ package com.dlz.test.framework.db.cases.helper;
 
 import com.dlz.comm.json.JSONMap;
 import com.dlz.framework.db.helper.util.DbNameUtil;
-import com.dlz.framework.db.modal.ResultMap;
+import com.dlz.framework.db.modal.result.ResultMap;
 import com.dlz.test.framework.db.entity.Dict;
 import org.junit.Test;
 

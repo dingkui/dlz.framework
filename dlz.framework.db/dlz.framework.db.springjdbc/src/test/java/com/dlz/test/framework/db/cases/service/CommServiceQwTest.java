@@ -1,8 +1,8 @@
 package com.dlz.test.framework.db.cases.service;
 
-import com.dlz.framework.db.modal.Page;
+import com.dlz.framework.db.modal.result.Page;
 import com.dlz.framework.db.service.ICommService;
-import com.dlz.framework.db.service.Wrapper;
+import com.dlz.framework.db.modal.wrapper.QueryWrapper;
 import com.dlz.test.framework.db.entity.Dict;
 import com.dlz.test.framework.db.entity.SysSql;
 import lombok.extern.slf4j.Slf4j;
@@ -31,15 +31,14 @@ public class CommServiceQwTest {
     @Test
     public void getBeanList1() {
         Dict dict = new Dict();
-
-        commService.getBeanList(Wrapper.wrapper(dict));
+        QueryWrapper.wrapper(dict).queryBeanList();
     }
     @Test
     public void getBeanList1N() {
         SysSql dict = new SysSql();
         dict.setId(1l);
 
-        List<SysSql> beanList = commService.getBeanList(Wrapper.wrapper(dict));
+        List<SysSql> beanList = commService.getBeanList(QueryWrapper.wrapper(dict));
         log.info("beanList:"+beanList);
     }
     @Test
@@ -47,9 +46,7 @@ public class CommServiceQwTest {
         SysSql dict = new SysSql();
         dict.setId(1l);
 
-        Wrapper<SysSql> wrapper = Wrapper.wrapper(dict);
-        wrapper.page().setPageIndex(1);
-        Page<SysSql> beanList = commService.getPage(wrapper);
+        Page<SysSql> beanList = QueryWrapper.wrapper(dict).queryPage();
         log.info("beanList:"+beanList);
     }
 
@@ -59,6 +56,6 @@ public class CommServiceQwTest {
         dict.setA2(11);
         dict.setA3(true);
 
-        commService.getBeanList(Wrapper.wrapper(dict));
+        commService.getBeanList(QueryWrapper.wrapper(dict));
     }
 }

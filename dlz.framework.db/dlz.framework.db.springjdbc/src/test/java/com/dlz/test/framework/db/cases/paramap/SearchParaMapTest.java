@@ -1,12 +1,12 @@
 package com.dlz.test.framework.db.cases.paramap;
 
 import com.dlz.comm.json.JSONMap;
-import com.dlz.framework.db.SqlUtil;
 import com.dlz.framework.db.enums.DbBuildEnum;
-import com.dlz.framework.db.modal.SearchParaMap;
-import com.dlz.framework.db.modal.items.SqlItem;
+import com.dlz.framework.db.modal.DbFactory;
+import com.dlz.framework.db.modal.condition.Condition;
+import com.dlz.framework.db.modal.map.ParaMapSearch;
+import com.dlz.framework.db.modal.map.ParaMapSearchColumn;
 import com.dlz.framework.db.service.ICommService;
-import com.dlz.framework.db.warpper.Condition;
 import com.dlz.test.framework.db.entity.Dict;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Test;
@@ -16,6 +16,8 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.test.context.junit4.SpringRunner;
+
+import java.util.List;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
@@ -27,56 +29,32 @@ public class SearchParaMapTest {
     ICommService commService;
     @Test
     public void conditionSqlTest1() {
-        SearchParaMap paraMap = new SearchParaMap("t_b_dict");
+        ParaMapSearch paraMap = new ParaMapSearch("t_b_dict");
         paraMap.addPara(Dict::getA2, "1");
         JSONMap param = new JSONMap("id","sql:id");
         paraMap.where(Condition.where().sql("[id=#{id}]",param));
-//        paraMap.where(DbBuildEnum.where.build().eq(Dict::getA2, "3"));
-
-        SqlUtil.dealParm(paraMap,1,true);
-        SqlItem sqlItem = paraMap.getSqlItem();
-        sqlItem.setSqlRun(sqlItem.getSqlDeal());
-        SqlUtil.dealParmToJdbc(paraMap);
-        log.debug(sqlItem.toString());
-        log.debug(paraMap.getPara().toString());
-        log.debug(paraMap.getPara().getStr("xx"));
-        log.debug(SqlUtil.getRunSqlByJdbc(sqlItem.getSqlJdbc(), sqlItem.getSqlJdbcPara()));
+        ParaMapTestUtil.showSql(paraMap,"conditionSqlTest1");
+        //输出sql：select * from t_b_dict where (id='sql:id')
     }
     @Test
     public void conditionSqlTest2() {
-        SearchParaMap paraMap = new SearchParaMap("t_b_dict");
+        ParaMapSearch paraMap = new ParaMapSearch("t_b_dict");
         paraMap.addPara(Dict::getA2, "1");
         JSONMap param = new JSONMap("id","sql:id");
         paraMap.where(Condition.where().sql("[id=#{id2}]",param));
-//        paraMap.where(DbBuildEnum.where.build().eq(Dict::getA2, "3"));
-
-        SqlUtil.dealParm(paraMap,1,true);
-        SqlItem sqlItem = paraMap.getSqlItem();
-        sqlItem.setSqlRun(sqlItem.getSqlDeal());
-        SqlUtil.dealParmToJdbc(paraMap);
-        log.debug(sqlItem.toString());
-        log.debug(paraMap.getPara().toString());
-        log.debug(paraMap.getPara().getStr("xx"));
-        log.debug(SqlUtil.getRunSqlByJdbc(sqlItem.getSqlJdbc(), sqlItem.getSqlJdbcPara()));
+        ParaMapTestUtil.showSql(paraMap,"conditionSqlTest2");
+        //输出sql：select A2 from t_b_dict
     }
     @Test
     public void conditionTest1() {
-        SearchParaMap paraMap = new SearchParaMap("t_b_dict");
+        ParaMapSearch paraMap = new ParaMapSearch("t_b_dict");
         paraMap.addPara(Dict::getA2, "1");
-//        paraMap.where(DbBuildEnum.where.build())
-
-        SqlUtil.dealParm(paraMap,1,true);
-        SqlItem sqlItem = paraMap.getSqlItem();
-        sqlItem.setSqlRun(sqlItem.getSqlDeal());
-        SqlUtil.dealParmToJdbc(paraMap);
-        log.debug(sqlItem.toString());
-        log.debug(paraMap.getPara().toString());
-        log.debug(paraMap.getPara().getStr("xx"));
-        log.debug(SqlUtil.getRunSqlByJdbc(sqlItem.getSqlJdbc(), sqlItem.getSqlJdbcPara()));
+        ParaMapTestUtil.showSql(paraMap,"conditionTest1");
+        //输出sql：select * from t_b_dict
     }
     @Test
     public void conditionTest() {
-        SearchParaMap paraMap = new SearchParaMap("t_b_dict");
+        ParaMapSearch paraMap = new ParaMapSearch("t_b_dict");
         paraMap.addPara(Dict::getA2, "1");
         paraMap.where(DbBuildEnum.where.build()
                 .ne(Dict::getA2, "3")
@@ -88,24 +66,14 @@ public class SearchParaMapTest {
                 .or(Condition.AND().eq(Dict::getA6, "10")
                         .eq(Dict::getA6, "10"))
                 .sql("exists (select 1 from dual where t_b_dict where 1=#{xx}) ",new JSONMap("xx",999)))
-
         ;
-
-
-        SqlUtil.dealParm(paraMap,1,true);
-        SqlItem sqlItem = paraMap.getSqlItem();
-        sqlItem.setSqlRun(sqlItem.getSqlDeal());
-        SqlUtil.dealParmToJdbc(paraMap);
-        log.debug(sqlItem.toString());
-        log.debug(paraMap.getPara().toString());
-        log.debug(paraMap.getPara().getStr("xx"));
-        log.debug(SqlUtil.getRunSqlByJdbc(sqlItem.getSqlJdbc(), sqlItem.getSqlJdbcPara()));
+        ParaMapTestUtil.showSql(paraMap,"conditionTest");
     }
 
 
     @Test
     public void conditionTest2() {
-        SearchParaMap paraMap = new SearchParaMap("t_b_dict");
+        ParaMapSearch paraMap = DbFactory.select("t_b_dict");
         paraMap.addPara(Dict::getA2, "1");
         paraMap.where(DbBuildEnum.where.build()
                 .in(Dict::getA2, "3,4,5,6")
@@ -113,17 +81,13 @@ public class SearchParaMapTest {
                 .or(Condition.AND().in(Dict::getA2, "1"))
                 .or(Condition.AND().in(Dict::getA2, "sql:select 2 from dual")))
         ;
-
-        SqlUtil.dealParm(paraMap,1,true);
-        SqlItem sqlItem = paraMap.getSqlItem();
-        sqlItem.setSqlRun(sqlItem.getSqlDeal());
-        SqlUtil.dealParmToJdbc(paraMap);
-        log.debug(sqlItem.toString());
-        log.debug(paraMap.getPara().toString());
-        log.debug(paraMap.getPara().getStr("xx"));
-        log.debug(SqlUtil.getRunSqlByJdbc(sqlItem.getSqlJdbc(), sqlItem.getSqlJdbcPara()));
+        ParaMapTestUtil.showSql(paraMap,"conditionTest2");
     }
-
-
-
+    @Test
+    public void conditionSelectTest2() {
+        ParaMapSearchColumn paraMap = DbFactory.select(Dict::getA2).where(Condition.where().in(Dict::getA2, "3,4,5,6"));
+        ParaMapTestUtil.showSql(paraMap,"conditionSelectTest2");
+        List<Long> longList1 = paraMap.getLongList();
+        log.info("longList1:"+longList1);
+    }
 }

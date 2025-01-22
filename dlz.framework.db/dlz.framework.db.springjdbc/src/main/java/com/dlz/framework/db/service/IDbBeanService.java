@@ -1,7 +1,8 @@
 package com.dlz.framework.db.service;
 
+import com.dlz.framework.db.dao.IDlzDao;
 import com.dlz.framework.db.helper.bean.Sort;
-import com.dlz.framework.db.modal.Page;
+import com.dlz.framework.db.modal.result.Page;
 
 import java.util.List;
 
@@ -13,7 +14,8 @@ import java.util.List;
  * @return
  * @throws Exception
  */
-public interface IDbBeanService extends IBaseDbService{
+public interface IDbBeanService{
+	IDlzDao getDao();
 	<T> List<T> getBeanList(T bean);
 	<T> T getBean(T bean);
 	<T> T getById(String id,Class<T> clazz);

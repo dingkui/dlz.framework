@@ -1,8 +1,8 @@
 package com.dlz.test.framework.db.cases.paramap;
 
-import com.dlz.framework.db.modal.ParaMapFactory;
+import com.dlz.framework.db.modal.DbFactory;
 import com.dlz.framework.db.service.ICommService;
-import com.dlz.framework.db.warpper.Condition;
+import com.dlz.framework.db.modal.condition.Condition;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,13 +22,13 @@ public class UpdateParaTest {
 
 	@Test
 	public void UpdateParaMapTest(){
-		ParaMapFactory
+		DbFactory
 				.update("dh_room")
 				.set("room_id", 1)
 				.where(Condition.where()
 					.eq("equipment_id", 1)
 					.eq("equipment_id2", 1)
-				).excute(commService);
+				).excute();
 	}
 	@Test
 	public void DeleteParaMapTest(){
@@ -38,9 +38,9 @@ public class UpdateParaTest {
 				.or(Condition.AND().eq("xxId2", 3).eq("xxId1", 4))
 				.and(Condition.OR().eq("xxId2", 3).eq("xxId1", 4))
 				.eq("xxId3", 5);
-		ParaMapFactory
+		DbFactory
 				.delete("dh_room")
 				.where(where)
-				.excute(commService);
+				.excute();
 	}
 }

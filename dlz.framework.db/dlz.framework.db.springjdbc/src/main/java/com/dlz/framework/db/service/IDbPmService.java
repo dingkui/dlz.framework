@@ -5,11 +5,12 @@ import com.dlz.comm.util.JacksonUtil;
 import com.dlz.comm.util.VAL;
 import com.dlz.comm.util.ValUtil;
 import com.dlz.framework.db.convertor.ConvertUtil;
+import com.dlz.framework.db.dao.IDlzDao;
 import com.dlz.framework.db.helper.util.DbNameUtil;
-import com.dlz.framework.db.modal.BaseParaMap;
-import com.dlz.framework.db.modal.Page;
-import com.dlz.framework.db.modal.ResultMap;
 import com.dlz.framework.db.modal.items.SqlItem;
+import com.dlz.framework.db.modal.map.ParaMapBase;
+import com.dlz.framework.db.modal.result.Page;
+import com.dlz.framework.db.modal.result.ResultMap;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -24,7 +25,8 @@ import java.util.List;
  * @return
  * @throws Exception
  */
-public interface IDbPmService extends IBaseDbService {
+public interface IDbPmService{
+    IDlzDao getDao();
     /**
      * 更新或插入数据库
      * sql语句，可以带参数如：update JOB_AD set AD_text=#{adText} where ad_id in (${ad_id})
@@ -33,7 +35,7 @@ public interface IDbPmService extends IBaseDbService {
      * @return
      * @throws Exception
      */
-    default int excuteSql(BaseParaMap paraMap) {
+    default int excuteSql(ParaMapBase paraMap) {
         VAL<String, Object[]> jdbcSql = paraMap.jdbcSql();
         try {
             return getDao().update(jdbcSql.v1, jdbcSql.v2);
@@ -54,11 +56,10 @@ public interface IDbPmService extends IBaseDbService {
      * @return
      * @throws Exception
      */
-    default List<ResultMap> getMapList(BaseParaMap paraMap) {
+    default List<ResultMap> getMapList(ParaMapBase paraMap) {
         try {
             VAL<String, Object[]> jdbcSql = paraMap.jdbcPage();
             List<ResultMap> list = getDao().getList(jdbcSql.v1, jdbcSql.v2);
-//            List<ResultMap> list2 = list.stream().map(r -> ConvertUtil.converResultMap(r, paraMap.getConvert())).collect(Collectors.toList());
             return list;
         } catch (Exception e) {
             if (e instanceof DbException) {
@@ -69,7 +70,7 @@ public interface IDbPmService extends IBaseDbService {
         }
     }
 
-    default int getCnt(BaseParaMap paraMap) {
+    default int getCnt(ParaMapBase paraMap) {
         try {
             VAL<String, Object[]> jdbcSql = paraMap.jdbcCnt();
             int cnt = ValUtil.getInt(ConvertUtil.getFistClumn(getDao().getList(jdbcSql.v1, jdbcSql.v2).get(0)));
@@ -86,7 +87,7 @@ public interface IDbPmService extends IBaseDbService {
     /**
      * 从数据库中取得单个字段数据
      */
-    default Object getColum(BaseParaMap paraMap) {
+    default Object getColum(ParaMapBase paraMap) {
         List<ResultMap> list = getMapList(paraMap);
         if (list.size() == 0) {
             return null;
@@ -97,62 +98,62 @@ public interface IDbPmService extends IBaseDbService {
         }
     }
 
-    default String getStr(BaseParaMap paraMap) {
+    default String getStr(ParaMapBase paraMap) {
         return ConvertUtil.getColum(getMapList(paraMap), String.class);
     }
 
-    default BigDecimal getBigDecimal(BaseParaMap paraMap) {
+    default BigDecimal getBigDecimal(ParaMapBase paraMap) {
         return ConvertUtil.getColum(getMapList(paraMap), BigDecimal.class);
     }
 
-    default Float getFloat(BaseParaMap paraMap) {
+    default Float getFloat(ParaMapBase paraMap) {
         return ConvertUtil.getColum(getMapList(paraMap), Float.class);
     }
 
-    default Integer getInt(BaseParaMap paraMap) {
+    default Integer getInt(ParaMapBase paraMap) {
         return ConvertUtil.getColum(getMapList(paraMap), Integer.class);
     }
 
-    default Long getLong(BaseParaMap paraMap) {
+    default Long getLong(ParaMapBase paraMap) {
         return ConvertUtil.getColum(getMapList(paraMap), Long.class);
     }
 
-    default Double getDouble(BaseParaMap paraMap) {
+    default Double getDouble(ParaMapBase paraMap) {
         return ConvertUtil.getColum(getMapList(paraMap), Double.class);
     }
 
-    default List<String> getStrList(BaseParaMap paraMap) {
+    default List<String> getStrList(ParaMapBase paraMap) {
         return ConvertUtil.getColumList(getMapList(paraMap), String.class);
     }
 
-    default List<BigDecimal> getBigDecimalList(BaseParaMap paraMap) {
+    default List<BigDecimal> getBigDecimalList(ParaMapBase paraMap) {
         return ConvertUtil.getColumList(getMapList(paraMap), BigDecimal.class);
     }
 
-    default List<Float> getFloatList(BaseParaMap paraMap) {
+    default List<Float> getFloatList(ParaMapBase paraMap) {
         return ConvertUtil.getColumList(getMapList(paraMap), Float.class);
     }
 
-    default List<Integer> getIntList(BaseParaMap paraMap) {
+    default List<Integer> getIntList(ParaMapBase paraMap) {
         return ConvertUtil.getColumList(getMapList(paraMap), Integer.class);
     }
 
-    default List<Long> getLongList(BaseParaMap paraMap) {
+    default List<Long> getLongList(ParaMapBase paraMap) {
         return ConvertUtil.getColumList(getMapList(paraMap), Long.class);
     }
 
-    default List<Double> getDoubleList(BaseParaMap paraMap) {
+    default List<Double> getDoubleList(ParaMapBase paraMap) {
         return ConvertUtil.getColumList(getMapList(paraMap), Double.class);
     }
 
     /**
      * 从数据库中取得集合
      */
-    default ResultMap getMap(BaseParaMap paraMap) {
+    default ResultMap getMap(ParaMapBase paraMap) {
         return getMap(paraMap, true);
     }
 
-    default ResultMap getMap(BaseParaMap paraMap, boolean throwEx) {
+    default ResultMap getMap(ParaMapBase paraMap, boolean throwEx) {
         List<ResultMap> list = getMapList(paraMap);
         if (list.size() == 0) {
             return null;
@@ -163,7 +164,7 @@ public interface IDbPmService extends IBaseDbService {
         }
     }
 
-    default <T> T getBean(BaseParaMap paraMap, Class<T> t, boolean throwEx) {
+    default <T> T getBean(ParaMapBase paraMap, Class<T> t, boolean throwEx) {
         try {
             return JacksonUtil.coverObj(getMap(paraMap, throwEx), t);
         } catch (Exception e) {
@@ -174,21 +175,12 @@ public interface IDbPmService extends IBaseDbService {
         }
     }
 
-    default <T> T getBean(BaseParaMap paraMap, Class<T> t) {
+    default <T> T getBean(ParaMapBase paraMap, Class<T> t) {
         return getBean(paraMap, t, true);
     }
 
-    default <T> List<T> getBeanList(BaseParaMap paraMap, Class<T> t) {
+    default <T> List<T> getBeanList(ParaMapBase paraMap, Class<T> t) {
         List<ResultMap> list = getMapList(paraMap);
-//        List<T> l = new ArrayList<T>();
-//        for (ResultMap r : list) {
-//            try {
-//                l.add(JacksonUtil.coverObj(r, t));
-//            } catch (Exception e) {
-//                throw new DbException(e.getMessage(), 1005, e);
-//            }
-//        }
-//        return l;
         return DbNameUtil.coverResult2Bean(list,t);
     }
 
@@ -198,11 +190,11 @@ public interface IDbPmService extends IBaseDbService {
      * @return
      * @throws Exception
      */
-    default Page<ResultMap> getPage(BaseParaMap paraMap) {
+    default Page<ResultMap> getPage(ParaMapBase paraMap) {
         return getPage(paraMap, ResultMap.class);
     }
 
-    default <T> Page<T> getPage(BaseParaMap paraMap, Class<T> t) {
+    default <T> Page<T> getPage(ParaMapBase paraMap, Class<T> t) {
         Page<T> page = paraMap.getPage();
         //是否需要查询列表（需要统计条数并且条数是0的情况不查询，直接返回空列表）
         boolean needList = true;

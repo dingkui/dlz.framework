@@ -1,4 +1,4 @@
-package com.dlz.framework.db.modal;
+package com.dlz.framework.db.modal.map;
 
 import com.dlz.framework.db.convertor.ConvertUtil;
 
@@ -7,13 +7,13 @@ import com.dlz.framework.db.convertor.ConvertUtil;
  *
  * @author dingkui
  */
-public class CreateSqlParaMap extends BaseParaMap {
+public class ParaMapMaker extends ParaMapBase {
 
     private static final long serialVersionUID = 8374167270612933157L;
     protected static final String STR_TABLENAME = "tableName";
     protected static final String STR_WHERE = "where";
     private String tableName;
-    protected CreateSqlParaMap(String Sql, String tableName) {
+    protected ParaMapMaker(String Sql, String tableName) {
         super(Sql);
         table(tableName);
     }
@@ -34,7 +34,7 @@ public class CreateSqlParaMap extends BaseParaMap {
      * @param value
      * @return
      */
-    public CreateSqlParaMap addClunmnValue(String key, Object value) {
+    public ParaMapMaker addClunmnValue(String key, Object value) {
         return addClunmnValue(key, key, value);
     }
 
@@ -45,7 +45,7 @@ public class CreateSqlParaMap extends BaseParaMap {
      * @param value
      * @return
      */
-    public CreateSqlParaMap addClunmnValue(String key, String clumnName, Object value) {
+    public ParaMapMaker addClunmnValue(String key, String clumnName, Object value) {
         addPara(key, ConvertUtil.getVal4Db(tableName, clumnName, value));
         return this;
     }

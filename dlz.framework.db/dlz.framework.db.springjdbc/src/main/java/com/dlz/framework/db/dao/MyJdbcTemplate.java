@@ -5,7 +5,7 @@ import com.dlz.framework.db.convertor.rowMapper.MySqlColumnMapRowMapper;
 import com.dlz.framework.db.convertor.rowMapper.OracleColumnMapRowMapper;
 import com.dlz.framework.db.convertor.rowMapper.ResultMapRowMapper;
 import com.dlz.framework.db.enums.DbTypeEnum;
-import com.dlz.framework.db.modal.ResultMap;
+import com.dlz.framework.db.modal.result.ResultMap;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;

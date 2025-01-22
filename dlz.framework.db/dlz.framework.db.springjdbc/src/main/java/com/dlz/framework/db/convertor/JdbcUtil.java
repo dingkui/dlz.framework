@@ -1,6 +1,6 @@
 package com.dlz.framework.db.convertor;
 
-import com.dlz.framework.db.modal.ResultMap;
+import com.dlz.framework.db.modal.result.ResultMap;
 
 import java.io.IOException;
 import java.io.InputStream;

@@ -5,7 +5,7 @@ import com.baomidou.mybatisplus.annotation.TableName;
 import com.dlz.comm.exception.SystemException;
 import com.dlz.comm.util.StringUtils;
 import com.dlz.comm.util.ValUtil;
-import com.dlz.framework.db.modal.ResultMap;
+import com.dlz.framework.db.modal.result.ResultMap;
 import com.dlz.framework.util.system.MFunction;
 import com.dlz.framework.util.system.Reflections;
 import io.swagger.annotations.ApiModel;

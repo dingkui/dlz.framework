@@ -7,7 +7,7 @@ import com.dlz.framework.db.helper.bean.ColumnInfo;
 import com.dlz.framework.db.helper.bean.TableInfo;
 import com.dlz.framework.db.helper.support.SqlHelper;
 import com.dlz.framework.db.helper.util.DbNameUtil;
-import com.dlz.framework.db.modal.ResultMap;
+import com.dlz.framework.db.modal.result.ResultMap;
 import lombok.extern.slf4j.Slf4j;
 
 import java.lang.reflect.Field;

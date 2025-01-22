@@ -3,7 +3,7 @@ package com.dlz.framework.db.holder;
 import com.dlz.comm.exception.DbException;
 import com.dlz.comm.util.ExceptionUtils;
 import com.dlz.framework.db.config.DlzDbProperties;
-import com.dlz.framework.db.modal.ResultMap;
+import com.dlz.framework.db.modal.result.ResultMap;
 import com.dlz.framework.db.service.ICommService;
 import com.dlz.framework.holder.SpringHolder;
 import lombok.extern.slf4j.Slf4j;

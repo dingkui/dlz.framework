@@ -1,4 +1,4 @@
-package com.dlz.framework.db.modal;
+package com.dlz.framework.db.modal.map;
 
 import com.dlz.comm.json.JSONMap;
 import com.dlz.comm.util.VAL;
@@ -8,6 +8,7 @@ import com.dlz.framework.db.convertor.result.impl.DateConverter;
 import com.dlz.framework.db.enums.DateFormatEnum;
 import com.dlz.framework.db.enums.ParaTypeEnum;
 import com.dlz.framework.db.modal.items.SqlItem;
+import com.dlz.framework.db.modal.result.Page;
 import com.dlz.framework.util.system.MFunction;
 import com.dlz.framework.util.system.Reflections;
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -16,7 +17,7 @@ import java.io.Serializable;
 import java.util.Map;
 
 @SuppressWarnings("rawtypes")
-public class BaseParaMap implements Serializable {
+public class ParaMapBase implements Serializable {
 
     private static final long serialVersionUID = 8374167270612933157L;
     @JsonIgnore
@@ -29,18 +30,18 @@ public class BaseParaMap implements Serializable {
         convert.addClassConvert(new DateConverter(DateFormatEnum.DateTimeStr));
     }
 
-    public BaseParaMap(String sqlKey) {
+    public ParaMapBase(String sqlKey) {
         sqlItem.setSqlKey(sqlKey);
         this.addDefualtConverter();
     }
 
-    public BaseParaMap(String sqlKey, Page page) {
+    public ParaMapBase(String sqlKey, Page page) {
         sqlItem.setSqlKey(sqlKey);
         this.page=page;
         this.addDefualtConverter();
     }
 
-    public BaseParaMap addParas(Map<String, Object> map) {
+    public ParaMapBase addParas(Map<String, Object> map) {
         for (String key : map.keySet()) {
             Object v = map.get(key);
             if (v instanceof String[]) {
@@ -64,11 +65,11 @@ public class BaseParaMap implements Serializable {
      * @param value
      * @return
      */
-    public BaseParaMap addPara(String key, Object value) {
+    public ParaMapBase addPara(String key, Object value) {
 		para.put(key, value == null ? "" : value);
         return this;
     }
-    public <T> BaseParaMap addPara(MFunction<T, ?> column, Object value){
+    public <T> ParaMapBase addPara(MFunction<T, ?> column, Object value){
         return addPara(Reflections.getFieldName(column),value);
     }
 
@@ -80,7 +81,7 @@ public class BaseParaMap implements Serializable {
      * @param pte
      * @return
      */
-    public BaseParaMap addPara(String key, String value, ParaTypeEnum pte) {
+    public ParaMapBase addPara(String key, String value, ParaTypeEnum pte) {
 		para.put(key, SqlUtil.coverString2Object(value, pte));
         return this;
     }

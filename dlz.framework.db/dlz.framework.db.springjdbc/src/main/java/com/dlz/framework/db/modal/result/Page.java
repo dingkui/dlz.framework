@@ -1,4 +1,4 @@
-package com.dlz.framework.db.modal;
+package com.dlz.framework.db.modal.result;
 
 import com.dlz.comm.json.JSONMap;
 import io.swagger.annotations.ApiModel;

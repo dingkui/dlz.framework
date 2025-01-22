@@ -5,7 +5,7 @@ import com.dlz.framework.db.convertor.result.impl.DateConverter;
 import com.dlz.framework.db.convertor.result.impl.DateNameConverter;
 import com.dlz.framework.db.convertor.result.impl.DictConverter;
 import com.dlz.framework.db.enums.DateFormatEnum;
-import com.dlz.framework.db.modal.ResultMap;
+import com.dlz.framework.db.modal.result.ResultMap;
 
 import java.util.HashMap;
 import java.util.List;

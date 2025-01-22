@@ -1,7 +1,7 @@
 package com.dlz.test.framework.db.cases.service;
 
-import com.dlz.framework.db.modal.Page;
-import com.dlz.framework.db.modal.ParaMap;
+import com.dlz.framework.db.modal.result.Page;
+import com.dlz.framework.db.modal.map.ParaMap;
 import com.dlz.framework.db.service.ICommService;
 import org.junit.Test;
 import org.junit.runner.RunWith;

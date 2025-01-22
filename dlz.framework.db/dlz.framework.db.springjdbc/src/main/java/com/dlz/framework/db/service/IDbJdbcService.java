@@ -3,7 +3,8 @@ package com.dlz.framework.db.service;
 import com.dlz.comm.exception.DbException;
 import com.dlz.comm.util.JacksonUtil;
 import com.dlz.framework.db.convertor.ConvertUtil;
-import com.dlz.framework.db.modal.ResultMap;
+import com.dlz.framework.db.dao.IDlzDao;
+import com.dlz.framework.db.modal.result.ResultMap;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -17,7 +18,8 @@ import java.util.List;
  * @return
  * @throws Exception
  */
-public interface IDbJdbcService extends IBaseDbService{
+public interface IDbJdbcService{
+	IDlzDao getDao();
 	default List<ResultMap> getMapList(String sql, Object... para) {
 		return getDao().getList(sql, para);
 	}

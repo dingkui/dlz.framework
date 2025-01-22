@@ -12,8 +12,8 @@ import com.dlz.framework.db.helper.bean.Update;
 import com.dlz.framework.db.helper.util.DbNameUtil;
 import com.dlz.framework.db.helper.wrapper.ConditionAndWrapper;
 import com.dlz.framework.db.helper.wrapper.ConditionWrapper;
-import com.dlz.framework.db.modal.Page;
-import com.dlz.framework.db.modal.ResultMap;
+import com.dlz.framework.db.modal.result.Page;
+import com.dlz.framework.db.modal.result.ResultMap;
 import com.dlz.framework.util.system.MFunction;
 import com.dlz.framework.util.system.Reflections;
 

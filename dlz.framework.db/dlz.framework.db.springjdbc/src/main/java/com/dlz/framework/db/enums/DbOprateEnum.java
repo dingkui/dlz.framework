@@ -5,7 +5,7 @@ import com.dlz.comm.util.ValUtil;
 import com.dlz.comm.util.encry.TraceUtil;
 import com.dlz.framework.db.SqlUtil;
 import com.dlz.framework.db.convertor.ConvertUtil;
-import com.dlz.framework.db.warpper.Condition;
+import com.dlz.framework.db.modal.condition.Condition;
 import lombok.AllArgsConstructor;
 
 @AllArgsConstructor

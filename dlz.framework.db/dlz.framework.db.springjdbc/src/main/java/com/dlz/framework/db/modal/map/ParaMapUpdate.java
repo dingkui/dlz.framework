@@ -1,9 +1,7 @@
-package com.dlz.framework.db.modal;
+package com.dlz.framework.db.modal.map;
 
-import com.dlz.comm.util.StringUtils;
 import com.dlz.framework.db.convertor.ConvertUtil;
-import com.dlz.framework.db.service.ICommService;
-import com.dlz.framework.db.warpper.Condition;
+import com.dlz.framework.db.holder.ServiceHolder;
 import com.dlz.framework.util.system.MFunction;
 import com.dlz.framework.util.system.Reflections;
 import lombok.extern.slf4j.Slf4j;
@@ -17,11 +15,11 @@ import java.util.Map;
  *
  */
 @Slf4j
-public class UpdateParaMap extends CreateSqlParaMap{
+public class ParaMapUpdate extends AParaMapSearch<ParaMapUpdate>{
 	private static final long serialVersionUID = 8374167270612933157L;
 	private static final String SQL="key.comm.updateTable";
 	private static final String STR_SETS="sets";
-	public UpdateParaMap(String tableName){
+	public ParaMapUpdate(String tableName){
 		super(SQL,tableName);
 	}
 
@@ -34,7 +32,7 @@ public class UpdateParaMap extends CreateSqlParaMap{
 	 * @param value
 	 * @return
 	 */
-	public UpdateParaMap set(String paraName,Object value){
+	public ParaMapUpdate set(String paraName, Object value){
 		StringBuilder sbSets = (StringBuilder)this.getPara().get(STR_SETS);
 		if(sbSets==null){
 			sbSets=new StringBuilder();
@@ -73,22 +71,19 @@ public class UpdateParaMap extends CreateSqlParaMap{
 	 * @param setValues
 	 * @return
 	 */
-	public UpdateParaMap set(Map<String,Object> setValues){
+	public ParaMapUpdate set(Map<String,Object> setValues){
 		for(String str:setValues.keySet()){
 			set(str, setValues.get(str));
 		}
 		return this;
 	}
 
-	public UpdateParaMap where(Condition cond){
-		String runsql = cond.getRunsql(this);
-		if(StringUtils.isEmpty(runsql)){
-			runsql="where false";
-		}
-		super.where(runsql);
-		return this;
+	public int excute(){
+		return ServiceHolder.getService().excuteSql(this);
 	}
-	public int excute(ICommService service){
-		return service.excuteSql(this);
+
+	@Override
+	public ParaMapUpdate mine() {
+		return this;
 	}
 }
