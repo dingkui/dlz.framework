@@ -3,6 +3,7 @@ package com.dlz.test.framework.db.cases.paramap;
 import com.dlz.framework.db.modal.DbFactory;
 import com.dlz.framework.db.service.ICommService;
 import com.dlz.framework.db.modal.condition.Condition;
+import com.dlz.test.framework.db.config.SpingDbBaseTest;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,7 +17,7 @@ import org.springframework.test.context.junit4.SpringRunner;
  */
 @RunWith(SpringRunner.class)
 @SpringBootTest
-public class UpdateParaTest {
+public class UpdateParaTest  extends SpingDbBaseTest {
 	@Autowired
 	ICommService commService;
 

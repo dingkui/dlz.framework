@@ -22,6 +22,8 @@ spring:
     timeout: 5000
 
 dlz:
+  cache:
+    anno: true
   db:
     log:
       showResult: true
@@ -29,6 +31,7 @@ dlz:
       showKeySql: true
     jdbcSql: true
     use-db-sql: true
+    showCaller: false
     helper:
       auto-update: false
-    showCaller: true
+      package-name: com.dlz.test.db.entity

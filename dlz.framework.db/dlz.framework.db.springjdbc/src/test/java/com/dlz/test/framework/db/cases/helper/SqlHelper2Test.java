@@ -1,46 +1,41 @@
 package com.dlz.test.framework.db.cases.helper;
 
-import com.dlz.framework.db.config.DlzDbProperties;
-import com.dlz.framework.db.dao.DlzDao;
 import com.dlz.framework.db.helper.bean.TableInfo;
-import com.dlz.framework.db.helper.support.dbs.DbOpMysql;
-import com.dlz.framework.db.holder.SqlHolder;
+import com.dlz.test.framework.db.config.SpingDbBaseTest;
 import org.junit.Test;
-import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.datasource.DriverManagerDataSource;
 
 
-public class SqlHelper2Test {
+public class SqlHelper2Test extends SpingDbBaseTest {
     @Test
     public void landaTest1() {
-        DriverManagerDataSource dataSource = new DriverManagerDataSource();
-        dataSource.setDriverClassName("com.mysql.cj.jdbc.Driver");
-        dataSource.setUrl("jdbc:mysql://192.168.1.126:3306/elec?useSSL=false&useUnicode=true&characterEncoding=utf-8&zeroDateTimeBehavior=convertToNull&transformedBitIsBoolean=true&serverTimezone=GMT%2B8&nullCatalogMeansCurrent=true&allowPublicKeyRetrieval=true");
-        dataSource.setUsername("root");
-        dataSource.setPassword("1234qwer");
+//        DriverManagerDataSource dataSource = new DriverManagerDataSource();
+//        dataSource.setDriverClassName("com.mysql.cj.jdbc.Driver");
+//        dataSource.setUrl("jdbc:mysql://192.168.1.126:3306/elec?useSSL=false&useUnicode=true&characterEncoding=utf-8&zeroDateTimeBehavior=convertToNull&transformedBitIsBoolean=true&serverTimezone=GMT%2B8&nullCatalogMeansCurrent=true&allowPublicKeyRetrieval=true");
+//        dataSource.setUsername("root");
+//        dataSource.setPassword("1234qwer");
+//
+//        SqlHolder.init(new DlzDbProperties());
+//        JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
+//        DlzDao dao = new DlzDao(jdbcTemplate);
+//        DbOpMysql dbOpMysql = new DbOpMysql(dao);
 
-        SqlHolder.init(new DlzDbProperties());
-        JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
-        DlzDao dao = new DlzDao(jdbcTemplate);
-        DbOpMysql dbOpMysql = new DbOpMysql(dao);
-
-        TableInfo sys_test = dbOpMysql.getTableInfo("sys_code");
+        TableInfo sys_test = sqlHelper.getTableInfo("sys_code");
         System.out.println(sys_test);
     }
     @Test
     public void lamdaTest2() {
-        DriverManagerDataSource dataSource = new DriverManagerDataSource();
-        dataSource.setDriverClassName("com.mysql.cj.jdbc.Driver");
-        dataSource.setUrl("jdbc:mysql://192.168.1.126:3306/elec");
-        dataSource.setUsername("root");
-        dataSource.setPassword("1234qwer");
+//        DriverManagerDataSource dataSource = new DriverManagerDataSource();
+//        dataSource.setDriverClassName("com.mysql.cj.jdbc.Driver");
+//        dataSource.setUrl("jdbc:mysql://192.168.1.126:3306/elec");
+//        dataSource.setUsername("root");
+//        dataSource.setPassword("1234qwer");
+//
+//        SqlHolder.init(new DlzDbProperties());
+//        JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
+//        DlzDao dao = new DlzDao(jdbcTemplate);
+//        DbOpMysql dbOpMysql = new DbOpMysql(dao);
 
-        SqlHolder.init(new DlzDbProperties());
-        JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
-        DlzDao dao = new DlzDao(jdbcTemplate);
-        DbOpMysql dbOpMysql = new DbOpMysql(dao);
-
-        TableInfo sys_test = dbOpMysql.getTableInfo("elec_graph");
+        TableInfo sys_test = sqlHelper.getTableInfo("elec_graph");
         System.out.println(sys_test);
     }
 }

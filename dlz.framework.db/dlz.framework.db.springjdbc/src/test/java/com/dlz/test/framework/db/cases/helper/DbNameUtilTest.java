@@ -11,12 +11,10 @@ import java.util.Map;
 
 
 public class DbNameUtilTest {
-
-
     @Test
     public void coverResult2BeanTest1() {
-        ResultMap re=new ResultMap();
-        re.put("a7","123");
+        ResultMap re = new ResultMap();
+        re.put("a7", "123");
         Map map = DbNameUtil.coverResult2Bean(re, Map.class);
         Map map2 = DbNameUtil.coverResult2Bean(re, JSONMap.class);
         Map map3 = DbNameUtil.coverResult2Bean(re, ResultMap.class);

@@ -1,16 +1,12 @@
 package com.dlz.test.framework.db.cases.service;
 
 import com.dlz.framework.db.modal.result.Page;
-import com.dlz.framework.db.service.ICommService;
 import com.dlz.framework.db.modal.wrapper.QueryWrapper;
+import com.dlz.test.framework.db.config.SpingDbBaseTest;
 import com.dlz.test.framework.db.entity.Dict;
 import com.dlz.test.framework.db.entity.SysSql;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.junit4.SpringRunner;
 
 import java.util.List;
 
@@ -20,14 +16,8 @@ import java.util.List;
  *
  * @author dk
  */
-@RunWith(SpringRunner.class)
-@SpringBootTest
 @Slf4j
-public class CommServiceQwTest {
-    @Autowired
-    ICommService commService;
-
-
+public class CommServiceQwTest  extends SpingDbBaseTest {
     @Test
     public void getBeanList1() {
         Dict dict = new Dict();
