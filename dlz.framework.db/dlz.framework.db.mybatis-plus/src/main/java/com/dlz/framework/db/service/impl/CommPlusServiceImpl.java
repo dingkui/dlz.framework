@@ -65,35 +65,35 @@ public class CommPlusServiceImpl implements ICommPlusService {
     }
 
     public <T> int removeById(Serializable id, Class<T> clazz) {
-        return ((BaseMapper<T>) getMapper(clazz)).deleteById(id);
+        return (getMapper(clazz)).deleteById(id);
     }
 
     public <T> int removeByMap(JSONMap columnMap, Class<T> clazz) {
-        return ((BaseMapper<T>) getMapper(clazz)).deleteByMap(columnMap);
+        return (getMapper(clazz)).deleteByMap(columnMap);
     }
 
     public <T> int remove(Wrapper<T> queryWrapper, Class<T> clazz) {
-        return ((BaseMapper<T>) getMapper(clazz)).delete(queryWrapper);
+        return (getMapper(clazz)).delete(queryWrapper);
     }
 
     public <T> int removeByIds(Collection<? extends Serializable> idList, Class<T> clazz) {
-        return ((BaseMapper<T>) getMapper(clazz)).deleteBatchIds(idList);
+        return (getMapper(clazz)).deleteBatchIds(idList);
     }
 
     public <T> int updateById(T entity) {
-        return ((BaseMapper<T>) getMapper(entity.getClass())).updateById(entity);
+        return (getMapper((Class<T>)entity.getClass())).updateById(entity);
     }
 
     public <T> int update(T entity, Wrapper<T> updateWrapper) {
-        return ((BaseMapper<T>) getMapper(entity.getClass())).update(entity, updateWrapper);
+        return (getMapper((Class<T>)entity.getClass())).update(entity, updateWrapper);
     }
 
     public <T> T getById(Serializable id, Class<T> clazz) {
-        return ((BaseMapper<T>) getMapper(clazz)).selectById(id);
+        return (getMapper(clazz)).selectById(id);
     }
 
     public <T> List<T> listByIds(Collection<? extends Serializable> idList, Class<T> clazz) {
-        return ((BaseMapper<T>) getMapper(clazz)).selectBatchIds(idList);
+        return (getMapper(clazz)).selectBatchIds(idList);
     }
 
     @Override
@@ -109,28 +109,28 @@ public class CommPlusServiceImpl implements ICommPlusService {
     }
 
     public <T> List<T> listByMap(Map<String, Object> columnMap, Class<T> clazz) {
-        return ((BaseMapper<T>) getMapper(clazz)).selectByMap(columnMap);
+        return (getMapper(clazz)).selectByMap(columnMap);
     }
 
     public <T> T getOne(Wrapper<T> queryWrapper, Class<T> clazz, boolean throwEx) {
         if (throwEx) {
-            return ((BaseMapper<T>) getMapper(clazz)).selectOne(queryWrapper);
+            return (getMapper(clazz)).selectOne(queryWrapper);
         }
-        return getObject(((BaseMapper<T>) getMapper(clazz)).selectList(queryWrapper));
+        return getObject((getMapper(clazz)).selectList(queryWrapper));
 
     }
 
     public <T> int count(Wrapper<T> queryWrapper, Class<T> clazz) {
-        return ValUtil.getInt(((BaseMapper<T>) getMapper(clazz)).selectCount(queryWrapper));
+        return ValUtil.getInt((getMapper(clazz)).selectCount(queryWrapper));
     }
 
     public <T> List<T> list(Wrapper<T> queryWrapper, Class<T> clazz) {
-        return ((BaseMapper<T>) getMapper(clazz)).selectList(queryWrapper);
+        return (getMapper(clazz)).selectList(queryWrapper);
 
     }
 
     public <T> List<Map<String, Object>> listMaps(Wrapper<T> queryWrapper, Class<T> clazz) {
-        return ((BaseMapper<T>) getMapper(clazz)).selectMaps(queryWrapper);
+        return (getMapper(clazz)).selectMaps(queryWrapper);
     }
 
 

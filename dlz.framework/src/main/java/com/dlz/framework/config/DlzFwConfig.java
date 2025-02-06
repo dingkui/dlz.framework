@@ -29,110 +29,116 @@ import redis.clients.jedis.JedisPool;
 @Slf4j
 @Setter
 @Getter
-@EnableConfigurationProperties({DlzProperties.class,CacheProperties.class})
+@EnableConfigurationProperties({DlzProperties.class, CacheProperties.class})
 public class DlzFwConfig {
-	/**
-	 * spring 容器启动开始执行
-	 * @return
-	 */
+    /**
+     * spring 容器启动开始执行
+     *
+     * @return
+     */
     @Bean
     public BeanFactoryPostProcessor myBeanFactory(DlzProperties properties) {
         return beanFactory -> {
-			SpringHolder.init(beanFactory);
-			String apiScanPath = properties.getApiScanPath();
-			if(StringUtils.isNotEmpty(apiScanPath)){
-				log.info("dlz spring apiScan init ...,resoucePath={}", apiScanPath);
-				new DlzSpringScaner().doComponents(new ApiScaner(apiScanPath));
-			}
-		};
+            SpringHolder.init(beanFactory);
+            String apiScanPath = properties.getApiScanPath();
+            if (StringUtils.isNotEmpty(apiScanPath)) {
+                log.info("dlz spring apiScan init ...,resoucePath={}", apiScanPath);
+                new DlzSpringScaner().doComponents(new ApiScaner(apiScanPath));
+            }
+        };
     }
 
-	/**
-	 * 缓存实现
-	 * @return
-	 */
-	@Bean(name = "dlzCache")
+    /**
+     * 缓存实现
+     *
+     * @return
+     */
+    @Bean(name = "dlzCache")
     @ConditionalOnMissingBean(name = "dlzCache")
-	@Lazy
+    @Lazy
     public ICache dlzCache(CacheProperties properties) throws InstantiationException, IllegalAccessException {
-		Class<? extends ICache> cacheClass = properties.getCacheClass();
-		log.info("dlzCache init ..."+ cacheClass.getName());
+        Class<? extends ICache> cacheClass = properties.getCacheClass();
+        log.info("dlzCache init ..." + cacheClass.getName());
         return cacheClass.newInstance();
     }
 
-	/**
-	 * redis key构建器
-	 * @return
-	 */
-	@Bean(name = "redisKeyMaker")
-	@ConditionalOnMissingBean(name = "redisKeyMaker")
-	@Lazy
-	public IKeyMaker redisKeyMaker() {
-		log.info("default redisKeyMaker init ...");
-		return new RedisKeyMaker();
-	}
+    /**
+     * redis key构建器
+     *
+     * @return
+     */
+    @Bean(name = "redisKeyMaker")
+    @ConditionalOnMissingBean(name = "redisKeyMaker")
+    @Lazy
+    public IKeyMaker redisKeyMaker() {
+        log.info("default redisKeyMaker init ...");
+        return new RedisKeyMaker();
+    }
 
-	@Bean(name = "redisPool")
-	@ConditionalOnMissingBean(name = "redisPool")
-	@Lazy
-	public JedisPool redisPool() {
-		log.info("default redisPool init ...");
-		JedisConfig jedisConfig = SpringHolder.registerBean(JedisConfig.class);
-		return jedisConfig.redisPoolFactory();
-	}
+    @Bean(name = "redisPool")
+    @ConditionalOnMissingBean(name = "redisPool")
+    @Lazy
+    public JedisPool redisPool() {
+        log.info("default redisPool init ...");
+        JedisConfig jedisConfig = SpringHolder.registerBean(JedisConfig.class);
+        return jedisConfig.redisPoolFactory();
+    }
 
-	/**
-	 * 缓存切面
-	 * @param cache
-	 * @return
-	 */
+    /**
+     * 缓存切面
+     *
+     * @param cache
+     * @return
+     */
     @Bean
-	@ConditionalOnProperty(value = "dlz.cache.anno", havingValue = "false")
+    @ConditionalOnProperty(value = "dlz.cache.anno", havingValue = "false")
     public CacheAspect cacheAspect(ICache cache) {
-		log.info("dlz.cache.anno:CacheAspect init ...");
+        log.info("dlz.cache.anno:CacheAspect init ...");
         return new CacheAspect(cache);
     }
 
     @Bean(name = "redisQueueProviderApiHandler")
-	@Lazy
-	@ConditionalOnMissingBean(name = "redisQueueProviderApiHandler")
+    @Lazy
+    @ConditionalOnMissingBean(name = "redisQueueProviderApiHandler")
     public ApiProxyHandler redisQueueProviderApiHandler() {
-		log.info("default redisQueueProviderApiHandler init ...");
-    	return new RedisQueueProviderApiHandler();
+        log.info("default redisQueueProviderApiHandler init ...");
+        return new RedisQueueProviderApiHandler();
     }
+
     @Bean(name = "jedisExecutor")
-	@Lazy
-	@ConditionalOnMissingBean(name = "jedisExecutor")
+    @Lazy
+    @ConditionalOnMissingBean(name = "jedisExecutor")
     public JedisExecutor jedisExecutor() {
-		log.info("default jedisExecutor init ...");
-    	return new JedisExecutor();
+        log.info("default jedisExecutor init ...");
+        return new JedisExecutor();
     }
 
-	/**
-	 * 系统配置取值器
-	 * @return
-	 */
-	@Bean
-	@Lazy
+    /**
+     * 系统配置取值器
+     *
+     * @return
+     */
+    @Bean
+    @Lazy
     public BootConfig bootConfig() {
-		log.info("default bootConfig init ...");
-		return new BootConfig();
+        log.info("default bootConfig init ...");
+        return new BootConfig();
     }
 
-	@Bean(name = "customConfig")
-	@Lazy
-	@ConditionalOnMissingBean(name = "customConfig")
-	public ICustomConfig customConfig() {
-		log.info("default customConfig init ...");
-		return new ICustomConfig(){
-			@Override
-			public String get(String key) {
-				return null;
-			}
+    @Bean(name = "customConfig")
+    @Lazy
+    @ConditionalOnMissingBean(name = "customConfig")
+    public ICustomConfig customConfig() {
+        log.info("default customConfig init ...");
+        return new ICustomConfig() {
+            @Override
+            public String get(String key) {
+                return null;
+            }
 
-			@Override
-			public void set(String key, String value) {
-			}
-		};
-	}
+            @Override
+            public void set(String key, String value) {
+            }
+        };
+    }
 }

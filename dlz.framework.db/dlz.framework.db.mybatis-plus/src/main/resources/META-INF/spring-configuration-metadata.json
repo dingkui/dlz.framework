@@ -2,7 +2,7 @@
   "groups": [
     {
       "name": "dlz.db.helper",
-      "type": "com.dlz.framework.db.helper.config.HelperProperties"
+      "type": "com.dlz.framework.db.config.HelperProperties"
     }
   ],
   "properties": [
