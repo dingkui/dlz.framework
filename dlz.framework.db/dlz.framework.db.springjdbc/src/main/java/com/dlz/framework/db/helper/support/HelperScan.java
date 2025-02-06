@@ -3,7 +3,9 @@ package com.dlz.framework.db.helper.support;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.dlz.comm.util.StringUtils;
 import com.dlz.framework.db.enums.DbTypeEnum;
+import com.dlz.framework.db.helper.util.DbNameUtil;
 import com.dlz.framework.db.holder.SqlHolder;
+import com.dlz.framework.util.system.Reflections;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.config.BeanDefinition;
@@ -12,15 +14,12 @@ import org.springframework.core.type.filter.AnnotationTypeFilter;
 
 import javax.annotation.PostConstruct;
 import java.lang.annotation.Annotation;
+import java.lang.reflect.Field;
 import java.util.HashSet;
 import java.util.Set;
 
 @Slf4j
-@AllArgsConstructor
 public class HelperScan {
-    final String packageName;
-    final AsyncUtils asyncUtils;
-
     private static Set<Class<?>> scanPackage(String basePackage, Class<? extends Annotation> annotationClass) {
         Set<Class<?>> classes = new HashSet<>();
         ClassPathScanningCandidateComponentProvider scanner = new ClassPathScanningCandidateComponentProvider(false);
@@ -37,18 +36,42 @@ public class HelperScan {
         return classes;
     }
 
-    @PostConstruct
-    private void scan() {
+    public static void scan(String packageName,SqlHelper helper) {
         if (StringUtils.isEmpty(packageName)) {
             return;
         }
         Set<Class<?>> set = scanPackage(packageName, TableName.class);
         boolean initSync = SqlHolder.properties.getDbtype() == DbTypeEnum.SQLITE;
-        for (Class<?> clazz : set) {
-            if (initSync) {
-                asyncUtils.initTableSync(clazz);
-            } else {
-                asyncUtils.initTable(clazz);
+        if (initSync) {
+            set.stream().forEach(clazz -> initTable(clazz,helper));
+        } else {
+            set.parallelStream().forEach(clazz -> initTable(clazz,helper));
+        }
+    }
+
+    public static void initTable(Class<?> clazz,SqlHelper helper) {
+        TableName table = clazz.getAnnotation(TableName.class);
+        if (table != null) {
+            String tableName = DbNameUtil.getDbTableName(clazz);
+            Set<String> columns = helper.getTableColumnNames(tableName);
+            if (columns.size()==0) {
+                // 创建表
+                helper.createTable(tableName,clazz);
+                return;
+            }
+            // 建立字段
+            Field[] fields = Reflections.getFields(clazz);
+            for (Field field : fields) {
+                String columnName=DbNameUtil.getDbClumnName(field);
+                if(columnName==null
+                        || columns.contains(columnName)
+                        || columnName.equalsIgnoreCase("id")
+                        || columnName.equalsIgnoreCase("SERIAL_VERSION_U_I_D")
+                ){
+                    continue;
+                }
+                // 创建字段
+                helper.createColumn(tableName,columnName,field);
             }
         }
     }
