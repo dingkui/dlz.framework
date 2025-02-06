@@ -1,7 +1,7 @@
 package com.dlz.framework.config;
 
 import com.dlz.comm.cache.ICache;
-import com.dlz.comm.cache.MemoryCahe;
+import com.dlz.comm.util.StringUtils;
 import com.dlz.framework.cache.aspect.CacheAspect;
 import com.dlz.framework.holder.SpringHolder;
 import com.dlz.framework.redis.excutor.JedisExecutor;
@@ -14,10 +14,10 @@ import com.dlz.framework.spring.scaner.DlzSpringScaner;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.config.BeanFactoryPostProcessor;
-import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Lazy;
 import redis.clients.jedis.JedisPool;
@@ -29,6 +29,7 @@ import redis.clients.jedis.JedisPool;
 @Slf4j
 @Setter
 @Getter
+@EnableConfigurationProperties({DlzProperties.class})
 public class DlzFwConfig {
 	protected String getApiScanPath(){
 		return "com/dlz/**/I*Api.class";
@@ -38,18 +39,15 @@ public class DlzFwConfig {
 	 * @return
 	 */
     @Bean
-    public BeanFactoryPostProcessor myBeanFactory() {
-        return new BeanFactoryPostProcessor() {
-            @Override
-            public void postProcessBeanFactory(ConfigurableListableBeanFactory beanFactory) throws BeansException {
-				SpringHolder.init(beanFactory);
-				String apiScanPath = getApiScanPath();
-				if(apiScanPath !=null){
-					log.info("dlz spring init ...,resoucePath={}", apiScanPath);
-					new DlzSpringScaner().doComponents(new ApiScaner(apiScanPath));
-				}
-            }
-        };
+    public BeanFactoryPostProcessor myBeanFactory(DlzProperties properties) {
+        return beanFactory -> {
+			SpringHolder.init(beanFactory);
+			String apiScanPath = properties.getApiScanPath();
+			if(StringUtils.isNotEmpty(apiScanPath)){
+				log.info("dlz spring apiScan init ...,resoucePath={}", apiScanPath);
+				new DlzSpringScaner().doComponents(new ApiScaner(apiScanPath));
+			}
+		};
     }
 
 	/**

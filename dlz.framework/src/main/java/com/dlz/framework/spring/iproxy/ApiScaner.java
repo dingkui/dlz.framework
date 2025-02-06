@@ -13,7 +13,7 @@ import org.springframework.beans.factory.support.BeanDefinitionRegistry;
  * @author dk
  */
 public class ApiScaner implements IScaner {
-    private String resoucePath = "classpath*:**/I*Api.class";
+    private String resoucePath;
 
     @Override
     public String getResoucePath() {
