@@ -29,11 +29,8 @@ import redis.clients.jedis.JedisPool;
 @Slf4j
 @Setter
 @Getter
-@EnableConfigurationProperties({DlzProperties.class})
+@EnableConfigurationProperties({DlzProperties.class,CacheProperties.class})
 public class DlzFwConfig {
-	protected String getApiScanPath(){
-		return "com/dlz/**/I*Api.class";
-	}
 	/**
 	 * spring 容器启动开始执行
 	 * @return
@@ -57,9 +54,10 @@ public class DlzFwConfig {
 	@Bean(name = "dlzCache")
     @ConditionalOnMissingBean(name = "dlzCache")
 	@Lazy
-    public ICache dlzCache() {
-    	log.info("default dlzCache init MemoryCahe...");
-        return new MemoryCahe();
+    public ICache dlzCache(CacheProperties properties) throws InstantiationException, IllegalAccessException {
+		Class<? extends ICache> cacheClass = properties.getCacheClass();
+		log.info("dlzCache init ..."+ cacheClass.getName());
+        return cacheClass.newInstance();
     }
 
 	/**
@@ -88,10 +86,10 @@ public class DlzFwConfig {
 	 * @param cache
 	 * @return
 	 */
-    @Bean(name = "cacheAspect")
-	@ConditionalOnMissingBean(name = "cacheAspect")
+    @Bean
+	@ConditionalOnProperty(value = "dlz.cache.anno", havingValue = "false")
     public CacheAspect cacheAspect(ICache cache) {
-		log.info("default cacheAspect init ...");
+		log.info("dlz.cache.anno:CacheAspect init ...");
         return new CacheAspect(cache);
     }
 
