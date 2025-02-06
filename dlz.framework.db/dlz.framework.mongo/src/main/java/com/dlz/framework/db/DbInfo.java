@@ -23,7 +23,6 @@ import java.util.*;
  * 修改sql文件路径取得方式，以便执行init时可以刷新内存
  */
 @SuppressWarnings("unchecked")
-@Component
 public class DbInfo {
 
     private static Logger logger = org.slf4j.LoggerFactory.getLogger(DbInfo.class);

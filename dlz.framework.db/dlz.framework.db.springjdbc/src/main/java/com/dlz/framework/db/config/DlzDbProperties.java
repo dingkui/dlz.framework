@@ -1,16 +1,13 @@
 package com.dlz.framework.db.config;
 
 import com.dlz.framework.db.enums.DbTypeEnum;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
 import java.util.Arrays;
 import java.util.List;
-
+@Data
 @ConfigurationProperties(prefix = "dlz.db")
-@Getter
-@Setter
 public class DlzDbProperties {
     /**
      * 是否启动jdbcSql
@@ -56,4 +53,8 @@ public class DlzDbProperties {
      * 数据库结构缓存时间，-1为不失效，单位为秒
      **/
     private int tableCacheTime= -1;
+    /**
+     * sqlHelper配置
+     */
+    private HelperProperties helper=new HelperProperties();
 }
