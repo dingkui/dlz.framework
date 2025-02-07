@@ -9,6 +9,7 @@ import com.dlz.comm.util.StringUtils;
 import com.dlz.comm.util.ValUtil;
 import com.dlz.framework.db.cache.MyBeanPostProcessor;
 import com.dlz.framework.db.service.ICommPlusService;
+import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
@@ -30,13 +31,11 @@ import java.util.Set;
  * @author dk
  * @date 2020-03-10
  */
-@Configuration
-@Service
 @Slf4j
 @Transactional(rollbackFor = {Exception.class, RuntimeException.class})
+@AllArgsConstructor
 public class CommPlusServiceImpl implements ICommPlusService {
-    @Autowired
-    MyBeanPostProcessor beanPostProcessor;
+    final MyBeanPostProcessor beanPostProcessor;
 
     public <T> BaseMapper<T> getMapper(Class<T> clazz) {
         return beanPostProcessor.getMapper(clazz);

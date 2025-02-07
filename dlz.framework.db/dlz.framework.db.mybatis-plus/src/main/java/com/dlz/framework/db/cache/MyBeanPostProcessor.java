@@ -12,7 +12,6 @@ import java.lang.reflect.Type;
 import java.util.Hashtable;
 import java.util.Map;
 
-@Component
 public class MyBeanPostProcessor implements BeanPostProcessor {
     private Map<Class<?>, Object[]> hashtable = new Hashtable<>();
     @Override
@@ -29,7 +28,6 @@ public class MyBeanPostProcessor implements BeanPostProcessor {
                 hashtable.put(aClass, new Object[]{mapperInterface, null});
             }
         }
-//        System.out.println(bean.getClass());
         return bean;
     }
 

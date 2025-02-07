@@ -37,5 +37,4 @@ mybatis-plus:
 dlz:
   db:
     helper:
-      type: mysql
-      auto-update: true
+      auto-update: false

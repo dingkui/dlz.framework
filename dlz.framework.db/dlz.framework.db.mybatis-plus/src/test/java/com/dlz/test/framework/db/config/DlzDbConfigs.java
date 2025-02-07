@@ -1,6 +1,6 @@
 package com.dlz.test.framework.db.config;
 
-import com.dlz.framework.db.config.DlzDbConfig;
+import com.dlz.framework.db.config.DlzDbMbConfig;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Configuration;
 
@@ -10,7 +10,7 @@ import org.springframework.context.annotation.Configuration;
  */
 @Slf4j
 @Configuration
-public class DlzDbConfigs extends DlzDbConfig {
+public class DlzDbConfigs extends DlzDbMbConfig {
 
 //    @Bean
 //    @DependsOn({"dbInfo"})
