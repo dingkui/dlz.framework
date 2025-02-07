@@ -120,7 +120,7 @@ public class CommPlusServiceImpl implements ICommPlusService {
     }
 
     public <T> int count(Wrapper<T> queryWrapper, Class<T> clazz) {
-        return ValUtil.getInt((getMapper(clazz)).selectCount(queryWrapper));
+        return ValUtil.toInt((getMapper(clazz)).selectCount(queryWrapper));
     }
 
     public <T> List<T> list(Wrapper<T> queryWrapper, Class<T> clazz) {

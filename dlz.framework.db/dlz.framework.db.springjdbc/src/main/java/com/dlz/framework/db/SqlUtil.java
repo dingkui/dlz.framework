@@ -158,7 +158,7 @@ public class SqlUtil {
             if(jdbcParaItem instanceof Number){
                 sbRunSql.append(jdbcParaItem);
             }else{
-                sbRunSql.append("'"+ValUtil.getStr(jdbcParaItem)+"'");
+                sbRunSql.append("'"+ValUtil.toStr(jdbcParaItem)+"'");
             }
         }
         sbRunSql.append(jdbcSql.substring(beginIndex));
@@ -411,7 +411,7 @@ public class SqlUtil {
                 case Blob:
                     return value.getBytes(SqlHolder.properties.getBlob_charsetname());
                 case Date:
-                    return ValUtil.getDate(value);
+                    return ValUtil.toDate(value);
                 default:
                     return value;
             }

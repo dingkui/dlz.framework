@@ -34,7 +34,7 @@ public class SpingDbBaseTest {
 
     public void showSql(ParaMapBase paraMap, String fn) {
         log.debug("-------------------  "+fn+"  -------------------");
-        log.debug(ValUtil.getStr(paraMap));
+        log.debug(ValUtil.toStr(paraMap));
         VAL<String, Object[]> jdbcSql = paraMap.jdbcSql();
 //        SqlUtil.dealParm(paraMap,1,true);
         SqlItem sqlItem = paraMap.getSqlItem();

@@ -133,7 +133,7 @@ public class HttpUtil {
         URIBuilder builder = new URIBuilder(StringUtils.isEmpty(path)?host:(host+path));
         if (querys != null) {
             for (String key : querys.keySet()) {
-                builder.addParameter(key, ValUtil.getStr(querys.get(key)));
+                builder.addParameter(key, ValUtil.toStr(querys.get(key)));
             }
         }
         return builder.build();
@@ -168,7 +168,7 @@ public class HttpUtil {
                     sbQuery.append(query.getKey());
                     if (!StringUtils.isEmpty(query.getValue())) {
                         sbQuery.append("=");
-                        sbQuery.append(URLEncoder.encode(ValUtil.getStr(query.getValue()), enc));
+                        sbQuery.append(URLEncoder.encode(ValUtil.toStr(query.getValue()), enc));
                     }
                 }
             }

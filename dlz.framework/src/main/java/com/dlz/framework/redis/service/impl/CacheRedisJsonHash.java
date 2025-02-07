@@ -27,17 +27,17 @@ public class CacheRedisJsonHash implements ICache {
     JedisExecutor jedisExecutor;
     @Override
     public <T extends Serializable> T get(String name, Serializable key, Type type) {
-        return jedisExecutor.hgetSo(name, ValUtil.getStr(key),type);
+        return jedisExecutor.hgetSo(name, ValUtil.toStr(key),type);
     }
 
     @Override
     public void put(String name, Serializable key, Serializable value, int seconds) {
-        jedisExecutor.hsetSo(name, ValUtil.getStr(key),  value, seconds);
+        jedisExecutor.hsetSo(name, ValUtil.toStr(key),  value, seconds);
     }
 
     @Override
     public void remove(String name, Serializable key) {
-        jedisExecutor.hdel(name, ValUtil.getStr(key));
+        jedisExecutor.hdel(name, ValUtil.toStr(key));
     }
 
     @Override
@@ -47,7 +47,7 @@ public class CacheRedisJsonHash implements ICache {
 
     @Override
     public Set<String> keys(String name,String keyPrefix) {
-        Stream<String> stream = jedisExecutor.hgetAll(name).keySet().stream().map(key -> ValUtil.getStr(key));
+        Stream<String> stream = jedisExecutor.hgetAll(name).keySet().stream().map(key -> ValUtil.toStr(key));
         if("*".equals(keyPrefix)||".*".equals(keyPrefix)){
             return stream.collect(Collectors.toSet());
         }

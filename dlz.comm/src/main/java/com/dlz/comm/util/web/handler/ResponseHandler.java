@@ -38,7 +38,7 @@ public class ResponseHandler<T> {
             iResponseReader = DEFAULT_READER;
         }
         Object result = iResponseReader.read(content, param.getCharsetNameResponse());
-        return ValUtil.getObj(result,tClass);
+        return ValUtil.toObj(result,tClass);
     }
 
     protected String getNgResult(InputStream content,HttpRequestParam param){

@@ -73,7 +73,7 @@ public interface IDbPmService{
     default int getCnt(ParaMapBase paraMap) {
         try {
             VAL<String, Object[]> jdbcSql = paraMap.jdbcCnt();
-            int cnt = ValUtil.getInt(ConvertUtil.getFistClumn(getDao().getList(jdbcSql.v1, jdbcSql.v2).get(0)));
+            int cnt = ValUtil.toInt(ConvertUtil.getFistClumn(getDao().getList(jdbcSql.v1, jdbcSql.v2).get(0)));
             return cnt;
         } catch (Exception e) {
             if (e instanceof DbException) {

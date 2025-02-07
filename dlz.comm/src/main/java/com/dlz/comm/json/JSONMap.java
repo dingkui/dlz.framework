@@ -72,7 +72,7 @@ public class JSONMap extends HashMap<String,Object> implements IUniversalVals{
 	}
 	
 	public <T> Map<String,T> asMap(Class<T> objectClass){
-		 this.forEach((key,value)-> this.put(key,ValUtil.getObj(value,objectClass)));
+		 this.forEach((key,value)-> this.put(key,ValUtil.toObj(value,objectClass)));
 		 return (Map<String,T>)this;
 	}
 	public Map<String,JSONMap> asMap(){
@@ -172,7 +172,7 @@ public class JSONMap extends HashMap<String,Object> implements IUniversalVals{
 				break;
 			case 1:
 				if(o instanceof Collection||o instanceof Object[]){
-					List list = ValUtil.getList(o);
+					List list = ValUtil.toList(o);
 					list.add(obj);
 					put(key, list);
 				}
@@ -180,13 +180,13 @@ public class JSONMap extends HashMap<String,Object> implements IUniversalVals{
 			case 2:
 				List list;
 				if(o instanceof Collection||o instanceof Object[]){
-					list = ValUtil.getList(o);
+					list = ValUtil.toList(o);
 				}else{
 					list = new ArrayList();
 					list.add(o);
 				}
 				if(obj instanceof Collection||obj instanceof Object[]){
-					list.addAll(ValUtil.getList(obj));
+					list.addAll(ValUtil.toList(obj));
 				}else{
 					list.add(obj);
 				}
@@ -204,7 +204,7 @@ public class JSONMap extends HashMap<String,Object> implements IUniversalVals{
 			list=new ArrayList();
 		}
 		if(obj instanceof Collection||obj instanceof Object[]){
-			list = ValUtil.getList(obj);
+			list = ValUtil.toList(obj);
 		}else{
 			list.add(obj);
 		}

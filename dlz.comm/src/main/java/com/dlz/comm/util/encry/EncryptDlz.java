@@ -47,7 +47,7 @@ public class EncryptDlz {
             if(para instanceof byte[]){
                 key = (byte[])para;
             }else{
-                key = ByteUtil.getBytes(ValUtil.getStr(para));
+                key = ByteUtil.getBytes(ValUtil.toStr(para));
             }
             return key;
         }
@@ -250,7 +250,7 @@ public class EncryptDlz {
         private String generateRandom(int prefixLength) {
             StringBuilder sb = new StringBuilder();
             while(prefixLength-->0){
-                sb.append(Const.FIXSTR.charAt(ValUtil.getInt(Math.random() * 64)));
+                sb.append(Const.FIXSTR.charAt(ValUtil.toInt(Math.random() * 64)));
             }
             return sb.toString();
         }

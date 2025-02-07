@@ -41,7 +41,7 @@ public class JSONList extends ArrayList<Object> implements IUniversalVals,IUnive
 					if(objectClass.isAssignableFrom(next.getClass())){
 						add(next);
 					}else{
-						add(ValUtil.getObj(next, objectClass));
+						add(ValUtil.toObj(next, objectClass));
 					}
 				}
 			}else{
@@ -54,7 +54,7 @@ public class JSONList extends ArrayList<Object> implements IUniversalVals,IUnive
 					if(objectClass.isAssignableFrom(input2[i].getClass())){
 						add(input2[i]);
 					}else{
-						add(ValUtil.getObj(input2[i], objectClass));
+						add(ValUtil.toObj(input2[i], objectClass));
 					}
 				}
 			}else{
@@ -76,25 +76,25 @@ public class JSONList extends ArrayList<Object> implements IUniversalVals,IUnive
 						Arrays.stream(string.split(",")).forEach(item -> this.add(item.trim()));
 						return;
 					} else if (objectClass == Integer.class) {
-						Arrays.stream(string.split(",")).forEach(item -> this.add(ValUtil.getInt(item.trim())));
+						Arrays.stream(string.split(",")).forEach(item -> this.add(ValUtil.toInt(item.trim())));
 						return;
 					} else if (objectClass == Long.class) {
-						Arrays.stream(string.split(",")).forEach(item -> this.add(ValUtil.getLong(item.trim())));
+						Arrays.stream(string.split(",")).forEach(item -> this.add(ValUtil.toLong(item.trim())));
 						return;
 					} else if (objectClass == Date.class) {
-						Arrays.stream(string.split(",")).forEach(item -> this.add(ValUtil.getDate(item.trim())));
+						Arrays.stream(string.split(",")).forEach(item -> this.add(ValUtil.toDate(item.trim())));
 						return;
 					} else if (objectClass == BigDecimal.class) {
-						Arrays.stream(string.split(",")).forEach(item -> this.add(ValUtil.getBigDecimal(item.trim())));
+						Arrays.stream(string.split(",")).forEach(item -> this.add(ValUtil.toBigDecimal(item.trim())));
 						return;
 					} else if (objectClass == Float.class) {
-						Arrays.stream(string.split(",")).forEach(item -> this.add(ValUtil.getFloat(item.trim())));
+						Arrays.stream(string.split(",")).forEach(item -> this.add(ValUtil.toFloat(item.trim())));
 						return;
 					} else if (objectClass == Double.class) {
-						Arrays.stream(string.split(",")).forEach(item -> this.add(ValUtil.getDouble(item.trim())));
+						Arrays.stream(string.split(",")).forEach(item -> this.add(ValUtil.toDouble(item.trim())));
 						return;
 					} else if (objectClass == Boolean.class) {
-						Arrays.stream(string.split(",")).forEach(item -> this.add(ValUtil.getBoolean(item.trim())));
+						Arrays.stream(string.split(",")).forEach(item -> this.add(ValUtil.toBoolean(item.trim())));
 						return;
 					}
 				}
@@ -119,7 +119,7 @@ public class JSONList extends ArrayList<Object> implements IUniversalVals,IUnive
 	}
 	
 	public <T> List<T> asList(Class<T> objectClass){
-		return this.stream().map(item->ValUtil.getObj(item,objectClass)).collect(Collectors.toList());
+		return this.stream().map(item->ValUtil.toObj(item,objectClass)).collect(Collectors.toList());
 	}
 	public List<JSONMap> asList(){
 		return asList(JSONMap.class);

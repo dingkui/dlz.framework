@@ -15,8 +15,21 @@ import java.util.*;
  */
 @Slf4j
 public class ValUtil {
-    public static BigDecimal getBigDecimal(Object input, BigDecimal defaultV) {
-        Number o = getNumber(input, null);
+    private static Number toNumber(Object input, Number defaultV) {
+        if (input == null || "".equals(input)) {
+            return defaultV;
+        }
+        if (input instanceof Number) {
+            return (Number) input;
+        }
+        return new BigDecimal(input.toString());
+    }
+    public static BigDecimal toBigDecimal(Object input) {
+        return toBigDecimal(input, null);
+    }
+
+    public static BigDecimal toBigDecimal(Object input, BigDecimal defaultV) {
+        Number o = toNumber(input, null);
         if (o == null) {
             return defaultV;
         }
@@ -34,52 +47,49 @@ public class ValUtil {
         return new BigDecimal(o.toString());
     }
 
-    public static BigDecimal getBigDecimal(Object input) {
-        return getBigDecimal(input, null);
+
+    public static Double toDouble(Object input) {
+        return toDouble(input, null);
     }
 
-    public static Double getDouble(Object input) {
-        return getDouble(input, null);
-    }
-
-    public static Double getDouble(Object input, Double defaultV) {
-        Number o = getNumber(input, null);
+    public static Double toDouble(Object input, Double defaultV) {
+        Number o = toNumber(input, null);
         if (o == null) {
             return defaultV;
         }
         return o.doubleValue();
     }
 
-    public static Float getFloat(Object input) {
-        return getFloat(input, null);
+    public static Float toFloat(Object input) {
+        return toFloat(input, null);
     }
 
-    public static Float getFloat(Object input, Float defaultV) {
-        Number o = getNumber(input, null);
+    public static Float toFloat(Object input, Float defaultV) {
+        Number o = toNumber(input, null);
         if (o == null) {
             return defaultV;
         }
         return o.floatValue();
     }
 
-    public static Integer getInt(Object input) {
-        return getInt(input, null);
+    public static Integer toInt(Object input) {
+        return toInt(input, null);
     }
 
-    public static Integer getInt(Object input, Integer defaultV) {
-        Number o = getNumber(input, null);
+    public static Integer toInt(Object input, Integer defaultV) {
+        Number o = toNumber(input, null);
         if (o == null) {
             return defaultV;
         }
         return o.intValue();
     }
 
-    public static Long getLong(Object input) {
-        return getLong(input, null);
+    public static Long toLong(Object input) {
+        return toLong(input, null);
     }
 
-    public static Long getLong(Object input, Long defaultV) {
-        Number o = getNumber(input, null);
+    public static Long toLong(Object input, Long defaultV) {
+        Number o = toNumber(input, null);
         if (o == null) {
             return defaultV;
         }
@@ -87,36 +97,11 @@ public class ValUtil {
     }
 
 
-    public static Object[] getArray(Object input) {
-        return getArray(input, (Object[]) null);
+    public static Boolean toBoolean(Object input) {
+        return toBoolean(input, false);
     }
 
-    public static JSONList getList(Object input) {
-        return getList(input, null);
-    }
-
-    public static String getStr(Object input) {
-        return getStr(input, null);
-    }
-
-    public static Boolean getBoolean(Object input) {
-        return getBoolean(input, false);
-    }
-
-    public static String toStr(Object input) {
-        return getStr(input,"");
-    }
-    public static String getStr(Object input, String defaultV) {
-        if (input == null) {
-            return defaultV;
-        }
-        if (input instanceof CharSequence || input instanceof Number) {
-            return input.toString();
-        }
-        return JacksonUtil.getJson(input);
-    }
-
-    public static Boolean getBoolean(Object input, Boolean defaultV) {
+    public static Boolean toBoolean(Object input, Boolean defaultV) {
         if (input == null) {
             return defaultV;
         }
@@ -128,17 +113,32 @@ public class ValUtil {
         return !"false".equalsIgnoreCase(r) && !"0".equals(r) && !"".equals(r);
     }
 
-    private static Number getNumber(Object input, Number defaultV) {
-        if (input == null || "".equals(input)) {
-            return defaultV;
-        }
-        if (input instanceof Number) {
-            return (Number) input;
-        }
-        return new BigDecimal(input.toString());
+    public static String toStrBlank(Object input) {
+        return toStr(input, "");
     }
 
-    public static JSONList getList(Object input, List defaultV) {
+    public static String toStr(Object input) {
+        return toStr(input, null);
+    }
+
+    public static String toStr(Object input, String defaultV) {
+        if (input == null) {
+            return defaultV;
+        }
+        if (input instanceof CharSequence || input instanceof Number) {
+            return input.toString();
+        }
+        return JacksonUtil.getJson(input);
+    }
+
+
+
+
+    public static JSONList toList(Object input) {
+        return toList(input, (List) null);
+    }
+
+    public static JSONList toList(Object input, Collection defaultV) {
         if (input == null) {
             return new JSONList(defaultV);
         }
@@ -153,37 +153,19 @@ public class ValUtil {
         return new JSONList(defaultV);
     }
 
-    public static <T> List<T> getListObj(Object input, Class<T> clazz) {
-        if (input == null) {
+    public static <T> List<T> toList(Object input, Class<T> clazz) {
+        T[] array = toArray(input, clazz);
+        if (array == null) {
             return null;
         }
-        if (input instanceof List) {
-            boolean isClass = true;
-            final Iterator input2 = ((Collection) input).iterator();
-            while (input2.hasNext()) {
-                final Object next = input2.next();
-                if (!clazz.isAssignableFrom(next.getClass())) {
-                    isClass = false;
-                    break;
-                }
-            }
-            if (isClass) {
-                return (List) input;
-            }
-        }
-        try {
-            return (List) new JSONList(input, clazz);
-        } catch (RuntimeException e) {
-            log.error(ExceptionUtils.getStackTrace(e));
-        }
-        return null;
+        return Arrays.asList(array);
     }
 
-    public static Date getDate(Object input) {
-        return getDate(input, null);
+    public static Date toDate(Object input) {
+        return toDate(input, null);
     }
 
-    public static Date getDate(Object input, String format) {
+    public static Date toDate(Object input, String format) {
         if (input == null) {
             return null;
         }
@@ -193,21 +175,15 @@ public class ValUtil {
         if (Number.class.isAssignableFrom(input.getClass())) {
             return new Date(((Number) input).longValue());
         }
-        return DateUtil.getDateStr(getStr(input), format);
+        return DateUtil.getDateStr(toStr(input), format);
     }
 
-    public static void main(String[] args) {
-        System.out.println(getDate("2018-21-24 19:23:39.583"));
-        System.out.println(getDate("2018-1-24 19:23"));
-        System.out.println(getDate("19:23"));
-        System.out.println(getDate("2018-1-24"));
-    }
 
-    public static String getDateStr(Object input, String format) {
+    public static String toDateStr(Object input, String format) {
         if (input == null) {
             return null;
         }
-        input = getDate(input);
+        input = toDate(input);
         if (input == null) {
             return "";
         }
@@ -217,38 +193,55 @@ public class ValUtil {
         return DateUtil.format((Date) input, format);
     }
 
-    public static String getDateStr(Object input) {
-        return getDateStr(input, null);
+    public static String toDateStr(Object input) {
+        return toDateStr(input, null);
     }
 
-    public static <T> T[] getArrayObj(Object input, Class<T> clazz, Class<? extends T[]> clazzs) {
+    private static <T> T[] toArray(Collection input, Class<T> clazz) {
+        if (input == null) {
+            return null;
+        }
+        T[] re = (T[]) Array.newInstance(clazz, input.size());
+        final Iterator it = input.iterator();
+        int i = 0;
+        while (it.hasNext()) {
+            re[i++] = toObj(it.next(), clazz);
+        }
+        return re;
+    }
+
+    private static <T> T[] toArray(Object[] input, Class<T> clazz) {
+        if (input == null) {
+            return null;
+        }
+        T[] re = (T[]) Array.newInstance(clazz, input.length);
+        for (int i = 0; i < input.length; i++) {
+            re[i] = toObj(input[i], clazz);
+        }
+        return re;
+    }
+
+    public static Object[] toArray(Object input) {
+        return toArray(input, (Object[]) null);
+    }
+
+    public static <T> T[] toArray(Object input, Class<T> clazz) {
         if (input == null) {
             return null;
         }
         if (input instanceof Collection) {
-            final List listObj = getListObj(input, clazz);
-            return Arrays.copyOf(listObj.toArray(), listObj.size(), clazzs);
+            return toArray((Collection) input, clazz);
         }
-
         if (input instanceof Object[]) {
-            boolean isClass = true;
-
-            Object[] g = (Object[]) input;
-            for (int i = 0; i < g.length; i++) {
-                if (!clazz.isAssignableFrom(g[i].getClass())) {
-                    isClass = false;
-                    break;
-                }
-            }
-            if (isClass) {
-                return Arrays.copyOf(g, g.length, clazzs);
-            }
+            return toArray((Object[]) input, clazz);
+        }
+        if (input instanceof CharSequence) {
+            return toArray(input.toString().split(","), clazz);
         }
         try {
-            String string = getStr(input);
+            String string = toStr(input);
             if (JacksonUtil.isJsonArray(string)) {
-                final List<T> readListValue = JacksonUtil.readListValue(string, clazz);
-                return Arrays.copyOf(readListValue.toArray(), readListValue.size(), clazzs);
+                return toArray(JacksonUtil.readListValue(string, clazz), clazz);
             } else {
                 throw new RuntimeException("参数不能转换成List:" + string);
             }
@@ -258,40 +251,7 @@ public class ValUtil {
         return null;
     }
 
-    private static <T> T[] arraycopy(Object[] input, Class<T> clazz){
-        T[] copy = (T[])Array.newInstance(clazz, input.length);
-        System.arraycopy(input, 0, copy, 0, input.length);
-        return copy;
-    }
-
-    public static <T> T[] getArray(Object input, Class<T> clazz) {
-        if (input == null) {
-            return null;
-        }
-        if (input instanceof Collection) {
-            return arraycopy(getListObj(input, clazz).toArray(),clazz);
-        }
-        if (input instanceof Object[]) {
-            Object[] g = (Object[]) input;
-            boolean anyMatch = Arrays.stream(g).anyMatch(o -> !clazz.isAssignableFrom(o.getClass()));
-            if (!anyMatch) {
-                return arraycopy(g,clazz);
-            }
-        }
-        try {
-            String string = getStr(input);
-            if (JacksonUtil.isJsonArray(string)) {
-                return arraycopy(JacksonUtil.readListValue(string, clazz).toArray(),  clazz);
-            } else {
-                throw new RuntimeException("参数不能转换成List:" + string);
-            }
-        } catch (RuntimeException e) {
-            log.warn(e.getMessage());
-        }
-        return null;
-    }
-
-    public static Object[] getArray(Object input, Object[] defaultV) {
+    public static Object[] toArray(Object input, Object[] defaultV) {
         if (input == null) {
             return defaultV;
         }
@@ -308,41 +268,50 @@ public class ValUtil {
         return defaultV;
     }
 
-    public static <T> T getObj(Object input, Class<T> classs) {
-        if (input == null) {
-            return null;
-        }
-        return getObj(input, JacksonUtil.constructType(classs));
-    }
-
-    public static <T> T getObj(Object input, JavaType javaType) {
-        if (input == null) {
-            return null;
-        }
-        if (javaType == null) {
-            return (T)input;
-        }
-        Class classs = javaType.getRawClass();
+    private static <T> T toNativeObj(Object input, Class<T> classs) {
         if (classs.isAssignableFrom(input.getClass())) {
             return (T) input;
         } else if (classs == String.class) {
-            return (T) getStr(input);
+            return (T) toStr(input);
         } else if (classs == Integer.class) {
-            return (T) getInt(input);
+            return (T) toInt(input);
         } else if (classs == Long.class) {
-            return (T) getLong(input);
+            return (T) toLong(input);
         } else if (classs == Date.class) {
-            return (T) getDate(input);
+            return (T) toDate(input);
         } else if (classs == BigDecimal.class) {
-            return (T) getBigDecimal(input);
+            return (T) toBigDecimal(input);
         } else if (classs == Float.class) {
-            return (T) getFloat(input);
+            return (T) toFloat(input);
         } else if (classs == Double.class) {
-            return (T) getDouble(input);
+            return (T) toDouble(input);
         } else if (classs == Boolean.class) {
-            return (T) getBoolean(input);
+            return (T) toBoolean(input);
         }
-        return JacksonUtil.coverObj(input, javaType);
+        return null;
+    }
+
+    public static <T> T toObj(Object input, Class<T> classs) {
+        if (input == null || classs == null) {
+            return (T) input;
+        }
+        T re = toNativeObj(input, classs);
+        if (re == null) {
+            re = JacksonUtil.coverObj(input, classs);
+        }
+
+        if (re == null) {
+            re = JacksonUtil.coverObj(input, classs);
+        }
+        return re != null ? re : JacksonUtil.coverObj(input, classs);
+    }
+
+    public static <T> T toObj(Object input, JavaType javaType) {
+        if (input == null || javaType == null) {
+            return (T) input;
+        }
+        T re = toNativeObj(input, (Class<T>) javaType.getRawClass());
+        return re != null ? re : JacksonUtil.coverObj(input, javaType);
     }
 
     public static boolean isEmpty(Object cs) {
@@ -357,13 +326,16 @@ public class ValUtil {
             return ((Object[]) cs).length == 0;
         } else if (cs instanceof CharSequence) {
             return ((CharSequence) cs).length() == 0;
-//        } else if (cs instanceof Date) {
-//            return false;
-//        } else if (cs instanceof Number) {
-//            return false;
         } else {
             return false;
-            // throw new IllegalArgumentException("检验空参数有误：" + cs.getClass());
         }
+    }
+
+
+    public static void main(String[] args) {
+        System.out.println(toDate("2018-21-24 19:23:39.583"));
+        System.out.println(toDate("2018-1-24 19:23"));
+        System.out.println(toDate("19:23"));
+        System.out.println(toDate("2018-1-24"));
     }
 }

@@ -83,7 +83,7 @@ public abstract class ARedisQueueConsumer<T> {
                             String message = messages.get(1);
                             try{
                                 log.info("{}接收消息:{}", this.getClass().getSimpleName(), message);
-                                this.doConsume(ValUtil.getObj(message, finalClassType));
+                                this.doConsume(ValUtil.toObj(message, finalClassType));
                             }catch (Exception e){
                                 log.error("doConsume error:redisQueueName={}, message={}",redisQueueName, message);
                                 log.error("doConsume error:{}", e.getMessage());

@@ -81,7 +81,7 @@ public class StringUtils {
     }
 
     public static String formatMsg(Object message, Object... paras) {
-        String msg = ValUtil.getStr(message, "");
+        String msg = ValUtil.toStr(message, "");
         if (paras == null) {
             paras = new Object[]{null};
         }
@@ -103,7 +103,7 @@ public class StringUtils {
             }
             sb.append(msg, end, mat.start());
             if (index > -1 && paras.length > index) {
-                sb.append(ValUtil.getStr(paras[index], null));
+                sb.append(ValUtil.toStr(paras[index], null));
             } else {
                 sb.append(mat.group(0));
             }
@@ -360,7 +360,7 @@ public class StringUtils {
          log.debug("{}",isLongOrInt("-111"));
          log.debug("{}",isLongOrInt("1111"));
          log.debug("{}",isLongOrInt("+111.11"));
-         log.debug("{}",ValUtil.getFloat("-111.11"));
+         log.debug("{}",ValUtil.toFloat("-111.11"));
 
          System.out.println(startsWith(new StringBuilder("123"),new StringBuilder("12")));
      }

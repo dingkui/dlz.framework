@@ -61,12 +61,12 @@ public class ConvertUtil {
 		} else if (list.size() > 1) {
 			throw new DbException("查询结果为多条", 1004);
 		} else {
-			return ValUtil.getObj(ConvertUtil.getFistClumn(list.get(0)), classs);
+			return ValUtil.toObj(ConvertUtil.getFistClumn(list.get(0)), classs);
 		}
 	}
 
 	public static <T> List<T> getColumList(List<ResultMap> r, Class<T> classs) {
-		return r.stream().map((m) -> classs == null ? (T) m : ValUtil.getObj(ConvertUtil.getFistClumn(m), classs)).collect(Collectors.toList());
+		return r.stream().map((m) -> classs == null ? (T) m : ValUtil.toObj(ConvertUtil.getFistClumn(m), classs)).collect(Collectors.toList());
 	}
 
 	/**

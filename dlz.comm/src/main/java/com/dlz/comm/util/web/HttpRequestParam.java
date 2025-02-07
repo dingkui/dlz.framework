@@ -76,7 +76,7 @@ public class HttpRequestParam<T> {
         HttpRequestParam httpRequestParam = new HttpRequestParam(url, tClass);
         httpRequestParam.mimeType = HttpConstans.MIMETYPE_JSON;
         if (para != null) {
-            httpRequestParam.payload = ValUtil.getStr(para);
+            httpRequestParam.payload = ValUtil.toStr(para);
         }
         return httpRequestParam;
     }
@@ -85,7 +85,7 @@ public class HttpRequestParam<T> {
         HttpRequestParam httpRequestParam = new HttpRequestParam(url, tClass);
         httpRequestParam.mimeType = HttpConstans.MIMETYPE_TEXT;
         if (para != null) {
-            httpRequestParam.payload = ValUtil.getStr(para);
+            httpRequestParam.payload = ValUtil.toStr(para);
         }
         return httpRequestParam;
     }

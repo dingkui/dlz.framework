@@ -35,22 +35,22 @@ public class TableCloumnMapper implements ITableCloumnMapper {
 		switch (dbClass) {
 		case Types.SMALLINT:
 		case Types.INTEGER:
-			return ValUtil.getInt(obj);
+			return ValUtil.toInt(obj);
 		case Types.DECIMAL:
 		case Types.BIGINT:
 		case Types.NUMERIC:
-			return ValUtil.getLong(obj);
+			return ValUtil.toLong(obj);
 		case Types.DOUBLE:
-			return ValUtil.getDouble(obj);
+			return ValUtil.toDouble(obj);
 		case Types.FLOAT:
-			return ValUtil.getFloat(obj);
+			return ValUtil.toFloat(obj);
 		case Types.CHAR:
 		case Types.VARCHAR:
-			return ValUtil.getStr(obj);
+			return ValUtil.toStr(obj);
 		case Types.DATE:
 		case Types.TIME:
 		case Types.TIMESTAMP:
-			return ValUtil.getDate(obj);
+			return ValUtil.toDate(obj);
 		default:
 			break;
 		}

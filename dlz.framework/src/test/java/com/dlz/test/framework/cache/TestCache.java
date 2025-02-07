@@ -89,7 +89,7 @@ public class TestCache extends BaseTest {
 			int finalI = i;
 			new Thread(()->{
 				for (int j = 0; j < 200; j++) {
-					bean.put("name"+j,"key"+ finalI,"xxxxx", 10+ValUtil.getInt(Math.random()*10000));
+					bean.put("name"+j,"key"+ finalI,"xxxxx", 10+ValUtil.toInt(Math.random()*10000));
 //					bean.put("name"+j,"key"+ finalI,"xxxxx");
 				}
 			}).start();

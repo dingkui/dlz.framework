@@ -28,7 +28,7 @@ public class JedisKeyUtils {
         if (value instanceof CharSequence) {
             return value.toString();
         }
-        return value.getClass().getCanonicalName() + SPL + ValUtil.getStr(value);
+        return value.getClass().getCanonicalName() + SPL + ValUtil.toStr(value);
     }
 
     public static <T> T getResult(String value, JavaType javaType) {
@@ -47,7 +47,7 @@ public class JedisKeyUtils {
         if (javaType == null) {
             return (T)str;
         }
-        return ValUtil.getObj(str, javaType);
+        return ValUtil.toObj(str, javaType);
     }
 
     public static byte[] getBytes(String key) {

@@ -27,7 +27,7 @@ public class RuntimeUtil {
 		final String jvmName = ManagementFactory.getRuntimeMXBean().getName();
 		final int index = jvmName.indexOf('@');
 		if (index > 0) {
-			return ValUtil.getInt(jvmName.substring(0, index), -1);
+			return ValUtil.toInt(jvmName.substring(0, index), -1);
 		}
 		return -1;
 	}

@@ -21,11 +21,7 @@ public class ResourceUtil extends org.springframework.util.ResourceUtils {
 	/**
 	 * 获取资源
 	 * <p>
-	 * classpath:, file:, ftp:, http:
-	 * https:
-	 * classpath*:
-	 * C:/dir/
-	 * /dir/
+	 * classpath:, file:, ftp:, http:, https:, classpath*:, C:/dir/, /dir/
 	 * </p>
 	 *
 	 * @param resourceLocation 资源路径

@@ -190,7 +190,7 @@ public abstract class SqlHelper {
         }
         String id = (String)Reflections.getFieldValue(obj, idField);
         if(StringUtils.isEmpty(id)){
-            throw new SystemException("更新操作有误:"+DbNameUtil.getDbTableName(objClass)+" id为空"+ ValUtil.getStr(obj));
+            throw new SystemException("更新操作有误:"+DbNameUtil.getDbTableName(objClass)+" id为空"+ ValUtil.toStr(obj));
         }
 
         Reflections.setFieldValue(obj,"updateTime",System.currentTimeMillis(),true);

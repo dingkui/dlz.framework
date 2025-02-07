@@ -63,7 +63,7 @@ public class CacheEhcahe implements ICache {
         }
         Object obj = element.getObjectValue();
         if(tClass != null){
-            return ValUtil.getObj(obj, JacksonUtil.getJavaType(tClass));
+            return ValUtil.toObj(obj, JacksonUtil.getJavaType(tClass));
         }
         return (T) obj;
     }
@@ -72,7 +72,7 @@ public class CacheEhcahe implements ICache {
     public void put(String name, Serializable key, Serializable value, int seconds) {
         Element element = new Element(key, value);
         if (seconds > -1) {
-            element.setTimeToLive(ValUtil.getInt(seconds));
+            element.setTimeToLive(ValUtil.toInt(seconds));
         }
         getCache(name).put(element);
     }
@@ -89,7 +89,7 @@ public class CacheEhcahe implements ICache {
 
     @Override
     public Set<String> keys(String name,String keyPrefix) {
-        Stream<String> stream = getCache(name).getKeys().stream().map(key -> ValUtil.getStr(key));
+        Stream<String> stream = getCache(name).getKeys().stream().map(key -> ValUtil.toStr(key));
         if("*".equals(keyPrefix)||".*".equals(keyPrefix)){
             return stream.collect(Collectors.toSet());
         }

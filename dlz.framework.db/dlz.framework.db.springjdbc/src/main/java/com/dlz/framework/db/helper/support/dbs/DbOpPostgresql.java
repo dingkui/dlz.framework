@@ -49,7 +49,7 @@ public class DbOpPostgresql extends SqlHelper {
         List<ResultMap> maps = dao.getList(sql);
         Set<String> re = new HashSet();
         maps.forEach(item -> {
-            re.add(ValUtil.getStr(item.get("name"), "").toUpperCase());
+            re.add(ValUtil.toStr(item.get("name"), "").toUpperCase());
         });
         return re;
     }
@@ -77,7 +77,7 @@ public class DbOpPostgresql extends SqlHelper {
         List<ResultMap> maps = dao.getList(sql, tableName);
         List<String> primaryKeys = new ArrayList<>();
         for (ResultMap map : maps) {
-            primaryKeys.add(ValUtil.getStr(map.get("column_name"), ""));
+            primaryKeys.add(ValUtil.toStr(map.get("column_name"), ""));
         }
         tableInfo.setPrimaryKeys(primaryKeys);
 
@@ -94,9 +94,9 @@ public class DbOpPostgresql extends SqlHelper {
 
         for (ResultMap map : maps) {
             ColumnInfo columnInfo = new ColumnInfo();
-            columnInfo.setColumnName(ValUtil.getStr(map.get("COLUMN_NAME"), ""));
-            columnInfo.setColumnType(ValUtil.getStr(map.get("COLUMN_TYPE"), ""));
-            columnInfo.setColumnComment(ValUtil.getStr(map.get("COLUMN_COMMENT"), ""));
+            columnInfo.setColumnName(ValUtil.toStr(map.get("COLUMN_NAME"), ""));
+            columnInfo.setColumnType(ValUtil.toStr(map.get("COLUMN_TYPE"), ""));
+            columnInfo.setColumnComment(ValUtil.toStr(map.get("COLUMN_COMMENT"), ""));
             // 转换字段类型为Java类型
             columnInfo.setJavaType(getJavaType(columnInfo.getColumnType()));
             columnInfos.add(columnInfo);

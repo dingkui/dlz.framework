@@ -146,6 +146,7 @@ public class JSONMapGetTest {
 		System.out.println(c2.getList("a"));
 		System.out.println(JacksonUtil.getJson(c2.getArray("a")));
 		System.out.println(c2.getList("b"));
+		System.out.println(c2.getArray("a",Integer.class));
 	}
 	
 	/**
@@ -197,12 +198,12 @@ public class JSONMapGetTest {
 	@Test
 	public void test9(){
 		String a="[\"a\",1]";
-		String[] c=ValUtil.getArrayObj(a, String.class,String[].class);
+		String[] c=ValUtil.toArray(a, String.class);
 		System.out.println(JacksonUtil.getJson(c));
 
 
-		String[] c3=ValUtil.getArray(a, String.class);
-		List<String> c2=ValUtil.getListObj(a, String.class);
+		String[] c3=ValUtil.toArray(a, String.class);
+		List<String> c2=ValUtil.toList(a, String.class);
 		System.out.println(c2.get(0));
 		System.out.println(c[1]);
 	}
@@ -210,9 +211,9 @@ public class JSONMapGetTest {
 	@Test
 	public void test10(){
 		String a="[\"a\",1]";
-		String[] c=ValUtil.getArray(a, String.class);
+		String[] c=ValUtil.toArray(a, String.class);
 		System.out.println(JacksonUtil.getJson(c));
-		List<String> c2=ValUtil.getListObj(a, String.class);
+		List<String> c2=ValUtil.toList(a, String.class);
 		System.out.println(c2.get(0));
 		System.out.println(c[1]);
 	}
@@ -221,14 +222,14 @@ public class JSONMapGetTest {
 	@Test
 	public void test11(){
 		String a="{\"a\":\"1,2,3,4,5\"}";
-		List<String> a1 = new JSONMap(a).getListObj("a",String.class);
+		List<String> a1 = new JSONMap(a).getList("a",String.class);
 		System.out.println(a1);
 	}
 
 	@Test
 	public void test12(){
 		String a="1,2,3,4,5";
-		List<Integer> listObj = ValUtil.getListObj(a, Integer.class);
+		List<Integer> listObj = ValUtil.toList(a, Integer.class);
 		System.out.println(listObj);
 	}
 }

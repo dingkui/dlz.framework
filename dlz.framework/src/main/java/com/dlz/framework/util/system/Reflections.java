@@ -93,7 +93,7 @@ public class Reflections {
         if (field == null && !ignore) {
             throw new IllegalArgumentException("Could not find field [" + fieldName + "] on target [" + obj + "]");
         }
-        setFieldValue(obj, field, ValUtil.getObj(value, field.getType()));
+        setFieldValue(obj, field, ValUtil.toObj(value, field.getType()));
     }
     /**
      * 直接设置对象属性值, 无视private/protected修饰符, 不经过setter函数.
@@ -477,7 +477,7 @@ public class Reflections {
             searchType = withSuperClassFieds ? searchType.getSuperclass() : null;
         }
 
-        return ValUtil.getArray(allFields, Field.class);
+        return ValUtil.toArray(allFields, Field.class);
     }
 
     public static Field[] getFields(Class<?> beanClass) {

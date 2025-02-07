@@ -57,7 +57,7 @@ public class MemoryCahe implements ICache {
             return null;
         }
         if (tClass != null) {
-            return ValUtil.getObj(obj.item, JacksonUtil.getJavaType(tClass));
+            return ValUtil.toObj(obj.item, JacksonUtil.getJavaType(tClass));
         }
         return (T) obj.item;
     }
@@ -69,12 +69,12 @@ public class MemoryCahe implements ICache {
             element.expired = System.currentTimeMillis() / 1000 + seconds - BEGIN;
             Expired.setExpiredRange(element.expired);
         }
-        getCache(name).put(ValUtil.getStr(key), element);
+        getCache(name).put(ValUtil.toStr(key), element);
     }
 
     @Override
     public void remove(String name, Serializable key) {
-        getCache(name).remove(ValUtil.getStr(key));
+        getCache(name).remove(ValUtil.toStr(key));
     }
 
     @Override
@@ -85,7 +85,7 @@ public class MemoryCahe implements ICache {
     @Override
     public Set<String> keys(String name, String keyPrefix) {
         Stream<String> stringStream = getCache(name).keySet().stream()
-                .map(key -> ValUtil.getStr(key));
+                .map(key -> ValUtil.toStr(key));
         if("*".equals(keyPrefix)||".*".equals(keyPrefix)){
             return stringStream.collect(Collectors.toSet());
         }
@@ -99,12 +99,12 @@ public class MemoryCahe implements ICache {
         Map<String,Serializable> map=new HashMap<>();
         if("*".equals(keyPrefix)||".*".equals(keyPrefix)){
             cache.entrySet().forEach(item->{
-                map.put(ValUtil.getStr(item.getKey()),item.getValue().item);
+                map.put(ValUtil.toStr(item.getKey()),item.getValue().item);
             });
         }else{
             String keyMatch=keyPrefix.replaceAll("\\.\\*","*").replaceAll("\\*",".*");
             cache.entrySet().forEach(item->{
-                String key = ValUtil.getStr(item.getKey());
+                String key = ValUtil.toStr(item.getKey());
                 if(key.matches(keyMatch)){
                     map.put(key,item.getValue().item);
                 }

@@ -22,17 +22,17 @@ public class CacheRedisSerialHash implements ICache {
 
     @Override
     public <T extends Serializable> T get(String name, Serializable key, Type type) {
-        return jedisExecutor.hgetSe(name,ValUtil.getStr(key),type);
+        return jedisExecutor.hgetSe(name,ValUtil.toStr(key),type);
     }
 
     @Override
     public void put(String name, Serializable key, Serializable value, int seconds) {
-        jedisExecutor.hsetSe(name,ValUtil.getStr(key),value,0);
+        jedisExecutor.hsetSe(name,ValUtil.toStr(key),value,0);
     }
 
     @Override
     public void remove(String name, Serializable key) {
-        jedisExecutor.hdel(name,ValUtil.getStr(key));
+        jedisExecutor.hdel(name,ValUtil.toStr(key));
     }
 
     @Override
@@ -41,7 +41,7 @@ public class CacheRedisSerialHash implements ICache {
     }
     @Override
     public Set<String> keys(String name, String keyPrefix) {
-        Stream<String> stream = jedisExecutor.hgetAll(name).keySet().stream().map(key -> ValUtil.getStr(key));
+        Stream<String> stream = jedisExecutor.hgetAll(name).keySet().stream().map(key -> ValUtil.toStr(key));
         if("*".equals(keyPrefix)||".*".equals(keyPrefix)){
             return stream.collect(Collectors.toSet());
         }

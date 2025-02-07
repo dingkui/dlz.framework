@@ -33,7 +33,7 @@ public class DbOpSqlite extends SqlHelper {
         List<ResultMap> maps = dao.getList(sql);
         Set<String> re = new HashSet();
         maps.forEach(item -> {
-            re.add(ValUtil.getStr(item.get("name"), "").toUpperCase());
+            re.add(ValUtil.toStr(item.get("name"), "").toUpperCase());
         });
         return re;
     }
@@ -51,9 +51,9 @@ public class DbOpSqlite extends SqlHelper {
         List<String> primaryKeys = new ArrayList<>();
 
         for (ResultMap map : maps) {
-            int pk = ValUtil.getInt(map.get("pk"), 0);
+            int pk = ValUtil.toInt(map.get("pk"), 0);
             if (pk == 1) {
-                primaryKeys.add(ValUtil.getStr(map.get("name"), ""));
+                primaryKeys.add(ValUtil.toStr(map.get("name"), ""));
             }
         }
 
@@ -64,8 +64,8 @@ public class DbOpSqlite extends SqlHelper {
 
         for (ResultMap map : maps) {
             ColumnInfo columnInfo = new ColumnInfo();
-            columnInfo.setColumnName(ValUtil.getStr(map.get("name"), ""));
-            columnInfo.setColumnType(ValUtil.getStr(map.get("type"), ""));
+            columnInfo.setColumnName(ValUtil.toStr(map.get("name"), ""));
+            columnInfo.setColumnType(ValUtil.toStr(map.get("type"), ""));
             // SQLite doesn't support column comments directly, so set it to empty
             columnInfo.setColumnComment("");
             // 转换字段类型为Java类型

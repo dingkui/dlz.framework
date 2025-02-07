@@ -4,25 +4,25 @@
 ### 对象转换工具类-ValUtil
 ```java
 //参数是任意Object
-Double aDouble = ValUtil.getDouble("3.35");
+Double aDouble = ValUtil.toDouble("3.35");
 //其中包含如下常用方法,覆盖常用的类型转换
-ValUtil.getBigDecimal(obj,defaultV);
-ValUtil.getDouble(obj,defaultV);
-ValUtil.getFloat(obj,defaultV);
-ValUtil.getInt(obj,defaultV);
-ValUtil.getLong(obj,defaultV);
-ValUtil.getArray(obj, clazz);
-ValUtil.getArray(obj,defaultV);
-ValUtil.getArrayObj(obj,clazz,clazzs);
-ValUtil.getList(obj,defaultV);
-ValUtil.getListObj(obj,clazz);
-ValUtil.getStr(obj,defaultV);
-ValUtil.getBoolean(obj,defaultV);
-ValUtil.getDate(obj);
-ValUtil.getDate(obj,format);
-ValUtil.getDateStr(obj);
-ValUtil.getDateStr(obj,format);
-ValUtil.getObj(obj,classs);
+ValUtil.toBigDecimal(obj,defaultV);
+ValUtil.toDouble(obj,defaultV);
+ValUtil.toFloat(obj,defaultV);
+ValUtil.toInt(obj,defaultV);
+ValUtil.toLong(obj,defaultV);
+ValUtil.toArray(obj, clazz);
+ValUtil.toArray(obj,defaultV);
+ValUtil.toArrayObj(obj,clazz,clazzs);
+ValUtil.toList(obj,defaultV);
+ValUtil.toListObj(obj,clazz);
+ValUtil.toStr(obj,defaultV);
+ValUtil.toBoolean(obj,defaultV);
+ValUtil.toDate(obj);
+ValUtil.toDate(obj,format);
+ValUtil.toDateStr(obj);
+ValUtil.toDateStr(obj,format);
+ValUtil.toObj(obj,classs);
 ```
 
 ### 取值表达式

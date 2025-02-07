@@ -208,7 +208,7 @@ public class JacksonUtil {
                 }
             }
 
-            String str = null;
+            String str;
             if (o instanceof CharSequence) {
                 str = o.toString().trim();
             } else {
@@ -283,7 +283,7 @@ public class JacksonUtil {
         }
         if (data instanceof Object[] || data instanceof Collection) {
             if (key.startsWith("[")) {
-                return getObjFromList(ValUtil.getList(data), key);
+                return getObjFromList(ValUtil.toList(data), key);
             }
             return null;
         }
@@ -291,7 +291,7 @@ public class JacksonUtil {
         if (key.startsWith(".")) {
             key = key.substring(1);
         }
-        return getObjFromMap(ValUtil.getObj(data, JSONMap.class), key);
+        return getObjFromMap(ValUtil.toObj(data, JSONMap.class), key);
     }
 
     private static Object getObjFromList(List list, String key) {

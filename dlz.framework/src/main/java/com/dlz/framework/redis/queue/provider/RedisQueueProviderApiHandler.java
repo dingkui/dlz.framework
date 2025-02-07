@@ -35,7 +35,7 @@ public class RedisQueueProviderApiHandler extends ApiProxyHandler {
             String queueName = redisQueueProvider.value();
             SystemException.notEmpty(queueName, () -> "生产者未配置队列名字:" + clas + "." + method.getName());
             String redisQueueName = keyMaker.getKeyWithPrefix(queueName);
-            String json = ValUtil.getStr(args[0]);
+            String json = ValUtil.toStr(args[0]);
             try {
                 rId = jedisExecutor.excuteByJedis(j -> j.rpush(redisQueueName, json));
                 log.debug("同步发消息成功!{} -> {}", redisQueueName, json);
@@ -47,7 +47,7 @@ public class RedisQueueProviderApiHandler extends ApiProxyHandler {
 //            try (Jedis jedis = jedisPool.getResource()) {
 //                switch (redisQueueProvider.strategy()) {
 //                    case SYNC:
-//                        String json = ValUtil.getStr(args[0]);
+//                        String json = ValUtil.toStr(args[0]);
 //                        try {
 //                            rId = jedis.rpush(redisQueueName, json);
 //                            log.debug("同步发消息成功!{} -> {}", redisQueueName, json);
@@ -59,7 +59,7 @@ public class RedisQueueProviderApiHandler extends ApiProxyHandler {
             //异步发送并发时有问题，取消该配置
 //                    case ASYNC:
 //                        Executors.newSingleThreadExecutor().submit(() -> {
-//                            String json2 = ValUtil.getStr(args[0]);
+//                            String json2 = ValUtil.toStr(args[0]);
 //                            try {
 //                                jedis.rpush(redisQueueName, json2);
 //                                log.debug("异步发消息成功!{} -> {}", redisQueueName, json2);

@@ -46,7 +46,7 @@ public abstract class PageDeal<T, O> {
             if(bean.getClass() == oClass){
                 out = (O) bean;
             }else{
-                out = ValUtil.getObj(bean,oClass);
+                out = ValUtil.toObj(bean,oClass);
             }
             transBean(out);
             return out;

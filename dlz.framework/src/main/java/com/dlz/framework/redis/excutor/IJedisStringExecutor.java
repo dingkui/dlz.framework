@@ -149,7 +149,7 @@ public interface IJedisStringExecutor extends IJedisExecutor {
         if (javaType == null) {
             return (T) value;
         }
-        return ValUtil.getObj(value, javaType);
+        return ValUtil.toObj(value, javaType);
     }
 
     default <T> T getSe(String key, Class<T> tClass) {

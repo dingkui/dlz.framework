@@ -109,7 +109,7 @@ public class CacheAspect {
         }
         SystemException.isTrue(!Serializable.class.isAssignableFrom(result.getClass()) , () -> "类型：" + result.getClass() + "无法缓存！");
         //数据保存进缓存
-        cache.put(cacheName, key, (Serializable) result, ValUtil.getInt(cacheAnno.cacheTime()));
+        cache.put(cacheName, key, (Serializable) result, ValUtil.toInt(cacheAnno.cacheTime()));
         return result;
     }
 

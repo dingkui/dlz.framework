@@ -15,7 +15,7 @@ public class DictConverter extends ANameConverter<Object,String,String> {
 	@Override
 	public String conver2Str(Object o) {
 		if(logicServer!=null){
-			return ValUtil.getStr(logicServer.conver2Str(o, getPara()));
+			return ValUtil.toStr(logicServer.conver2Str(o, getPara()));
 		}
 		return null;
 	}

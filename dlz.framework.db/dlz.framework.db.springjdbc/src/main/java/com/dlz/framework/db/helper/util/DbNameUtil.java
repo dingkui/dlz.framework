@@ -145,8 +145,8 @@ public class DbNameUtil {
                 if (field != null) {
                     Object mapValue = entry.getValue();
                     Reflections.makeAccessible(field);
-                    field.set(obj, ValUtil.getObj(mapValue, field.getType()));
-//                  Reflections.invokeSetter(obj, field.v2.getName(), ValUtil.getObj(mapValue, field.v2.getType()));
+                    field.set(obj, ValUtil.toObj(mapValue, field.getType()));
+//                  Reflections.invokeSetter(obj, field.v2.getName(), ValUtil.toObj(mapValue, field.v2.getType()));
                 }
             }
             return (T) obj;

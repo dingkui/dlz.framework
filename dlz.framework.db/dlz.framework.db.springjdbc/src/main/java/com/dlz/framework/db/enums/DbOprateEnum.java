@@ -45,7 +45,7 @@ public enum DbOprateEnum {
 
     private Condition paraTwo(String dbn, Object value) {
         String key = this + "_" + TraceUtil.generateShortUuid();
-        Object[] array = ValUtil.getArray(value);
+        Object[] array = ValUtil.toArray(value);
         if (array.length < 2) {
             throw new SystemException("参数有误，需要有2个值：" + this);
         }

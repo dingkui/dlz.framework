@@ -48,9 +48,9 @@ public class DbOpMysql extends SqlHelper {
 //        List<ResultMap> maps = dao.getList(sql);
 //        Set<String> re = new HashSet();
 //        maps.forEach(item -> {
-//            String field = ValUtil.getStr(item.get("Field"), "");
+//            String field = ValUtil.toStr(item.get("Field"), "");
 //            if(field.length()==0){
-//                field = ValUtil.getStr(item.get("field"), "");
+//                field = ValUtil.toStr(item.get("field"), "");
 //            }
 //            if(field.length()>0){
 //                re.add(field.toUpperCase());
