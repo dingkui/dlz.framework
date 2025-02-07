@@ -15,7 +15,7 @@ import java.util.List;
  */
 @Slf4j
 @SuppressWarnings("rawtypes")
-public class ParaMapSearchColumn  extends AParaMapSearch{
+public class ParaMapSearchColumn  extends AParaMapSearch<ParaMapSearchColumn>{
     private static final long serialVersionUID = 8374167270612933157L;
     private static final String SQL = "key.comm.searchTable";
     private static final String STR_COLUMS = "colums";

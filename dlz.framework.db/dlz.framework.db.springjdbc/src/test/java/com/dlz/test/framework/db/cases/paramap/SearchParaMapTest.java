@@ -85,4 +85,11 @@ public class SearchParaMapTest  extends SpingDbBaseTest{
         List<Long> longList1 = paraMap.getLongList();
         log.info("longList1:"+longList1);
     }
+    @Test
+    public void conditionSelectTest3() {
+        ParaMapSearchColumn paraMap = DbFactory.select(Dict::getA2).in(Dict::getA2, "3,4,5,6");
+        showSql(paraMap,"conditionSelectTest3");
+        List<Long> longList1 = paraMap.getLongList();
+        log.info("longList1:"+longList1);
+    }
 }

@@ -29,7 +29,7 @@ import javax.sql.DataSource;
  * @date: 2020-10-15
  */
 @Slf4j
-@EnableConfigurationProperties({DlzDbProperties.class,HelperProperties.class})
+@EnableConfigurationProperties({DlzDbProperties.class})
 public class DlzDbConfig {
     @Bean(name = "tableCloumnMapper")
     @Lazy
