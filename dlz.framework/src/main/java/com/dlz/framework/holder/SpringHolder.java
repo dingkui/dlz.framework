@@ -3,6 +3,7 @@ package com.dlz.framework.holder;
 import com.dlz.comm.exception.SystemException;
 import com.dlz.comm.util.StringUtils;
 import com.dlz.comm.util.encry.TraceUtil;
+import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.NoSuchBeanDefinitionException;
@@ -11,6 +12,8 @@ import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
 import org.springframework.beans.factory.support.AbstractBeanDefinition;
 import org.springframework.beans.factory.support.BeanDefinitionBuilder;
 import org.springframework.beans.factory.support.BeanDefinitionRegistry;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationEvent;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import java.util.Map;
@@ -20,6 +23,7 @@ import java.util.Map;
  *
  * @author dk
  */
+@Slf4j
 public class SpringHolder {
     private static Logger logger = LoggerFactory.getLogger(SpringHolder.class);
     private static ConfigurableListableBeanFactory beanFactory;
@@ -210,5 +214,21 @@ public class SpringHolder {
 //    	ConfigurableApplicationContext configurableContext = (ConfigurableApplicationContext) application;
 //		BeanDefinitionRegistry beanDefinitionRegistry = (BeanDefinitionRegistry) configurableContext.getBeanFactory();
         getBeanDefinitionRegistry().removeBeanDefinition(beanId);
+    }
+
+    /**
+     * 发布事件
+     *
+     * @param event 事件
+     */
+    public static void publishEvent(ApplicationEvent event) {
+        if (beanFactory == null || !(beanFactory instanceof ApplicationContext)) {
+            return;
+        }
+        try {
+            ((ApplicationContext)beanFactory).publishEvent(event);
+        } catch (Exception ex) {
+            log.error(ex.getMessage());
+        }
     }
 }
