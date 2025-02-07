@@ -15,6 +15,7 @@ import org.springframework.beans.factory.support.BeanDefinitionRegistry;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationEvent;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
+import org.springframework.core.io.Resource;
 
 import java.util.Map;
 
@@ -102,7 +103,7 @@ public class SpringHolder {
     public static <T> T getBeanWithRegister(Class<T> clazz) {
         checkApplicationContext();
         try {
-            if ( !beanFactory.getBeansOfType(clazz).isEmpty()) {
+            if (!beanFactory.getBeansOfType(clazz).isEmpty()) {
                 return beanFactory.getBean(clazz);
             }
             return registerBean(clazz);
@@ -135,11 +136,11 @@ public class SpringHolder {
     @SuppressWarnings("unchecked")
     public static <T> T registerBean(String beanId, boolean singleton, Class<T> clazz) {
         String toRegeistBeanId = beanId;
-        if (singleton ) {
-            if ( !beanFactory.getBeansOfType(clazz).isEmpty()) {
+        if (singleton) {
+            if (!beanFactory.getBeansOfType(clazz).isEmpty()) {
                 return beanFactory.getBean(clazz);
             }
-        }else{
+        } else {
             while (beanFactory.containsBean(toRegeistBeanId)) {
                 toRegeistBeanId = beanId + "_" + TraceUtil.generateShortUuid();
             }
@@ -156,10 +157,11 @@ public class SpringHolder {
         getBeanDefinitionRegistry().registerBeanDefinition(toRegeistBeanId, definition);
         return (T) beanFactory.getBean(toRegeistBeanId);
     }
+
     /**
      * 创建一个bean并执行autowired
      *
-     * @param clazz     clazz
+     * @param clazz clazz
      */
     public static <T> T createBean(Class<T> clazz) {
         try {
@@ -169,7 +171,7 @@ public class SpringHolder {
             autowiredProcessor.processInjection(bean);
             return bean;
         } catch (Exception e) {
-            throw new SystemException(e.getMessage(),e);
+            throw new SystemException(e.getMessage(), e);
         }
     }
 
@@ -216,19 +218,35 @@ public class SpringHolder {
         getBeanDefinitionRegistry().removeBeanDefinition(beanId);
     }
 
+
+
+    public static ApplicationContext getApplicationContext() {
+        if (beanFactory != null && beanFactory instanceof ApplicationContext) {
+            return (ApplicationContext) beanFactory;
+        }
+        return null;
+    }
     /**
      * 发布事件
      *
      * @param event 事件
      */
     public static void publishEvent(ApplicationEvent event) {
-        if (beanFactory == null || !(beanFactory instanceof ApplicationContext)) {
+        ApplicationContext applicationContext = getApplicationContext();
+        if (applicationContext == null) {
             return;
         }
         try {
-            ((ApplicationContext)beanFactory).publishEvent(event);
+            applicationContext.publishEvent(event);
         } catch (Exception ex) {
             log.error(ex.getMessage());
         }
+    }
+    public static Resource getResource(String resourceLocation) {
+        ApplicationContext applicationContext = getApplicationContext();
+        if (applicationContext == null) {
+            return null;
+        }
+        return applicationContext.getResource(resourceLocation);
     }
 }
