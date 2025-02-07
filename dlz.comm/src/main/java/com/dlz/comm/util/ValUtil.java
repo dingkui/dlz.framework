@@ -15,6 +15,11 @@ import java.util.*;
  */
 @Slf4j
 public class ValUtil {
+    public final static Integer ZERO_INT = 0;
+    public final static Long ZERO_LONG = 0l;
+    public final static Float ZERO_FLOAT = 0f;
+    public final static Double ZERO_DOUBLE = 0.0;
+    public final static String STR_BLANK = "";
     private static Number toNumber(Object input, Number defaultV) {
         if (input == null || "".equals(input)) {
             return defaultV;
@@ -24,6 +29,7 @@ public class ValUtil {
         }
         return new BigDecimal(input.toString());
     }
+
     public static BigDecimal toBigDecimal(Object input) {
         return toBigDecimal(input, null);
     }
@@ -47,6 +53,10 @@ public class ValUtil {
         return new BigDecimal(o.toString());
     }
 
+    public static BigDecimal toBigDecimalZero(Object input) {
+        return toBigDecimal(input, BigDecimal.ZERO);
+    }
+
 
     public static Double toDouble(Object input) {
         return toDouble(input, null);
@@ -58,6 +68,10 @@ public class ValUtil {
             return defaultV;
         }
         return o.doubleValue();
+    }
+
+    public static Double toDoubleZero(Object input) {
+        return toDouble(input, ZERO_DOUBLE);
     }
 
     public static Float toFloat(Object input) {
@@ -72,6 +86,10 @@ public class ValUtil {
         return o.floatValue();
     }
 
+    public static Float toFloatZero(Object input) {
+        return toFloat(input, ZERO_FLOAT);
+    }
+
     public static Integer toInt(Object input) {
         return toInt(input, null);
     }
@@ -84,6 +102,10 @@ public class ValUtil {
         return o.intValue();
     }
 
+    public static Integer toIntZero(Object input) {
+        return toInt(input, ZERO_INT);
+    }
+
     public static Long toLong(Object input) {
         return toLong(input, null);
     }
@@ -94,6 +116,10 @@ public class ValUtil {
             return defaultV;
         }
         return o.longValue();
+    }
+
+    public static Long toLongZero(Object input) {
+        return toLong(input, ZERO_LONG);
     }
 
 
@@ -114,7 +140,7 @@ public class ValUtil {
     }
 
     public static String toStrBlank(Object input) {
-        return toStr(input, "");
+        return toStr(input, STR_BLANK);
     }
 
     public static String toStr(Object input) {
@@ -130,9 +156,6 @@ public class ValUtil {
         }
         return JacksonUtil.getJson(input);
     }
-
-
-
 
     public static JSONList toList(Object input) {
         return toList(input, (List) null);
@@ -160,44 +183,33 @@ public class ValUtil {
         }
         return Arrays.asList(array);
     }
-
-    public static Date toDate(Object input) {
-        return toDate(input, null);
+    public static JSONList toListEmputy(Object input) {
+        return toList(input, new ArrayList());
     }
 
-    public static Date toDate(Object input, String format) {
+
+
+    public static Object[] toArray(Object input) {
+        return toArray(input, (Object[]) null);
+    }
+
+    public static Object[] toArray(Object input, Object[] defaultV) {
         if (input == null) {
-            return null;
+            return defaultV;
         }
-        if (Date.class.isAssignableFrom(input.getClass())) {
-            return (Date) input;
+        if (input instanceof Object[]) {
+            return (Object[]) input;
+        } else if (input instanceof Collection) {
+            return ((Collection) input).toArray();
         }
-        if (Number.class.isAssignableFrom(input.getClass())) {
-            return new Date(((Number) input).longValue());
+        try {
+            return new JSONList(input).toArray();
+        } catch (RuntimeException e) {
+            log.warn(e.getMessage());
         }
-        return DateUtil.getDateStr(toStr(input), format);
+        return defaultV;
     }
-
-
-    public static String toDateStr(Object input, String format) {
-        if (input == null) {
-            return null;
-        }
-        input = toDate(input);
-        if (input == null) {
-            return "";
-        }
-        if (format == null) {
-            return DateUtil.getDateTimeStr((Date) input);
-        }
-        return DateUtil.format((Date) input, format);
-    }
-
-    public static String toDateStr(Object input) {
-        return toDateStr(input, null);
-    }
-
-    private static <T> T[] toArray(Collection input, Class<T> clazz) {
+    public static <T> T[] toArray(Collection input, Class<T> clazz) {
         if (input == null) {
             return null;
         }
@@ -210,7 +222,7 @@ public class ValUtil {
         return re;
     }
 
-    private static <T> T[] toArray(Object[] input, Class<T> clazz) {
+    public static <T> T[] toArray(Object[] input, Class<T> clazz) {
         if (input == null) {
             return null;
         }
@@ -220,11 +232,6 @@ public class ValUtil {
         }
         return re;
     }
-
-    public static Object[] toArray(Object input) {
-        return toArray(input, (Object[]) null);
-    }
-
     public static <T> T[] toArray(Object input, Class<T> clazz) {
         if (input == null) {
             return null;
@@ -251,22 +258,55 @@ public class ValUtil {
         return null;
     }
 
-    public static Object[] toArray(Object input, Object[] defaultV) {
+
+    public static Date toDate(Object input) {
+        return toDate(input, null, null);
+    }
+
+    public static Date toDate(Object input, String format) {
+        return toDate(input, format, null);
+    }
+
+    public static Date toDate(Object input, String format, Date defaultV) {
         if (input == null) {
             return defaultV;
         }
-        if (input instanceof Object[]) {
-            return (Object[]) input;
-        } else if (input instanceof Collection) {
-            return ((Collection) input).toArray();
+        if (Date.class.isAssignableFrom(input.getClass())) {
+            return (Date) input;
         }
-        try {
-            return new JSONList(input).toArray();
-        } catch (RuntimeException e) {
-            log.warn(e.getMessage());
+        if (Number.class.isAssignableFrom(input.getClass())) {
+            return new Date(((Number) input).longValue());
         }
-        return defaultV;
+        return DateUtil.getDateStr(toStr(input), format);
     }
+
+    public static Date toDateNow(Object input) {
+        return toDate(input, null, new Date());
+    }
+
+    public static String toDateStr(Object input) {
+        return toDateStr(input, null, null);
+    }
+
+    public static String toDateStr(Object input, String format) {
+        return toDateStr(input, format, null);
+    }
+
+    public static String toDateStr(Object input, String format, Date defaultV) {
+        Date date = toDate(input, null, defaultV);
+        if (date == null) {
+            return "";
+        }
+        if (format == null) {
+            return DateUtil.getDateTimeStr(date);
+        }
+        return DateUtil.format(date, format);
+    }
+
+    public static String toDateStrNow(Object input) {
+        return toDateStr(input, null, new Date());
+    }
+
 
     private static <T> T toNativeObj(Object input, Class<T> classs) {
         if (classs.isAssignableFrom(input.getClass())) {
@@ -332,10 +372,10 @@ public class ValUtil {
     }
 
 
-    public static void main(String[] args) {
-        System.out.println(toDate("2018-21-24 19:23:39.583"));
-        System.out.println(toDate("2018-1-24 19:23"));
-        System.out.println(toDate("19:23"));
-        System.out.println(toDate("2018-1-24"));
-    }
+//    public static void main(String[] args) {
+//        System.out.println(toDate("2018-21-24 19:23:39.583"));
+//        System.out.println(toDate("2018-1-24 19:23"));
+//        System.out.println(toDate("19:23"));
+//        System.out.println(toDate("2018-1-24"));
+//    }
 }
