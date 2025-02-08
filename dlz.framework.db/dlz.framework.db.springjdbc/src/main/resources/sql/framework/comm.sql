@@ -7,12 +7,12 @@
 <sqlList>
 	<sql sqlId="key.comm.searchTable">
 	<![CDATA[
-	  select ${colums} from ${tableName} ${where} ${otherwhere}
+	  select ${colums} from ${tableName} t ${where} ${otherwhere}
     ]]>
  	</sql>
 	<sql sqlId="key.comm.updateTable">
 	<![CDATA[
-	  update ${tableName} set ${sets} ${where} ${otherwhere}
+	  update ${tableName} t set ${sets} ${where} ${otherwhere}
     ]]>
  	</sql>
 	<sql sqlId="key.comm.insertTable">
@@ -22,7 +22,7 @@
  	</sql>
 	<sql sqlId="key.comm.deleteTable">
 	<![CDATA[
-	  delete from ${tableName} ${where} ${otherwhere}
+	  delete from ${tableName} t ${where} ${otherwhere}
     ]]>
  	</sql>
  	<sql sqlId="key.comm.cntSql">
@@ -30,7 +30,7 @@
 	  select count(1) from (${_sql}) t
     ]]>
  	</sql>
- 	<sql sqlId="key.comm.pageSql">
+ 	<sql sqlId="key.comm.pageSql.oracle">
 	<![CDATA[
 		[select * from (select a1.*,rownum rownum_ from ( ^#{_end}]
 			[select * from ( ^#{_orderBy}]

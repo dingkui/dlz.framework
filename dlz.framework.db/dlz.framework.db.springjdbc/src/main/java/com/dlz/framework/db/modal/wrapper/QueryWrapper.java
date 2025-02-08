@@ -5,7 +5,9 @@ import com.dlz.framework.db.enums.DbBuildEnum;
 import com.dlz.framework.db.helper.util.DbNameUtil;
 import com.dlz.framework.db.holder.ServiceHolder;
 import com.dlz.framework.db.modal.condition.Condition;
+import com.dlz.framework.db.modal.condition.ICondAuto;
 import com.dlz.framework.db.modal.condition.ICondition;
+import com.dlz.framework.db.modal.condition.IQueryPage;
 import com.dlz.framework.db.modal.map.ParaMapSearch;
 import com.dlz.framework.db.modal.result.Page;
 import com.dlz.framework.util.system.Reflections;
@@ -19,7 +21,7 @@ import java.util.List;
  * @author dk
  *
  */
-public class QueryWrapper<T> implements ICondition<QueryWrapper<T>>{
+public class QueryWrapper<T> implements ICondition<QueryWrapper<T>>, ICondAuto<QueryWrapper<T>>, IQueryPage<QueryWrapper<T>> {
 	private Class<T> beanClass;
 	private boolean isGenerator = false;
 	private T bean;
@@ -69,19 +71,6 @@ public class QueryWrapper<T> implements ICondition<QueryWrapper<T>>{
 		return pm.jdbcCnt();
 	}
 
-	public Page<T> page() {
-		Page pmPage = pm.getPage();
-		if(pmPage==null){
-			pmPage=new Page<>();
-			pm.setPage(pmPage);
-		}
-		return pmPage;
-	}
-
-	public QueryWrapper<T> setPage(Page<T> page) {
-		pm.setPage(page);
-		return this;
-	}
 
 	public Class<T> getBeanClass() {
 		return beanClass;
@@ -92,6 +81,15 @@ public class QueryWrapper<T> implements ICondition<QueryWrapper<T>>{
 		return this;
 	}
 
+	@Override
+	public Page getPage() {
+		return pm.getPage();
+	}
+	@Override
+	public QueryWrapper<T> page(Page page) {
+		pm.setPage(page);
+		return this;
+	}
 	@Override
 	public void addChildren(Condition child) {
 		condition.addChildren(child);

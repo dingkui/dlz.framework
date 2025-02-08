@@ -2,7 +2,7 @@ package com.dlz.test.framework.db.cases.paramap;
 
 import com.dlz.comm.json.JSONMap;
 import com.dlz.framework.db.enums.DbBuildEnum;
-import com.dlz.framework.db.modal.DbFactory;
+import com.dlz.framework.db.modal.DB;
 import com.dlz.framework.db.modal.condition.Condition;
 import com.dlz.framework.db.modal.map.ParaMapDelete;
 import com.dlz.test.framework.db.config.SpingDbBaseTest;
@@ -16,7 +16,7 @@ import org.junit.Test;
 public class DelteParaMapTest  extends SpingDbBaseTest {
     @Test
     public void conditionSqlTest1() {
-        ParaMapDelete paraMap = DbFactory.delete("t_b_dict");
+        ParaMapDelete paraMap = DB.delete("t_b_dict");
         paraMap.addPara(Dict::getA2, "1");
         JSONMap param = new JSONMap("id","123");
         paraMap.where(Condition.where().sql("[id=#{id}]",param));
@@ -27,7 +27,7 @@ public class DelteParaMapTest  extends SpingDbBaseTest {
     }
     @Test
     public void conditionSqlTest2() {
-        ParaMapDelete paraMap = DbFactory.delete("t_b_dict");
+        ParaMapDelete paraMap = DB.delete("t_b_dict");
         paraMap.addPara(Dict::getA2, "1");
         JSONMap param = new JSONMap("id","123");
         paraMap.where(Condition.where().sql("[id=#{id2}]",param));
@@ -37,7 +37,7 @@ public class DelteParaMapTest  extends SpingDbBaseTest {
     }
     @Test
     public void conditionTest1() {
-        ParaMapDelete paraMap = DbFactory.delete("t_b_dict");
+        ParaMapDelete paraMap = DB.delete("t_b_dict");
         paraMap.addPara(Dict::getA2, "1");
 //        paraMap.where(DbBuildEnum.where.build())
 
@@ -45,7 +45,7 @@ public class DelteParaMapTest  extends SpingDbBaseTest {
     }
     @Test
     public void conditionTest() {
-        ParaMapDelete paraMap = DbFactory.delete("t_b_dict");
+        ParaMapDelete paraMap = DB.delete("t_b_dict");
         paraMap.addPara(Dict::getA2, "1");
         paraMap.where(Condition.where()
                 .ne(Dict::getA2, "3")
@@ -65,7 +65,7 @@ public class DelteParaMapTest  extends SpingDbBaseTest {
 
     @Test
     public void conditionTest2() {
-        ParaMapDelete paraMap = DbFactory.delete("t_b_dict");
+        ParaMapDelete paraMap = DB.delete("t_b_dict");
         paraMap.addPara(Dict::getA2, "1");
         paraMap.where(DbBuildEnum.where.build()
                 .in(Dict::getA2, "3,4,5,6")

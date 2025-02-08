@@ -1,6 +1,6 @@
 package com.dlz.test.framework.db.cases.paramap;
 
-import com.dlz.framework.db.modal.DbFactory;
+import com.dlz.framework.db.modal.DB;
 import com.dlz.framework.db.service.ICommService;
 import com.dlz.framework.db.modal.condition.Condition;
 import com.dlz.test.framework.db.config.SpingDbBaseTest;
@@ -23,7 +23,7 @@ public class UpdateParaTest  extends SpingDbBaseTest {
 
 	@Test
 	public void UpdateParaMapTest(){
-		DbFactory
+		DB
 				.update("dh_room")
 				.set("room_id", 1)
 				.where(Condition.where()
@@ -39,7 +39,7 @@ public class UpdateParaTest  extends SpingDbBaseTest {
 				.or(Condition.AND().eq("xxId2", 3).eq("xxId1", 4))
 				.and(Condition.OR().eq("xxId2", 3).eq("xxId1", 4))
 				.eq("xxId3", 5);
-		DbFactory
+		DB
 				.delete("dh_room")
 				.where(where)
 				.excute();

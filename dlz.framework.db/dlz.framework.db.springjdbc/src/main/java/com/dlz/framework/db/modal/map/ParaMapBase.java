@@ -12,6 +12,8 @@ import com.dlz.framework.db.modal.result.Page;
 import com.dlz.framework.util.system.MFunction;
 import com.dlz.framework.util.system.Reflections;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.io.Serializable;
 import java.util.Map;
@@ -21,10 +23,15 @@ public class ParaMapBase implements Serializable {
 
     private static final long serialVersionUID = 8374167270612933157L;
     @JsonIgnore
+    @Getter
     private Convert convert = new Convert();
+    @Getter
     private SqlItem sqlItem = new SqlItem();
+    @Getter
+    @Setter
     private Page page;
 
+    @Getter
     private JSONMap para = new JSONMap();
     private void addDefualtConverter() {
         convert.addClassConvert(new DateConverter(DateFormatEnum.DateTimeStr));
@@ -86,31 +93,6 @@ public class ParaMapBase implements Serializable {
         return this;
     }
 
-    /**
-     * 获取convert
-     *
-     * @return convert convert
-     */
-    public Convert getConvert() {
-        return convert;
-    }
-
-    /**
-     * 获取page
-     *
-     * @return page page
-     */
-    public Page getPage() {
-        return page;
-    }
-
-    public void setPage(Page page) {
-        this.page = page;
-    }
-
-    public SqlItem getSqlItem() {
-        return sqlItem;
-    }
     public VAL<String,Object[]> jdbcSql() {
         SqlUtil.dealParm(this,1,true);
         return new VAL(sqlItem.getSqlJdbc(),sqlItem.getSqlJdbcPara());
@@ -124,7 +106,4 @@ public class ParaMapBase implements Serializable {
         return new VAL(sqlItem.getSqlJdbc(),sqlItem.getSqlJdbcPara());
     }
 
-    public JSONMap getPara() {
-        return para;
-    }
 }

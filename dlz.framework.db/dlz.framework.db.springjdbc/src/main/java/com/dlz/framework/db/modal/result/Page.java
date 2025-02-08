@@ -46,6 +46,9 @@ public class Page<T> implements Serializable {
     public Page(){}
 
     public Page<T> setPageSize(int pageSize) {
+        if(pageSize<0 || pageSize>10000){
+            pageSize=DEFAULT_PAGE_SIZE;
+        }
         this.pageSize = pageSize;
         setCNT();
         return this;

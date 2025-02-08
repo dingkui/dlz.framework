@@ -3,7 +3,7 @@ package com.dlz.test.framework.db.cases.paramap;
 import com.dlz.comm.json.JSONMap;
 import com.dlz.framework.db.enums.DbBuildEnum;
 import com.dlz.framework.db.holder.ServiceHolder;
-import com.dlz.framework.db.modal.DbFactory;
+import com.dlz.framework.db.modal.DB;
 import com.dlz.framework.db.modal.condition.Condition;
 import com.dlz.framework.db.modal.map.ParaMapSearch;
 import com.dlz.framework.db.modal.map.ParaMapSearchColumn;
@@ -66,7 +66,7 @@ public class SearchParaMapTest  extends SpingDbBaseTest{
 
     @Test
     public void conditionTest2() {
-        ParaMapSearch paraMap = DbFactory.select("t_b_dict");
+        ParaMapSearch paraMap = DB.select("t_b_dict");
         paraMap.addPara(Dict::getA2, "1");
         paraMap.where(DbBuildEnum.where.build()
                 .in(Dict::getA2, "3,4,5,6")
@@ -80,14 +80,14 @@ public class SearchParaMapTest  extends SpingDbBaseTest{
     }
     @Test
     public void conditionSelectTest2() {
-        ParaMapSearchColumn paraMap = DbFactory.select(Dict::getA2).where(Condition.where().in(Dict::getA2, "3,4,5,6"));
+        ParaMapSearchColumn paraMap = DB.select(Dict::getA2).where(Condition.where().in(Dict::getA2, "3,4,5,6"));
         showSql(paraMap,"conditionSelectTest2");
         List<Long> longList1 = paraMap.getLongList();
         log.info("longList1:"+longList1);
     }
     @Test
     public void conditionSelectTest3() {
-        ParaMapSearchColumn paraMap = DbFactory.select(Dict::getA2).in(Dict::getA2, "3,4,5,6");
+        ParaMapSearchColumn paraMap = DB.select(Dict::getA2).in(Dict::getA2, "3,4,5,6");
         showSql(paraMap,"conditionSelectTest3");
         List<Long> longList1 = paraMap.getLongList();
         log.info("longList1:"+longList1);

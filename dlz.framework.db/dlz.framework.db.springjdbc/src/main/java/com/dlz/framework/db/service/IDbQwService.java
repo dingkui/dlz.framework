@@ -99,7 +99,11 @@ public interface IDbQwService{
 		return getDao().getClumn(sqlJdbc.v1, Integer.class, sqlJdbc.v2);
 	}
 	default <T> Page<T> getPage(QueryWrapper<T> wrapper) {
-		Page<T> page = wrapper.page();
+		Page<T> page = wrapper.getPage();
+		if(page==null){
+			page = new Page<>();
+			wrapper.page(page);
+		}
 		//是否需要查询列表（需要统计条数并且条数是0的情况不查询，直接返回空列表）
 		boolean needList = true;
 
