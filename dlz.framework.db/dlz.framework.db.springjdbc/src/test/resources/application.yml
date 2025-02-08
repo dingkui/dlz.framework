@@ -25,13 +25,13 @@ dlz:
   cache:
     anno: true
   db:
-    log:
-      showResult: true
-      showRunSql: false
-      showKeySql: true
-    jdbcSql: true
     use-db-sql: true
-    showCaller: false
+    log:
+      show-result: true
+      show-run-sql: false
+      show-key-sql: true
+      jdbc-sql: true
+      show-caller: true
     helper:
       auto-update: false
       package-name: com.dlz.test.db.entity

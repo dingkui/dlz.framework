@@ -10,26 +10,6 @@ import java.util.List;
 @ConfigurationProperties(prefix = "dlz.db")
 public class DlzDbProperties {
     /**
-     * 是否启动jdbcSql
-     */
-    private boolean jdbcSql=true;
-    /**
-     * 是否显示结果日志
-     */
-    private boolean showResult = false;
-    /**
-     * 是否显示配置的sql
-     */
-    private boolean showKeySql = true;
-    /**
-     * 是否显示运行sql
-     */
-    private boolean showRunSql = false;
-    /**
-     * 日志中是否显示运行sql
-     */
-    private boolean showCaller = false;
-    /**
      * 数据库类型
      */
     private DbTypeEnum dbtype = DbTypeEnum.MYSQL;
@@ -56,5 +36,49 @@ public class DlzDbProperties {
     /**
      * sqlHelper配置
      */
-    private HelperProperties helper=new HelperProperties();
+    private Helper helper=new Helper();
+    /**
+     * 日志配置
+     */
+    private Log log=new Log();
+    /**
+     * sqlHelper配置
+     */
+    @Data
+    public static class Log {
+        /**
+         * 是否启动jdbcSql
+         */
+        private boolean jdbcSql=true;
+        /**
+         * 是否显示结果日志
+         */
+        private boolean showResult = false;
+        /**
+         * 是否显示配置的sql
+         */
+        private boolean showKeySql = true;
+        /**
+         * 是否显示运行sql
+         */
+        private boolean showRunSql = false;
+        /**
+         * 日志中是否显示运行sql
+         */
+        private boolean showCaller = false;
+    }
+    /**
+     * sqlHelper配置
+     */
+    @Data
+    public static class Helper {
+        /**
+         * 自动更新数据库扫码数据包
+         */
+        String packageName="com.dlz";
+        /**
+         * 是否开启自动更新数据库，生产环境不应开启，可提高启动速度
+         */
+        boolean autoUpdate=false;
+    }
 }

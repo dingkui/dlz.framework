@@ -46,7 +46,7 @@ public class DlzDao implements IDlzDao {
     private void logInfo(String sql, Object[] args,String methodName,long startTime){
         if(log.isDebugEnabled()) {
             long useTime = System.currentTimeMillis() - startTime;
-            if (SqlHolder.properties.isShowRunSql()) {
+            if (SqlHolder.properties.getLog().isShowRunSql()) {
                 log.info("{} {}ms sql:{}", methodName, useTime, SqlUtil.getRunSqlByJdbc(sql, args));
             } else {
                 log.info("{} {}ms sql:{} {}", methodName, useTime, sql, args);

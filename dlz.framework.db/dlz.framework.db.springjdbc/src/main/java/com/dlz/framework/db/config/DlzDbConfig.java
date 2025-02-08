@@ -1,5 +1,6 @@
 package com.dlz.framework.db.config;
 
+import com.dlz.framework.config.DlzFwConfig;
 import com.dlz.framework.db.convertor.ConvertUtil;
 import com.dlz.framework.db.convertor.dbtype.ITableCloumnMapper;
 import com.dlz.framework.db.convertor.dbtype.TableCloumnMapper;
@@ -30,7 +31,7 @@ import javax.sql.DataSource;
  */
 @Slf4j
 @EnableConfigurationProperties({DlzDbProperties.class})
-public class DlzDbConfig {
+public class DlzDbConfig extends DlzFwConfig {
     @Bean(name = "tableCloumnMapper")
     @Lazy
     @ConditionalOnMissingBean(name = "tableCloumnMapper")
@@ -63,7 +64,7 @@ public class DlzDbConfig {
     @Lazy
     @ConditionalOnMissingBean(name = "JdbcTemplate")
     public JdbcTemplate JdbcTemplate(DataSource dataSource) {
-        log.info("default MyJdbcTemplate init ...");
+        log.info("default JdbcTemplate init ...");
         return new JdbcTemplate(dataSource);
     }
 
@@ -72,9 +73,9 @@ public class DlzDbConfig {
      * @return
      */
     @Bean
-    @ConditionalOnProperty(value = "dlz.db.showCaller", havingValue = "true")
+    @ConditionalOnProperty(value = "dlz.db.log.show-caller", havingValue = "true")
     public LoggingAspect loggingAspect() {
-        log.info("dlz.db.showCaller:LoggingAspect init ...");
+        log.info("dlz.db.log.show-caller:LoggingAspect init ...");
         return new LoggingAspect();
     }
 

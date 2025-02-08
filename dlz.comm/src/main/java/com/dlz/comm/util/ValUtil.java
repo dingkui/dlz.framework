@@ -20,6 +20,7 @@ public class ValUtil {
     public final static Float ZERO_FLOAT = 0f;
     public final static Double ZERO_DOUBLE = 0.0;
     public final static String STR_BLANK = "";
+    public final static String STR_NULL = "null";
     private static Number toNumber(Object input, Number defaultV) {
         if (input == null || "".equals(input)) {
             return defaultV;
@@ -141,6 +142,12 @@ public class ValUtil {
 
     public static String toStrBlank(Object input) {
         return toStr(input, STR_BLANK);
+    }
+    public static String toStrWithEmpty(Object input, String defaultValue) {
+        if (null == input || input.equals( STR_NULL) || input.equals( STR_BLANK)) {
+            return defaultValue;
+        }
+        return toStr(input, defaultValue);
     }
 
     public static String toStr(Object input) {
@@ -369,6 +376,13 @@ public class ValUtil {
         } else {
             return false;
         }
+    }
+    public static boolean isStrEmpty(CharSequence cs) {
+        if (cs == null||cs.length()==0) {
+            return true;
+        }
+        String trim = cs.toString().trim();
+        return trim.equals(STR_NULL);
     }
 
 

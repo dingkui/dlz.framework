@@ -29,7 +29,7 @@ import redis.clients.jedis.JedisPool;
 @Slf4j
 @Setter
 @Getter
-@EnableConfigurationProperties({DlzProperties.class, CacheProperties.class})
+@EnableConfigurationProperties(DlzProperties.class)
 public class DlzFwConfig {
     /**
      * spring 容器启动开始执行
@@ -56,8 +56,8 @@ public class DlzFwConfig {
     @Bean(name = "dlzCache")
     @ConditionalOnMissingBean(name = "dlzCache")
     @Lazy
-    public ICache dlzCache(CacheProperties properties) throws InstantiationException, IllegalAccessException {
-        Class<? extends ICache> cacheClass = properties.getCacheClass();
+    public ICache dlzCache(DlzProperties properties) throws InstantiationException, IllegalAccessException {
+        Class<? extends ICache> cacheClass = properties.getCache().getCacheClass();
         log.info("dlzCache init ..." + cacheClass.getName());
         return cacheClass.newInstance();
     }
