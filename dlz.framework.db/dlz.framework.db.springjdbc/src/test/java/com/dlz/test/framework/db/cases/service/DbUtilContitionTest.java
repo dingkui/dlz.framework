@@ -1,6 +1,7 @@
 package com.dlz.test.framework.db.cases.service;
 
 import com.dlz.framework.db.modal.map.ParaMap;
+import com.dlz.framework.db.modal.result.Order;
 import com.dlz.framework.db.modal.result.Page;
 import com.dlz.test.framework.db.config.SpingDbBaseTest;
 import org.junit.Test;
@@ -32,7 +33,7 @@ public class DbUtilContitionTest  extends SpingDbBaseTest {
 		ump2.addPara("d", "d1");
 		ump2.addPara("c", "c1");
 		ump2.addPara("_sql", "_sql${a}");
-		ump2.setPage(new Page<>(1, 2,"id","asc"));
+		ump2.setPage(new Page<>(1, 2, Order.asc("id")));
 		commService.getMap(ump2);
 		System.out.println(ump2.getSqlItem().getSqlRun());
 	}

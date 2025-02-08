@@ -257,9 +257,10 @@ public class SqlUtil {
         }
         String sqlPage = sqlItem.getSqlPage();
         if (sqlPage == null) {
-            String _orderBy = StringUtils.isEmpty(page.getSortField()) ? null : (ConvertUtil.str2Clumn(page.getSortField()) + " " + (page.getSortOrder() == null ? "" : page.getSortOrder()));
-            Integer _begin = null;
-            Integer _end = null;
+//            String _orderBy = StringUtils.isEmpty(page.getSortField()) ? null : (ConvertUtil.str2Clumn(page.getSortField()) + " " + (page.getSortOrder() == null ? "" : page.getSortOrder()));
+            String _orderBy = page.getSortSql();
+            Integer _begin;
+            Integer _end;
 
             if (page.getPageIndex() == -1) {
                 page.setPageIndex(0);
