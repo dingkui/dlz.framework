@@ -11,8 +11,6 @@ import com.dlz.framework.redis.util.RedisKeyMaker;
 import com.dlz.framework.spring.iproxy.ApiProxyHandler;
 import com.dlz.framework.spring.iproxy.ApiScaner;
 import com.dlz.framework.spring.scaner.DlzSpringScaner;
-import lombok.Getter;
-import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.config.BeanFactoryPostProcessor;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
@@ -27,9 +25,7 @@ import redis.clients.jedis.JedisPool;
  * @date: 2020-10-15
  */
 @Slf4j
-@Setter
-@Getter
-@EnableConfigurationProperties(DlzProperties.class)
+@EnableConfigurationProperties({DlzProperties.class})
 public class DlzFwConfig {
     /**
      * spring 容器启动开始执行
