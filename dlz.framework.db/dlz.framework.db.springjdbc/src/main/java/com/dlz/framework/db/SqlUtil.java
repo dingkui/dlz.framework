@@ -273,6 +273,10 @@ public class SqlUtil {
                 _begin = page.getPageIndex() * page.getPageSize();
                 _end = _begin + page.getPageSize();
             }
+            if(page.getPageSize()==0){
+                _begin = null;
+                _end = null;
+            }
 
             Map<String, Object> p = new HashMap<String, Object>();
             p.put("_sql", sqlDeal);

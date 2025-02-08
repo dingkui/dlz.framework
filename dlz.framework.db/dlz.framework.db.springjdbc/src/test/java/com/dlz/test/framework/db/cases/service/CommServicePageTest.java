@@ -14,16 +14,14 @@ public class CommServicePageTest extends SpingDbBaseTest {
     @Test
     public void PageTest() {
         ParaMap pm = new ParaMap("select t.* from Goods t where t.goods_id=310");
-        pm.setPage(new Page<>(1, 2, Order.asc("id")));
+        pm.setPage(Page.build(1, 2, Order.asc("id")));
         Page<ResultMap> page = ServiceHolder.getService().getPage(pm);
-        int count = page.getCount();//总条数
-        List<ResultMap> data = page.getData();//查询结果
     }
 
     @Test
     public void PageTest2() {
         ParaMap ump2 = new ParaMap("select t.* from PTN_GOODS_PRICE t where t.goods_id=#{goodsId}");
-        ump2.setPage(new Page<>(1, 2, Order.asc("id"),Order.desc("xx2")));
+        ump2.setPage(Page.build(1, 2, Order.asc("id"),Order.desc("xx2")));
         ump2.addPara("goodsId", 123);
         ServiceHolder.getService().getMap(ump2);
     }

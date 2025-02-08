@@ -42,7 +42,7 @@ public class DbOpSqlite extends SqlHelper {
     public TableInfo getTableInfo(String tableName) {
         // 获取表注释
         String sql = "SELECT table_comment FROM table_comments WHERE table_name = ?";
-        String tableComment = dao.getClumn(sql, String.class, tableName);
+        String tableComment = dao.getFistColumn(sql, String.class, tableName);
 
         // 构建查询主键的SQL语句
         sql = "PRAGMA table_info(`" + tableName + "`)";
@@ -98,7 +98,7 @@ public class DbOpSqlite extends SqlHelper {
     @Override
     public void updateDefaultValue(String tableName, String columnName, String value) {
         String sql = "SELECT COUNT(*) FROM " + tableName + " WHERE `" + columnName + "` IS NULL";
-        Long count = dao.getClumn(sql, Long.class);
+        Long count = dao.getFistColumn(sql, Long.class);
         if (count > 0) {
             sql = "UPDATE " + tableName + " SET `" + columnName + "` = ? WHERE `" + columnName + "` IS NULL";
             dao.update(sql, value);

@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.annotation.TableId;
 import com.dlz.comm.exception.SystemException;
 import com.dlz.comm.util.StringUtils;
 import com.dlz.comm.util.ValUtil;
+import com.dlz.framework.db.convertor.ConvertUtil;
 import com.dlz.framework.db.dao.IDlzDao;
 import com.dlz.framework.db.helper.bean.Sort;
 import com.dlz.framework.db.helper.bean.TableInfo;
@@ -99,7 +100,7 @@ public abstract class SqlHelper {
 //        return dao.getList(sql, args);
 //    }
     public <T> List<T> queryForList(String sql, Class<T> requiredType, Object... args){
-        return DbNameUtil.coverResult2Bean(dao.getList(sql, args),requiredType);
+        return ConvertUtil.conver(dao.getList(sql, args),requiredType);
     }
 //    public <T> T queryForObject(String sql, Class<T> requiredType, Object... args){
 //        return dao.getObj(sql,requiredType, args);
@@ -400,46 +401,29 @@ public abstract class SqlHelper {
     /**
      * 按查询条件获取Page
      */
-    public <T> Page<T> findPage(ConditionWrapper conditionWrapper, Sort sort, Page<T> page, Class<T> clazz) {
-        List<String> values = new ArrayList<String>();
+    public <T> Page<T> findPage(ConditionWrapper conditionWrapper, Page<T> page, Class<T> clazz) {
         // 查询出一共的条数
-        Integer count = findCountByQuery(conditionWrapper, clazz);
-
-        String sql = "SELECT * FROM `" + DbNameUtil.getDbTableName(clazz) + "`";
-        if (conditionWrapper != null && conditionWrapper.notEmpty()) {
-            sql += " WHERE " + conditionWrapper.build(values);
-        }
-        if (sort != null) {
-            sql += " " + sort.toString();
-        } else {
-            sql += " ORDER BY id DESC";
-        }
-        sql += getLimitSql(page.getPageSize() * page.getPageIndex(),page.getPageSize());
-
-        page.setCount(count);
-        page.setData(queryForList(sql, clazz, values.toArray()));
-        return page;
+        return page.doPage(() -> findCountByQuery(conditionWrapper, clazz), () -> {
+            List<String> values = new ArrayList<>();
+            String sql = "SELECT * FROM `" + DbNameUtil.getDbTableName(clazz) + "`";
+            if (conditionWrapper != null && conditionWrapper.notEmpty()) {
+                sql += " WHERE " + conditionWrapper.build(values);
+            }
+            if (!page.getOrders().isEmpty()) {
+                sql += " " + page.getOrders();
+            } else {
+                sql += " ORDER BY id DESC";
+            }
+            sql += getLimitSql(page.getPageSize() * page.getPageIndex(),page.getPageSize());
+            return queryForList(sql, clazz, values.toArray());
+        });
     }
 
     /**
      * 按查询条件获取Page
      */
-    public <T> Page<T> findPage(Sort sort, Page<T> page, Class<T> clazz) {
-        return findPage(null, sort, page, clazz);
-    }
-
-    /**
-     * 按查询条件获取Page
-     */
-    public Page findPage(ConditionWrapper conditionWrapper, Page page, Class<?> clazz) {
-        return findPage(conditionWrapper, null, page, clazz);
-    }
-
-    /**
-     * 按查询条件获取Page
-     */
-    public Page findPage(Page page, Class<?> clazz) {
-        return findPage(null, null, page, clazz);
+    public <T> Page<T> findPage(Page<T> page, Class<T> clazz) {
+        return findPage(null, page, clazz);
     }
 
     /**
@@ -677,8 +661,7 @@ public abstract class SqlHelper {
             sql += " WHERE " + conditionWrapper.build(values);
         }
 
-
-        return dao.getClumn(sql, Integer.class, values.toArray());
+        return dao.getFistColumn(sql, Integer.class, values.toArray());
     }
 
     /**

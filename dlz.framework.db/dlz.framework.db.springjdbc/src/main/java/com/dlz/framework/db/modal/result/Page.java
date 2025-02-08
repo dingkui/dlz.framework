@@ -11,7 +11,9 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.function.Function;
 import java.util.function.Predicate;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 @Data
@@ -21,8 +23,8 @@ public class Page<T> implements Serializable {
     private static final long serialVersionUID = 1L;
     private static final int DEFAULT_PAGE_SIZE = 20;
 
-    @ApiModelProperty(value = "当前页码", position = 1)
-    private int pageIndex=-1;
+    @ApiModelProperty(value = "当前页码，从0开始", position = 1)
+    private int pageIndex=0;
     @ApiModelProperty(value = "每页条数", position = 2)
     private int pageSize = DEFAULT_PAGE_SIZE;
     @ApiModelProperty(value = "数据总条数", position = 3)
@@ -32,26 +34,27 @@ public class Page<T> implements Serializable {
     @ApiModelProperty(value = "数据集合", position = 5)
     private List<T> data;
     @ApiModelProperty(value = "排序", position = 6)
-    private List<Order> orders = new ArrayList<>();
+    private List<Order> orders;
 
-    public static <T> Page<T> create(int pageIndex,int pageSize,Order... order){
+    public static <T> Page<T> build(int pageIndex,int pageSize,Order... order){
         return new Page<>(pageIndex,pageSize,order);
+    }
+    public static <T> Page<T> build(Order... order){
+        return new Page<>(order);
     }
 
     public Page(int pageIndex,int pageSize,Order... order){
+        this(order);
         this.setPageSize(pageSize);
         this.setPageIndex(pageIndex);
+    }
+    public Page(Order... order){
         this.orders = Arrays.asList(order);
     }
-    public Page(int pageIndex,int pageSize){
-        this.setPageSize(pageSize);
-        this.setPageIndex(pageIndex);
-    }
-    public Page(){}
 
     public Page<T> setPageSize(int pageSize) {
-        if(pageSize<0 || pageSize>10000){
-            pageSize=DEFAULT_PAGE_SIZE;
+        if(pageSize>5000){
+            pageSize=5000;
         }
         this.pageSize = pageSize;
         setCNT();
@@ -66,7 +69,24 @@ public class Page<T> implements Serializable {
         return setCNT();
     }
 
+
+    public Page<T> doPage(Supplier<Integer> count, Supplier<List<T>> data) {
+        setCount(count.get());
+        //是否需要查询列表（需要统计条数并且条数是0的情况不查询，直接返回空列表）
+        if(this.count>0){
+            this.data = data.get();
+        }else{
+            this.data = new ArrayList<>(0);
+        }
+        return this;
+    }
+
     private Page<T> setCNT(){
+        if(pageSize<=0){
+            setPages(1);
+            setPageIndex(0);
+            return this;
+        }
         pages=(count%pageSize==0?count/pageSize:count/pageSize+1);
         if(pages>0&&pageIndex>pages-1){
             setPageIndex(pages-1);

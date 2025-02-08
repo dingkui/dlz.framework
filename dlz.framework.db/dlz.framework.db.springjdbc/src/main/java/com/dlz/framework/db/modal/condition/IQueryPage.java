@@ -35,22 +35,29 @@ public interface IQueryPage<T extends IQueryPage> {
         return sort(Order.descs(column));
     }
 
-    default T page(int size, String column, String order) {
-        return page(size, Order.build(column, order));
+
+    default T page(int pageIndex,int size, Order... orders) {
+        return page(pageIndex,size, Arrays.asList(orders));
     }
 
-    default T page(int size, Order... orders) {
-        return page(size, Arrays.asList(orders));
-    }
-
-    default T page(int size, List<Order> orders) {
+    /**
+     * 分页
+     * @param pageIndex 页号，从0开始
+     * @param size 每页大小 最大10000,0则默认每页20条
+     * @param orders
+     * @return
+     */
+    default T page(int pageIndex,int size, List<Order> orders) {
         Page pmPage = getPage();
         if (pmPage == null) {
-            pmPage = new Page<>();
+            pmPage = Page.build();
         }
         pmPage.addOrder(orders);
         if (size > 0) {
             pmPage.setPageSize(size);
+        }
+        if (pageIndex >= 0) {
+            pmPage.setPageIndex(pageIndex);
         }
         return page(pmPage);
     }
@@ -60,6 +67,6 @@ public interface IQueryPage<T extends IQueryPage> {
     }
 
     default T sort(List<Order> orders) {
-        return page(0, orders);
+        return page(0,0, orders);
     }
 }

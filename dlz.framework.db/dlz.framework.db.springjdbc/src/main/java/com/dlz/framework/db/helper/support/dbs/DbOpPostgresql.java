@@ -62,7 +62,7 @@ public class DbOpPostgresql extends SqlHelper {
         // 执行查询并获取结果
         TableInfo tableInfo = new TableInfo();
         tableInfo.setTableName(tableName);
-        tableInfo.setTableComment(dao.getClumn(sql, String.class));
+        tableInfo.setTableComment(dao.getFistColumn(sql, String.class));
 
         // 构建查询主键的SQL语句
         sql = "SELECT kcu.column_name " +
@@ -136,7 +136,7 @@ public class DbOpPostgresql extends SqlHelper {
     @Override
     public void updateDefaultValue(String tableName, String columnName, String value) {
         String sql = "SELECT COUNT(*) FROM " + tableName + " WHERE `" + columnName + "` IS NULL";
-        Long count = dao.getClumn(sql, Long.class);
+        Long count = dao.getFistColumn(sql, Long.class);
         if (count > 0) {
             sql = "UPDATE " + tableName + " SET `" + columnName + "` = ? WHERE `" + columnName + "` IS NULL";
             dao.update(sql, value);

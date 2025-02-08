@@ -20,6 +20,7 @@
 	<sql sqlId="key.comm.deleteTable"><![CDATA[
 	  delete from ${tableName} t ${where} ${otherwhere}
     ]]></sql>
+
  	<sql sqlId="key.comm.cntSql"><![CDATA[
 	  select count(1) from (${_sql}) t
     ]]></sql>

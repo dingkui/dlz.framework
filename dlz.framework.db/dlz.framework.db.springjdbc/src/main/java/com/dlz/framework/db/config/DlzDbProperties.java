@@ -63,7 +63,7 @@ public class DlzDbProperties {
          */
         private boolean showRunSql = false;
         /**
-         * 日志中是否显示运行sql
+         * 日志中是否显示运行sql调用处
          */
         private boolean showCaller = false;
     }

@@ -1,6 +1,7 @@
 package com.dlz.framework.db.convertor;
 
 import com.dlz.comm.exception.DbException;
+import com.dlz.comm.json.JSONMap;
 import com.dlz.comm.util.JacksonUtil;
 import com.dlz.comm.util.ValUtil;
 import com.dlz.framework.db.convertor.clumnname.AColumnNameConvertor;
@@ -8,6 +9,7 @@ import com.dlz.framework.db.convertor.clumnname.ColumnNameCamel;
 import com.dlz.framework.db.convertor.dbtype.ITableCloumnMapper;
 import com.dlz.framework.db.convertor.result.Convert;
 import com.dlz.framework.db.modal.result.ResultMap;
+import com.dlz.framework.util.bean.BeanConvert;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -52,22 +54,10 @@ public class ConvertUtil {
 		return tableCloumnMapper==null?true:tableCloumnMapper.isClumnExists(tableName, clumnName);
 	}
 
-	/**
-	 * 从数据库中取得单个字段数据
-	 */
-	public static <T> T getColum(List<ResultMap> list, Class<T> classs) {
-		if (list.size() == 0) {
-			return null;
-		} else if (list.size() > 1) {
-			throw new DbException("查询结果为多条", 1004);
-		} else {
-			return ValUtil.toObj(ConvertUtil.getFistClumn(list.get(0)), classs);
-		}
+	public static <T> List<T> getColumnList(List<ResultMap> r, Class<T> classs) {
+		return r.stream().map((m) -> classs == null ? (T) m : ConvertUtil.getFistColumn(m, classs)).collect(Collectors.toList());
 	}
 
-	public static <T> List<T> getColumList(List<ResultMap> r, Class<T> classs) {
-		return r.stream().map((m) -> classs == null ? (T) m : ValUtil.toObj(ConvertUtil.getFistClumn(m), classs)).collect(Collectors.toList());
-	}
 
 	/**
 	 * 从Map里取得字符串
@@ -75,7 +65,7 @@ public class ConvertUtil {
 	 * @author dk 2015-04-09
 	 * @return
 	 */
-	public static Object getFistClumn(ResultMap m){
+	public static Object getFistColumn(ResultMap m){
 		if(m==null){
 			return null;
 		}
@@ -86,6 +76,15 @@ public class ConvertUtil {
 			return m.get(a);
 		}
 		return null;
+	}
+	/**
+	 * 从Map里取得字符串
+	 * @param m
+	 * @author dk 2015-04-09
+	 * @return
+	 */
+	public static <T> T getFistColumn(ResultMap m, Class<T> classs){
+		return ValUtil.toObj(getFistColumn(m), classs);
 	}
 
 	/**
@@ -135,6 +134,14 @@ public class ConvertUtil {
 		}
 		return JacksonUtil.coverObj(getConveredMap(m, c), t);
 	}
+
+	public static <T> List<T> conver(List<ResultMap> r, Class<T> classs) {
+		return BeanConvert.coverMap2Bean(r.stream().map(m -> (JSONMap)m).collect(Collectors.toList()), classs);
+	}
+	public static <T> T conver(ResultMap r, Class<T> classs) {
+		return BeanConvert.coverMap2Bean(r, classs);
+	}
+
 
 	public static String clumn2Str(String dbKey) {
 		return columnMapper.clumn2Str(dbKey);

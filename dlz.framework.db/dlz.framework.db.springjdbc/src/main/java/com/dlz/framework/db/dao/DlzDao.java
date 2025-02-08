@@ -1,10 +1,8 @@
 package com.dlz.framework.db.dao;
 
 import com.dlz.comm.cache.CacheUtil;
-import com.dlz.comm.exception.SystemException;
 import com.dlz.comm.util.VAL;
 import com.dlz.framework.db.SqlUtil;
-import com.dlz.framework.db.convertor.ConvertUtil;
 import com.dlz.framework.db.convertor.rowMapper.MySqlColumnMapRowMapper;
 import com.dlz.framework.db.convertor.rowMapper.OracleColumnMapRowMapper;
 import com.dlz.framework.db.convertor.rowMapper.ResultMapRowMapper;
@@ -34,17 +32,18 @@ public class DlzDao implements IDlzDao {
     public DlzDao(JdbcTemplate jdbcTemplate) {
         this.dao = jdbcTemplate;
         DbTypeEnum dbtype = SqlHolder.properties.getDbtype();
-        if(dbtype == DbTypeEnum.ORACLE){
+        if (dbtype == DbTypeEnum.ORACLE) {
             rowMapper = new OracleColumnMapRowMapper();
-        }else if(dbtype == DbTypeEnum.MYSQL|| dbtype == DbTypeEnum.POSTGRESQL){
+        } else if (dbtype == DbTypeEnum.MYSQL || dbtype == DbTypeEnum.POSTGRESQL) {
             rowMapper = new MySqlColumnMapRowMapper();
-        }else{
+        } else {
             rowMapper = new ResultMapRowMapper();
         }
     }
 
-    private void logInfo(String sql, Object[] args,String methodName,long startTime){
-        if(log.isDebugEnabled()) {
+    @Override
+    public void logInfo(String sql, String methodName, long startTime, Object[] args) {
+        if (log.isDebugEnabled()) {
             long useTime = System.currentTimeMillis() - startTime;
             if (SqlHolder.properties.getLog().isShowRunSql()) {
                 log.info("{} {}ms sql:{}", methodName, useTime, SqlUtil.getRunSqlByJdbc(sql, args));
@@ -54,56 +53,19 @@ public class DlzDao implements IDlzDao {
         }
     }
 
-
-    public List<ResultMap> getList(String sql, Object... args) throws DataAccessException {
-        long t=System.currentTimeMillis();
-        try {
-            return args.length>0? dao.query(sql, rowMapper, args): dao.query(sql, rowMapper);
-        }finally {
-            logInfo(sql, args, "getList",t);
-        }
+    @Override
+    public List<ResultMap> query(String sql, Object... args) throws DataAccessException {
+        return args.length > 0 ? dao.query(sql, rowMapper, args) : dao.query(sql, rowMapper);
     }
 
-
-
-    public <T> List<T> getClumnList(String sql, Class<T> requiredType, Object... args)  {
-        if(requiredType==null){
-            throw new SystemException("requiredType can not be null");
-        }
-        long t=System.currentTimeMillis();
-        try {
-            List<ResultMap> query = args.length>0? dao.query(sql, rowMapper, args): dao.query(sql, rowMapper);
-            return ConvertUtil.getColumList(query, requiredType);
-        }finally {
-            logInfo(sql, args, "getClumnList",t);
-        }
+    @Override
+    public int update(String sql, Object... args) {
+        return doDb(() -> args.length > 0 ? dao.update(sql, args) : dao.update(sql), "update", sql, args);
     }
 
-    public <T> T getClumn(String sql, Class<T> requiredType, Object... args) {
-        if(requiredType==null){
-            throw new SystemException("requiredType can not be null");
-        }
-        long t=System.currentTimeMillis();
-        try {
-            List<ResultMap> query = args.length>0? dao.query(sql, rowMapper, args): dao.query(sql, rowMapper);
-            return ConvertUtil.getColum(query, requiredType);
-        }finally {
-            logInfo(sql, args, "getClumn",t);
-        }
-    }
-
-    public int update(String sql, Object... args){
-        long t=System.currentTimeMillis();
-        try {
-            int r = args.length > 0 ? dao.update(sql, args) : dao.update(sql);
-            return r;
-        }finally {
-            logInfo(sql, args, "update",t);
-        }
-    }
-    public Long updateForId(String sql, Object... args){
-        long t=System.currentTimeMillis();
-        try {
+    @Override
+    public Long updateForId(String sql, Object... args) {
+        return doDb(() -> {
             KeyHolder keyHolder = new GeneratedKeyHolder();
             dao.update(con -> {
                 PreparedStatement ps = con.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
@@ -114,43 +76,42 @@ public class DlzDao implements IDlzDao {
                 return ps;
             }, keyHolder);
             return keyHolder.getKey().longValue();
-        }finally {
-            logInfo(sql, args, "updateForId",t);
-        }
+        }, "updateForId", sql, args);
     }
 
-    public void execute(final String sql,Object ... args){
-        long t=System.currentTimeMillis();
-        try {
-            if(args.length>0){
+    @Override
+    public void execute(final String sql, Object... args) {
+        doDb(() -> {
+            if (args.length > 0) {
                 dao.execute(sql, (PreparedStatementCallback<Object>) ps -> {
                     for (int i = 0; i < args.length; i++) {
-                        ps.setObject(i+1, args[i]);
+                        ps.setObject(i + 1, args[i]);
                     }
                     ps.execute();
                     return null;
                 });
-            }else{
+            } else {
                 dao.execute(sql);
             }
-        }finally {
-            logInfo(sql, args, "execute",t);
-        }
+            return 0;
+        }, "execute", sql, args);
     }
-    public int[] batchUpdate(String sql, List<Object[]> batchArgs){
-        long t=System.currentTimeMillis();
+
+    @Override
+    public int[] batchUpdate(String sql, List<Object[]> batchArgs) {
+        long t = System.currentTimeMillis();
         try {
             return dao.batchUpdate(sql, batchArgs);
-        }finally {
-            if(log.isDebugEnabled()){
-                log.debug("{} ms batchUpdate:{} size:{}",System.currentTimeMillis() - t,sql,batchArgs.size());
+        } finally {
+            if (log.isDebugEnabled()) {
+                log.debug("{} ms batchUpdate:{} size:{}", System.currentTimeMillis() - t, sql, batchArgs.size());
             }
         }
     }
 
     @Override
     public HashMap<String, Integer> getTableColumnsInfo(String tableName) {
-        return CacheUtil.getMemoCache().getAndSet("tableColumnsInfo",tableName, () -> {
+        return CacheUtil.getMemoCache().getAndSet("tableColumnsInfo", tableName, () -> {
             // 查询表结构定义；返回表定义Map
             String sql = "select * from " + tableName + " limit 0";
             ResultSetExtractor<HashMap<String, Integer>> extractor = rs -> {
@@ -163,7 +124,7 @@ public class DlzDao implements IDlzDao {
                 }
                 return infos;
             };
-            return VAL.of(dao.query(sql, extractor),SqlHolder.properties.getTableCacheTime());
+            return VAL.of(dao.query(sql, extractor), SqlHolder.properties.getTableCacheTime());
         });
     }
 }
