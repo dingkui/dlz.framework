@@ -3,6 +3,7 @@ package com.dlz.framework.db.holder;
 import com.dlz.comm.exception.DbException;
 import com.dlz.comm.util.ExceptionUtils;
 import com.dlz.framework.db.config.DlzDbProperties;
+import com.dlz.framework.db.enums.DbTypeEnum;
 import com.dlz.framework.db.modal.result.ResultMap;
 import com.dlz.framework.db.service.ICommService;
 import com.dlz.framework.holder.SpringHolder;
@@ -66,7 +67,7 @@ public class SqlHolder {
         try {
             SAXReader reader = new SAXReader();
             Document doc = reader.read(is);
-            for (Element sql : (List<Element>) doc.getRootElement().elements()) {
+            for (Element sql : doc.getRootElement().elements()) {
                 addSqlSetting(sql.attributeValue("sqlId"),sql.getData().toString());
             }
         } catch (DocumentException e) {
@@ -82,6 +83,10 @@ public class SqlHolder {
         }
     }
     public static void addSqlSetting(String sqlId,String sqlStr){
+        sqlId = DbTypeEnum.dropSqlKeySufix(sqlId);
+        if(sqlId==null){
+            return;
+        }
         sqlStr = clearSql(sqlStr);
         m_sqlList.put(sqlId, sqlStr);
         if (log.isDebugEnabled()){
@@ -175,10 +180,7 @@ public class SqlHolder {
         if (!key.startsWith("key.")) {
             throw new DbException("sqlKey格式无效:" + key, 1002);
         }
-        String sql = sql(key + properties.getDbtype().getEnd());
-        if (sql == null) {
-            sql = sql(key);
-        }
+        String sql = sql(key);
         if (sql == null) {
             throw new DbException("sqlKey未配置：" + key, 1002);
         }
