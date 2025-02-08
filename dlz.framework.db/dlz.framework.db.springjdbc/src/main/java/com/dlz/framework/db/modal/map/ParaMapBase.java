@@ -3,15 +3,11 @@ package com.dlz.framework.db.modal.map;
 import com.dlz.comm.json.JSONMap;
 import com.dlz.comm.util.VAL;
 import com.dlz.framework.db.SqlUtil;
-import com.dlz.framework.db.convertor.result.Convert;
-import com.dlz.framework.db.convertor.result.impl.DateConverter;
-import com.dlz.framework.db.enums.DateFormatEnum;
 import com.dlz.framework.db.enums.ParaTypeEnum;
 import com.dlz.framework.db.modal.items.SqlItem;
 import com.dlz.framework.db.modal.result.Page;
 import com.dlz.framework.util.system.MFunction;
 import com.dlz.framework.util.system.Reflections;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -22,9 +18,9 @@ import java.util.Map;
 public class ParaMapBase implements Serializable {
 
     private static final long serialVersionUID = 8374167270612933157L;
-    @JsonIgnore
-    @Getter
-    private Convert convert = new Convert();
+//    @JsonIgnore
+//    @Getter
+//    private Convert convert = new Convert();
     @Getter
     private SqlItem sqlItem = new SqlItem();
     @Getter
@@ -33,19 +29,19 @@ public class ParaMapBase implements Serializable {
 
     @Getter
     private JSONMap para = new JSONMap();
-    private void addDefualtConverter() {
-        convert.addClassConvert(new DateConverter(DateFormatEnum.DateTimeStr));
-    }
+//    private void addDefualtConverter() {
+//        convert.addClassConvert(new DateConverter(DateFormatEnum.DateTimeStr));
+//    }
 
     public ParaMapBase(String sqlKey) {
         sqlItem.setSqlKey(sqlKey);
-        this.addDefualtConverter();
+//        this.addDefualtConverter();
     }
 
     public ParaMapBase(String sqlKey, Page page) {
         sqlItem.setSqlKey(sqlKey);
         this.page=page;
-        this.addDefualtConverter();
+//        this.addDefualtConverter();
     }
 
     public ParaMapBase addParas(Map<String, Object> map) {

@@ -1,13 +1,10 @@
 package com.dlz.framework.db.convertor;
 
-import com.dlz.comm.exception.DbException;
 import com.dlz.comm.json.JSONMap;
-import com.dlz.comm.util.JacksonUtil;
 import com.dlz.comm.util.ValUtil;
 import com.dlz.framework.db.convertor.clumnname.AColumnNameConvertor;
 import com.dlz.framework.db.convertor.clumnname.ColumnNameCamel;
 import com.dlz.framework.db.convertor.dbtype.ITableCloumnMapper;
-import com.dlz.framework.db.convertor.result.Convert;
 import com.dlz.framework.db.modal.result.ResultMap;
 import com.dlz.framework.util.bean.BeanConvert;
 
@@ -87,53 +84,6 @@ public class ConvertUtil {
 		return ValUtil.toObj(getFistColumn(m), classs);
 	}
 
-	/**
-	 * 将Map转换成bean中对应字段的Map
-	 * @author dk 2015-04-15
-	 * @return
-	 */
-	public static ResultMap getConveredMap(ResultMap m,Convert c){
-		if(m==null){
-			return null;
-		}
-		ResultMap m2=new ResultMap();
-		for(String a: m.keySet()){
-			m2.put(clumn2Str(a), m.get(a));
-		}
-		return c.convertMap(m2);
-	}
-
-	/**
-	 * 将Map转换成bean中对应字段的Map
-	 * @author dk 2015-04-15
-	 * @return
-	 */
-	public static ResultMap converResultMap(ResultMap m,Convert c){
-		if(m==null){
-			return null;
-		}
-		try{
-			return getConveredMap(m, c);
-		}catch (Exception e) {
-			if(e instanceof DbException) {
-				throw e;
-			}
-			throw new DbException("转换异常："+m.toString(),1004,e);
-		}
-
-	}
-
-	/**
-	 * 将Map转换成bean
-	 * @author dk 2018-01-19
-	 * @return
-	 */
-	public static <T> T conver(ResultMap m,Convert c,Class<T> t){
-		if(m==null){
-			return null;
-		}
-		return JacksonUtil.coverObj(getConveredMap(m, c), t);
-	}
 
 	public static <T> List<T> conver(List<ResultMap> r, Class<T> classs) {
 		return BeanConvert.coverMap2Bean(r.stream().map(m -> (JSONMap)m).collect(Collectors.toList()), classs);
