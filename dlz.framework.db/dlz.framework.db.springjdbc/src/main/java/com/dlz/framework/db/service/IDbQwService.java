@@ -13,6 +13,7 @@ import com.dlz.framework.executor.Executor;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.concurrent.Callable;
 
 
 /**
@@ -25,39 +26,38 @@ import java.util.List;
  */
 public interface IDbQwService {
     IDlzDao getDao();
-
-    default <T,R> R doDb(QueryWrapper<T> wrapper, Executor<VAL<String, Object[]>, R> executor) {
+    default <T,R> R doDb(QueryWrapper<T> wrapper, Executor<VAL<String, Object[]>, R> executor, boolean page) {
         try {
-            return executor.excute(wrapper.jdbcSql());
+            return executor.excute(page?wrapper.jdbcSql():wrapper.jdbcCnt());
         } catch (Exception e) {
             if (e instanceof DbException) {
                 throw e;
             }
-            throw new DbException(e.getMessage() + " bean:"  + wrapper.getBeanClass() , 1003, e);
+            throw new DbException(e.getMessage() + " bean:"  + wrapper.getBeanClass() , 1005, e);
         }
     }
     default <T> List<T> getColumnList(QueryWrapper<T> wrapper, Class<T> tClass) {
-        return doDb(wrapper, jdbcSql ->ConvertUtil.getColumnList(getDao().getList(jdbcSql.v1, jdbcSql.v2), tClass));
+        return doDb(wrapper, jdbcSql ->ConvertUtil.getColumnList(getDao().getList(jdbcSql.v1, jdbcSql.v2), tClass),true);
     }
 
     default <T> T getFistColumn(QueryWrapper<T> wrapper, Class<T> tClass) {
-        return doDb(wrapper, jdbcSql -> getDao().getFistColumn(jdbcSql.v1, tClass, jdbcSql.v2));
+        return doDb(wrapper, jdbcSql -> getDao().getFistColumn(jdbcSql.v1, tClass, jdbcSql.v2),true);
     }
 
     default <T> List<T> getBeanList(QueryWrapper<T> wrapper) {
-        return doDb(wrapper, jdbcSql -> ConvertUtil.conver(getDao().getList(jdbcSql.v1, jdbcSql.v2),wrapper.getBeanClass()));
+        return doDb(wrapper, jdbcSql -> ConvertUtil.conver(getDao().getList(jdbcSql.v1, jdbcSql.v2),wrapper.getBeanClass()),true);
     }
 
     default <T> T getBean(QueryWrapper<T> wrapper, boolean throwEx) {
-        return doDb(wrapper, jdbcSql -> ConvertUtil.conver(getDao().getOne(jdbcSql.v1, throwEx, jdbcSql.v2),wrapper.getBeanClass()));
+        return doDb(wrapper, jdbcSql -> ConvertUtil.conver(getDao().getOne(jdbcSql.v1, throwEx, jdbcSql.v2),wrapper.getBeanClass()),true);
     }
 
     default List<ResultMap> getMapList(QueryWrapper<?> wrapper) {
-        return doDb(wrapper, jdbcSql -> getDao().getList(jdbcSql.v1, jdbcSql.v2));
+        return doDb(wrapper, jdbcSql -> getDao().getList(jdbcSql.v1, jdbcSql.v2),true);
     }
 
     default ResultMap getMap(QueryWrapper<?> wrapper, Boolean throwEx) {
-        return doDb(wrapper, jdbcSql -> getDao().getOne(jdbcSql.v1,throwEx, jdbcSql.v2));
+        return doDb(wrapper, jdbcSql -> getDao().getOne(jdbcSql.v1,throwEx, jdbcSql.v2),true);
     }
 
     default ResultMap getMap(QueryWrapper wrapper) {
@@ -113,7 +113,7 @@ public interface IDbQwService {
     }
 
     default <T> int getCnt(QueryWrapper<T> wrapper) {
-        return doDb(wrapper, jdbcSql ->getDao().getFistColumn(jdbcSql.v1, Integer.class, jdbcSql.v2));
+        return doDb(wrapper,jdbcSql -> getDao().getFistColumn(jdbcSql.v1, Integer.class, jdbcSql.v2),false);
     }
 
     default <T> Page<T> getPage(QueryWrapper<T> wrapper) {

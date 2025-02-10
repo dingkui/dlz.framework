@@ -25,19 +25,14 @@ import java.util.List;
 public interface IDbPmService {
     IDlzDao getDao();
 
-    default <T> T doDb(ParaMapBase paraMap, Executor<VAL<String, Object[]>, T> executor, Executor<SqlItem, String> error) {
+    default <T> T doDb(ParaMapBase paraMap, Executor<VAL<String, Object[]>, T> executor, boolean page) {
         try {
-            return executor.excute(paraMap.jdbcPage());
+            return executor.excute(page?paraMap.jdbcPage():paraMap.jdbcCnt());
         } catch (Exception e) {
             if (e instanceof DbException) {
                 throw e;
             }
-            SqlItem sqlItem = paraMap.getSqlItem();
-            if (error == null) {
-                error = t -> t.getSqlPage();
-            }
-
-            throw new DbException(e.getMessage() + " " + sqlItem.getSqlKey() + ":" + error.excute(sqlItem) + " para:" + paraMap.getPara(), 1003, e);
+            throw new DbException(e.getMessage() + " sqkKey:" + paraMap.getSqlItem().getSqlKey(), 1005, e);
         }
     }
 
@@ -50,7 +45,7 @@ public interface IDbPmService {
      * @throws Exception
      */
     default int excuteSql(ParaMapBase paraMap) {
-        return doDb(paraMap, jdbcSql -> getDao().update(jdbcSql.v1, jdbcSql.v2), sqlItem -> sqlItem.getSqlPage());
+        return doDb(paraMap, jdbcSql -> getDao().update(jdbcSql.v1, jdbcSql.v2), true);
     }
 
     /**
@@ -62,11 +57,11 @@ public interface IDbPmService {
      * @throws Exception
      */
     default List<ResultMap> getMapList(ParaMapBase paraMap) {
-        return doDb(paraMap, jdbcSql -> getDao().getList(jdbcSql.v1, jdbcSql.v2), null);
+        return doDb(paraMap, jdbcSql -> getDao().getList(jdbcSql.v1, jdbcSql.v2), true);
     }
 
     default int getCnt(ParaMapBase paraMap) {
-        return doDb(paraMap, jdbcSql ->getDao().getFistColumn(jdbcSql.v1, Integer.class, jdbcSql.v2), sqlItem -> sqlItem.getSqlCnt());
+        return doDb(paraMap, jdbcSql ->getDao().getFistColumn(jdbcSql.v1, Integer.class, jdbcSql.v2), false);
     }
 
     default String getStr(ParaMapBase paraMap) {
@@ -74,11 +69,11 @@ public interface IDbPmService {
     }
 
     default <T> List<T> getColumnList(ParaMapBase paraMap, Class<T> tClass) {
-        return doDb(paraMap, jdbcSql ->ConvertUtil.getColumnList(getDao().getList(jdbcSql.v1, jdbcSql.v2), tClass), null);
+        return doDb(paraMap, jdbcSql ->ConvertUtil.getColumnList(getDao().getList(jdbcSql.v1, jdbcSql.v2), tClass), true);
     }
 
     default <T> T getFistColumn(ParaMapBase paraMap, Class<T> tClass) {
-        return doDb(paraMap, jdbcSql -> getDao().getFistColumn(jdbcSql.v1, tClass, jdbcSql.v2),  null);
+        return doDb(paraMap, jdbcSql -> getDao().getFistColumn(jdbcSql.v1, tClass, jdbcSql.v2),  true);
     }
 
     default BigDecimal getBigDecimal(ParaMapBase paraMap) {
@@ -133,11 +128,11 @@ public interface IDbPmService {
     }
 
     default ResultMap getMap(ParaMapBase paraMap, boolean throwEx) {
-        return doDb(paraMap, jdbcSql -> getDao().getOne(jdbcSql.v1, throwEx,jdbcSql.v2),  null);
+        return doDb(paraMap, jdbcSql -> getDao().getOne(jdbcSql.v1, throwEx,jdbcSql.v2),  true);
     }
 
     default <T> T getBean(ParaMapBase paraMap, Class<T> t, boolean throwEx) {
-        return doDb(paraMap, jdbcSql -> ConvertUtil.conver(getDao().getOne(jdbcSql.v1, throwEx,jdbcSql.v2),t),  null);
+        return doDb(paraMap, jdbcSql -> ConvertUtil.conver(getDao().getOne(jdbcSql.v1, throwEx,jdbcSql.v2),t),  true);
     }
 
     default <T> T getBean(ParaMapBase paraMap, Class<T> t) {

@@ -43,17 +43,21 @@ public interface IDlzDao {
         return ConvertUtil.getFistColumn(getOne(sql,false, args),requiredType);
     }
 
-    void logInfo(String sql, String method, long t, Object... args);
+    void logInfo(String sql, String method, long t, Object[] args,boolean error);
 
     default <T> T doDb(Supplier<T> s, String fn, String sql, Object... args) {
         if(fn==null){
             return s.get();
         }
         long t = System.currentTimeMillis();
+        boolean err = false;
         try {
             return s.get();
-        } finally {
-            logInfo(sql, fn, t, args);
+        }catch (Exception e){
+            err=true;
+            throw new DbException("sql有误", 1001);
+        }finally {
+            logInfo(sql, fn, t, args,err);
         }
     }
 

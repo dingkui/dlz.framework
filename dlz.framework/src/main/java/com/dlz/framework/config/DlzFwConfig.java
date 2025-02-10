@@ -82,12 +82,12 @@ public class DlzFwConfig {
 
     /**
      * 缓存切面
-     *
+     * dlz.cache.anno=true时生效
      * @param cache
      * @return
      */
     @Bean
-    @ConditionalOnProperty(value = "dlz.cache.anno", havingValue = "false")
+    @ConditionalOnProperty(value = "dlz.cache.anno", havingValue = "true")
     public CacheAspect cacheAspect(ICache cache) {
         log.info("dlz.cache.anno:CacheAspect init ...");
         return new CacheAspect(cache);

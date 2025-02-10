@@ -1,7 +1,5 @@
 package com.dlz.comm.exception;
 
-import java.sql.SQLRecoverableException;
-
 /**
  * 数据库操作异常
  * 
@@ -10,22 +8,19 @@ import java.sql.SQLRecoverableException;
  */
 public class DbException extends BaseException {
 	private static final long serialVersionUID = 1L;
-	private static int ERROR_CODE = 1000;
-	private static int DEFUALT_ERROR_CODE = 1003;
+//	static {
+//		ExceptionErrors.addErrors(1000, "数据库连接异常");
+//		ExceptionErrors.addErrors(1001, "数据库执行sql异常");
+//		ExceptionErrors.addErrors(1002, "数据库参数校验异常");
+//		ExceptionErrors.addErrors(1003, "数据库执行其他异常");
+//		ExceptionErrors.addErrors(1004, "数据库结果异常");
+//		ExceptionErrors.addErrors(1005, "数据转换异常");
+//	}
 
 	public DbException(String message, int errorCode, Throwable cause) {
 		super(errorCode, message, cause);
 	}
 	public DbException(String message, int errorCode) {
 		super(errorCode, message, null);
-	}
-	public DbException(String message, Throwable cause) {
-		super(DEFUALT_ERROR_CODE, cause.getMessage(), null);
-	}
-	public static DbException buildDbException(String message, Throwable cause) {
-		if (cause instanceof SQLRecoverableException) {
-			return new DbException(message,ERROR_CODE,  cause);
-		}
-		return new DbException(message,DEFUALT_ERROR_CODE, cause);
 	}
 }

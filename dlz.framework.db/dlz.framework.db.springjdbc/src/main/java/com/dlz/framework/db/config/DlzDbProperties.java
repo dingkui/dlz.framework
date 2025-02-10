@@ -26,7 +26,7 @@ public class DlzDbProperties {
      **/
     private String sql= "select sql_key as `key` ,sql_value as `sql`,sql_role as `role` from sys_sql";
     /**
-     * 从数据库中取得sql配置是否开启
+     * 从数据库中取得sql配置是否开启,默认关闭
      **/
     private boolean useDbSql= false;
     /**
@@ -63,7 +63,7 @@ public class DlzDbProperties {
          */
         private boolean showRunSql = false;
         /**
-         * 日志中是否显示运行sql调用处
+         * 日志中是否显示运行sql调用处,默认关闭
          */
         private boolean showCaller = false;
     }

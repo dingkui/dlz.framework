@@ -34,8 +34,11 @@ public class CommServiceQwTest  extends SpingDbBaseTest {
     @Test
     public void getPage1() {
         SysSql dict = new SysSql();
-        dict.setId(1l);
-
+//        dict.setId(1l);
+        Page<SysSql> dictPage = QueryWrapper.wrapper(dict)
+                .eq(SysSql::getId, 0l)
+                .orderByAsc(SysSql::getId)
+                .queryPage();
         Page<SysSql> beanList = QueryWrapper.wrapper(dict).queryPage();
         log.info("beanList:"+beanList);
     }

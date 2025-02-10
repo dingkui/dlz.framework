@@ -42,13 +42,21 @@ public class DlzDao implements IDlzDao {
     }
 
     @Override
-    public void logInfo(String sql, String methodName, long startTime, Object[] args) {
-        if (log.isDebugEnabled()) {
+    public void logInfo(String sql, String methodName, long startTime, Object[] args,boolean error) {
+        if (error||log.isDebugEnabled()) {
             long useTime = System.currentTimeMillis() - startTime;
             if (SqlHolder.properties.getLog().isShowRunSql()) {
-                log.info("{} {}ms sql:{}", methodName, useTime, SqlUtil.getRunSqlByJdbc(sql, args));
+                if(error){
+                    log.error("{} {}ms sql:{}", methodName, useTime, SqlUtil.getRunSqlByJdbc(sql, args));
+                }else{
+                    log.info("{} {}ms sql:{}", methodName, useTime, SqlUtil.getRunSqlByJdbc(sql, args));
+                }
             } else {
-                log.info("{} {}ms sql:{} {}", methodName, useTime, sql, args);
+                if(error){
+                    log.error("{} {}ms sql:{} {}", methodName, useTime, sql, args);
+                }else{
+                    log.info("{} {}ms sql:{} {}", methodName, useTime, sql, args);
+                }
             }
         }
     }

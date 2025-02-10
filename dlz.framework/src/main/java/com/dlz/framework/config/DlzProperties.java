@@ -20,7 +20,7 @@ public class DlzProperties {
     @Data
     public static class Cache {
         /**
-         * 是否开启注解缓存
+         * 是否开启注解缓存，默认关闭
          */
         private boolean anno = false;
         /**

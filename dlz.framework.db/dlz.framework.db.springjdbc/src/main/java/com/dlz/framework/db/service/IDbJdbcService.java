@@ -38,7 +38,7 @@ public interface IDbJdbcService {
 			if (e instanceof DbException) {
 				throw e;
 			}
-			throw new DbException(e.getMessage() + " sql:" + para.v1 + " para:" + para.v2, 1003, e);
+			throw new DbException(e.getMessage(), 1005, e);
 		}
 	}
 	default <T> List<T> getColumnList(String sql, Class<T> tClass, Object... para) {
