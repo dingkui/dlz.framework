@@ -34,7 +34,7 @@ public class Page<T> implements Serializable {
     @ApiModelProperty(value = "数据集合", position = 5)
     private List<T> data;
     @ApiModelProperty(value = "排序", position = 6)
-    private List<Order> orders;
+    private List<Order> orders=new ArrayList<>();
 
     public static <T> Page<T> build(int pageIndex,int pageSize,Order... order){
         return new Page<>(pageIndex,pageSize,order);
@@ -49,7 +49,7 @@ public class Page<T> implements Serializable {
         this.setPageIndex(pageIndex);
     }
     public Page(Order... order){
-        this.orders = Arrays.asList(order);
+        this.orders.addAll( Arrays.asList(order));
     }
 
     public Page<T> setPageSize(int pageSize) {
