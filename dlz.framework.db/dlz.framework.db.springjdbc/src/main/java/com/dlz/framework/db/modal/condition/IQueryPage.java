@@ -67,6 +67,6 @@ public interface IQueryPage<T extends IQueryPage> {
     }
 
     default T sort(List<Order> orders) {
-        return page(0,0, orders);
+        return page(-1,0, orders);
     }
 }
