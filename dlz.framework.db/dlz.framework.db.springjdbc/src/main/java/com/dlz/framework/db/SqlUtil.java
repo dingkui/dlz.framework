@@ -269,7 +269,7 @@ public class SqlUtil {
                     _begin = null;
                     _end = page.getSize();
                 } else {
-                    _begin = page.getCurrent() * page.getSize()-page.getCurrent();
+                    _begin = page.getCurrent() * page.getSize()-page.getSize();
                     _end = _begin + page.getSize();
                 }
             }

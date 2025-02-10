@@ -38,12 +38,12 @@ public interface ICondAuto<T extends ICondAuto> {
                 }
                 Object o = req.get(key);
                 DbOprateEnum oprate = DbOprateEnum.eq;
-                if (key.startsWith("$")) {
-                    String[] keys = key.split("_");
-                    if (keys.length < 2) {
+                if (key.startsWith("_")) {
+                    int keyIndex = key.substring(1).indexOf("_");
+                    if (keyIndex == -1) {
                         continue;
                     }
-                    String op = keys[1].substring(1);
+                    String op = key.substring(1,keyIndex+1);
                     key = key.substring(op.length() + 2);
                     if (key.length() == 0) {
                         continue;
