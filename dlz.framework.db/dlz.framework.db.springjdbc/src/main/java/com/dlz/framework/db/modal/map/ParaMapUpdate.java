@@ -39,7 +39,7 @@ public class ParaMapUpdate extends AParaMapSearch<ParaMapUpdate>{
 			addPara(STR_SETS, sbSets);
 		}
 		
-		paraName = ConvertUtil.str2Clumn(paraName);
+		paraName = ConvertUtil.str2DbClumn(paraName);
 		String clumnName = paraName.replaceAll("`", "");
 		boolean isClumnExists = isClumnExists(clumnName);
 		if(!isClumnExists){

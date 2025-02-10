@@ -11,7 +11,6 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
@@ -23,73 +22,75 @@ public class Page<T> implements Serializable {
     private static final long serialVersionUID = 1L;
     private static final int DEFAULT_PAGE_SIZE = 20;
 
-    @ApiModelProperty(value = "当前页码，从0开始", position = 1)
-    private int pageIndex=0;
+    @ApiModelProperty(value = "当前页码，从1开始", position = 1)
+    private long current=0;
     @ApiModelProperty(value = "每页条数", position = 2)
-    private int pageSize = DEFAULT_PAGE_SIZE;
+    private long size = DEFAULT_PAGE_SIZE;
     @ApiModelProperty(value = "数据总条数", position = 3)
-    private int count;
+    private long total;
     @ApiModelProperty(value = "总页数", position = 4)
-    private int pages;
+    private long pages;
     @ApiModelProperty(value = "数据集合", position = 5)
-    private List<T> data;
+    private List<T> records;
     @ApiModelProperty(value = "排序", position = 6)
     private List<Order> orders=new ArrayList<>();
 
-    public static <T> Page<T> build(int pageIndex,int pageSize,Order... order){
-        return new Page<>(pageIndex,pageSize,order);
+    public static <T> Page<T> build(long current,long size,Order... order){
+        return new Page<>(current,size,order);
     }
     public static <T> Page<T> build(Order... order){
         return new Page<>(order);
     }
 
-    public Page(int pageIndex,int pageSize,Order... order){
+    public Page(long current,long size,Order... order){
         this(order);
-        this.setPageSize(pageSize);
-        this.setPageIndex(pageIndex);
+        this.setSize(size);
+        this.setCurrent(current);
     }
     public Page(Order... order){
         this.orders.addAll( Arrays.asList(order));
     }
+    public Page(){
+    }
 
-    public Page<T> setPageSize(int pageSize) {
-        if(pageSize>5000){
-            pageSize=5000;
+    public Page<T> setSize(long size) {
+        if(size>5000){
+            size=5000;
         }
-        this.pageSize = pageSize;
-        setCNT();
+        this.size = size;
+        cnt();
         return this;
     }
-    public Page<T> setPageIndex(int pageIndex) {
-        this.pageIndex=pageIndex;
-        return setCNT();
+    public Page<T> setCurrent(long current) {
+        this.current=current;
+        return cnt();
     }
-    public Page<T> setCount(int count) {
-        this.count=count;
-        return setCNT();
+    public Page<T> setTotal(long total) {
+        this.total=total;
+        return cnt();
     }
 
 
-    public Page<T> doPage(Supplier<Integer> count, Supplier<List<T>> data) {
-        setCount(count.get());
+    public Page<T> doPage(Supplier<Integer> total, Supplier<List<T>> record) {
+        setTotal(total.get());
         //是否需要查询列表（需要统计条数并且条数是0的情况不查询，直接返回空列表）
-        if(this.count>0){
-            this.data = data.get();
+        if(this.total>0){
+            this.records = record.get();
         }else{
-            this.data = new ArrayList<>(0);
+            this.records = new ArrayList<>(0);
         }
         return this;
     }
 
-    private Page<T> setCNT(){
-        if(pageSize<=0){
+    private Page<T> cnt(){
+        if(size<=0){
             setPages(1);
-            setPageIndex(0);
+            setCurrent(0);
             return this;
         }
-        pages=(count%pageSize==0?count/pageSize:count/pageSize+1);
-        if(pages>0&&pageIndex>pages-1){
-            setPageIndex(pages-1);
+        pages=(total%size==0?total/size:total/size+1);
+        if(pages>0&&current>pages){
+            setCurrent(pages);
         }
         return this;
     }
@@ -100,7 +101,7 @@ public class Page<T> implements Serializable {
             return null;
         }
         return " order by "+orders.stream()
-                .map(o-> ConvertUtil.str2Clumn(o.getColumn())+(o.isAsc()?" asc":" desc"))
+                .map(o-> ConvertUtil.str2DbClumn(o.getColumn())+(o.isAsc()?" asc":" desc"))
                 .collect(Collectors.joining(","));
     }
 

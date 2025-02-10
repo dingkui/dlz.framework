@@ -7,7 +7,6 @@ import com.dlz.comm.util.ExceptionUtils;
 import com.dlz.comm.util.JacksonUtil;
 import com.dlz.comm.util.StringUtils;
 import com.dlz.comm.util.ValUtil;
-import com.dlz.framework.db.convertor.ConvertUtil;
 import com.dlz.framework.db.enums.ParaTypeEnum;
 import com.dlz.framework.db.holder.SqlHolder;
 import com.dlz.framework.db.modal.items.SqlItem;
@@ -259,30 +258,27 @@ public class SqlUtil {
         if (sqlPage == null) {
 //            String _orderBy = StringUtils.isEmpty(page.getSortField()) ? null : (ConvertUtil.str2Clumn(page.getSortField()) + " " + (page.getSortOrder() == null ? "" : page.getSortOrder()));
             String _orderBy = page.getSortSql();
-            Integer _begin;
-            Integer _end;
+            Long _begin;
+            Long _end;
 
-            if (page.getPageIndex() == -1) {
-                page.setPageIndex(0);
-            }
-
-            if (page.getPageIndex() == 0) {
-                _begin = null;
-                _end = page.getPageSize();
-            } else {
-                _begin = page.getPageIndex() * page.getPageSize();
-                _end = _begin + page.getPageSize();
-            }
-            if(page.getPageSize()==0){
+            if(page.getSize()==0){
                 _begin = null;
                 _end = null;
+            }else{
+                if (page.getCurrent() == 0) {
+                    _begin = null;
+                    _end = page.getSize();
+                } else {
+                    _begin = page.getCurrent() * page.getSize()-page.getCurrent();
+                    _end = _begin + page.getSize();
+                }
             }
 
-            Map<String, Object> p = new HashMap<String, Object>();
+            Map<String, Object> p = new HashMap<>();
             p.put("_sql", sqlDeal);
             p.put("_begin", _begin);
             p.put("_end", _end);
-            p.put("_pageSize", page.getPageSize());
+            p.put("_pageSize", page.getSize());
             p.put("_orderBy", _orderBy);
             sqlPage = createSqlDeal(p, "key.comm.pageSql");
             sqlItem.getSystemPara().putAll(p);

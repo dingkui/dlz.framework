@@ -29,7 +29,7 @@ public enum DbOprateEnum {
 
     private Condition paraZero(String dbn) {
         Condition condition = new Condition();
-        condition.setRunsql(this._sql.replaceAll("dbn", ConvertUtil.str2Clumn(dbn)));
+        condition.setRunsql(this._sql.replaceAll("dbn", ConvertUtil.str2DbClumn(dbn)));
         return condition;
     }
 
@@ -38,7 +38,7 @@ public enum DbOprateEnum {
         Condition condition = new Condition();
         condition.addPara(key, value);
         condition.setRunsql(this._sql
-                .replaceAll("dbn", ConvertUtil.str2Clumn(dbn))
+                .replaceAll("dbn", ConvertUtil.str2DbClumn(dbn))
                 .replaceAll("key", key));
         return condition;
     }
@@ -55,7 +55,7 @@ public enum DbOprateEnum {
         condition.addPara(key1, array[0]);
         condition.addPara(key2, array[1]);
         condition.setRunsql(this._sql
-                .replaceAll("dbn", ConvertUtil.str2Clumn(dbn))
+                .replaceAll("dbn", ConvertUtil.str2DbClumn(dbn))
                 .replaceAll("key1", key1)
                 .replaceAll("key2", key2));
         return condition;
@@ -64,7 +64,7 @@ public enum DbOprateEnum {
         String key = this + "_" + TraceUtil.generateShortUuid();
         Condition condition = new Condition();
         condition.setRunsql(this._sql
-                .replaceAll("dbn", ConvertUtil.str2Clumn(dbn))
+                .replaceAll("dbn", ConvertUtil.str2DbClumn(dbn))
                 .replaceAll("key", key));
         if (value instanceof String) {
             String v = ((String) value);

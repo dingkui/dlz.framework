@@ -99,5 +99,8 @@ public class ConvertUtil {
 	public static String str2Clumn(String beanKey) {
 		return columnMapper.str2Clumn(beanKey);
 	}
+	public static String str2DbClumn(String beanKey) {
+		return columnMapper.str2Clumn(beanKey.replaceAll("\\s+", " "));
+	}
 
 }

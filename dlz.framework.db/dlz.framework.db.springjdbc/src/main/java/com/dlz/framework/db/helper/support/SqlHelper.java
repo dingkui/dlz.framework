@@ -40,7 +40,7 @@ public abstract class SqlHelper {
      * @param pageSize
      * @return
      */
-    public abstract String getLimitSql(int currPage, int pageSize);
+    public abstract String getLimitSql(long currPage, long pageSize);
 
     /**
      * 获取表所有字段
@@ -414,7 +414,7 @@ public abstract class SqlHelper {
             } else {
                 sql += " ORDER BY id DESC";
             }
-            sql += getLimitSql(page.getPageSize() * page.getPageIndex(),page.getPageSize());
+            sql += getLimitSql(page.getCurrent(),page.getSize());
             return queryForList(sql, clazz, values.toArray());
         });
     }

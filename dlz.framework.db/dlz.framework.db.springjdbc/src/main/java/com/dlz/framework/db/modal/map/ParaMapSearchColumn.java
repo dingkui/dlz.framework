@@ -21,7 +21,7 @@ public class ParaMapSearchColumn  extends AParaMapSearch<ParaMapSearchColumn>{
     private static final String STR_COLUMS = "colums";
     public ParaMapSearchColumn(String colums, String tableName) {
         super(SQL, tableName);
-        addPara(STR_COLUMS, ConvertUtil.str2Clumn(colums));
+        addPara(STR_COLUMS, ConvertUtil.str2DbClumn(colums));
     }
 
     public ParaMapSearchColumn page(Page page) {

@@ -38,7 +38,7 @@ public class DbOpMysql extends SqlHelper {
      * @return
      */
     @Override
-    public String getLimitSql(int currPage, int pageSize) {
+    public String getLimitSql(long currPage, long pageSize) {
         return " LIMIT " + (currPage - 1) * pageSize + "," + pageSize;
     }
 

@@ -42,22 +42,22 @@ public interface IQueryPage<T extends IQueryPage> {
 
     /**
      * 分页
-     * @param pageIndex 页号，从0开始
+     * @param current 页号，从1开始
      * @param size 每页大小 最大10000,0则默认每页20条
      * @param orders
      * @return
      */
-    default T page(int pageIndex,int size, List<Order> orders) {
+    default T page(long current,long size, List<Order> orders) {
         Page pmPage = getPage();
         if (pmPage == null) {
             pmPage = Page.build();
         }
         pmPage.addOrder(orders);
         if (size > 0) {
-            pmPage.setPageSize(size);
+            pmPage.setSize(size);
         }
-        if (pageIndex >= 0) {
-            pmPage.setPageIndex(pageIndex);
+        if (current > 0) {
+            pmPage.setCurrent(current);
         }
         return page(pmPage);
     }
@@ -67,6 +67,6 @@ public interface IQueryPage<T extends IQueryPage> {
     }
 
     default T sort(List<Order> orders) {
-        return page(-1,0, orders);
+        return page(0,0, orders);
     }
 }

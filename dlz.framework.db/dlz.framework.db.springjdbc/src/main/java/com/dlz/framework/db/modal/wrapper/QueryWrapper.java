@@ -61,7 +61,7 @@ public class QueryWrapper<T> implements ICondition<QueryWrapper<T>>, ICondAuto<Q
 
 	public VAL<String,Object[]> jdbcSql() {
 		generatConditionWithBean();
-		if(pm.getPage()!=null && pm.getPage().getPageIndex()==-1){
+		if(pm.getPage()!=null && pm.getPage().getCurrent()==0){
 			return pm.jdbcSql();
 		}
 		return pm.jdbcPage();

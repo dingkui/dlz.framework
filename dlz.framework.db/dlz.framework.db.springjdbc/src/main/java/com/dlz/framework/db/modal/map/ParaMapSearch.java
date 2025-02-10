@@ -23,7 +23,7 @@ public class ParaMapSearch extends AParaMapSearch<ParaMapSearch> implements IQue
     private static final String STR_COLUMS = "colums";
     public ParaMapSearch(String colums, String tableName) {
         super(SQL, tableName);
-        addPara(STR_COLUMS, ConvertUtil.str2Clumn(colums));
+        addPara(STR_COLUMS, ConvertUtil.str2DbClumn(colums));
     }
     public ParaMapSearch(String tableName) {
         this("*", tableName);

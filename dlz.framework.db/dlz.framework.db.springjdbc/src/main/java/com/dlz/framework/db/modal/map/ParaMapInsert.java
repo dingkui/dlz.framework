@@ -29,7 +29,7 @@ public class ParaMapInsert extends ParaMapMaker {
 		value(Reflections.getFieldName(column),value);
 	}
 	public ParaMapInsert value(String key, Object value){
-		String paraName = ConvertUtil.str2Clumn(key);
+		String paraName = ConvertUtil.str2DbClumn(key);
 		String clumnName = paraName.replaceAll("`", "");
 		boolean isClumnExists = isClumnExists(clumnName);
 		if(!isClumnExists){
