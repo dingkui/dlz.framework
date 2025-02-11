@@ -79,7 +79,7 @@ public class ParaMapUpdate extends AParaMapSearch<ParaMapUpdate>{
 	}
 
 	public int excute(){
-		return ServiceHolder.getService().excuteSql(this);
+		return ServiceHolder.doDb(s->s.excuteSql(this));
 	}
 
 	@Override

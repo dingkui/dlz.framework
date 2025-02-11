@@ -1,7 +1,6 @@
 package com.dlz.framework.db.helper.support.dbs;
 
 import com.dlz.comm.util.StringUtils;
-import com.dlz.framework.db.convertor.ConvertUtil;
 import com.dlz.framework.db.dao.IDlzDao;
 import com.dlz.framework.db.helper.bean.ColumnInfo;
 import com.dlz.framework.db.helper.bean.TableInfo;

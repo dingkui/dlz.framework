@@ -76,7 +76,7 @@ public class SearchParaMapTest  extends SpingDbBaseTest{
         ;
         showSql(paraMap,"conditionTest2");
 //        paraMap.queryMapList();
-        ServiceHolder.getService().getMapList(paraMap);
+        ServiceHolder.doDb(s->s.getMapList(paraMap));
     }
     @Test
     public void conditionSelectTest2() {

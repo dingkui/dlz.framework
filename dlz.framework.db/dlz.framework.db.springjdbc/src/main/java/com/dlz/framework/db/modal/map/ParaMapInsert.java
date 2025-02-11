@@ -75,6 +75,6 @@ public class ParaMapInsert extends ParaMapMaker {
 		return this;
 	}
 	public int excute(){
-		return  ServiceHolder.getService().excuteSql(this);
+		return  ServiceHolder.doDb(s->s.excuteSql(this));
 	}
 }

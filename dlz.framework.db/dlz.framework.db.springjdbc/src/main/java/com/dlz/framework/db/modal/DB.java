@@ -4,10 +4,14 @@ import com.dlz.comm.exception.SystemException;
 import com.dlz.framework.db.helper.util.DbNameUtil;
 import com.dlz.framework.db.modal.map.*;
 import com.dlz.framework.db.modal.result.Page;
+import com.dlz.framework.db.modal.wrapper.DeleteWrapper;
+import com.dlz.framework.db.modal.wrapper.InsertWrapper;
 import com.dlz.framework.db.modal.wrapper.QueryWrapper;
+import com.dlz.framework.db.modal.wrapper.UpdateWrapper;
 import com.dlz.framework.util.system.MFunction;
 import com.dlz.framework.util.system.Reflections;
 
+import java.io.Serializable;
 import java.lang.reflect.Field;
 import java.util.Map;
 import java.util.Set;
@@ -54,5 +58,19 @@ public class DB {
     public static <T> QueryWrapper<T> query(Class<T> re, Map<String, Object> query, Set<String> exclude, Page page) {
         QueryWrapper<T> qw = QueryWrapper.wrapper(re).auto(query, exclude);
         return page == null ? qw : qw.page(page);
+    }
+
+    public static <T> QueryWrapper<T> query(Class<T> re) {
+        return QueryWrapper.wrapper(re);
+    }
+
+    public static <T> InsertWrapper<T> insert(T bean) {
+        return new InsertWrapper(bean);
+    }
+    public static <T> UpdateWrapper<T> update(Class<T> re) {
+        return UpdateWrapper.wrapper(re);
+    }
+    public static <T> DeleteWrapper<T> delete(Class<T> re) {
+        return DeleteWrapper.wrapper(re);
     }
 }

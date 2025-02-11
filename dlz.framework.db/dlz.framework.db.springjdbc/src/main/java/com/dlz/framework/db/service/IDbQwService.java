@@ -4,16 +4,14 @@ import com.dlz.comm.exception.DbException;
 import com.dlz.comm.util.VAL;
 import com.dlz.framework.db.convertor.ConvertUtil;
 import com.dlz.framework.db.dao.IDlzDao;
-import com.dlz.framework.db.helper.util.DbNameUtil;
-import com.dlz.framework.db.modal.map.ParaMapBase;
 import com.dlz.framework.db.modal.result.Page;
 import com.dlz.framework.db.modal.result.ResultMap;
-import com.dlz.framework.db.modal.wrapper.QueryWrapper;
+import com.dlz.framework.db.modal.wrapper.*;
 import com.dlz.framework.executor.Executor;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.List;
-import java.util.concurrent.Callable;
 
 
 /**
@@ -26,9 +24,9 @@ import java.util.concurrent.Callable;
  */
 public interface IDbQwService {
     IDlzDao getDao();
-    default <T,R> R doDb(QueryWrapper<T> wrapper, Executor<VAL<String, Object[]>, R> executor, boolean page) {
+    default <T,R> R doDb(AWrapper<T> wrapper, Executor<VAL<String, Object[]>, R> executor, boolean cnt) {
         try {
-            return executor.excute(page?wrapper.jdbcSql():wrapper.jdbcCnt());
+            return executor.excute(wrapper.jdbcSql(cnt));
         } catch (Exception e) {
             if (e instanceof DbException) {
                 throw e;
@@ -37,27 +35,27 @@ public interface IDbQwService {
         }
     }
     default <T> List<T> getColumnList(QueryWrapper<T> wrapper, Class<T> tClass) {
-        return doDb(wrapper, jdbcSql ->ConvertUtil.getColumnList(getDao().getList(jdbcSql.v1, jdbcSql.v2), tClass),true);
+        return doDb(wrapper, jdbcSql ->ConvertUtil.getColumnList(getDao().getList(jdbcSql.v1, jdbcSql.v2), tClass),false);
     }
 
     default <T> T getFistColumn(QueryWrapper<T> wrapper, Class<T> tClass) {
-        return doDb(wrapper, jdbcSql -> getDao().getFistColumn(jdbcSql.v1, tClass, jdbcSql.v2),true);
+        return doDb(wrapper, jdbcSql -> getDao().getFistColumn(jdbcSql.v1, tClass, jdbcSql.v2),false);
     }
 
     default <T> List<T> getBeanList(QueryWrapper<T> wrapper) {
-        return doDb(wrapper, jdbcSql -> ConvertUtil.conver(getDao().getList(jdbcSql.v1, jdbcSql.v2),wrapper.getBeanClass()),true);
+        return doDb(wrapper, jdbcSql -> ConvertUtil.conver(getDao().getList(jdbcSql.v1, jdbcSql.v2),wrapper.getBeanClass()),false);
     }
 
     default <T> T getBean(QueryWrapper<T> wrapper, boolean throwEx) {
-        return doDb(wrapper, jdbcSql -> ConvertUtil.conver(getDao().getOne(jdbcSql.v1, throwEx, jdbcSql.v2),wrapper.getBeanClass()),true);
+        return doDb(wrapper, jdbcSql -> ConvertUtil.conver(getDao().getOne(jdbcSql.v1, throwEx, jdbcSql.v2),wrapper.getBeanClass()),false);
     }
 
     default List<ResultMap> getMapList(QueryWrapper<?> wrapper) {
-        return doDb(wrapper, jdbcSql -> getDao().getList(jdbcSql.v1, jdbcSql.v2),true);
+        return doDb(wrapper, jdbcSql -> getDao().getList(jdbcSql.v1, jdbcSql.v2),false);
     }
 
     default ResultMap getMap(QueryWrapper<?> wrapper, Boolean throwEx) {
-        return doDb(wrapper, jdbcSql -> getDao().getOne(jdbcSql.v1,throwEx, jdbcSql.v2),true);
+        return doDb(wrapper, jdbcSql -> getDao().getOne(jdbcSql.v1,throwEx, jdbcSql.v2),false);
     }
 
     default ResultMap getMap(QueryWrapper wrapper) {
@@ -113,7 +111,7 @@ public interface IDbQwService {
     }
 
     default <T> int getCnt(QueryWrapper<T> wrapper) {
-        return doDb(wrapper,jdbcSql -> getDao().getFistColumn(jdbcSql.v1, Integer.class, jdbcSql.v2),false);
+        return doDb(wrapper,jdbcSql -> getDao().getFistColumn(jdbcSql.v1, Integer.class, jdbcSql.v2),true);
     }
 
     default <T> Page<T> getPage(QueryWrapper<T> wrapper) {
@@ -123,5 +121,11 @@ public interface IDbQwService {
             wrapper.page(page);
         }
         return page.doPage(() -> getCnt(wrapper), () -> getBeanList(wrapper));
+    }
+    default <T> Long insert(InsertWrapper<T> wrapper) {
+        return doDb(wrapper,jdbcSql -> getDao().updateForId(jdbcSql.v1, jdbcSql.v2),false);
+    }
+    default <T> int excute(AWrapper<T> wrapper) {
+        return doDb(wrapper,jdbcSql -> getDao().update(jdbcSql.v1, jdbcSql.v2),false);
     }
 }

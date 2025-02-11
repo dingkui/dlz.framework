@@ -15,7 +15,7 @@ public class CommServicePageTest extends SpingDbBaseTest {
     public void PageTest() {
         ParaMap pm = new ParaMap("select t.* from Goods t where t.goods_id=310");
         pm.setPage(Page.build(1, 2, Order.asc("id")));
-        Page<ResultMap> page = ServiceHolder.getService().getPage(pm);
+        Page<ResultMap> page = ServiceHolder.doDb(s->s.getPage(pm));
     }
 
     @Test
@@ -23,6 +23,6 @@ public class CommServicePageTest extends SpingDbBaseTest {
         ParaMap ump2 = new ParaMap("select t.* from PTN_GOODS_PRICE t where t.goods_id=#{goodsId}");
         ump2.setPage(Page.build(1, 2, Order.asc("id"),Order.desc("xx2")));
         ump2.addPara("goodsId", 123);
-        ServiceHolder.getService().getMap(ump2);
+        ServiceHolder.doDb(s->s.getMap(ump2));
     }
 }

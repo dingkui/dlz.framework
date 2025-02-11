@@ -55,7 +55,10 @@ public interface IDlzDao {
             return s.get();
         }catch (Exception e){
             err=true;
-            throw new DbException("sql有误", 1001);
+            if (e instanceof DbException) {
+                throw e;
+            }
+            throw new DbException("sql有误", 1001,e);
         }finally {
             logInfo(sql, fn, t, args,err);
         }

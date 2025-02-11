@@ -38,16 +38,16 @@ public class ParaMapSearchColumn  extends AParaMapSearch<ParaMapSearchColumn>{
 
 
     public List<String> getStrList() {
-        return ServiceHolder.getService().getStrList(this);
+        return ServiceHolder.doDb(s->s.getStrList(this));
     }
     public String getStr() {
-        return ServiceHolder.getService().getStr(this);
+        return ServiceHolder.doDb(s->s.getStr(this));
     }
     public Long getLong() {
-        return ServiceHolder.getService().getLong(this);
+        return ServiceHolder.doDb(s->s.getLong(this));
     }
     public List<Long> getLongList() {
-        return ServiceHolder.getService().getLongList(this);
+        return ServiceHolder.doDb(s->s.getLongList(this));
     }
 
     @Override

@@ -15,7 +15,7 @@ public class ParaMapDelete  extends AParaMapSearch<ParaMapDelete>{
 	}
 
 	public int excute(){
-		return ServiceHolder.getService().excuteSql(this);
+		return ServiceHolder.doDb(s->s.excuteSql(this));
 	}
 
 	@Override

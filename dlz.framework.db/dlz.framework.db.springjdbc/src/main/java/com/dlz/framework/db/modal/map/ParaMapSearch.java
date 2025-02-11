@@ -30,13 +30,13 @@ public class ParaMapSearch extends AParaMapSearch<ParaMapSearch> implements IQue
     }
 
     public List<ResultMap> queryMapList() {
-        return ServiceHolder.getService().getMapList(this);
+        return ServiceHolder.doDb(s->s.getMapList(this));
     }
     public Page<ResultMap> queryPageData() {
-        return ServiceHolder.getService().getPage(this);
+        return ServiceHolder.doDb(s->s.getPage(this));
     }
     public ResultMap queryMap() {
-        return ServiceHolder.getService().getMap(this);
+        return ServiceHolder.doDb(s->s.getMap(this));
     }
 
     @Override
