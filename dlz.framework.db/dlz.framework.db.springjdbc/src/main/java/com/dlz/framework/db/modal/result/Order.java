@@ -1,5 +1,6 @@
 package com.dlz.framework.db.modal.result;
 
+import com.dlz.framework.db.modal.DbInfoCache;
 import com.dlz.framework.util.system.MFunction;
 import com.dlz.framework.util.system.Reflections;
 import lombok.AllArgsConstructor;
@@ -9,6 +10,7 @@ import lombok.NoArgsConstructor;
 import java.io.Serializable;
 import java.util.Arrays;
 import java.util.List;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 /**
@@ -43,11 +45,11 @@ public class Order implements Serializable {
     public static List<Order> ascs(String... columns) {
         return Arrays.stream(columns).map(Order::asc).collect(Collectors.toList());
     }
-    public static <T1> List<Order> ascs(MFunction<T1, ?>... columns) {
-        return Arrays.stream(columns).map(item->Order.asc(Reflections.getFieldName(item))).collect(Collectors.toList());
+    public static <T> List<Order> ascs(MFunction<T, ?>... columns) {
+        return Arrays.stream(columns).map(item->Order.asc(DbInfoCache.fnName(item))).collect(Collectors.toList());
     }
     public static <T1> List<Order> descs(MFunction<T1, ?>... columns) {
-        return Arrays.stream(columns).map(item->Order.desc(Reflections.getFieldName(item))).collect(Collectors.toList());
+        return Arrays.stream(columns).map(item->Order.desc(DbInfoCache.fnName(item))).collect(Collectors.toList());
     }
 
     public static List<Order> descs(String... columns) {

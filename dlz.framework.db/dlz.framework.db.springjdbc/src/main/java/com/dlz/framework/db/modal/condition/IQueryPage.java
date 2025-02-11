@@ -2,7 +2,6 @@ package com.dlz.framework.db.modal.condition;
 
 import com.dlz.framework.db.modal.result.Order;
 import com.dlz.framework.db.modal.result.Page;
-import com.dlz.framework.util.system.MFunction;
 
 import java.util.Arrays;
 import java.util.List;
@@ -19,16 +18,9 @@ public interface IQueryPage<T extends IQueryPage> {
 
     T page(Page page);
 
-    default <T1> T orderByAsc(MFunction<T1, ?>... column) {
-        return sort(Order.ascs(column));
-    }
 
     default T orderByAsc(String... column) {
         return sort(Order.ascs(column));
-    }
-
-    default <T1> T orderByDesc(MFunction<T1, ?>... column) {
-        return sort(Order.descs(column));
     }
 
     default T orderByDesc(String... column) {
@@ -36,18 +28,19 @@ public interface IQueryPage<T extends IQueryPage> {
     }
 
 
-    default T page(int pageIndex,int size, Order... orders) {
-        return page(pageIndex,size, Arrays.asList(orders));
+    default T page(int pageIndex, int size, Order... orders) {
+        return page(pageIndex, size, Arrays.asList(orders));
     }
 
     /**
      * 分页
+     *
      * @param current 页号，从1开始
-     * @param size 每页大小 最大10000,0则默认每页20条
+     * @param size    每页大小 最大10000,0则默认每页20条
      * @param orders
      * @return
      */
-    default T page(long current,long size, List<Order> orders) {
+    default T page(long current, long size, List<Order> orders) {
         Page pmPage = getPage();
         if (pmPage == null) {
             pmPage = Page.build();
@@ -67,6 +60,6 @@ public interface IQueryPage<T extends IQueryPage> {
     }
 
     default T sort(List<Order> orders) {
-        return page(0,0, orders);
+        return page(0, 0, orders);
     }
 }

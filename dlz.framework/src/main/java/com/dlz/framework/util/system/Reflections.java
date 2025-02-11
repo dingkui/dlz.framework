@@ -531,6 +531,10 @@ public class Reflections {
         Field field = getField(property);
         return field == null ? null : field.getName();
     }
+    public static <T> String getFieldName(Function<T,?> property) {
+        Field field = getField(property);
+        return field == null ? null : field.getName();
+    }
     public static <T> T newInstance(Class<T> classz,Object ... para) {
         Class<?>[] aClass = new Class[para.length];
         for (int i = 0; i < para.length; i++) {

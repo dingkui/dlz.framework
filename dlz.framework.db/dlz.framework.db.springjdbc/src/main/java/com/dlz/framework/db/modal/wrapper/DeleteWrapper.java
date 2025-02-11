@@ -5,6 +5,7 @@ import com.dlz.framework.db.enums.DbBuildEnum;
 import com.dlz.framework.db.helper.util.DbNameUtil;
 import com.dlz.framework.db.holder.ServiceHolder;
 import com.dlz.framework.db.modal.condition.Condition;
+import com.dlz.framework.db.modal.condition.ICondAddByLamda;
 import com.dlz.framework.db.modal.condition.ICondAuto;
 import com.dlz.framework.db.modal.condition.ICondition;
 import com.dlz.framework.db.modal.map.ParaMapDelete;
@@ -21,7 +22,7 @@ import java.util.Map;
  * @author dk
  *
  */
-public class DeleteWrapper<T> extends AWrapper<T> implements ICondition<DeleteWrapper<T>>, ICondAuto<DeleteWrapper<T>> {
+public class DeleteWrapper<T> extends AWrapper<T> implements ICondition<DeleteWrapper<T>>, ICondAuto<DeleteWrapper<T>>, ICondAddByLamda<DeleteWrapper<T>,T>{
 	private T condtion;
 	ParaMapDelete pm;
 	Condition condition = DbBuildEnum.where.build();

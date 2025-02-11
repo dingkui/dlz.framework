@@ -5,6 +5,7 @@ import com.dlz.framework.db.enums.DbBuildEnum;
 import com.dlz.framework.db.helper.util.DbNameUtil;
 import com.dlz.framework.db.holder.ServiceHolder;
 import com.dlz.framework.db.modal.condition.Condition;
+import com.dlz.framework.db.modal.condition.ICondAddByLamda;
 import com.dlz.framework.db.modal.condition.ICondAuto;
 import com.dlz.framework.db.modal.condition.ICondition;
 import com.dlz.framework.db.modal.map.ParaMapUpdate;
@@ -21,7 +22,7 @@ import java.util.Map;
  * @author dk
  *
  */
-public class UpdateWrapper<T> extends AWrapper<T> implements ICondition<UpdateWrapper<T>>, ICondAuto<UpdateWrapper<T>> {
+public class UpdateWrapper<T> extends AWrapper<T> implements ICondition<UpdateWrapper<T>>, ICondAuto<UpdateWrapper<T>> , ICondAddByLamda<UpdateWrapper<T>,T> {
 	private T condtion;
 	ParaMapUpdate pm;
 	Condition condition = DbBuildEnum.where.build();

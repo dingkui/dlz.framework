@@ -1,10 +1,12 @@
 package com.dlz.framework.db.modal.condition;
 
+import com.dlz.framework.db.modal.DbInfoCache;
 import com.dlz.framework.util.system.MFunction;
+import com.dlz.framework.util.system.Reflections;
 
 import static com.dlz.framework.db.enums.DbOprateEnum.*;
 
-public interface ICondAddByFn<T extends ICondAddByFn> {
+public interface ICondAddByLamda<T extends ICondAddByLamda,T1> {
     T mine();
 
     void addChildren(Condition child);
@@ -18,7 +20,7 @@ public interface ICondAddByFn<T extends ICondAddByFn> {
      * @param value2 第二个值，用于构建范围查询的结束点
      * @return 返回当前条件对象，支持链式调用
      */
-    default <T1> T bt(MFunction<T1, ?> column, Object value1, Object value2) {
+    default T bt(MFunction<T1, ?> column, Object value1, Object value2) {
         addChildren(bt.mk(column, new Object[]{value1, value2}));
         return mine();
     }
@@ -31,7 +33,7 @@ public interface ICondAddByFn<T extends ICondAddByFn> {
      * @param value  用于构建范围查询的值，支持形式：字符串："a1,a2",json:[a1,a2],数组，List
      * @return 返回当前条件对象，支持链式调用
      */
-    default <T1> T bt(MFunction<T1, ?> column, Object value) {
+    default T bt(MFunction<T1, ?> column, Object value) {
         addChildren(bt.mk(column, value));
         return mine();
     }
@@ -45,7 +47,7 @@ public interface ICondAddByFn<T extends ICondAddByFn> {
      * @param value2 第二个值，用于构建范围查询的结束点
      * @return 返回当前条件对象，支持链式调用
      */
-    default <T1> T nb(MFunction<T1, ?> column, Object value1, Object value2) {
+    default T nb(MFunction<T1, ?> column, Object value1, Object value2) {
         addChildren(nb.mk(column, new Object[]{value1, value2}));
         return mine();
     }
@@ -58,7 +60,7 @@ public interface ICondAddByFn<T extends ICondAddByFn> {
      * @param value  用于构建范围查询的值，支持形式：字符串："a1,a2",json:[a1,a2],数组，List
      * @return 返回当前条件对象，支持链式调用
      */
-    default <T1> T nb(MFunction<T1, ?> column, Object value) {
+    default T nb(MFunction<T1, ?> column, Object value) {
         addChildren(nb.mk(column, value));
         return mine();
     }
@@ -70,7 +72,7 @@ public interface ICondAddByFn<T extends ICondAddByFn> {
      * @param column 列的名称，通过反射获取
      * @return 返回当前条件对象，支持链式调用
      */
-    default <T1> T isnn(MFunction<T1, ?> column) {
+    default T isnn(MFunction<T1, ?> column) {
         addChildren(isnn.mk(column, null));
         return mine();
     }
@@ -82,7 +84,7 @@ public interface ICondAddByFn<T extends ICondAddByFn> {
      * @param column 列的名称，通过反射获取
      * @return 返回当前条件对象，支持链式调用
      */
-    default <T1> T isn(MFunction<T1, ?> column) {
+    default T isn(MFunction<T1, ?> column) {
         addChildren(isn.mk(column, null));
         return mine();
     }
@@ -95,7 +97,7 @@ public interface ICondAddByFn<T extends ICondAddByFn> {
      * @param value  用于比较的值
      * @return 返回当前条件对象，支持链式调用
      */
-    default <T1> T eq(MFunction<T1, ?> column, Object value) {
+    default T eq(MFunction<T1, ?> column, Object value) {
         addChildren(eq.mk(column, value));
         return mine();
     }
@@ -108,7 +110,7 @@ public interface ICondAddByFn<T extends ICondAddByFn> {
      * @param value  用于比较的值
      * @return 返回当前条件对象，支持链式调用
      */
-    default <T1> T lt(MFunction<T1, ?> column, Object value) {
+    default T lt(MFunction<T1, ?> column, Object value) {
         addChildren(lt.mk(column, value));
         return mine();
     }
@@ -121,7 +123,7 @@ public interface ICondAddByFn<T extends ICondAddByFn> {
      * @param value  用于比较的值，通常包含通配符
      * @return 返回当前条件对象，支持链式调用
      */
-    default <T1> T nl(MFunction<T1, ?> column, Object value) {
+    default T nl(MFunction<T1, ?> column, Object value) {
         addChildren(nl.mk(column, value));
         return mine();
     }
@@ -134,7 +136,7 @@ public interface ICondAddByFn<T extends ICondAddByFn> {
      * @param value  用于比较的值，右侧通常不包含通配符
      * @return 返回当前条件对象，支持链式调用
      */
-    default <T1> T lr(MFunction<T1, ?> column, Object value) {
+    default T lr(MFunction<T1, ?> column, Object value) {
         addChildren(lr.mk(column, value));
         return mine();
     }
@@ -147,7 +149,7 @@ public interface ICondAddByFn<T extends ICondAddByFn> {
      * @param value  用于比较的值，左侧通常不包含通配符
      * @return 返回当前条件对象，支持链式调用
      */
-    default <T1> T ll(MFunction<T1, ?> column, Object value) {
+    default T ll(MFunction<T1, ?> column, Object value) {
         addChildren(ll.mk(column, value));
         return mine();
     }
@@ -160,7 +162,7 @@ public interface ICondAddByFn<T extends ICondAddByFn> {
      * @param value  用于比较的值，通常包含通配符
      * @return 返回当前条件对象，支持链式调用
      */
-    default <T1> T lk(MFunction<T1, ?> column, Object value) {
+    default T lk(MFunction<T1, ?> column, Object value) {
         addChildren(lk.mk(column, value));
         return mine();
     }
@@ -173,7 +175,7 @@ public interface ICondAddByFn<T extends ICondAddByFn> {
      * @param value  用于比较的值，可以是数组或集合或逗号分隔的字符串
      * @return 返回当前条件对象，支持链式调用
      */
-    default <T1> T in(MFunction<T1, ?> column, Object value) {
+    default T in(MFunction<T1, ?> column, Object value) {
         addChildren(in.mk(column, value));
         return mine();
     }
@@ -186,7 +188,7 @@ public interface ICondAddByFn<T extends ICondAddByFn> {
      * @param value  用于比较的值
      * @return 返回当前条件对象，支持链式调用
      */
-    default <T1> T ne(MFunction<T1, ?> column, Object value) {
+    default T ne(MFunction<T1, ?> column, Object value) {
         addChildren(ne.mk(column, value));
         return mine();
     }
@@ -199,7 +201,7 @@ public interface ICondAddByFn<T extends ICondAddByFn> {
      * @param value  用于比较的值
      * @return 返回当前条件对象，支持链式调用
      */
-    default <T1> T ge(MFunction<T1, ?> column, Object value) {
+    default T ge(MFunction<T1, ?> column, Object value) {
         addChildren(ge.mk(column, value));
         return mine();
     }
@@ -212,7 +214,7 @@ public interface ICondAddByFn<T extends ICondAddByFn> {
      * @param value  用于比较的值
      * @return 返回当前条件对象，支持链式调用
      */
-    default <T1> T gt(MFunction<T1, ?> column, Object value) {
+    default T gt(MFunction<T1, ?> column, Object value) {
         addChildren(gt.mk(column, value));
         return mine();
     }
@@ -225,7 +227,7 @@ public interface ICondAddByFn<T extends ICondAddByFn> {
      * @param value  用于比较的值
      * @return 返回当前条件对象，支持链式调用
      */
-    default <T1> T le(MFunction<T1, ?> column, Object value) {
+    default T le(MFunction<T1, ?> column, Object value) {
         addChildren(le.mk(column, value));
         return mine();
     }

@@ -6,10 +6,7 @@ import com.dlz.framework.db.enums.DbBuildEnum;
 import com.dlz.framework.db.helper.util.DbNameUtil;
 import com.dlz.framework.db.holder.ServiceHolder;
 import com.dlz.framework.db.holder.SqlHolder;
-import com.dlz.framework.db.modal.condition.Condition;
-import com.dlz.framework.db.modal.condition.ICondAuto;
-import com.dlz.framework.db.modal.condition.ICondition;
-import com.dlz.framework.db.modal.condition.IQueryPage;
+import com.dlz.framework.db.modal.condition.*;
 import com.dlz.framework.db.modal.map.ParaMapSearch;
 import com.dlz.framework.db.modal.result.Page;
 import com.dlz.framework.util.system.Reflections;
@@ -23,7 +20,8 @@ import java.util.List;
  * @author dk
  *
  */
-public class QueryWrapper<T> extends AWrapper<T> implements ICondition<QueryWrapper<T>>, ICondAuto<QueryWrapper<T>>, IQueryPage<QueryWrapper<T>> {
+public class QueryWrapper<T> extends AWrapper<T>
+		implements ICondition<QueryWrapper<T>>, ICondAuto<QueryWrapper<T>>, IQueryPageLamda<QueryWrapper<T>,T> {
 	private T bean;
 	ParaMapSearch pm;
 	Condition condition = DbBuildEnum.where.build();

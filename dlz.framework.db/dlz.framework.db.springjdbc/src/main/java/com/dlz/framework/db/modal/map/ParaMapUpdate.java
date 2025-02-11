@@ -2,6 +2,7 @@ package com.dlz.framework.db.modal.map;
 
 import com.dlz.framework.db.convertor.ConvertUtil;
 import com.dlz.framework.db.holder.ServiceHolder;
+import com.dlz.framework.db.modal.DbInfoCache;
 import com.dlz.framework.util.system.MFunction;
 import com.dlz.framework.util.system.Reflections;
 import lombok.extern.slf4j.Slf4j;
@@ -24,7 +25,7 @@ public class ParaMapUpdate extends AParaMapSearch<ParaMapUpdate>{
 	}
 
 	public <T> void set(MFunction<T, ?> column, Object value){
-		set(Reflections.getFieldName(column),value);
+		set(DbInfoCache.fnName(column),value);
 	}
 	/**
 	 * 添加要更新的值

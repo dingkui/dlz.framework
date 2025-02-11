@@ -5,7 +5,9 @@ import com.dlz.comm.util.ValUtil;
 import com.dlz.comm.util.encry.TraceUtil;
 import com.dlz.framework.db.SqlUtil;
 import com.dlz.framework.db.convertor.ConvertUtil;
+import com.dlz.framework.db.modal.DbInfoCache;
 import com.dlz.framework.db.modal.condition.Condition;
+import com.dlz.framework.util.system.MFunction;
 import lombok.AllArgsConstructor;
 
 @AllArgsConstructor
@@ -75,6 +77,11 @@ public enum DbOprateEnum {
         }
         condition.addPara(key, SqlUtil.getSqlInStr(value));
         return condition;
+    }
+
+
+    public <T> Condition mk(MFunction<T,?> dbn, Object value) {
+        return mk(DbInfoCache.fnName(dbn), value);
     }
 
     public Condition mk(String dbn, Object value) {

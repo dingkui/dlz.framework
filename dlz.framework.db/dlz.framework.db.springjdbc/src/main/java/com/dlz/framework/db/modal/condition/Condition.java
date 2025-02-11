@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class Condition implements ICondition<Condition>{
+public class Condition implements ICondition<Condition>,ICondAddByFn<Condition>{
     boolean isMake = false;
     String runsql;
     JSONMap paras = new JSONMap();
