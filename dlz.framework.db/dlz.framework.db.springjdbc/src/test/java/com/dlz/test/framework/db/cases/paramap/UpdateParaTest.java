@@ -23,13 +23,12 @@ public class UpdateParaTest  extends SpingDbBaseTest {
 
 	@Test
 	public void UpdateParaMapTest(){
-		DB
-				.update("dh_room")
-				.set("room_id", 1)
-				.where(Condition.where()
-					.eq("equipment_id", 1)
-					.eq("equipment_id2", 1)
-				).excute();
+		DB.update("dh_room")
+		.set("room_id", 1)
+		.where(Condition.where()
+			.eq("equipment_id", 1)
+			.eq("equipment_id2", 1)
+		).excute();
 	}
 	@Test
 	public void DeleteParaMapTest(){

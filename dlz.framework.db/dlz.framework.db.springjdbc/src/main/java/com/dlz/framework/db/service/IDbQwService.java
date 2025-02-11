@@ -26,7 +26,7 @@ public interface IDbQwService {
     IDlzDao getDao();
     default <T,R> R doDb(AWrapper<T> wrapper, Executor<VAL<String, Object[]>, R> executor, boolean cnt) {
         try {
-            return executor.excute(wrapper.jdbcSql(cnt));
+            return executor.excute(wrapper.buildSql(cnt));
         } catch (Exception e) {
             if (e instanceof DbException) {
                 throw e;

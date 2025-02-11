@@ -8,7 +8,7 @@ import java.sql.Types;
 import java.util.Map;
 
 @AllArgsConstructor
-public class TableCloumnMapper implements ITableCloumnMapper {
+public class TableColumnMapper implements ITableColumnMapper {
 	final IDlzDao dao;
 	@Override
 	public Object converObj4Db(String tableName, String clumnName, Object value) {

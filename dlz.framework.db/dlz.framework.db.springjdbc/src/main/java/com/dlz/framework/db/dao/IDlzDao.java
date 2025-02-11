@@ -58,7 +58,7 @@ public interface IDlzDao {
             if (e instanceof DbException) {
                 throw e;
             }
-            throw new DbException("sql有误", 1001,e);
+            throw new DbException("sql执行错误", 1001,e);
         }finally {
             logInfo(sql, fn, t, args,err);
         }

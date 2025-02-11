@@ -45,9 +45,20 @@ public abstract class AWrapper<T> {
         }
     }
 
+    /**
+     * 自动构建参数
+     *
+     * @param columnName
+     * @param value
+     */
     protected abstract void wrapValue(String columnName, Object value);
 
-    public abstract VAL<String, Object[]> jdbcSql(boolean cnt);
+    /**
+     * 构建sql
+     * @param cnt 是否是查询数量
+     * @return
+     */
+    public abstract VAL<String, Object[]> buildSql(boolean cnt);
 
     public Class<T> getBeanClass() {
         return beanClass;

@@ -4,7 +4,7 @@ import com.dlz.comm.json.JSONMap;
 import com.dlz.comm.util.ValUtil;
 import com.dlz.framework.db.convertor.clumnname.AColumnNameConvertor;
 import com.dlz.framework.db.convertor.clumnname.ColumnNameCamel;
-import com.dlz.framework.db.convertor.dbtype.ITableCloumnMapper;
+import com.dlz.framework.db.convertor.dbtype.ITableColumnMapper;
 import com.dlz.framework.db.modal.result.ResultMap;
 import com.dlz.framework.util.bean.BeanConvert;
 
@@ -25,7 +25,7 @@ public class ConvertUtil {
 	/**
 	 * 数据库字段信息及内容转换
 	 */
-	public static ITableCloumnMapper tableCloumnMapper = null;
+	public static ITableColumnMapper tableCloumnMapper = null;
 
 
 	/**

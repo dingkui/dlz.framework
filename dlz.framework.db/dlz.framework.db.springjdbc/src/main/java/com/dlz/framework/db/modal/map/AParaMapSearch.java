@@ -25,18 +25,17 @@ public abstract class AParaMapSearch<T extends AParaMapSearch> extends ParaMapMa
     public void addChildren(Condition child) {
         whereCond.addChildren(child);
     }
-
-    public T where(Condition cond) {
-        this.whereCond = cond;
-        return mine();
-    }
-
-    public void addWhere() {
-        String where = whereCond.getRunsql(mine());
+    public void buildSql() {
+        super.buildSql();
+        String where = whereCond.getRunsql(this);
         if (!isAllowEmptyWhere() && StringUtils.isEmpty(where)) {
             where = "where false";
         }
         addPara(STR_WHERE, where);
+    }
+    public T where(Condition cond) {
+        this.whereCond = cond;
+        return mine();
     }
 
     public boolean isAllowEmptyWhere() {

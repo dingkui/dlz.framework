@@ -1,6 +1,6 @@
 package com.dlz.framework.db.convertor.dbtype;
 
-public interface ITableCloumnMapper {
+public interface ITableColumnMapper {
     /**
      * 取得字段对应的类型
      *

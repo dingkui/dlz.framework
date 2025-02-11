@@ -1,20 +1,12 @@
 package com.dlz.framework.db.modal.wrapper;
 
 import com.dlz.comm.util.VAL;
-import com.dlz.framework.db.enums.DbBuildEnum;
-import com.dlz.framework.db.helper.util.DbNameUtil;
 import com.dlz.framework.db.holder.ServiceHolder;
 import com.dlz.framework.db.modal.condition.Condition;
 import com.dlz.framework.db.modal.condition.ICondAddByLamda;
 import com.dlz.framework.db.modal.condition.ICondAuto;
 import com.dlz.framework.db.modal.condition.ICondition;
 import com.dlz.framework.db.modal.map.ParaMapDelete;
-import com.dlz.framework.db.modal.map.ParaMapUpdate;
-import com.dlz.framework.util.system.MFunction;
-import com.dlz.framework.util.system.Reflections;
-
-import java.lang.reflect.Field;
-import java.util.Map;
 
 /**
  * 删除语句生成器
@@ -23,12 +15,11 @@ import java.util.Map;
  *
  */
 public class DeleteWrapper<T> extends AWrapper<T> implements ICondition<DeleteWrapper<T>>, ICondAuto<DeleteWrapper<T>>, ICondAddByLamda<DeleteWrapper<T>,T>{
-	private T condtion;
-	ParaMapDelete pm;
-	Condition condition = DbBuildEnum.where.build();
+	private T conditionBean;
+	private final ParaMapDelete pm;
 
-	public static <T> DeleteWrapper<T> wrapper(T condtion) {
-		return new DeleteWrapper(condtion);
+	public static <T> DeleteWrapper<T> wrapper(T conditionBean) {
+		return new DeleteWrapper(conditionBean);
 	}
 	public static <T> DeleteWrapper<T> wrapper(Class<T> beanClass) {
 		return new DeleteWrapper(beanClass);
@@ -38,24 +29,20 @@ public class DeleteWrapper<T> extends AWrapper<T> implements ICondition<DeleteWr
 		super(beanClass);
 		pm = new ParaMapDelete(getTableName());
 	}
-	public DeleteWrapper(T condtion) {
-		super((Class<T>) condtion.getClass());
+	public DeleteWrapper(T conditionBean) {
+		super((Class<T>) conditionBean.getClass());
 		pm = new ParaMapDelete(getTableName());
-		this.condtion = condtion;
+		this.conditionBean = conditionBean;
 	}
 
 	@Override
 	protected void wrapValue(String columnName, Object value) {
-		condition.eq(columnName, value);
+		pm.eq(columnName, value);
 	}
 	@Override
-	public VAL<String,Object[]> jdbcSql(boolean cnt) {
-		generatWithBean(condtion);
-		pm.where(condition);
-		if(pm.getPage()!=null && pm.getPage().getCurrent()==0){
-			return pm.jdbcSql();
-		}
-		return pm.jdbcPage();
+	public VAL<String,Object[]> buildSql(boolean cnt) {
+		generatWithBean(conditionBean);
+		return pm.jdbcSql();
 	}
 
 	@Override
@@ -65,7 +52,7 @@ public class DeleteWrapper<T> extends AWrapper<T> implements ICondition<DeleteWr
 
 	@Override
 	public void addChildren(Condition child) {
-		condition.addChildren(child);
+		pm.addChildren(child);
 	}
 
 	/**

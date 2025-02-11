@@ -14,10 +14,6 @@ import org.junit.Test;
 
 import java.util.List;
 
-//@RunWith(SpringRunner.class)
-//@SpringBootTest
-//@SpringBootApplication(scanBasePackages = {"com.dlz.framework", "com.dlz.test.framework.db.config"})
-//@EnableAsync
 @Slf4j
 public class SearchParaMapTest  extends SpingDbBaseTest{
     @Test
@@ -76,7 +72,7 @@ public class SearchParaMapTest  extends SpingDbBaseTest{
         ;
         showSql(paraMap,"conditionTest2");
 //        paraMap.queryMapList();
-        ServiceHolder.doDb(s->s.getMapList(paraMap));
+        paraMap.queryMapList();
     }
     @Test
     public void conditionSelectTest2() {

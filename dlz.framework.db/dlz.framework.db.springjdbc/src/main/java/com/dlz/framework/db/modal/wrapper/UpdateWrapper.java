@@ -1,7 +1,6 @@
 package com.dlz.framework.db.modal.wrapper;
 
 import com.dlz.comm.util.VAL;
-import com.dlz.framework.db.enums.DbBuildEnum;
 import com.dlz.framework.db.helper.util.DbNameUtil;
 import com.dlz.framework.db.holder.ServiceHolder;
 import com.dlz.framework.db.modal.condition.Condition;
@@ -12,7 +11,6 @@ import com.dlz.framework.db.modal.map.ParaMapUpdate;
 import com.dlz.framework.util.system.MFunction;
 import com.dlz.framework.util.system.Reflections;
 
-import java.io.Serializable;
 import java.lang.reflect.Field;
 import java.util.Map;
 
@@ -23,12 +21,11 @@ import java.util.Map;
  *
  */
 public class UpdateWrapper<T> extends AWrapper<T> implements ICondition<UpdateWrapper<T>>, ICondAuto<UpdateWrapper<T>> , ICondAddByLamda<UpdateWrapper<T>,T> {
-	private T condtion;
-	ParaMapUpdate pm;
-	Condition condition = DbBuildEnum.where.build();
+	private T conditionBean;
+	private final ParaMapUpdate pm;
 
-	public static <T> UpdateWrapper<T> wrapper(T condtion) {
-		return new UpdateWrapper(condtion);
+	public static <T> UpdateWrapper<T> wrapper(T conditionBean) {
+		return new UpdateWrapper(conditionBean);
 	}
 	public static <T> UpdateWrapper<T> wrapper(Class<T> beanClass) {
 		return new UpdateWrapper(beanClass);
@@ -38,10 +35,10 @@ public class UpdateWrapper<T> extends AWrapper<T> implements ICondition<UpdateWr
 		super(beanClass);
 		pm = new ParaMapUpdate(getTableName());
 	}
-	public UpdateWrapper(T condtion) {
-		super((Class<T>) condtion.getClass());
+	public UpdateWrapper(T conditionBean) {
+		super((Class<T>) conditionBean.getClass());
 		pm = new ParaMapUpdate(getTableName());
-		this.condtion = condtion;
+		this.conditionBean = conditionBean;
 	}
 
 	public UpdateWrapper<T> set(MFunction<T, ?> column, Object value) {
@@ -68,18 +65,13 @@ public class UpdateWrapper<T> extends AWrapper<T> implements ICondition<UpdateWr
 	}
 	@Override
 	protected void wrapValue(String columnName, Object value) {
-		condition.eq(columnName, value);
+		pm.eq(columnName, value);
 	}
 	@Override
-	public VAL<String,Object[]> jdbcSql(boolean cnt) {
-		generatWithBean(condtion);
-		pm.where(condition);
-		if(pm.getPage()!=null && pm.getPage().getCurrent()==0){
-			return pm.jdbcSql();
-		}
-		return pm.jdbcPage();
+	public VAL<String,Object[]> buildSql(boolean cnt) {
+		generatWithBean(conditionBean);
+		return pm.jdbcSql();
 	}
-
 	@Override
 	public UpdateWrapper<T> mine() {
 		return this;
@@ -87,7 +79,7 @@ public class UpdateWrapper<T> extends AWrapper<T> implements ICondition<UpdateWr
 
 	@Override
 	public void addChildren(Condition child) {
-		condition.addChildren(child);
+		pm.addChildren(child);
 	}
 
 	/**

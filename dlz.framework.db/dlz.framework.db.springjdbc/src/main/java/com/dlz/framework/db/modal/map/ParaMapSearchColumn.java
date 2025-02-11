@@ -30,12 +30,14 @@ public class ParaMapSearchColumn  extends AParaMapSearch<ParaMapSearchColumn>{
         }
         return this;
     }
-
-	public ParaMapSearchColumn where(Condition cond){
-		where(cond.getRunsql(this));
-		return this;
-	}
-
+    @Override
+    public ParaMapSearchColumn mine() {
+        return this;
+    }
+    @Override
+    public boolean isAllowEmptyWhere() {
+        return true;
+    }
 
     public List<String> getStrList() {
         return ServiceHolder.doDb(s->s.getStrList(this));
@@ -48,14 +50,5 @@ public class ParaMapSearchColumn  extends AParaMapSearch<ParaMapSearchColumn>{
     }
     public List<Long> getLongList() {
         return ServiceHolder.doDb(s->s.getLongList(this));
-    }
-
-    @Override
-    public ParaMapSearchColumn mine() {
-        return this;
-    }
-    @Override
-    public boolean isAllowEmptyWhere() {
-        return true;
     }
 }

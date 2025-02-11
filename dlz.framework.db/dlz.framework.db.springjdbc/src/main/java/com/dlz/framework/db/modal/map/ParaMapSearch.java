@@ -5,7 +5,6 @@ import com.dlz.framework.db.holder.ServiceHolder;
 import com.dlz.framework.db.modal.condition.IQueryPage;
 import com.dlz.framework.db.modal.result.Page;
 import com.dlz.framework.db.modal.result.ResultMap;
-import com.dlz.framework.db.modal.wrapper.QueryWrapper;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.List;
@@ -21,14 +20,18 @@ public class ParaMapSearch extends AParaMapSearch<ParaMapSearch> implements IQue
     private static final long serialVersionUID = 8374167270612933157L;
     private static final String SQL = "key.comm.searchTable";
     private static final String STR_COLUMS = "colums";
+    private String colums;
     public ParaMapSearch(String colums, String tableName) {
         super(SQL, tableName);
-        addPara(STR_COLUMS, ConvertUtil.str2DbClumn(colums));
+        this.colums = colums;
     }
     public ParaMapSearch(String tableName) {
         this("*", tableName);
     }
-
+    public void buildSql() {
+        super.buildSql();
+        addPara(STR_COLUMS, ConvertUtil.str2DbClumn(colums));
+    }
     public List<ResultMap> queryMapList() {
         return ServiceHolder.doDb(s->s.getMapList(this));
     }

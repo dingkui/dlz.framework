@@ -180,7 +180,7 @@ public class SqlUtil {
             String sqlInput = sqlItem.getSqlKey();
             if (sql == null && sqlInput != null) {
                 if(paraMap instanceof AParaMapSearch){
-                    ((AParaMapSearch) paraMap).addWhere();
+                    ((AParaMapSearch) paraMap).buildSql();
                 }
                 sql = createSqlDeal(paraMap.getPara(), sqlInput);
                 sqlItem.setSqlDeal(sql);

@@ -1,17 +1,14 @@
 package com.dlz.framework.db.modal.wrapper;
 
 import com.dlz.comm.util.VAL;
-import com.dlz.comm.util.encry.TraceUtil;
-import com.dlz.framework.db.enums.DbBuildEnum;
-import com.dlz.framework.db.helper.util.DbNameUtil;
 import com.dlz.framework.db.holder.ServiceHolder;
-import com.dlz.framework.db.holder.SqlHolder;
-import com.dlz.framework.db.modal.condition.*;
+import com.dlz.framework.db.modal.condition.Condition;
+import com.dlz.framework.db.modal.condition.ICondAuto;
+import com.dlz.framework.db.modal.condition.ICondition;
+import com.dlz.framework.db.modal.condition.IQueryPageLamda;
 import com.dlz.framework.db.modal.map.ParaMapSearch;
 import com.dlz.framework.db.modal.result.Page;
-import com.dlz.framework.util.system.Reflections;
 
-import java.lang.reflect.Field;
 import java.util.List;
 
 /**
@@ -20,14 +17,12 @@ import java.util.List;
  * @author dk
  *
  */
-public class QueryWrapper<T> extends AWrapper<T>
-		implements ICondition<QueryWrapper<T>>, ICondAuto<QueryWrapper<T>>, IQueryPageLamda<QueryWrapper<T>,T> {
-	private T bean;
-	ParaMapSearch pm;
-	Condition condition = DbBuildEnum.where.build();
+public class QueryWrapper<T> extends AWrapper<T> implements ICondition<QueryWrapper<T>>, ICondAuto<QueryWrapper<T>>, IQueryPageLamda<QueryWrapper<T>,T> {
+	private T conditionBean;
+	private final ParaMapSearch pm;
 
-	public static <T> QueryWrapper<T> wrapper(T bean) {
-		return new QueryWrapper(bean);
+	public static <T> QueryWrapper<T> wrapper(T conditionBean) {
+		return new QueryWrapper(conditionBean);
 	}
 	public static <T> QueryWrapper<T> wrapper(Class<T> beanClass) {
 		return new QueryWrapper(beanClass);
@@ -37,19 +32,18 @@ public class QueryWrapper<T> extends AWrapper<T>
 		super(beanClass);
 		pm = new ParaMapSearch(getTableName());
 	}
-	public QueryWrapper(T bean) {
-		super((Class<T>) bean.getClass());
+	public QueryWrapper(T conditionBean) {
+		super((Class<T>) conditionBean.getClass());
 		pm = new ParaMapSearch(getTableName());
-		this.bean = bean;
+		this.conditionBean = conditionBean;
 	}
 	@Override
 	protected void wrapValue(String columnName, Object value) {
-		condition.eq(columnName, value);
+		pm.eq(columnName, value);
 	}
 	@Override
-	public VAL<String,Object[]> jdbcSql(boolean cnt) {
-		generatWithBean(bean);
-		pm.where(condition);
+	public VAL<String,Object[]> buildSql(boolean cnt) {
+		generatWithBean(conditionBean);
 		if(cnt){
 			return pm.jdbcCnt();
 		}
@@ -75,7 +69,7 @@ public class QueryWrapper<T> extends AWrapper<T>
 	}
 	@Override
 	public void addChildren(Condition child) {
-		condition.addChildren(child);
+		pm.addChildren(child);
 	}
 
 	public T queryBean() {

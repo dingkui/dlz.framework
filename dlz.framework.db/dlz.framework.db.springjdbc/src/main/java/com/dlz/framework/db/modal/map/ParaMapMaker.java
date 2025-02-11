@@ -11,22 +11,14 @@ public class ParaMapMaker extends ParaMapBase {
 
     private static final long serialVersionUID = 8374167270612933157L;
     protected static final String STR_TABLENAME = "tableName";
-    protected static final String STR_WHERE = "where";
-    private String tableName;
+    protected String tableName;
     protected ParaMapMaker(String Sql, String tableName) {
         super(Sql);
-        table(tableName);
-    }
-
-    protected void table(String tableName) {
         this.tableName = tableName;
+    }
+    public void buildSql(){
         addPara(STR_TABLENAME, tableName);
     }
-
-    public void where(String where) {
-        addPara(STR_WHERE, where);
-    }
-
     /**
      * 添加参数
      *
@@ -35,21 +27,9 @@ public class ParaMapMaker extends ParaMapBase {
      * @return
      */
     public ParaMapMaker addClunmnValue(String key, Object value) {
-        return addClunmnValue(key, key, value);
-    }
-
-    /**
-     * 添加参数
-     *
-     * @param key
-     * @param value
-     * @return
-     */
-    public ParaMapMaker addClunmnValue(String key, String clumnName, Object value) {
-        addPara(key, ConvertUtil.getVal4Db(tableName, clumnName, value));
+        addPara(key, ConvertUtil.getVal4Db(tableName, key, value));
         return this;
     }
-
 
     /**
      * 判断字段是否存在
@@ -58,6 +38,6 @@ public class ParaMapMaker extends ParaMapBase {
      * @return
      */
     public boolean isClumnExists(String clumnName) {
-        return ConvertUtil.isClumnExists(tableName, clumnName);
+        return ConvertUtil.isClumnExists(tableName, clumnName.replaceAll("`", ""));
     }
 }

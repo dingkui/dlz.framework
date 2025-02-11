@@ -2,8 +2,7 @@ package com.dlz.framework.db.config;
 
 import com.dlz.framework.config.DlzFwConfig;
 import com.dlz.framework.db.convertor.ConvertUtil;
-import com.dlz.framework.db.convertor.dbtype.ITableCloumnMapper;
-import com.dlz.framework.db.convertor.dbtype.TableCloumnMapper;
+import com.dlz.framework.db.convertor.dbtype.TableColumnMapper;
 import com.dlz.framework.db.dao.DlzDao;
 import com.dlz.framework.db.dao.IDlzDao;
 import com.dlz.framework.db.enums.DbTypeEnum;
@@ -32,15 +31,6 @@ import javax.sql.DataSource;
 @Slf4j
 @EnableConfigurationProperties({DlzDbProperties.class})
 public class DlzDbConfig extends DlzFwConfig {
-    @Bean(name = "tableCloumnMapper")
-    @Lazy
-    @ConditionalOnMissingBean(name = "tableCloumnMapper")
-    public ITableCloumnMapper tableCloumnMapper(IDlzDao dao) {
-        log.info("default tableCloumnMapper init ...");
-        TableCloumnMapper tableCloumnMapper = new TableCloumnMapper(dao);
-        ConvertUtil.tableCloumnMapper=tableCloumnMapper;
-        return tableCloumnMapper;
-    }
     @Bean(name = "dlzDao")
     @Lazy
     @ConditionalOnMissingBean(name = "dlzDao")
@@ -57,6 +47,8 @@ public class DlzDbConfig extends DlzFwConfig {
         log.info("default commService init ...");
         CommServiceImpl commService = new CommServiceImpl(dao);
         SqlHolder.loadDbSql(commService);
+        TableColumnMapper tableCloumnMapper = new TableColumnMapper(dao);
+        ConvertUtil.tableCloumnMapper=tableCloumnMapper;
         return commService;
     }
 

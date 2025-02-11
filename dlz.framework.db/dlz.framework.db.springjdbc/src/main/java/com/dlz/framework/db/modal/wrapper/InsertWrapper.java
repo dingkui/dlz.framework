@@ -11,17 +11,17 @@ import com.dlz.framework.db.modal.map.ParaMapInsert;
  *
  */
 public class InsertWrapper<T> extends AWrapper<T>{
-	private T bean;
-	ParaMapInsert pm;
+	private T valueBean;
+	private final ParaMapInsert pm;
 
-	public static <T> InsertWrapper<T> wrapper(T bean) {
-		return new InsertWrapper(bean);
+	public static <T> InsertWrapper<T> wrapper(T valueBean) {
+		return new InsertWrapper(valueBean);
 	}
 
-	public InsertWrapper(T bean) {
-		super((Class<T>) bean.getClass());
+	public InsertWrapper(T valueBean) {
+		super((Class<T>) valueBean.getClass());
 		pm = new ParaMapInsert(getTableName());
-		this.bean = bean;
+		this.valueBean = valueBean;
 	}
 
 	@Override
@@ -30,8 +30,8 @@ public class InsertWrapper<T> extends AWrapper<T>{
 	}
 
 	@Override
-	public VAL<String,Object[]> jdbcSql(boolean cnt) {
-		generatWithBean(bean);
+	public VAL<String,Object[]> buildSql(boolean cnt) {
+		generatWithBean(valueBean);
 		return pm.jdbcSql();
 	}
 
