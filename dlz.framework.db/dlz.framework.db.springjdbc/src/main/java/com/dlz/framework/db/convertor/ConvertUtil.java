@@ -86,7 +86,7 @@ public class ConvertUtil {
 
 
 	public static <T> List<T> conver(List<ResultMap> r, Class<T> classs) {
-		return BeanConvert.cover2Bean(r.stream().map(m -> (JSONMap)m).collect(Collectors.toList()), classs);
+		return BeanConvert.cover2Bean(r.stream().map((m) -> (JSONMap)m).collect(Collectors.toList()), classs);
 	}
 	public static <T> T conver(ResultMap r, Class<T> classs) {
 		return BeanConvert.cover2Bean(r, classs);

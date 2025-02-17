@@ -1,7 +1,6 @@
 package com.dlz.framework.util.bean;
 
 import com.dlz.comm.exception.SystemException;
-import com.dlz.comm.json.JSONMap;
 import com.dlz.framework.util.system.FieldReflections;
 import lombok.extern.slf4j.Slf4j;
 
@@ -27,7 +26,7 @@ public class BeanConvert {
      * @param clazz
      * @return
      */
-    public static <T> T cover2Bean(JSONMap map, Class<T> clazz) {
+    public static <T> T cover2Bean(Map<String,Object> map, Class<T> clazz) {
         if (clazz == null) {
             return (T) map;
         }
@@ -45,7 +44,7 @@ public class BeanConvert {
      * @param clazz
      * @return
      */
-    public static <T> List<T> cover2Bean(Collection<JSONMap> queryForList, Class<T> clazz) {
+    public static <T> List<T> cover2Bean(Collection<Map<String,Object>> queryForList, Class<T> clazz) {
         if (Map.class.isAssignableFrom(clazz)) {
             return queryForList.stream().map(map -> cover2Map(map, clazz)).collect(Collectors.toList());
         }
@@ -54,9 +53,9 @@ public class BeanConvert {
         return queryForList.stream().map(map -> cover2Bean(map, clazz, fieldsInfo)).collect(Collectors.toList());
     }
 
-    private final static <T> T cover2Map(final JSONMap map, final Class<T> clazz) {
+    private final static <T> T cover2Map(final Map<String,Object> map, final Class<T> clazz) {
         try {
-            if (clazz.isAssignableFrom(JSONMap.class)) {
+            if (clazz.isAssignableFrom(Map.class)) {
                 return (T) map;
             }
             if (clazz == Map.class) {
@@ -78,7 +77,7 @@ public class BeanConvert {
      * @param clazz
      * @return
      */
-    private final static <T> T cover2Bean(JSONMap map, final Class<T> clazz, final Map<String, Field> fieldsInfo) {
+    private final static <T> T cover2Bean(Map<String,Object> map, final Class<T> clazz, final Map<String, Field> fieldsInfo) {
         try {
             Object obj = clazz.getDeclaredConstructor().newInstance();
             for (Map.Entry<String, Object> entry : map.entrySet()) {
