@@ -123,7 +123,7 @@ public class FieldReflections {
                 declaredFields = searchType.getDeclaredFields();
                 Arrays.stream(declaredFields).forEach(field -> {
                     String fieldName = field.getName();
-                    if(!caheMap.containsKey(fieldName)){
+                    if(!Modifier.isStatic(field.getModifiers()) && !caheMap.containsKey(fieldName)){
                         caheMap.put(fieldName, field);
                         makeAccessible(field);
                     }
@@ -133,6 +133,8 @@ public class FieldReflections {
             return caheMap;
         });
     }
+
+
 
     public static List<Field> getFields(Class<?> beanClass) {
         return getFieldsMap(beanClass).values().stream().collect(Collectors.toList());
