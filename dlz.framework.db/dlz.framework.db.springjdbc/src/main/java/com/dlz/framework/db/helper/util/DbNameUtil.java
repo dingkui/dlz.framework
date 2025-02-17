@@ -7,7 +7,7 @@ import com.dlz.comm.util.StringUtils;
 import com.dlz.comm.util.ValUtil;
 import com.dlz.framework.db.modal.result.ResultMap;
 import com.dlz.framework.util.system.MFunction;
-import com.dlz.framework.util.system.Reflections;
+import com.dlz.framework.util.system.FieldReflections;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 
@@ -54,7 +54,7 @@ public class DbNameUtil {
         return getDbClumnName(field.getName());
     }
     public static String getDbClumnName(MFunction property) {
-        Field field = Reflections.getField(property);
+        Field field = FieldReflections.getField(property);
         return field == null ? null : getDbClumnName(field);
     }
 

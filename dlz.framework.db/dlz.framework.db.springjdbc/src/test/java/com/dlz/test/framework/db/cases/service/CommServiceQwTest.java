@@ -1,5 +1,6 @@
 package com.dlz.test.framework.db.cases.service;
 
+import com.dlz.framework.db.modal.DB;
 import com.dlz.framework.db.modal.result.Page;
 import com.dlz.framework.db.modal.wrapper.QueryWrapper;
 import com.dlz.test.framework.db.config.SpingDbBaseTest;
@@ -51,5 +52,18 @@ public class CommServiceQwTest  extends SpingDbBaseTest {
         dict.setA3(true);
 
         commService.getBeanList(QueryWrapper.wrapper(dict));
+    }
+
+
+
+    @Test
+    public void getBeanList2() {
+        DB.select(Dict::getA2).eq("xx",1).getStr();
+        DB.select(Dict::getA2).eq(Dict::getA7,1).getStrList();
+        DB.query(Dict.class).eq(Dict::getA2,1).queryBean();
+
+        DB.insert(new Dict()).excute();
+
+
     }
 }

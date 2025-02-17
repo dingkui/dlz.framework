@@ -1,6 +1,6 @@
 package com.dlz.framework.db.modal.map;
 
-import com.dlz.framework.db.holder.ServiceHolder;
+import com.dlz.framework.db.holder.DBHolder;
 
 /**
  * 构造单表的删除操作sql
@@ -15,11 +15,11 @@ public class ParaMapDelete  extends AParaMapSearch<ParaMapDelete>{
 	}
 
 	public int excute(){
-		return ServiceHolder.doDb(s->s.excuteSql(this));
+		return DBHolder.doDb(s->s.excuteSql(this));
 	}
 
 	@Override
-	public ParaMapDelete mine() {
+	public ParaMapDelete me() {
 		return this;
 	}
 }

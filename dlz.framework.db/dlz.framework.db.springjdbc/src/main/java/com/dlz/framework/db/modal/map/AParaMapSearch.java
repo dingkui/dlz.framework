@@ -35,7 +35,7 @@ public abstract class AParaMapSearch<T extends AParaMapSearch> extends ParaMapMa
     }
     public T where(Condition cond) {
         this.whereCond = cond;
-        return mine();
+        return me();
     }
 
     public boolean isAllowEmptyWhere() {

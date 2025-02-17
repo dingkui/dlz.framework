@@ -2,16 +2,17 @@ package com.dlz.framework.db.modal.wrapper;
 
 import com.dlz.comm.util.VAL;
 import com.dlz.framework.db.helper.util.DbNameUtil;
-import com.dlz.framework.db.holder.ServiceHolder;
+import com.dlz.framework.db.holder.DBHolder;
 import com.dlz.framework.db.modal.condition.Condition;
 import com.dlz.framework.db.modal.condition.ICondAddByLamda;
 import com.dlz.framework.db.modal.condition.ICondAuto;
 import com.dlz.framework.db.modal.condition.ICondition;
 import com.dlz.framework.db.modal.map.ParaMapUpdate;
 import com.dlz.framework.util.system.MFunction;
-import com.dlz.framework.util.system.Reflections;
+import com.dlz.framework.util.system.FieldReflections;
 
 import java.lang.reflect.Field;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -54,9 +55,9 @@ public class UpdateWrapper<T> extends AWrapper<T> implements ICondition<UpdateWr
 		return this;
 	}
 	public UpdateWrapper<T> set(T bean) {
-		Field[] fields = Reflections.getFields(bean.getClass());
+		List<Field> fields = FieldReflections.getFields(bean.getClass());
 		for (Field field : fields) {
-			Object fieldValue = Reflections.getFieldValue(bean, field.getName());
+			Object fieldValue = FieldReflections.getValue(bean, field);
 			if(fieldValue!=null){
 				pm.set(DbNameUtil.getDbClumnName(field),fieldValue);
 			}
@@ -73,7 +74,7 @@ public class UpdateWrapper<T> extends AWrapper<T> implements ICondition<UpdateWr
 		return pm.jdbcSql();
 	}
 	@Override
-	public UpdateWrapper<T> mine() {
+	public UpdateWrapper<T> me() {
 		return this;
 	}
 
@@ -87,6 +88,6 @@ public class UpdateWrapper<T> extends AWrapper<T> implements ICondition<UpdateWr
 	 * @return
 	 */
 	public int excute() {
-		return ServiceHolder.doDb(s->s.excute(this));
+		return DBHolder.doDb(s->s.excute(this));
 	}
 }

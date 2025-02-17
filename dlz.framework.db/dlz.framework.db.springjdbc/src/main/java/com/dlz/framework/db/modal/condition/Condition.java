@@ -13,7 +13,6 @@ public class Condition implements ICondition<Condition>,ICondAddByFn<Condition>{
     String runsql;
     JSONMap paras = new JSONMap();
     List<Condition> children = new ArrayList<>();
-    private Condition parent;
     private DbBuildEnum builder;
 
     public Condition(DbBuildEnum builder) {
@@ -25,6 +24,7 @@ public class Condition implements ICondition<Condition>,ICondAddByFn<Condition>{
 
     private void make(ParaMapBase pm) {
         if (isMake) {
+            pm.addParas(paras);
             return;
         }
         isMake = true;
@@ -91,7 +91,7 @@ public class Condition implements ICondition<Condition>,ICondAddByFn<Condition>{
     }
 
     @Override
-    public Condition mine() {
+    public Condition me() {
         return this;
     }
 

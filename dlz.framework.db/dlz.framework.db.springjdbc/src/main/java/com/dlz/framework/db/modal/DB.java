@@ -9,7 +9,7 @@ import com.dlz.framework.db.modal.wrapper.InsertWrapper;
 import com.dlz.framework.db.modal.wrapper.QueryWrapper;
 import com.dlz.framework.db.modal.wrapper.UpdateWrapper;
 import com.dlz.framework.util.system.MFunction;
-import com.dlz.framework.util.system.Reflections;
+import com.dlz.framework.util.system.FieldReflections;
 
 import java.io.Serializable;
 import java.lang.reflect.Field;
@@ -46,7 +46,7 @@ public class DB {
     }
 
     public static <T> ParaMapSearchColumn select(MFunction<T, ?> column) {
-        Field field = Reflections.getField(column);
+        Field field = FieldReflections.getField(column);
         if (field == null) {
             throw new SystemException("字段无效");
         }

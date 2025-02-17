@@ -4,7 +4,7 @@ import com.dlz.comm.exception.DbException;
 import com.dlz.comm.util.VAL;
 import com.dlz.framework.db.helper.util.DbNameUtil;
 import com.dlz.framework.db.modal.DbInfoCache;
-import com.dlz.framework.util.system.Reflections;
+import com.dlz.framework.util.system.FieldReflections;
 
 import java.lang.reflect.Field;
 import java.util.List;
@@ -36,7 +36,7 @@ public abstract class AWrapper<T> {
     protected void generatWithBean(T bean) {
         if (!isGenerator && bean != null) {
             fields.forEach(fieldName->{
-                Object fieldValue = Reflections.getFieldValue(bean, fieldName);
+                Object fieldValue = FieldReflections.getValue(bean, fieldName);
                 if (fieldValue != null) {
                     wrapValue(DbNameUtil.getDbClumnName(fieldName), fieldValue);
                 }

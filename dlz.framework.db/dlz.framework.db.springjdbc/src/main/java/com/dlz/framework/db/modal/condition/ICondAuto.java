@@ -1,6 +1,7 @@
 package com.dlz.framework.db.modal.condition;
 
 import com.dlz.framework.db.enums.DbOprateEnum;
+import com.dlz.framework.db.inf.IChained;
 
 import java.util.Map;
 import java.util.Set;
@@ -9,8 +10,7 @@ import java.util.Set;
  * 添加and or条件
  * @param <T>
  */
-public interface ICondAuto<T extends ICondAuto> {
-    T mine();
+public interface ICondAuto<T extends ICondAuto> extends IChained<T> {
     void addChildren(Condition child);
 
     /**
@@ -53,6 +53,6 @@ public interface ICondAuto<T extends ICondAuto> {
                 addChildren(oprate.mk(key, o));
             }
         }
-        return mine();
+        return me();
     }
 }

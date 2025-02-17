@@ -1,9 +1,10 @@
 package com.dlz.framework.db.modal.condition;
 
+import com.dlz.framework.db.inf.IChained;
+
 import static com.dlz.framework.db.enums.DbOprateEnum.*;
 
-public interface ICondAddByKey<T extends ICondAddByKey> {
-    T mine();
+public interface ICondAddByKey<T extends ICondAddByKey>  extends IChained<T> {
     void addChildren(Condition child);
 
     /**
@@ -17,7 +18,7 @@ public interface ICondAddByKey<T extends ICondAddByKey> {
      */
     default T bt(String clumnName, Object value1, Object value2) {
         addChildren(bt.mk(clumnName, new Object[]{value1, value2}));
-        return mine();
+        return me();
     }
 
     /**
@@ -30,7 +31,7 @@ public interface ICondAddByKey<T extends ICondAddByKey> {
      */
     default T bt(String clumnName, Object value) {
         addChildren(bt.mk(clumnName, value));
-        return mine();
+        return me();
     }
 
     /**
@@ -43,7 +44,7 @@ public interface ICondAddByKey<T extends ICondAddByKey> {
      */
     default T nb(String clumnName, Object value) {
         addChildren(nb.mk(clumnName, value));
-        return mine();
+        return me();
     }
 
     /**
@@ -57,7 +58,7 @@ public interface ICondAddByKey<T extends ICondAddByKey> {
      */
     default T nb(String clumnName, Object value1, Object value2) {
         addChildren(nb.mk(clumnName, new Object[]{value1, value2}));
-        return mine();
+        return me();
     }
 
     /**
@@ -70,7 +71,7 @@ public interface ICondAddByKey<T extends ICondAddByKey> {
      */
     default T eq(String clumnName, Object value) {
         addChildren(eq.mk(clumnName, value));
-        return mine();
+        return me();
     }
 
     /**
@@ -82,7 +83,7 @@ public interface ICondAddByKey<T extends ICondAddByKey> {
      */
     default T isnn(String clumnName) {
         addChildren(isnn.mk(clumnName, null));
-        return mine();
+        return me();
     }
 
     /**
@@ -94,7 +95,7 @@ public interface ICondAddByKey<T extends ICondAddByKey> {
      */
     default T isn(String clumnName) {
         addChildren(isn.mk(clumnName, null));
-        return mine();
+        return me();
     }
 
     /**
@@ -107,7 +108,7 @@ public interface ICondAddByKey<T extends ICondAddByKey> {
      */
     default T lt(String clumnName, Object value) {
         addChildren(lt.mk(clumnName, value));
-        return mine();
+        return me();
     }
 
     /**
@@ -120,7 +121,7 @@ public interface ICondAddByKey<T extends ICondAddByKey> {
      */
     default T nl(String clumnName, Object value) {
         addChildren(nl.mk(clumnName, value));
-        return mine();
+        return me();
     }
 
     /**
@@ -133,7 +134,7 @@ public interface ICondAddByKey<T extends ICondAddByKey> {
      */
     default T lr(String clumnName, Object value) {
         addChildren(lr.mk(clumnName, value));
-        return mine();
+        return me();
     }
 
     /**
@@ -146,7 +147,7 @@ public interface ICondAddByKey<T extends ICondAddByKey> {
      */
     default T ll(String clumnName, Object value) {
         addChildren(ll.mk(clumnName, value));
-        return mine();
+        return me();
     }
 
     /**
@@ -159,7 +160,7 @@ public interface ICondAddByKey<T extends ICondAddByKey> {
      */
     default T lk(String clumnName, Object value) {
         addChildren(lk.mk(clumnName, value));
-        return mine();
+        return me();
     }
 
     /**
@@ -172,7 +173,7 @@ public interface ICondAddByKey<T extends ICondAddByKey> {
      */
     default T in(String clumnName, Object value) {
         addChildren(in.mk(clumnName, value));
-        return mine();
+        return me();
     }
 
     /**
@@ -185,7 +186,7 @@ public interface ICondAddByKey<T extends ICondAddByKey> {
      */
     default T ne(String clumnName, Object value) {
         addChildren(ne.mk(clumnName, value));
-        return mine();
+        return me();
     }
 
     /**
@@ -198,7 +199,7 @@ public interface ICondAddByKey<T extends ICondAddByKey> {
      */
     default T ge(String clumnName, Object value) {
         addChildren(ge.mk(clumnName, value));
-        return mine();
+        return me();
     }
 
     /**
@@ -211,7 +212,7 @@ public interface ICondAddByKey<T extends ICondAddByKey> {
      */
     default T gt(String clumnName, Object value) {
         addChildren(gt.mk(clumnName, value));
-        return mine();
+        return me();
     }
 
     /**
@@ -224,6 +225,6 @@ public interface ICondAddByKey<T extends ICondAddByKey> {
      */
     default T le(String clumnName, Object value) {
         addChildren(le.mk(clumnName, value));
-        return mine();
+        return me();
     }
 }

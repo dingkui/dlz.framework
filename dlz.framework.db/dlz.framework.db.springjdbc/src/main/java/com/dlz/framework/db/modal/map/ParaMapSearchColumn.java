@@ -1,8 +1,7 @@
 package com.dlz.framework.db.modal.map;
 
 import com.dlz.framework.db.convertor.ConvertUtil;
-import com.dlz.framework.db.holder.ServiceHolder;
-import com.dlz.framework.db.modal.condition.Condition;
+import com.dlz.framework.db.holder.DBHolder;
 import com.dlz.framework.db.modal.result.Page;
 import lombok.extern.slf4j.Slf4j;
 
@@ -31,7 +30,7 @@ public class ParaMapSearchColumn  extends AParaMapSearch<ParaMapSearchColumn>{
         return this;
     }
     @Override
-    public ParaMapSearchColumn mine() {
+    public ParaMapSearchColumn me() {
         return this;
     }
     @Override
@@ -40,15 +39,15 @@ public class ParaMapSearchColumn  extends AParaMapSearch<ParaMapSearchColumn>{
     }
 
     public List<String> getStrList() {
-        return ServiceHolder.doDb(s->s.getStrList(this));
+        return DBHolder.doDb(s->s.getStrList(this));
     }
     public String getStr() {
-        return ServiceHolder.doDb(s->s.getStr(this));
+        return DBHolder.doDb(s->s.getStr(this));
     }
     public Long getLong() {
-        return ServiceHolder.doDb(s->s.getLong(this));
+        return DBHolder.doDb(s->s.getLong(this));
     }
     public List<Long> getLongList() {
-        return ServiceHolder.doDb(s->s.getLongList(this));
+        return DBHolder.doDb(s->s.getLongList(this));
     }
 }

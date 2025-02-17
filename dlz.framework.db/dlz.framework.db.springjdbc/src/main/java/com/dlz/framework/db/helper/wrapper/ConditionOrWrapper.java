@@ -1,7 +1,7 @@
 package com.dlz.framework.db.helper.wrapper;
 
+import com.dlz.framework.util.system.FieldReflections;
 import com.dlz.framework.util.system.MFunction;
-import com.dlz.framework.util.system.Reflections;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -40,7 +40,7 @@ public class ConditionOrWrapper extends ConditionWrapper {
 	 * @return ConditionWrapper
 	 */
 	public <T, R> ConditionOrWrapper eq(MFunction<T, R> column, Object params) {
-		super.eq(Reflections.getFieldName(column), params);
+		super.eq(FieldReflections.getFieldName(column), params);
 		return this;
 	}
 	/**
@@ -63,7 +63,7 @@ public class ConditionOrWrapper extends ConditionWrapper {
 	 * @return ConditionOrWrapper
 	 */
 	public <T, R> ConditionOrWrapper ne(MFunction<T, R> column, Object params) {
-		super.ne(Reflections.getFieldName(column), params);
+		super.ne(FieldReflections.getFieldName(column), params);
 		return this;
 	}
 
@@ -86,7 +86,7 @@ public class ConditionOrWrapper extends ConditionWrapper {
 	 * @return ConditionOrWrapper
 	 */
 	public <T, R> ConditionOrWrapper lt(MFunction<T, R> column, Object params) {
-		super.lt(Reflections.getFieldName(column), params);
+		super.lt(FieldReflections.getFieldName(column), params);
 		return this;
 	}
 	/**
@@ -108,7 +108,7 @@ public class ConditionOrWrapper extends ConditionWrapper {
 	 * @return ConditionOrWrapper
 	 */
 	public <T, R> ConditionOrWrapper lte(MFunction<T, R> column, Object params) {
-		super.lte(Reflections.getFieldName(column), params);
+		super.lte(FieldReflections.getFieldName(column), params);
 		return this;
 	}
 	/**
@@ -130,7 +130,7 @@ public class ConditionOrWrapper extends ConditionWrapper {
 	 * @return ConditionOrWrapper
 	 */
 	public <T, R> ConditionOrWrapper gt(MFunction<T, R> column, Object params) {
-		super.gt(Reflections.getFieldName(column), params);
+		super.gt(FieldReflections.getFieldName(column), params);
 		return this;
 	}
 	/**
@@ -152,7 +152,7 @@ public class ConditionOrWrapper extends ConditionWrapper {
 	 * @return ConditionOrWrapper
 	 */
 	public <T, R> ConditionOrWrapper gte(MFunction<T, R> column, Object params) {
-		super.gte(Reflections.getFieldName(column), params);
+		super.gte(FieldReflections.getFieldName(column), params);
 		return this;
 	}
 	/**
@@ -174,7 +174,7 @@ public class ConditionOrWrapper extends ConditionWrapper {
 	 * @return ConditionOrWrapper
 	 */ 
 	public <T, R> ConditionOrWrapper like(MFunction<T, R> column, String params) {
-		super.like(Reflections.getFieldName(column), params);
+		super.like(FieldReflections.getFieldName(column), params);
 		return this;
 	}
 	/**
@@ -196,7 +196,7 @@ public class ConditionOrWrapper extends ConditionWrapper {
 	 * @return ConditionOrWrapper
 	 */
 	public <T, R> ConditionOrWrapper in(MFunction<T, R> column, Collection<?> params) {
-		super.in(Reflections.getFieldName(column), params);
+		super.in(FieldReflections.getFieldName(column), params);
 		return this;
 	}
 
@@ -220,7 +220,7 @@ public class ConditionOrWrapper extends ConditionWrapper {
 	 * @return ConditionOrWrapper
 	 */
 	public <T, R> ConditionOrWrapper in(MFunction<T, R> column, Object[] params) {
-		super.in(Reflections.getFieldName(column),  Arrays.asList(params));
+		super.in(FieldReflections.getFieldName(column),  Arrays.asList(params));
 		return this;
 	}
 
@@ -243,7 +243,7 @@ public class ConditionOrWrapper extends ConditionWrapper {
 	 * @return ConditionOrWrapper
 	 */
 	public <T, R> ConditionOrWrapper nin(MFunction<T, R> column, Collection<?> params) {
-		super.nin(Reflections.getFieldName(column), params);
+		super.nin(FieldReflections.getFieldName(column), params);
 		return this;
 	}
 	
@@ -266,7 +266,7 @@ public class ConditionOrWrapper extends ConditionWrapper {
 	 * @return ConditionOrWrapper
 	 */
 	public <T, R> ConditionOrWrapper nin(MFunction<T, R> column, Object[] params) {
-		super.nin(Reflections.getFieldName(column), Arrays.asList(params));
+		super.nin(FieldReflections.getFieldName(column), Arrays.asList(params));
 		return this;
 	}
 	/**
@@ -288,7 +288,7 @@ public class ConditionOrWrapper extends ConditionWrapper {
 	 * @return ConditionOrWrapper
 	 */
 	public <T, R> ConditionOrWrapper isNull(MFunction<T, R> column) {
-		super.isNull(Reflections.getFieldName(column));
+		super.isNull(FieldReflections.getFieldName(column));
 		return this;
 	}
 
@@ -311,7 +311,7 @@ public class ConditionOrWrapper extends ConditionWrapper {
 	 * @return ConditionOrWrapper
 	 */
 	public <T, R> ConditionOrWrapper isNotNull(MFunction<T, R> column) {
-		super.isNotNull(Reflections.getFieldName(column));
+		super.isNotNull(FieldReflections.getFieldName(column));
 		return this;
 	}
 }

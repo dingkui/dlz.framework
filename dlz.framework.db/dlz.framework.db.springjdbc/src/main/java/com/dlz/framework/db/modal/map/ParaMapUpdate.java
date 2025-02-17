@@ -1,7 +1,7 @@
 package com.dlz.framework.db.modal.map;
 
 import com.dlz.framework.db.convertor.ConvertUtil;
-import com.dlz.framework.db.holder.ServiceHolder;
+import com.dlz.framework.db.holder.DBHolder;
 import com.dlz.framework.db.modal.DbInfoCache;
 import com.dlz.framework.util.system.MFunction;
 import lombok.extern.slf4j.Slf4j;
@@ -87,11 +87,11 @@ public class ParaMapUpdate extends AParaMapSearch<ParaMapUpdate>{
 	}
 
 	public int excute(){
-		return ServiceHolder.doDb(s->s.excuteSql(this));
+		return DBHolder.doDb(s->s.excuteSql(this));
 	}
 
 	@Override
-	public ParaMapUpdate mine() {
+	public ParaMapUpdate me() {
 		return this;
 	}
 }

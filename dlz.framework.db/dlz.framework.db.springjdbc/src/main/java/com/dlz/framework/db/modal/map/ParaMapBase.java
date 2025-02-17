@@ -6,8 +6,8 @@ import com.dlz.framework.db.SqlUtil;
 import com.dlz.framework.db.enums.ParaTypeEnum;
 import com.dlz.framework.db.modal.items.SqlItem;
 import com.dlz.framework.db.modal.result.Page;
+import com.dlz.framework.util.system.FieldReflections;
 import com.dlz.framework.util.system.MFunction;
-import com.dlz.framework.util.system.Reflections;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -73,7 +73,7 @@ public class ParaMapBase implements Serializable {
         return this;
     }
     public <T> ParaMapBase addPara(MFunction<T, ?> column, Object value){
-        return addPara(Reflections.getFieldName(column),value);
+        return addPara(FieldReflections.getFieldName(column),value);
     }
 
     /**

@@ -11,13 +11,10 @@ import java.util.List;
  *
  * @param <T>
  */
-public interface IQueryPage<T extends IQueryPage> {
-    T mine();
-
+public interface IQueryPage<T extends IQueryPage>{
     Page getPage();
 
     T page(Page page);
-
 
     default T orderByAsc(String... column) {
         return sort(Order.ascs(column));

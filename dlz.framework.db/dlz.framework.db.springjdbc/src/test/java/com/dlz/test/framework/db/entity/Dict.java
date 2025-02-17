@@ -26,5 +26,6 @@ public class Dict {
     @ApiModelProperty("BigDecimal：")
     private BigDecimal a6;
     @ApiModelProperty("Object：")
+    @TableField(exist=false)
     private Object a7;
 }

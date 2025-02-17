@@ -1,7 +1,7 @@
 package com.dlz.framework.db.modal.wrapper;
 
 import com.dlz.comm.util.VAL;
-import com.dlz.framework.db.holder.ServiceHolder;
+import com.dlz.framework.db.holder.DBHolder;
 import com.dlz.framework.db.modal.condition.Condition;
 import com.dlz.framework.db.modal.condition.ICondAddByLamda;
 import com.dlz.framework.db.modal.condition.ICondAuto;
@@ -46,7 +46,7 @@ public class DeleteWrapper<T> extends AWrapper<T> implements ICondition<DeleteWr
 	}
 
 	@Override
-	public DeleteWrapper<T> mine() {
+	public DeleteWrapper<T> me() {
 		return this;
 	}
 
@@ -60,6 +60,6 @@ public class DeleteWrapper<T> extends AWrapper<T> implements ICondition<DeleteWr
 	 * @return
 	 */
 	public int excute() {
-		return ServiceHolder.doDb(s->s.excute(this));
+		return DBHolder.doDb(s->s.excute(this));
 	}
 }

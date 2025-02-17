@@ -5,6 +5,7 @@ import com.dlz.comm.util.StringUtils;
 import com.dlz.framework.db.enums.DbTypeEnum;
 import com.dlz.framework.db.helper.util.DbNameUtil;
 import com.dlz.framework.db.holder.SqlHolder;
+import com.dlz.framework.util.system.FieldReflections;
 import com.dlz.framework.util.system.Reflections;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -16,6 +17,7 @@ import javax.annotation.PostConstruct;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Slf4j
@@ -60,7 +62,7 @@ public class HelperScan {
                 return;
             }
             // 建立字段
-            Field[] fields = Reflections.getFields(clazz);
+            List<Field> fields = FieldReflections.getFields(clazz);
             for (Field field : fields) {
                 String columnName=DbNameUtil.getDbClumnName(field);
                 if(columnName==null

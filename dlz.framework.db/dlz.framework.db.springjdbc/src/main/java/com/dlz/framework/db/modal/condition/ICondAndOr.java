@@ -3,13 +3,13 @@ package com.dlz.framework.db.modal.condition;
 import com.dlz.comm.json.JSONMap;
 import com.dlz.framework.db.SqlUtil;
 import com.dlz.framework.db.enums.DbBuildEnum;
+import com.dlz.framework.db.inf.IChained;
 
 /**
  * 添加and or条件
  * @param <T>
  */
-public interface ICondAndOr<T extends ICondAndOr> {
-    T mine();
+public interface ICondAndOr<T extends ICondAndOr> extends IChained<T> {
     void addChildren(Condition child);
 
     /**
@@ -28,7 +28,7 @@ public interface ICondAndOr<T extends ICondAndOr> {
         if(sqlCond != null){
             addChildren(sqlCond);
         }
-        return mine();
+        return me();
     }
 
     /**
@@ -42,7 +42,7 @@ public interface ICondAndOr<T extends ICondAndOr> {
         Condition and = DbBuildEnum.and.build();
         and.addChildren(children);
         addChildren(and);
-        return mine();
+        return me();
     }
 
     /**
@@ -56,6 +56,6 @@ public interface ICondAndOr<T extends ICondAndOr> {
         Condition or = DbBuildEnum.or.build();
         addChildren(or);
         or.addChildren(children);
-        return mine();
+        return me();
     }
 }

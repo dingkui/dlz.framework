@@ -2,9 +2,9 @@ package com.dlz.framework.db.modal.map;
 
 import com.dlz.comm.util.VAL;
 import com.dlz.framework.db.convertor.ConvertUtil;
-import com.dlz.framework.db.holder.ServiceHolder;
+import com.dlz.framework.db.holder.DBHolder;
+import com.dlz.framework.util.system.FieldReflections;
 import com.dlz.framework.util.system.MFunction;
-import com.dlz.framework.util.system.Reflections;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.HashMap;
@@ -68,7 +68,7 @@ public class ParaMapInsert extends ParaMapMaker {
 	}
 
 	public <T> void value(MFunction<T, ?>  column, Object value){
-		value(Reflections.getFieldName(column),value);
+		value(FieldReflections.getFieldName(column),value);
 	}
 	public ParaMapInsert value(String key, Object value){
 		String paraName = ConvertUtil.str2DbClumn(key);
@@ -88,6 +88,6 @@ public class ParaMapInsert extends ParaMapMaker {
 		return this;
 	}
 	public int excute(){
-		return  ServiceHolder.doDb(s->s.excuteSql(this));
+		return  DBHolder.doDb(s->s.excuteSql(this));
 	}
 }

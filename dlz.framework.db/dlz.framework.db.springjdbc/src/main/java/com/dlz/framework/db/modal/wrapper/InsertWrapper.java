@@ -1,7 +1,7 @@
 package com.dlz.framework.db.modal.wrapper;
 
 import com.dlz.comm.util.VAL;
-import com.dlz.framework.db.holder.ServiceHolder;
+import com.dlz.framework.db.holder.DBHolder;
 import com.dlz.framework.db.modal.map.ParaMapInsert;
 
 /**
@@ -40,6 +40,6 @@ public class InsertWrapper<T> extends AWrapper<T>{
 	 * @return
 	 */
 	public Long excute() {
-		return ServiceHolder.doDb(s->s.insert(this));
+		return DBHolder.doDb(s->s.insert(this));
 	}
 }

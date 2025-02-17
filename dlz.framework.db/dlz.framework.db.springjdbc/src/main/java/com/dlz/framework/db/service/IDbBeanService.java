@@ -1,8 +1,8 @@
 package com.dlz.framework.db.service;
 
 import com.dlz.framework.db.dao.IDlzDao;
-import com.dlz.framework.db.helper.bean.Sort;
 import com.dlz.framework.db.modal.result.Page;
+import com.dlz.framework.db.modal.result.Sort;
 
 import java.util.List;
 

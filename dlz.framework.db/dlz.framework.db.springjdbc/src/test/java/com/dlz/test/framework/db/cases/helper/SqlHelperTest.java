@@ -1,7 +1,7 @@
 package com.dlz.test.framework.db.cases.helper;
 
 import com.dlz.framework.db.helper.wrapper.ConditionOrWrapper;
-import com.dlz.framework.util.system.Reflections;
+import com.dlz.framework.util.system.FieldReflections;
 import com.dlz.test.framework.db.config.SpingDbBaseTest;
 import com.dlz.test.framework.db.entity.Dict;
 import org.junit.Test;
@@ -11,7 +11,7 @@ public class SqlHelperTest extends SpingDbBaseTest {
     public void landaTest1() {
         long t=System.currentTimeMillis();
         for (int i = 0; i < 1000000; i++) {
-            Reflections.getFields(Dict.class);
+            FieldReflections.getFields(Dict.class);
         }
         System.out.println(System.currentTimeMillis()-t);
     }
@@ -19,11 +19,11 @@ public class SqlHelperTest extends SpingDbBaseTest {
     public void landaTest2() {
         long t=System.currentTimeMillis();
         for (int i = 0; i < 1000000; i++) {
-            Reflections.getFieldName(Dict::getDictStatus);
-            Reflections.getFieldName(Dict::getA2);
-            Reflections.getFieldName(Dict::getA6);
-            Reflections.getFieldName(Dict::getA4);
-            Reflections.getFieldName(Dict::getA5);
+            FieldReflections.getFieldName(Dict::getDictStatus);
+            FieldReflections.getFieldName(Dict::getA2);
+            FieldReflections.getFieldName(Dict::getA6);
+            FieldReflections.getFieldName(Dict::getA4);
+            FieldReflections.getFieldName(Dict::getA5);
         }
         System.out.println(System.currentTimeMillis()-t);
     }

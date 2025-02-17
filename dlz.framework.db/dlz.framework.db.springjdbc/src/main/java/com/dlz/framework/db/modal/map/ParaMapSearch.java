@@ -1,7 +1,7 @@
 package com.dlz.framework.db.modal.map;
 
 import com.dlz.framework.db.convertor.ConvertUtil;
-import com.dlz.framework.db.holder.ServiceHolder;
+import com.dlz.framework.db.holder.DBHolder;
 import com.dlz.framework.db.modal.condition.IQueryPage;
 import com.dlz.framework.db.modal.result.Page;
 import com.dlz.framework.db.modal.result.ResultMap;
@@ -33,17 +33,17 @@ public class ParaMapSearch extends AParaMapSearch<ParaMapSearch> implements IQue
         addPara(STR_COLUMS, ConvertUtil.str2DbClumn(colums));
     }
     public List<ResultMap> queryMapList() {
-        return ServiceHolder.doDb(s->s.getMapList(this));
+        return DBHolder.doDb(s->s.getMapList(this));
     }
     public Page<ResultMap> queryPageData() {
-        return ServiceHolder.doDb(s->s.getPage(this));
+        return DBHolder.doDb(s->s.getPage(this));
     }
     public ResultMap queryMap() {
-        return ServiceHolder.doDb(s->s.getMap(this));
+        return DBHolder.doDb(s->s.getMap(this));
     }
 
     @Override
-    public ParaMapSearch mine() {
+    public ParaMapSearch me() {
         return this;
     }
     @Override

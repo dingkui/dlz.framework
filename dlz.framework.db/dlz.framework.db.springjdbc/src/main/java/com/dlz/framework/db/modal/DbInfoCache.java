@@ -4,9 +4,9 @@ import com.dlz.comm.cache.CaheMap;
 import com.dlz.comm.exception.SystemException;
 import com.dlz.comm.util.VAL;
 import com.dlz.framework.db.helper.util.DbNameUtil;
-import com.dlz.framework.db.holder.ServiceHolder;
+import com.dlz.framework.db.holder.DBHolder;
 import com.dlz.framework.util.system.MFunction;
-import com.dlz.framework.util.system.Reflections;
+import com.dlz.framework.util.system.FieldReflections;
 
 import java.lang.reflect.Field;
 import java.util.Arrays;
@@ -29,13 +29,13 @@ public class DbInfoCache {
     }
 
     public static HashMap<String, Integer> getTableComums(Class<?> beanClass) {
-        return ServiceHolder.getService().getDao().getTableColumnsInfo(getTableName(beanClass));
+        return DBHolder.getService().getDao().getTableColumnsInfo(getTableName(beanClass));
     }
     public static List<Field> getTableFields(Class<?> beanClass) {
         String tableName = getTableName(beanClass);
         return tableFieldCahe.getAndSet(tableName, () -> {
-            HashMap<String, Integer> tableColumnsInfo = ServiceHolder.getService().getDao().getTableColumnsInfo(tableName);
-            return Arrays.stream(Reflections.getFields(beanClass))
+            HashMap<String, Integer> tableColumnsInfo = DBHolder.getService().getDao().getTableColumnsInfo(tableName);
+            return FieldReflections.getFields(beanClass).stream()
                     .filter(field -> tableColumnsInfo.containsKey(DbNameUtil.getDbClumnName(field.getName())))
                     .collect(Collectors.toList());
         });
@@ -43,7 +43,7 @@ public class DbInfoCache {
 
     public static <T> VAL<String, String> fnInfo(MFunction<T, ?> column) {
         return fnCahe.getAndSet(column, () -> {
-            Field field = Reflections.getField(column);
+            Field field = FieldReflections.getField(column);
             if (column == null) {
                 throw new SystemException("字段无效");
             }

@@ -1,12 +1,11 @@
 package com.dlz.framework.db.modal.condition;
 
+import com.dlz.framework.db.inf.IChained;
 import com.dlz.framework.util.system.MFunction;
 
 import static com.dlz.framework.db.enums.DbOprateEnum.*;
 
-public interface ICondAddByFn<T extends ICondAddByFn> {
-    T mine();
-
+public interface ICondAddByFn<T extends ICondAddByFn> extends IChained<T> {
     void addChildren(Condition child);
 
     /**
@@ -20,7 +19,7 @@ public interface ICondAddByFn<T extends ICondAddByFn> {
      */
     default <T1> T bt(MFunction<T1, ?> column, Object value1, Object value2) {
         addChildren(bt.mk(column, new Object[]{value1, value2}));
-        return mine();
+        return me();
     }
 
     /**
@@ -33,7 +32,7 @@ public interface ICondAddByFn<T extends ICondAddByFn> {
      */
     default <T1> T bt(MFunction<T1, ?> column, Object value) {
         addChildren(bt.mk(column, value));
-        return mine();
+        return me();
     }
 
     /**
@@ -47,7 +46,7 @@ public interface ICondAddByFn<T extends ICondAddByFn> {
      */
     default <T1> T nb(MFunction<T1, ?> column, Object value1, Object value2) {
         addChildren(nb.mk(column, new Object[]{value1, value2}));
-        return mine();
+        return me();
     }
 
     /**
@@ -60,7 +59,7 @@ public interface ICondAddByFn<T extends ICondAddByFn> {
      */
     default <T1> T nb(MFunction<T1, ?> column, Object value) {
         addChildren(nb.mk(column, value));
-        return mine();
+        return me();
     }
 
     /**
@@ -72,7 +71,7 @@ public interface ICondAddByFn<T extends ICondAddByFn> {
      */
     default <T1> T isnn(MFunction<T1, ?> column) {
         addChildren(isnn.mk(column, null));
-        return mine();
+        return me();
     }
 
     /**
@@ -84,7 +83,7 @@ public interface ICondAddByFn<T extends ICondAddByFn> {
      */
     default <T1> T isn(MFunction<T1, ?> column) {
         addChildren(isn.mk(column, null));
-        return mine();
+        return me();
     }
 
     /**
@@ -97,7 +96,7 @@ public interface ICondAddByFn<T extends ICondAddByFn> {
      */
     default <T1> T eq(MFunction<T1, ?> column, Object value) {
         addChildren(eq.mk(column, value));
-        return mine();
+        return me();
     }
 
     /**
@@ -110,7 +109,7 @@ public interface ICondAddByFn<T extends ICondAddByFn> {
      */
     default <T1> T lt(MFunction<T1, ?> column, Object value) {
         addChildren(lt.mk(column, value));
-        return mine();
+        return me();
     }
 
     /**
@@ -123,7 +122,7 @@ public interface ICondAddByFn<T extends ICondAddByFn> {
      */
     default <T1> T nl(MFunction<T1, ?> column, Object value) {
         addChildren(nl.mk(column, value));
-        return mine();
+        return me();
     }
 
     /**
@@ -136,7 +135,7 @@ public interface ICondAddByFn<T extends ICondAddByFn> {
      */
     default <T1> T lr(MFunction<T1, ?> column, Object value) {
         addChildren(lr.mk(column, value));
-        return mine();
+        return me();
     }
 
     /**
@@ -149,7 +148,7 @@ public interface ICondAddByFn<T extends ICondAddByFn> {
      */
     default <T1> T ll(MFunction<T1, ?> column, Object value) {
         addChildren(ll.mk(column, value));
-        return mine();
+        return me();
     }
 
     /**
@@ -162,7 +161,7 @@ public interface ICondAddByFn<T extends ICondAddByFn> {
      */
     default <T1> T lk(MFunction<T1, ?> column, Object value) {
         addChildren(lk.mk(column, value));
-        return mine();
+        return me();
     }
 
     /**
@@ -175,7 +174,7 @@ public interface ICondAddByFn<T extends ICondAddByFn> {
      */
     default <T1> T in(MFunction<T1, ?> column, Object value) {
         addChildren(in.mk(column, value));
-        return mine();
+        return me();
     }
 
     /**
@@ -188,7 +187,7 @@ public interface ICondAddByFn<T extends ICondAddByFn> {
      */
     default <T1> T ne(MFunction<T1, ?> column, Object value) {
         addChildren(ne.mk(column, value));
-        return mine();
+        return me();
     }
 
     /**
@@ -201,7 +200,7 @@ public interface ICondAddByFn<T extends ICondAddByFn> {
      */
     default <T1> T ge(MFunction<T1, ?> column, Object value) {
         addChildren(ge.mk(column, value));
-        return mine();
+        return me();
     }
 
     /**
@@ -214,7 +213,7 @@ public interface ICondAddByFn<T extends ICondAddByFn> {
      */
     default <T1> T gt(MFunction<T1, ?> column, Object value) {
         addChildren(gt.mk(column, value));
-        return mine();
+        return me();
     }
 
     /**
@@ -227,6 +226,6 @@ public interface ICondAddByFn<T extends ICondAddByFn> {
      */
     default <T1> T le(MFunction<T1, ?> column, Object value) {
         addChildren(le.mk(column, value));
-        return mine();
+        return me();
     }
 }

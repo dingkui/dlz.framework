@@ -34,9 +34,9 @@ public class DlzDbConfig extends DlzFwConfig {
     @Bean(name = "dlzDao")
     @Lazy
     @ConditionalOnMissingBean(name = "dlzDao")
-    public IDlzDao dlzDao(JdbcTemplate jdbc,DlzDbProperties dbProperties) {
+    public IDlzDao dlzDao(JdbcTemplate jdbc,DlzDbProperties properties) {
         log.info("default dlzDao init ...");
-        SqlHolder.init(dbProperties);
+        SqlHolder.init(properties);
         return new DlzDao(jdbc);
     }
 
@@ -78,18 +78,19 @@ public class DlzDbConfig extends DlzFwConfig {
     @Lazy
     @Bean(name = "dlzHelperDbOp")
     @ConditionalOnMissingBean(name = "dlzHelperDbOp")
-    public SqlHelper dlzHelperDbOp(IDlzDao dao, DlzDbProperties properties) {
-        log.info("DbOp init dbType is:" + properties.getDbtype());
+    public SqlHelper dlzHelperDbOp(IDlzDao dao,DlzDbProperties properties) {
+        log.info("dlzHelper init dbType is:" + properties.getDbtype());
         SqlHelper helpler;
-        if (SqlHolder.properties.getDbtype() == DbTypeEnum.SQLITE) {
+        if (properties.getDbtype() == DbTypeEnum.SQLITE) {
             helpler = new DbOpSqlite(dao);
-        } else if (SqlHolder.properties.getDbtype() == DbTypeEnum.POSTGRESQL) {
+        } else if (properties.getDbtype() == DbTypeEnum.POSTGRESQL) {
             helpler = new DbOpPostgresql(dao);
         }else{
             helpler = new DbOpMysql(dao);
         }
         //自动扫描
         if(properties.getHelper().autoUpdate){
+            log.info("dlzHelper autoUpdate ...");
             new Thread(()-> HelperScan.scan(properties.getHelper().packageName, helpler)).start();
         }
         return helpler;
