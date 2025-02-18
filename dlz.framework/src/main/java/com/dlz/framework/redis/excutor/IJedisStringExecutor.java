@@ -51,7 +51,7 @@ public interface IJedisStringExecutor extends IJedisExecutor {
      * @param seconds  时间(秒) time要大于0 如果time小于等于0 将设置无限期
      * @return true成功 false 失败
      */
-    default Boolean set(String key, String value, int seconds) {
+    default Boolean set(String key, String value, long seconds) {
         return excuteByJedis(j -> {
             String key1 = JedisKeyUtils.getRedisKey(key);
             j.set(key1, value);
@@ -75,6 +75,17 @@ public interface IJedisStringExecutor extends IJedisExecutor {
             throw new RuntimeException("递增因子必须大于0");
         }
         return excuteByJedis(j -> j.incrBy(JedisKeyUtils.getRedisKey(key), delta));
+    }
+
+
+    /**
+     * 递增 此时value值必须为int类型 否则报错
+     *
+     * @param key   键
+     * @return
+     */
+    default long incr(String key) {
+        return excuteByJedis(j -> j.incr(JedisKeyUtils.getRedisKey(key)));
     }
 
     /**
