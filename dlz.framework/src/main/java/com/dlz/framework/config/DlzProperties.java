@@ -9,14 +9,20 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 @ConfigurationProperties(prefix = "dlz")
 public class DlzProperties {
     /**
-     * api组件扫描路径,如：com\/dlz\/**\/I*Api.class
+     * framework配置
      */
-    private String apiScanPath="";
+    private Fw fw=new Fw();
     /**
      * 缓存配置
      */
     private Cache cache=new Cache();
-
+    @Data
+    public static class Fw {
+        /**
+         * api组件扫描路径,如：com\/dlz\/**\/I*Api.class
+         */
+        private String apiScanPath = "";
+    }
     @Data
     public static class Cache {
         /**

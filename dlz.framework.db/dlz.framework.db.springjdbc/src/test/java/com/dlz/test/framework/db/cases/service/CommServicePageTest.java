@@ -12,14 +12,20 @@ public class CommServicePageTest extends SpingDbBaseTest {
     public void PageTest() {
         ParaMap pm = new ParaMap("select t.* from Goods t where t.goods_id=310");
         pm.setPage(Page.build(1, 2, Order.asc("id")));
-        DBHolder.doDb(s->s.getPage(pm));
+        DBHolder.doDb(s -> s.getPage(pm));
     }
 
     @Test
     public void PageTest2() {
         ParaMap ump2 = new ParaMap("select t.* from PTN_GOODS_PRICE t where t.goods_id=#{goodsId}");
-        ump2.setPage(Page.build(1, 2, Order.asc("id"),Order.desc("xx2")));
+        ump2.setPage(Page.build(1, 2, Order.asc("id"), Order.desc("xx2")));
         ump2.addPara("goodsId", 123);
-        DBHolder.doDb(s->s.getMap(ump2));
+        DBHolder.doDb(s -> s.getMap(ump2));
+    }
+
+    @Test
+    public void SeqTest2() {
+        System.out.println(DBHolder.sequence("sys_sql_copy1"));
+        System.out.println(DBHolder.sequence("sys_sql"));
     }
 }

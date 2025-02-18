@@ -20,6 +20,7 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Lazy;
+import org.springframework.core.env.Environment;
 import redis.clients.jedis.JedisPool;
 
 /**
@@ -35,10 +36,10 @@ public class DlzFwConfig {
      * @return
      */
     @Bean
-    public BeanFactoryPostProcessor myBeanFactory(DlzProperties properties) {
+    public BeanFactoryPostProcessor myBeanFactory(Environment env) {
         return beanFactory -> {
             SpringHolder.init(beanFactory);
-            String apiScanPath = properties.getApiScanPath();
+            String apiScanPath = env.getProperty("dlz.fw.api-scan-path");
             if (StringUtils.isNotEmpty(apiScanPath)) {
                 log.info("dlz spring apiScan init ...,resoucePath={}", apiScanPath);
                 new DlzSpringScaner().doComponents(new ApiScaner(apiScanPath));
@@ -97,6 +98,10 @@ public class DlzFwConfig {
         return new CacheAspect(cache);
     }
 
+    /**
+     * redis生产者消费者模式,开启本功能依赖开启dlz.fw.api-scan-path路径扫描
+     * @return
+     */
     @Bean(name = "redisQueueProviderApiHandler")
     @Lazy
     @ConditionalOnMissingBean(name = "redisQueueProviderApiHandler")

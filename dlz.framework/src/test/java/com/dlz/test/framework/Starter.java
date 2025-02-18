@@ -5,9 +5,9 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.properties.ConfigurationPropertiesScan;
 import org.springframework.scheduling.annotation.EnableAsync;
 
-@SpringBootApplication
-@EnableAsync
-@ConfigurationPropertiesScan
+//@SpringBootApplication
+//@EnableAsync
+//@ConfigurationPropertiesScan
 public class Starter {
 
     public static void main(String[] args) {

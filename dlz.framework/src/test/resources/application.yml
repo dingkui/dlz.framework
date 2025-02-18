@@ -17,3 +17,5 @@ spring:
     #连接超时时间
     timeout: 5000
 
+dlz:
+  api-scan-path: com.dlz
