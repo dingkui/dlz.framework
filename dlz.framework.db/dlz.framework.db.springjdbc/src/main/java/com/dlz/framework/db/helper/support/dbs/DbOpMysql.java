@@ -131,11 +131,11 @@ public class DbOpMysql extends SqlHelper {
         if (classs == String.class) {
             return "varchar(255)";
         } else if (classs == Integer.class || "int".equals(classs.getCanonicalName())) {
-            return "integer(10)";
+            return "int";
         } else if (classs == Boolean.class || "boolean".equals(classs.getCanonicalName())) {
-            return "integer(1)";
+            return "tinyint";
         } else if (classs == Long.class || "long".equals(classs.getCanonicalName())) {
-            return "integer(12)";
+            return "bigint";
         } else if (Number.class.isAssignableFrom(classs)) {
             return "numeric(12, 1)";
         } else if (Date.class.isAssignableFrom(classs)||classs== LocalDateTime.class||classs== LocalDate.class) {
@@ -149,7 +149,7 @@ public class DbOpMysql extends SqlHelper {
             return String.class;
         } else if (columnType.startsWith("int")) {
             return Integer.class;
-        } else if (columnType.startsWith("tinyint(1)")) {
+        } else if (columnType.startsWith("tinyint")) {
             return Boolean.class;
         } else if (columnType.startsWith("bigint")) {
             return Long.class;

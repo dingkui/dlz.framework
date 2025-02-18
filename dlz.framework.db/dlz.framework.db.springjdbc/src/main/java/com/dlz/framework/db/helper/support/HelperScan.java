@@ -68,7 +68,6 @@ public class HelperScan {
                 if(columnName==null
                         || columns.contains(columnName)
                         || columnName.equalsIgnoreCase("id")
-                        || columnName.equalsIgnoreCase("SERIAL_VERSION_U_I_D")
                 ){
                     continue;
                 }
