@@ -45,6 +45,9 @@ public class Page<T> extends Sort<Page> implements Serializable {
     public Page(Order... order) {
         super(order);
     }
+    public Page() {
+        super();
+    }
 
 
     public Page<T> setSize(long size) {
