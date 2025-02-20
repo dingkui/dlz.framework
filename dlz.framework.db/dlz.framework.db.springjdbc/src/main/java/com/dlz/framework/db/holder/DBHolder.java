@@ -2,6 +2,7 @@ package com.dlz.framework.db.holder;
 
 import com.dlz.comm.util.encry.TraceUtil;
 import com.dlz.framework.db.dao.IDlzDao;
+import com.dlz.framework.db.modal.DbInfoCache;
 import com.dlz.framework.db.service.ICommService;
 import com.dlz.framework.executor.Executor;
 import com.dlz.framework.holder.SpringHolder;
@@ -28,13 +29,13 @@ public class DBHolder {
         return jedis;
     }
 
-    public static long sequence(String tableName) {
+    public static long sequence(String tableName,long initSeq) {
         String key = "seq:" + tableName;
-        Long seq = getJedis().incr(key);
-        if(seq==1){
+        Long seq = getJedis().incrBy(key,initSeq);
+        if(seq==initSeq){
             try {
-                seq = getService().getDao().getFistColumn("select max(id) from " + tableName, Long.class)+1;
-                if(seq>1){
+                seq = getService().getDao().getFistColumn("select max(id) from " + tableName, Long.class)+initSeq;
+                if(seq>initSeq){
                     jedis.set(key, seq.toString());
                 }
             } catch (Exception e) {
@@ -42,6 +43,9 @@ public class DBHolder {
             }
         }
         return seq;
+    }
+    public static long sequence(Class<?> beanClass,long initSeq) {
+        return sequence(DbInfoCache.getTableName(beanClass),initSeq);
     }
     public static <R> R doDb(Executor<ICommService, R> s) {
         ICommService service = getService();
