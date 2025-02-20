@@ -50,4 +50,7 @@ public class ParaMapSearchColumn  extends AParaMapSearch<ParaMapSearchColumn>{
     public List<Long> getLongList() {
         return DBHolder.doDb(s->s.getLongList(this));
     }
+    public int count() {
+        return DBHolder.doDb(s->s.getCnt(this));
+    }
 }

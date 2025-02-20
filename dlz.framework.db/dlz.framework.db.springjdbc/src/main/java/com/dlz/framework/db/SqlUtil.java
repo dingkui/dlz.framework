@@ -10,8 +10,8 @@ import com.dlz.comm.util.ValUtil;
 import com.dlz.framework.db.enums.ParaTypeEnum;
 import com.dlz.framework.db.holder.SqlHolder;
 import com.dlz.framework.db.modal.items.SqlItem;
-import com.dlz.framework.db.modal.map.AParaMapSearch;
 import com.dlz.framework.db.modal.map.ParaMapBase;
+import com.dlz.framework.db.modal.map.ParaMapMaker;
 import com.dlz.framework.db.modal.result.Page;
 import lombok.extern.slf4j.Slf4j;
 
@@ -179,8 +179,8 @@ public class SqlUtil {
             String sql = sqlItem.getSqlDeal();
             String sqlInput = sqlItem.getSqlKey();
             if (sql == null && sqlInput != null) {
-                if(paraMap instanceof AParaMapSearch){
-                    ((AParaMapSearch) paraMap).buildSql();
+                if(paraMap instanceof ParaMapMaker){
+                    ((ParaMapMaker) paraMap).buildSql();
                 }
                 sql = createSqlDeal(paraMap.getPara(), sqlInput);
                 sqlItem.setSqlDeal(sql);
