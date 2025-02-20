@@ -1,8 +1,13 @@
 package com.dlz.framework.db.service;
 
+import com.dlz.comm.exception.ValidateException;
+import com.dlz.comm.util.StringUtils;
 import com.dlz.framework.db.dao.IDlzDao;
-import com.dlz.framework.db.modal.result.Page;
-import com.dlz.framework.db.modal.result.Sort;
+import com.dlz.framework.db.modal.wrapper.DeleteWrapper;
+import com.dlz.framework.db.modal.wrapper.InsertWrapper;
+import com.dlz.framework.db.modal.wrapper.QueryWrapper;
+import com.dlz.framework.db.modal.wrapper.UpdateWrapper;
+import com.dlz.framework.util.system.FieldReflections;
 
 import java.util.List;
 
@@ -14,19 +19,53 @@ import java.util.List;
  * @return
  * @throws Exception
  */
-public interface IDbBeanService{
-	IDlzDao getDao();
-	<T> List<T> getBeanList(T bean);
-	<T> T getBean(T bean);
-	<T> T getById(String id,Class<T> clazz);
-	<T> T getAll(Sort sort, Class<T> clazz);
-	<T> T insert(T bean);
-	<T> T delete(T bean);
-	<T> T update(T bean);
-	<T> T updateOrInsert(T bean);
-	<T> T updateById(T bean);
-	<T> T deleteById(String id,Class<T> clazz);
-	<T> T deleteByIds(String id,Class<T> clazz);
-	<T> void insertAll(List<T> list);
-	<T> Page<T> page(Page<T> page);
+public interface IDbBeanService extends IDbQwService{
+	default <T> List<T> getBeanList(T bean){
+		return getBeanList(QueryWrapper.wrapper(bean));
+	}
+	default <T> T getBean(T bean){
+		return getBean(QueryWrapper.wrapper(bean),true);
+	}
+	default <T> T getById(String id,Class<T> clazz){
+		if(StringUtils.isEmpty(id)){
+			throw new ValidateException("id不能为空");
+		}
+		return getBean(QueryWrapper.wrapper(clazz).eq("id",id),true);
+	}
+	default <T> long insert(T bean){
+		return insert(InsertWrapper.wrapper(bean));
+	}
+	default <T> long delete(T bean){
+		return delete(DeleteWrapper.wrapper(bean));
+	}
+	default <T> int update(T condition,T bean){
+		return excute(UpdateWrapper.wrapper(condition).set(bean));
+	}
+	default <T> int updateOrInsert(T bean){
+		Object id = FieldReflections.getValue(bean, "id",false);
+		if(StringUtils.isEmpty(id)){
+			insert(InsertWrapper.wrapper(bean));
+			return 1;
+		}
+		return excute(UpdateWrapper.wrapper((Class<T>)bean.getClass()).eq("id",id).set(bean));
+	}
+	default <T> int updateById(T bean){
+		Object id = FieldReflections.getValue(bean, "id",false);
+		if(StringUtils.isEmpty(id)){
+			throw new ValidateException("id不能为空");
+		}
+		return excute(UpdateWrapper.wrapper((Class<T>)bean.getClass()).eq("id",id).set(bean));
+	}
+	default <T> int deleteById(String id,Class<T> clazz){
+		if(StringUtils.isEmpty(id)){
+			throw new ValidateException("id不能为空");
+		}
+		return excute(DeleteWrapper.wrapper(clazz).eq("id",id));
+	}
+	default <T> int deleteByIds(String id,Class<T> clazz){
+		if(StringUtils.isEmpty(id)){
+			throw new ValidateException("id不能为空");
+		}
+		return excute(DeleteWrapper.wrapper(clazz).in("id",id));
+	}
 }
