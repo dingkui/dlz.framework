@@ -1,7 +1,6 @@
 package com.dlz.framework.db.dao;
 
 import com.dlz.comm.exception.DbException;
-import com.dlz.comm.exception.SystemException;
 import com.dlz.framework.db.convertor.ConvertUtil;
 import com.dlz.framework.db.modal.result.ResultMap;
 import org.springframework.context.annotation.Lazy;
@@ -43,22 +42,22 @@ public interface IDlzDao {
         return ConvertUtil.getFistColumn(getOne(sql,false, args),requiredType);
     }
 
-    void logInfo(String sql, String method, long t, Object[] args,boolean error);
+    void logInfo(String sql, String method, long t, Object[] args,Exception error);
 
     default <T> T doDb(Supplier<T> s, String fn, String sql, Object... args) {
         if(fn==null){
             return s.get();
         }
         long t = System.currentTimeMillis();
-        boolean err = false;
+        Exception err = null;
         try {
             return s.get();
         }catch (Exception e){
-            err=true;
+            err=e;
             if (e instanceof DbException) {
                 throw e;
             }
-            throw new DbException("sql执行错误", 1001,e);
+            throw new DbException("sql执行错误:", 1001);
         }finally {
             logInfo(sql, fn, t, args,err);
         }

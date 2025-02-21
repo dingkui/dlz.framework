@@ -1,6 +1,7 @@
 package com.dlz.framework.db.dao;
 
 import com.dlz.comm.cache.CacheUtil;
+import com.dlz.comm.util.ExceptionUtils;
 import com.dlz.comm.util.VAL;
 import com.dlz.framework.db.SqlUtil;
 import com.dlz.framework.db.convertor.rowMapper.MySqlColumnMapRowMapper;
@@ -42,17 +43,19 @@ public class DlzDao implements IDlzDao {
     }
 
     @Override
-    public void logInfo(String sql, String methodName, long startTime, Object[] args,boolean error) {
-        if (error||log.isDebugEnabled()) {
+    public void logInfo(String sql, String methodName, long startTime, Object[] args,Exception error) {
+        if (error!=null||log.isDebugEnabled()) {
             long useTime = System.currentTimeMillis() - startTime;
             if (SqlHolder.properties.getLog().isShowRunSql()) {
-                if(error){
+                if(error!=null){
+                    log.error(ExceptionUtils.getStackTrace(error));
                     log.error("{} {}ms sql:{}", methodName, useTime, SqlUtil.getRunSqlByJdbc(sql, args));
                 }else{
                     log.info("{} {}ms sql:{}", methodName, useTime, SqlUtil.getRunSqlByJdbc(sql, args));
                 }
             } else {
-                if(error){
+                if(error!=null){
+                    log.error(ExceptionUtils.getStackTrace(error));
                     log.error("{} {}ms sql:{} {}", methodName, useTime, sql, args);
                 }else{
                     log.info("{} {}ms sql:{} {}", methodName, useTime, sql, args);
@@ -83,6 +86,10 @@ public class DlzDao implements IDlzDao {
                 }
                 return ps;
             }, keyHolder);
+            if(keyHolder.getKey()==null){
+                log.warn("无自动增长主键");
+                return null;
+            }
             return keyHolder.getKey().longValue();
         }, "updateForId", sql, args);
     }
