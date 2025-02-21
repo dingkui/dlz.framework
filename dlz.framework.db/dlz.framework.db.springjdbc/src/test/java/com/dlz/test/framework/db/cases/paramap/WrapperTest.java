@@ -20,6 +20,16 @@ public class WrapperTest extends SpingDbBaseTest {
         showSql(insert,"insertWrapperTest1","insert into SYS_SQL(SQL_KEY,ID) values('xxx',123)");
     }
     @Test
+    public void insertWrapperTest2() {
+        SysSql dict = new SysSql();
+//        dict.setId(123L);
+        dict.setSqlKey("xxx");
+        InsertWrapper<SysSql> insert = DB.insert(dict);
+        showSql(insert,"insertWrapperTest2","insert into SYS_SQL(SQL_KEY) values('xxx')");
+        Long aLong = insert.insertWithAutoKey();
+        System.out.println(aLong);
+    }
+    @Test
     public void updateWrapperTest1() {
         SysSql dict = new SysSql();
         dict.setId(123L);

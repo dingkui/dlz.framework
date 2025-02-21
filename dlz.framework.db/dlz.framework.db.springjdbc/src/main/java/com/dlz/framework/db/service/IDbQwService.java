@@ -6,10 +6,11 @@ import com.dlz.framework.db.convertor.ConvertUtil;
 import com.dlz.framework.db.dao.IDlzDao;
 import com.dlz.framework.db.modal.result.Page;
 import com.dlz.framework.db.modal.result.ResultMap;
-import com.dlz.framework.db.modal.wrapper.*;
+import com.dlz.framework.db.modal.wrapper.AWrapper;
+import com.dlz.framework.db.modal.wrapper.InsertWrapper;
+import com.dlz.framework.db.modal.wrapper.QueryWrapper;
 import com.dlz.framework.executor.Executor;
 
-import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.List;
 
@@ -122,7 +123,7 @@ public interface IDbQwService {
         }
         return page.doPage(() -> getCnt(wrapper), () -> getBeanList(wrapper));
     }
-    default <T> Long insert(InsertWrapper<T> wrapper) {
+    default <T> Long insertWithAutoKey(InsertWrapper<T> wrapper) {
         return doDb(wrapper,jdbcSql -> getDao().updateForId(jdbcSql.v1, jdbcSql.v2),false);
     }
     default <T> int excute(AWrapper<T> wrapper) {

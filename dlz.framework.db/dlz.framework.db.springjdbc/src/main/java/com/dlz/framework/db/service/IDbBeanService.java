@@ -32,8 +32,11 @@ public interface IDbBeanService extends IDbQwService{
 		}
 		return getBean(QueryWrapper.wrapper(clazz).eq("id",id),true);
 	}
+	default <T> long insertWithAutoKey(T bean){
+		return insertWithAutoKey(InsertWrapper.wrapper(bean));
+	}
 	default <T> long insert(T bean){
-		return insert(InsertWrapper.wrapper(bean));
+		return excute(InsertWrapper.wrapper(bean));
 	}
 	default <T> long delete(T bean){
 		return delete(DeleteWrapper.wrapper(bean));
@@ -41,10 +44,10 @@ public interface IDbBeanService extends IDbQwService{
 	default <T> int update(T condition,T bean){
 		return excute(UpdateWrapper.wrapper(condition).set(bean));
 	}
-	default <T> int updateOrInsert(T bean){
+	default <T> int updateByIdOrInsert(T bean){
 		Object id = FieldReflections.getValue(bean, "id",false);
 		if(StringUtils.isEmpty(id)){
-			insert(InsertWrapper.wrapper(bean));
+			excute(InsertWrapper.wrapper(bean));
 			return 1;
 		}
 		return excute(UpdateWrapper.wrapper((Class<T>)bean.getClass()).eq("id",id).set(bean));

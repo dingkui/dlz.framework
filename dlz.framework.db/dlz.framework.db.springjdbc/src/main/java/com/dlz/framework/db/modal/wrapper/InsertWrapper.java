@@ -36,10 +36,18 @@ public class InsertWrapper<T> extends AWrapper<T>{
 	}
 
 	/**
-	 * 执行插入，返回主键
+	 * 执行插入，自动生成主键，返回生成的主键
 	 * @return
 	 */
-	public Long excute() {
-		return DBHolder.doDb(s->s.insert(this));
+	public Long insertWithAutoKey() {
+		return DBHolder.doDb(s->s.insertWithAutoKey(this));
+	}
+
+	/**
+	 * 执行插入
+	 * @return
+	 */
+	public int excute() {
+		return DBHolder.doDb(s->s.excute(this));
 	}
 }
