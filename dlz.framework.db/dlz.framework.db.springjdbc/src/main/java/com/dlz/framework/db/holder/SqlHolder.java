@@ -84,7 +84,7 @@ public class SqlHolder {
     }
     public static void addSqlSetting(String sqlId,String sqlStr){
         sqlId = DbTypeEnum.dropSqlKeySufix(sqlId);
-        if(sqlId==null){
+        if(sqlId==null||sqlStr==null){
             return;
         }
         sqlStr = clearSql(sqlStr);
