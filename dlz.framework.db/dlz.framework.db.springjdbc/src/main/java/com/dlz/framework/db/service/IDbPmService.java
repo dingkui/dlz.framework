@@ -35,6 +35,18 @@ public interface IDbPmService {
     }
 
     /**
+     * 插入数据库
+     * sql语句，可以带参数如：update JOB_AD set AD_text=#{adText} where ad_id in (${ad_id})
+     *
+     * @param paraMap ：Map<String,Object> m=new HashMap<String,Object>();m.put("ad_id", "47");
+     * @return
+     * @throws Exception
+     */
+    default Long insertWithAutoKey(ParaMapBase paraMap) {
+        return doDb(paraMap, jdbcSql -> getDao().updateForId(jdbcSql.v1, jdbcSql.v2), true);
+    }
+
+    /**
      * 更新或插入数据库
      * sql语句，可以带参数如：update JOB_AD set AD_text=#{adText} where ad_id in (${ad_id})
      *

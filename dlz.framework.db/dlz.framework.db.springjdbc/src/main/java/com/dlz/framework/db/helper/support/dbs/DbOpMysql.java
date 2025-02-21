@@ -139,7 +139,7 @@ public class DbOpMysql extends SqlHelper {
         } else if (Number.class.isAssignableFrom(classs)) {
             return "numeric(12, 1)";
         } else if (Date.class.isAssignableFrom(classs)||classs== LocalDateTime.class||classs== LocalDate.class) {
-            return "date";
+            return "datetime";
         }
         return "text";
     }
@@ -155,10 +155,10 @@ public class DbOpMysql extends SqlHelper {
             return Long.class;
         } else if (columnType.startsWith("decimal") || columnType.startsWith("numeric")) {
             return Double.class;
-        } else if (columnType.startsWith("date") || columnType.startsWith("datetime")) {
+        } else if (columnType.startsWith("date") || columnType.startsWith("datetime") || columnType.startsWith("timestamp")) {
             return Date.class;
-        } else if (columnType.startsWith("timestamp")) {
-            return LocalDateTime.class;
+//        } else if (columnType.startsWith("timestamp")) {
+//            return LocalDateTime.class;
         } else {
             return Object.class; // 默认类型
         }

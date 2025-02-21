@@ -87,6 +87,13 @@ public class ParaMapInsert extends ParaMapMaker {
 		}
 		return this;
 	}
+	/**
+	 * 执行插入，自动生成主键，返回生成的主键
+	 * @return
+	 */
+	public Long insertWithAutoKey() {
+		return DBHolder.doDb(s->s.insertWithAutoKey(this));
+	}
 	public int excute(){
 		return  DBHolder.doDb(s->s.excuteSql(this));
 	}
