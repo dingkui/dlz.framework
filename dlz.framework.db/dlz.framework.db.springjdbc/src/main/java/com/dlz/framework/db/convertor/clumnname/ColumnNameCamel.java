@@ -33,7 +33,15 @@ public class ColumnNameCamel extends AColumnNameConvertor {
 		if(beanKey.indexOf("_")>-1){
 			return beanKey;
 		}
-		if(beanKey.equals(beanKey.toUpperCase())){
+		//是否全部大写
+		boolean isAllUpperCase = true;
+		for (char c : beanKey.toCharArray()) {
+			if (!Character.isUpperCase(c) && !Character.isDigit(c)) {
+				isAllUpperCase = false;
+				break;
+			}
+		}
+		if(isAllUpperCase){
 			return beanKey;
 		}
 		return beanKey.replaceAll(" (?i)desc", " desc")

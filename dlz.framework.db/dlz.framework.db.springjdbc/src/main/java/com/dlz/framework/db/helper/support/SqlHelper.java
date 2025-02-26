@@ -6,7 +6,7 @@ import com.dlz.comm.exception.SystemException;
 import com.dlz.comm.util.StringUtils;
 import com.dlz.comm.util.VAL;
 import com.dlz.comm.util.ValUtil;
-import com.dlz.framework.db.convertor.ConvertUtil;
+import com.dlz.comm.util.system.ConvertUtil;
 import com.dlz.framework.db.dao.IDlzDao;
 import com.dlz.framework.db.helper.bean.TableInfo;
 import com.dlz.framework.db.helper.bean.Update;
@@ -17,8 +17,8 @@ import com.dlz.framework.db.holder.DBHolder;
 import com.dlz.framework.db.modal.result.Page;
 import com.dlz.framework.db.modal.result.ResultMap;
 import com.dlz.framework.db.modal.result.Sort;
-import com.dlz.framework.util.system.MFunction;
-import com.dlz.framework.util.system.FieldReflections;
+import com.dlz.comm.util.system.MFunction;
+import com.dlz.comm.util.system.FieldReflections;
 
 import java.lang.reflect.Field;
 import java.util.*;
@@ -103,7 +103,7 @@ public abstract class SqlHelper {
 //        return dao.getList(sql, args);
 //    }
     public <T> List<T> queryForList(String sql, Class<T> requiredType, Object... args){
-        return ConvertUtil.conver(dao.getList(sql, args),requiredType);
+        return ConvertUtil.convertList(dao.getList(sql, args),requiredType);
     }
 //    public <T> T queryForObject(String sql, Class<T> requiredType, Object... args){
 //        return dao.getObj(sql,requiredType, args);

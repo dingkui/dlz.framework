@@ -63,7 +63,7 @@ public class CacheEhcahe implements ICache {
         }
         Object obj = element.getObjectValue();
         if(tClass != null){
-            return ValUtil.toObj(obj, JacksonUtil.getJavaType(tClass));
+            return ValUtil.toObj(obj, JacksonUtil.mkJavaType(tClass));
         }
         return (T) obj;
     }

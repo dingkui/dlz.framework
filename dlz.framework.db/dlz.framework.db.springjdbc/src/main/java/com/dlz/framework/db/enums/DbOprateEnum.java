@@ -4,10 +4,10 @@ import com.dlz.comm.exception.SystemException;
 import com.dlz.comm.util.ValUtil;
 import com.dlz.comm.util.encry.TraceUtil;
 import com.dlz.framework.db.SqlUtil;
-import com.dlz.framework.db.convertor.ConvertUtil;
+import com.dlz.framework.db.convertor.DbConvertUtil;
 import com.dlz.framework.db.modal.DbInfoCache;
 import com.dlz.framework.db.modal.condition.Condition;
-import com.dlz.framework.util.system.MFunction;
+import com.dlz.comm.util.system.MFunction;
 import lombok.AllArgsConstructor;
 
 @AllArgsConstructor
@@ -31,7 +31,7 @@ public enum DbOprateEnum {
 
     private Condition paraZero(String dbn) {
         Condition condition = new Condition();
-        condition.setRunsql(this._sql.replaceAll("dbn", ConvertUtil.str2DbClumn(dbn)));
+        condition.setRunsql(this._sql.replaceAll("dbn", DbConvertUtil.str2DbClumn(dbn)));
         return condition;
     }
 
@@ -40,7 +40,7 @@ public enum DbOprateEnum {
         Condition condition = new Condition();
         condition.addPara(key, value);
         condition.setRunsql(this._sql
-                .replaceAll("dbn", ConvertUtil.str2DbClumn(dbn))
+                .replaceAll("dbn", DbConvertUtil.str2DbClumn(dbn))
                 .replaceAll("key", key));
         return condition;
     }
@@ -57,7 +57,7 @@ public enum DbOprateEnum {
         condition.addPara(key1, array[0]);
         condition.addPara(key2, array[1]);
         condition.setRunsql(this._sql
-                .replaceAll("dbn", ConvertUtil.str2DbClumn(dbn))
+                .replaceAll("dbn", DbConvertUtil.str2DbClumn(dbn))
                 .replaceAll("key1", key1)
                 .replaceAll("key2", key2));
         return condition;
@@ -66,12 +66,12 @@ public enum DbOprateEnum {
         String key = this + "_" + TraceUtil.generateShortUuid();
         Condition condition = new Condition();
         condition.setRunsql(this._sql
-                .replaceAll("dbn", ConvertUtil.str2DbClumn(dbn))
+                .replaceAll("dbn", DbConvertUtil.str2DbClumn(dbn))
                 .replaceAll("key", key));
         if (value instanceof String) {
             String v = ((String) value);
             if (v.startsWith("sql:")) {
-                condition.addPara(key, ConvertUtil.str2Clumn(v.substring(4)));
+                condition.addPara(key, DbConvertUtil.str2Clumn(v.substring(4)));
                 return condition;
             }
         }

@@ -1,11 +1,7 @@
 package com.dlz.framework.db.modal.condition;
 
 import com.dlz.framework.db.modal.result.Order;
-import com.dlz.framework.db.modal.result.Page;
-import com.dlz.framework.util.system.MFunction;
-
-import java.util.Arrays;
-import java.util.List;
+import com.dlz.comm.util.system.MFunction;
 
 /**
  * 添加and or条件

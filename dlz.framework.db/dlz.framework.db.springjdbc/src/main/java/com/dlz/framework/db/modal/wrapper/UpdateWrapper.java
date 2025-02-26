@@ -8,8 +8,8 @@ import com.dlz.framework.db.modal.condition.ICondAddByLamda;
 import com.dlz.framework.db.modal.condition.ICondAuto;
 import com.dlz.framework.db.modal.condition.ICondition;
 import com.dlz.framework.db.modal.map.ParaMapUpdate;
-import com.dlz.framework.util.system.MFunction;
-import com.dlz.framework.util.system.FieldReflections;
+import com.dlz.comm.util.system.MFunction;
+import com.dlz.comm.util.system.FieldReflections;
 
 import java.lang.reflect.Field;
 import java.util.List;

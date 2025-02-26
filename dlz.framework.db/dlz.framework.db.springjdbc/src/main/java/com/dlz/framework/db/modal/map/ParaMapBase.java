@@ -6,8 +6,8 @@ import com.dlz.framework.db.SqlUtil;
 import com.dlz.framework.db.enums.ParaTypeEnum;
 import com.dlz.framework.db.modal.items.SqlItem;
 import com.dlz.framework.db.modal.result.Page;
-import com.dlz.framework.util.system.FieldReflections;
-import com.dlz.framework.util.system.MFunction;
+import com.dlz.comm.util.system.FieldReflections;
+import com.dlz.comm.util.system.MFunction;
 import lombok.Getter;
 import lombok.Setter;
 

@@ -2,7 +2,8 @@ package com.dlz.framework.db.service;
 
 import com.dlz.comm.exception.DbException;
 import com.dlz.comm.util.VAL;
-import com.dlz.framework.db.convertor.ConvertUtil;
+import com.dlz.comm.util.system.ConvertUtil;
+import com.dlz.framework.db.convertor.DbConvertUtil;
 import com.dlz.framework.db.dao.IDlzDao;
 import com.dlz.framework.db.modal.map.ParaMapBase;
 import com.dlz.framework.db.modal.result.Page;
@@ -79,7 +80,7 @@ public interface IDbPmService {
     }
 
     default <T> List<T> getColumnList(ParaMapBase paraMap, Class<T> tClass) {
-        return doDb(paraMap, jdbcSql ->ConvertUtil.getColumnList(getDao().getList(jdbcSql.v1, jdbcSql.v2), tClass), true);
+        return doDb(paraMap, jdbcSql -> DbConvertUtil.getColumnList(getDao().getList(jdbcSql.v1, jdbcSql.v2), tClass), true);
     }
 
     default <T> T getFistColumn(ParaMapBase paraMap, Class<T> tClass) {
@@ -142,7 +143,7 @@ public interface IDbPmService {
     }
 
     default <T> T getBean(ParaMapBase paraMap, Class<T> t, boolean throwEx) {
-        return doDb(paraMap, jdbcSql -> ConvertUtil.conver(getDao().getOne(jdbcSql.v1, throwEx,jdbcSql.v2),t),  true);
+        return doDb(paraMap, jdbcSql -> ConvertUtil.convert(getDao().getOne(jdbcSql.v1, throwEx,jdbcSql.v2),t),  true);
     }
 
     default <T> T getBean(ParaMapBase paraMap, Class<T> t) {
@@ -150,8 +151,7 @@ public interface IDbPmService {
     }
 
     default <T> List<T> getBeanList(ParaMapBase paraMap, Class<T> t) {
-        List<ResultMap> list = getMapList(paraMap);
-        return ConvertUtil.conver(list, t);
+        return ConvertUtil.convertList(getMapList(paraMap), t);
     }
 
     /**

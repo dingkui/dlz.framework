@@ -1,10 +1,10 @@
 package com.dlz.framework.db.modal.map;
 
 import com.dlz.comm.util.VAL;
-import com.dlz.framework.db.convertor.ConvertUtil;
+import com.dlz.framework.db.convertor.DbConvertUtil;
 import com.dlz.framework.db.holder.DBHolder;
-import com.dlz.framework.util.system.FieldReflections;
-import com.dlz.framework.util.system.MFunction;
+import com.dlz.comm.util.system.FieldReflections;
+import com.dlz.comm.util.system.MFunction;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.HashMap;
@@ -52,16 +52,16 @@ public class ParaMapInsert extends ParaMapMaker {
 			if(value instanceof String){
 				String v = ((String) value);
 				if(v.startsWith("sql:")){
-					sbValues.append(ConvertUtil.str2Clumn(v.substring(4)));
+					sbValues.append(DbConvertUtil.str2Clumn(v.substring(4)));
 				}else{
 					sbValues.append("#{").append(clumnName).append("}");
-					addPara(clumnName, ConvertUtil.getVal4Db(tableName, clumnName, value));
+					addPara(clumnName, DbConvertUtil.getVal4Db(tableName, clumnName, value));
 				}
 			}else{
 				sbValues.append("#{").append(clumnName).append("}");
 				if(value==null)
 					value="";
-				addPara(clumnName, ConvertUtil.getVal4Db(tableName, clumnName, value));
+				addPara(clumnName, DbConvertUtil.getVal4Db(tableName, clumnName, value));
 			}
 		});
 		return VAL.of(sbColums.toString(),sbValues.toString());
@@ -71,7 +71,7 @@ public class ParaMapInsert extends ParaMapMaker {
 		value(FieldReflections.getFieldName(column),value);
 	}
 	public ParaMapInsert value(String key, Object value){
-		String paraName = ConvertUtil.str2DbClumn(key);
+		String paraName = DbConvertUtil.str2DbClumn(key);
 		boolean isClumnExists = isClumnExists(paraName);
 		if(!isClumnExists){
 			log.warn("column is not exists:"+tableName+"."+paraName);

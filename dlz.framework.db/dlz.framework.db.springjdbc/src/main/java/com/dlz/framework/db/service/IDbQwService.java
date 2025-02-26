@@ -2,7 +2,8 @@ package com.dlz.framework.db.service;
 
 import com.dlz.comm.exception.DbException;
 import com.dlz.comm.util.VAL;
-import com.dlz.framework.db.convertor.ConvertUtil;
+import com.dlz.comm.util.system.ConvertUtil;
+import com.dlz.framework.db.convertor.DbConvertUtil;
 import com.dlz.framework.db.dao.IDlzDao;
 import com.dlz.framework.db.modal.result.Page;
 import com.dlz.framework.db.modal.result.ResultMap;
@@ -36,7 +37,7 @@ public interface IDbQwService {
         }
     }
     default <T> List<T> getColumnList(QueryWrapper<T> wrapper, Class<T> tClass) {
-        return doDb(wrapper, jdbcSql ->ConvertUtil.getColumnList(getDao().getList(jdbcSql.v1, jdbcSql.v2), tClass),false);
+        return doDb(wrapper, jdbcSql -> DbConvertUtil.getColumnList(getDao().getList(jdbcSql.v1, jdbcSql.v2), tClass),false);
     }
 
     default <T> T getFistColumn(QueryWrapper<T> wrapper, Class<T> tClass) {
@@ -44,11 +45,11 @@ public interface IDbQwService {
     }
 
     default <T> List<T> getBeanList(QueryWrapper<T> wrapper) {
-        return doDb(wrapper, jdbcSql -> ConvertUtil.conver(getDao().getList(jdbcSql.v1, jdbcSql.v2),wrapper.getBeanClass()),false);
+        return doDb(wrapper, jdbcSql -> ConvertUtil.convertList(getDao().getList(jdbcSql.v1, jdbcSql.v2),wrapper.getBeanClass()),false);
     }
 
     default <T> T getBean(QueryWrapper<T> wrapper, boolean throwEx) {
-        return doDb(wrapper, jdbcSql -> ConvertUtil.conver(getDao().getOne(jdbcSql.v1, throwEx, jdbcSql.v2),wrapper.getBeanClass()),false);
+        return doDb(wrapper, jdbcSql -> ConvertUtil.convert(getDao().getOne(jdbcSql.v1, throwEx, jdbcSql.v2),wrapper.getBeanClass()),false);
     }
 
     default List<ResultMap> getMapList(QueryWrapper<?> wrapper) {

@@ -1,9 +1,9 @@
 package com.dlz.framework.db.modal.map;
 
-import com.dlz.framework.db.convertor.ConvertUtil;
+import com.dlz.framework.db.convertor.DbConvertUtil;
 import com.dlz.framework.db.holder.DBHolder;
 import com.dlz.framework.db.modal.DbInfoCache;
-import com.dlz.framework.util.system.MFunction;
+import com.dlz.comm.util.system.MFunction;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.HashMap;
@@ -47,7 +47,7 @@ public class ParaMapUpdate extends AParaMapSearch<ParaMapUpdate>{
 			if(value instanceof String){
 				String v = ((String) value);
 				if(v.startsWith("sql:")){
-					sbSets.append(ConvertUtil.str2Clumn(v.substring(4)));
+					sbSets.append(DbConvertUtil.str2Clumn(v.substring(4)));
 				}else{
 					sbSets.append("#{").append(clumnName).append("}");
 					addClunmnValue(clumnName, value);
@@ -61,7 +61,7 @@ public class ParaMapUpdate extends AParaMapSearch<ParaMapUpdate>{
 	}
 
 	public ParaMapUpdate set(String paraName, Object value){
-		paraName = ConvertUtil.str2DbClumn(paraName);
+		paraName = DbConvertUtil.str2DbClumn(paraName);
 		boolean isClumnExists = isClumnExists(paraName);
 		if(!isClumnExists){
 			log.warn("column is not exists:"+tableName+"."+paraName);

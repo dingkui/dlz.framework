@@ -8,10 +8,9 @@ import com.dlz.framework.db.modal.wrapper.DeleteWrapper;
 import com.dlz.framework.db.modal.wrapper.InsertWrapper;
 import com.dlz.framework.db.modal.wrapper.QueryWrapper;
 import com.dlz.framework.db.modal.wrapper.UpdateWrapper;
-import com.dlz.framework.util.system.MFunction;
-import com.dlz.framework.util.system.FieldReflections;
+import com.dlz.comm.util.system.MFunction;
+import com.dlz.comm.util.system.FieldReflections;
 
-import java.io.Serializable;
 import java.lang.reflect.Field;
 import java.util.Map;
 import java.util.Set;

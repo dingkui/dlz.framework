@@ -1,6 +1,6 @@
 package com.dlz.framework.db.modal.map;
 
-import com.dlz.framework.db.convertor.ConvertUtil;
+import com.dlz.framework.db.convertor.DbConvertUtil;
 
 /**
  * 构造单表的增删改查操作sql
@@ -27,7 +27,7 @@ public class ParaMapMaker extends ParaMapBase {
      * @return
      */
     public ParaMapMaker addClunmnValue(String key, Object value) {
-        addPara(key, ConvertUtil.getVal4Db(tableName, key, value));
+        addPara(key, DbConvertUtil.getVal4Db(tableName, key, value));
         return this;
     }
 
@@ -38,6 +38,6 @@ public class ParaMapMaker extends ParaMapBase {
      * @return
      */
     public boolean isClumnExists(String clumnName) {
-        return ConvertUtil.isClumnExists(tableName, clumnName.replaceAll("`", ""));
+        return DbConvertUtil.isClumnExists(tableName, clumnName);
     }
 }

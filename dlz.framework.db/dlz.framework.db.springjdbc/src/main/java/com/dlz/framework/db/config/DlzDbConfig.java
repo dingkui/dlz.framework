@@ -1,7 +1,7 @@
 package com.dlz.framework.db.config;
 
 import com.dlz.framework.config.DlzFwConfig;
-import com.dlz.framework.db.convertor.ConvertUtil;
+import com.dlz.framework.db.convertor.DbConvertUtil;
 import com.dlz.framework.db.convertor.dbtype.TableColumnMapper;
 import com.dlz.framework.db.dao.DlzDao;
 import com.dlz.framework.db.dao.IDlzDao;
@@ -48,7 +48,7 @@ public class DlzDbConfig extends DlzFwConfig {
         CommServiceImpl commService = new CommServiceImpl(dao);
         SqlHolder.loadDbSql(commService);
         TableColumnMapper tableCloumnMapper = new TableColumnMapper(dao);
-        ConvertUtil.tableCloumnMapper=tableCloumnMapper;
+        DbConvertUtil.tableCloumnMapper=tableCloumnMapper;
         return commService;
     }
 

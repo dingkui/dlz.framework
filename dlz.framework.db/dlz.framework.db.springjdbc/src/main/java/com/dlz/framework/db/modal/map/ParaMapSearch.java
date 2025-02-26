@@ -1,6 +1,6 @@
 package com.dlz.framework.db.modal.map;
 
-import com.dlz.framework.db.convertor.ConvertUtil;
+import com.dlz.framework.db.convertor.DbConvertUtil;
 import com.dlz.framework.db.holder.DBHolder;
 import com.dlz.framework.db.modal.condition.IQueryPage;
 import com.dlz.framework.db.modal.result.Page;
@@ -30,7 +30,7 @@ public class ParaMapSearch extends AParaMapSearch<ParaMapSearch> implements IQue
     }
     public void buildSql() {
         super.buildSql();
-        addPara(STR_COLUMS, ConvertUtil.str2DbClumn(colums));
+        addPara(STR_COLUMS, DbConvertUtil.str2DbClumn(colums));
     }
     public List<ResultMap> queryMapList() {
         return DBHolder.doDb(s->s.getMapList(this));

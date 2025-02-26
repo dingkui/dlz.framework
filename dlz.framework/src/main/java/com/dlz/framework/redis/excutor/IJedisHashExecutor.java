@@ -170,11 +170,11 @@ interface IJedisHashExecutor extends IJedisExecutor {
     }
 
     default <T> T hgetSo(String key, String item, Class<T> tClass) {
-        return hgetSo(key, item, tClass == null ? null : JacksonUtil.constructType(tClass));
+        return hgetSo(key, item, tClass == null ? null : JacksonUtil.mkJavaType(tClass));
     }
 
     default <T> T hgetSo(String key, String item, Type type) {
-        return hgetSo(key, item, type == null ? null : JacksonUtil.getJavaType(type));
+        return hgetSo(key, item, type == null ? null : JacksonUtil.mkJavaType(type));
     }
 
     // ========hgetSe 序列化保存保存Object,支持直接取得类型==============
@@ -221,10 +221,10 @@ interface IJedisHashExecutor extends IJedisExecutor {
     }
 
     default <T> T hgetSe(String key, String item, Class<T> tClass) {
-        return hgetSe(key, item, tClass == null ? null : JacksonUtil.constructType(tClass));
+        return hgetSe(key, item, tClass == null ? null : JacksonUtil.mkJavaType(tClass));
     }
 
     default <T extends Serializable> T hgetSe(String key, String item, Type type) {
-        return hgetSe(key, item, type == null ? null : JacksonUtil.getJavaType(type));
+        return hgetSe(key, item, type == null ? null : JacksonUtil.mkJavaType(type));
     }
 }

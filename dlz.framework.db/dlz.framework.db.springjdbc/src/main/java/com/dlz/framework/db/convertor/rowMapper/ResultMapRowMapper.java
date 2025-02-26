@@ -1,7 +1,7 @@
 package com.dlz.framework.db.convertor.rowMapper;
 
 
-import com.dlz.framework.db.convertor.ConvertUtil;
+import com.dlz.framework.db.convertor.DbConvertUtil;
 import com.dlz.framework.db.modal.result.ResultMap;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.support.JdbcUtils;
@@ -37,7 +37,7 @@ public class ResultMapRowMapper implements RowMapper<ResultMap> {
 	 * @see java.sql.ResultSetMetaData#getColumnName
 	 */
 	protected String getColumnKey(String columnName) {
-		return ConvertUtil.clumn2Str(columnName);
+		return DbConvertUtil.clumn2Str(columnName);
 	}
 
 	/**

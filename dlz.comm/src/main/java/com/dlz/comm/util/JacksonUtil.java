@@ -35,47 +35,7 @@ public class JacksonUtil {
 
     static {
         //添加自定义解析器，将默认的linckedHashMap 和List对应修改为 JSONMap和JSONList
-        Deserializers deserializers = new Deserializers() {
-            @Override
-            public JsonDeserializer<?> findTreeNodeDeserializer(Class<? extends JsonNode> nodeType, DeserializationConfig config, BeanDescription beanDesc) {
-                return null;
-            }
-
-            @Override
-            public JsonDeserializer<?> findReferenceDeserializer(ReferenceType refType, DeserializationConfig config, BeanDescription beanDesc,
-                                                                 TypeDeserializer contentTypeDeserializer, JsonDeserializer<?> contentDeserializer) {
-                return null;
-            }
-
-            @Override
-            public JsonDeserializer<?> findMapLikeDeserializer(MapLikeType type, DeserializationConfig config, BeanDescription beanDesc,
-                                                               KeyDeserializer keyDeserializer, TypeDeserializer elementTypeDeserializer, JsonDeserializer<?> elementDeserializer) throws JsonMappingException {
-                return null;
-            }
-
-            @Override
-            public JsonDeserializer<?> findMapDeserializer(MapType type, DeserializationConfig config, BeanDescription beanDesc, KeyDeserializer keyDeserializer,
-                                                           TypeDeserializer elementTypeDeserializer, JsonDeserializer<?> elementDeserializer) {
-                return null;
-            }
-
-            @Override
-            public JsonDeserializer<?> findEnumDeserializer(Class<?> type, DeserializationConfig config, BeanDescription beanDesc) {
-                return null;
-            }
-
-            @Override
-            public JsonDeserializer<?> findCollectionLikeDeserializer(CollectionLikeType type, DeserializationConfig config, BeanDescription beanDesc,
-                                                                      TypeDeserializer elementTypeDeserializer, JsonDeserializer<?> elementDeserializer) {
-                return null;
-            }
-
-            @Override
-            public JsonDeserializer<?> findCollectionDeserializer(CollectionType type, DeserializationConfig config, BeanDescription beanDesc,
-                                                                  TypeDeserializer elementTypeDeserializer, JsonDeserializer<?> elementDeserializer) {
-                return null;
-            }
-
+        Deserializers deserializers = new Deserializers.Base() {
             @Override
             public JsonDeserializer<?> findBeanDeserializer(JavaType type, DeserializationConfig config, BeanDescription beanDesc) {
                 Class<?> rawType = type.getRawClass();
@@ -83,12 +43,6 @@ public class JacksonUtil {
                     //添加自定义解析器，将默认的linckedHashMap 和List对应修改为 JSONMap和JSONList
                     return new JacksonObjectDeserializer();
                 }
-                return null;
-            }
-
-            @Override
-            public JsonDeserializer<?> findArrayDeserializer(ArrayType type, DeserializationConfig config, BeanDescription beanDesc,
-                                                             TypeDeserializer elementTypeDeserializer, JsonDeserializer<?> elementDeserializer) throws JsonMappingException {
                 return null;
             }
         };
@@ -116,7 +70,7 @@ public class JacksonUtil {
     }
 
     public static <T> T readValue(String content, Class<T> valueType) {
-        return readValue(content, constructType(valueType));
+        return readValue(content, mkJavaType(valueType));
     }
 
     public static <T> T readValue(String content, JavaType valueType) {
@@ -139,7 +93,7 @@ public class JacksonUtil {
     }
 
     public static <T> List<T> readListValue(String content, Class<T> valueType) {
-        return readValue(content, constructType(List.class, valueType));
+        return readValue(content, mkJavaType(List.class, valueType));
     }
 
     /**
@@ -150,38 +104,13 @@ public class JacksonUtil {
      * @return
      */
     public static <T> T coverObj(Object o, Class<T> valueType) {
-        return coverObj(o, constructType(valueType));
+        return coverObj(o, mkJavaType(valueType));
     }
 
-    /**
-     * 类型转换
-     *
-     * @param valueType
-     * @param parameterClasses
-     * @return
-     */
-    public static JavaType constructType(Class<?> valueType, Class<?>... parameterClasses) {
-        int len = parameterClasses.length;
-        if (len == 0) {
-            return objectMapper.getTypeFactory().constructType(valueType);
-        }
-        return objectMapper.getTypeFactory().constructParametricType(valueType, parameterClasses);
-    }
 
-    /**
-     * 类型转换
-     *
-     * @param valueType
-     * @param parameterTypes
-     * @return
-     */
-    public static JavaType constructTypeByTypes(Class<?> valueType, JavaType... parameterTypes) {
-        int len = parameterTypes.length;
-        if (len == 0) {
-            return objectMapper.getTypeFactory().constructType(valueType);
-        }
-        return objectMapper.getTypeFactory().constructParametricType(valueType, parameterTypes);
-    }
+
+
+
 
     /**
      * 类型转换
@@ -329,7 +258,35 @@ public class JacksonUtil {
         return null;
     }
 
-    public static JavaType getJavaType(Type type) {
+    /**
+     * 类型转换
+     *
+     * @param valueType
+     * @param parameterTypes
+     * @return
+     */
+    public static JavaType mkJavaTypeByJavaTypes(Class<?> valueType, JavaType... parameterTypes) {
+        int len = parameterTypes.length;
+        if (len == 0) {
+            return objectMapper.getTypeFactory().constructType(valueType);
+        }
+        return objectMapper.getTypeFactory().constructParametricType(valueType, parameterTypes);
+    }
+    /**
+     * 类型转换
+     *
+     * @param valueType
+     * @param parameterClasses
+     * @return
+     */
+    public static JavaType mkJavaType(Class<?> valueType, Class<?>... parameterClasses) {
+        int len = parameterClasses.length;
+        if (len == 0) {
+            return objectMapper.getTypeFactory().constructType(valueType);
+        }
+        return objectMapper.getTypeFactory().constructParametricType(valueType, parameterClasses);
+    }
+    public static JavaType mkJavaType(Type type) {
         if (type == null) {
             return null;
         }
@@ -338,7 +295,7 @@ public class JacksonUtil {
             Type[] typesto = parameterizedType.getActualTypeArguments();// 强制转型为带参数的泛型类型，
             JavaType[] subclass = new JavaType[typesto.length];
             for (int j = 0; j < typesto.length; j++) {
-                subclass[j] = getJavaType(typesto[j]);
+                subclass[j] = mkJavaType(typesto[j]);
             }
             return objectMapper.getTypeFactory().constructParametricType((Class) parameterizedType.getRawType(), subclass);
 //        } else if(type instanceof GenericArrayType){
@@ -346,35 +303,9 @@ public class JacksonUtil {
 //        } else if(type instanceof WildcardType) {
         }else{
 //            return objectMapper.getTypeFactory().constructParametricType((Class) type, new JavaType[0]);
-            Class cla = (Class) type;
-            return TypeFactory.defaultInstance().constructParametricType(cla, new JavaType[0]);
+            return TypeFactory.defaultInstance().constructParametricType((Class) type, new JavaType[0]);
         }
     }
-
-    public static JavaType getJavaType2(Type type) {
-        if (type == null) {
-            return null;
-        }
-        //判断是否带有泛型
-        if (type instanceof ParameterizedType) {
-            Type[] actualTypeArguments = ((ParameterizedType) type).getActualTypeArguments();
-            //获取泛型类型
-            Class rowClass = (Class) ((ParameterizedType) type).getRawType();
-
-            JavaType[] javaTypes = new JavaType[actualTypeArguments.length];
-
-            for (int i = 0; i < actualTypeArguments.length; i++) {
-                //泛型也可能带有泛型，递归获取
-                javaTypes[i] = getJavaType2(actualTypeArguments[i]);
-            }
-            return TypeFactory.defaultInstance().constructParametricType(rowClass, javaTypes);
-        } else {
-            //简单类型直接用该类构建JavaType
-            Class cla = (Class) type;
-            return TypeFactory.defaultInstance().constructParametricType(cla, new JavaType[0]);
-        }
-    }
-
     private static Pattern JsonObjPattern = Pattern.compile("^\\{(([\"\\w]+:.+)||)\\}$");
     private static Pattern JsonArrayPattern = Pattern.compile("^\\[[^\\[^\\]]*\\]$");
     public static boolean isJsonObj(String str) {
@@ -383,16 +314,16 @@ public class JacksonUtil {
     public static boolean isJsonArray(String str) {
         return JsonArrayPattern.matcher(str.replaceAll("\\s","")).find();
     }
-    public static void main(String[] args) {
-        System.out.println(isJsonObj(" { } "));
-//        System.out.println(isJsonObj("{ \"xx\" : 123 } "));
-//        System.out.println(isJsonObj("{ \"xx\"}"));
-//        System.out.println(isJsonObj(" { \"xx\"}"));
-//        System.out.println(isJsonArray("[]"));
-//        System.out.println(isJsonArray(" [ ]"));
-//        System.out.println(isJsonArray(" [ xxx ]"));
-//        System.out.println(isJsonArray(" [ xxx ] "));
-//        System.out.println(isJsonArray(" [ xxx "));
-//        System.out.println(new JSONList("[]"));
-    }
+//    public static void main(String[] args) {
+//        System.out.println(isJsonObj(" { } "));
+////        System.out.println(isJsonObj("{ \"xx\" : 123 } "));
+////        System.out.println(isJsonObj("{ \"xx\"}"));
+////        System.out.println(isJsonObj(" { \"xx\"}"));
+////        System.out.println(isJsonArray("[]"));
+////        System.out.println(isJsonArray(" [ ]"));
+////        System.out.println(isJsonArray(" [ xxx ]"));
+////        System.out.println(isJsonArray(" [ xxx ] "));
+////        System.out.println(isJsonArray(" [ xxx "));
+////        System.out.println(new JSONList("[]"));
+//    }
 }

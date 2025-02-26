@@ -1,8 +1,7 @@
-package com.dlz.framework.util.system;
+package com.dlz.comm.util.system;
 
 import com.dlz.comm.cache.CaheMap;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.util.Assert;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
@@ -72,7 +71,6 @@ public class MethodReflections {
      * 只匹配函数名，如果有多个同名函数调用第一个。
      */
     public static Object invokeMethod(final Object obj, final String methodName, final Object... args) {
-        Assert.notNull(obj, "obj must not be null");
         Method method = getAccessibleMethod(obj.getClass(), methodName, Reflections.mkParameterTypes(args));
         if (method == null) {
             throw new IllegalArgumentException("Could not find method [" + methodName + "] on target [" + obj + "]");

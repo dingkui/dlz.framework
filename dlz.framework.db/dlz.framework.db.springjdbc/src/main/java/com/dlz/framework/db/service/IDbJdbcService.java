@@ -2,7 +2,8 @@ package com.dlz.framework.db.service;
 
 import com.dlz.comm.exception.DbException;
 import com.dlz.comm.util.VAL;
-import com.dlz.framework.db.convertor.ConvertUtil;
+import com.dlz.comm.util.system.ConvertUtil;
+import com.dlz.framework.db.convertor.DbConvertUtil;
 import com.dlz.framework.db.dao.IDlzDao;
 import com.dlz.framework.db.modal.result.ResultMap;
 import com.dlz.framework.executor.Executor;
@@ -37,7 +38,7 @@ public interface IDbJdbcService {
 		}
 	}
 	default <T> List<T> getColumnList(String sql, Class<T> tClass, Object... para) {
-		return doDb(VAL.of(sql, para), jdbcSql -> ConvertUtil.getColumnList(getDao().getList(sql, para), tClass));
+		return doDb(VAL.of(sql, para), jdbcSql -> DbConvertUtil.getColumnList(getDao().getList(sql, para), tClass));
 	}
 
 	default <T> T getFistColumn(String sql, Class<T> tClass, Object... para) {
@@ -112,10 +113,10 @@ public interface IDbJdbcService {
     }
 
     default <T> T getBean(String sql, Class<T> t, Object... para) {
-		return doDb(VAL.of(sql, para), jdbcSql -> ConvertUtil.conver(getDao().getOne(sql, true,para),t));
+		return doDb(VAL.of(sql, para), jdbcSql -> ConvertUtil.convert(getDao().getOne(sql, true,para),t));
     }
 
     default <T> List<T> getBeanList(String sql, Class<T> t, Object... para) {
-        return doDb(VAL.of(sql, para), jdbcSql -> ConvertUtil.conver(getDao().getList(sql, para),t));
+        return doDb(VAL.of(sql, para), jdbcSql ->  ConvertUtil.convertList(getDao().getList(sql, para),t));
     }
 }

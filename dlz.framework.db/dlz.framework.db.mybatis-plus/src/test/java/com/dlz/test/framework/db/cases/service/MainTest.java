@@ -3,7 +3,7 @@ package com.dlz.test.framework.db.cases.service;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.dlz.framework.db.util.DbUtil;
-import com.dlz.framework.util.system.Reflections;
+import com.dlz.comm.util.system.Reflections;
 import com.dlz.test.framework.db.entity.Dict;
 
 public class MainTest {

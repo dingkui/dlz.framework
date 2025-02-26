@@ -1,19 +1,17 @@
 package com.dlz.framework.db.modal.result;
 
-import com.dlz.framework.db.convertor.ConvertUtil;
+import com.dlz.framework.db.convertor.DbConvertUtil;
 import com.dlz.framework.db.inf.IChained;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
-import lombok.experimental.Accessors;
 
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.function.Predicate;
-import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 @Data
@@ -35,7 +33,7 @@ public class Sort<T extends Sort> implements Serializable, IChained<T> {
             return null;
         }
         return " order by "+orders.stream()
-                .map(o-> ConvertUtil.str2DbClumn(o.getColumn())+(o.isAsc()?" asc":" desc"))
+                .map(o-> DbConvertUtil.str2DbClumn(o.getColumn())+(o.isAsc()?" asc":" desc"))
                 .collect(Collectors.joining(","));
     }
 

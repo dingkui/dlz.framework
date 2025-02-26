@@ -4,7 +4,7 @@ import com.dlz.comm.exception.DbException;
 import com.dlz.comm.util.VAL;
 import com.dlz.framework.db.helper.util.DbNameUtil;
 import com.dlz.framework.db.modal.DbInfoCache;
-import com.dlz.framework.util.system.FieldReflections;
+import com.dlz.comm.util.system.FieldReflections;
 
 import java.lang.reflect.Field;
 import java.util.List;

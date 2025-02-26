@@ -2,20 +2,13 @@ package com.dlz.framework.db.helper.util;
 
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
-import com.dlz.comm.exception.SystemException;
 import com.dlz.comm.util.StringUtils;
-import com.dlz.comm.util.ValUtil;
-import com.dlz.framework.db.modal.result.ResultMap;
-import com.dlz.framework.util.system.MFunction;
-import com.dlz.framework.util.system.FieldReflections;
+import com.dlz.comm.util.system.MFunction;
+import com.dlz.comm.util.system.FieldReflections;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 
 import java.lang.reflect.Field;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 
 public class DbNameUtil {
     public static String getDbTableName(Class<?> clazz) {

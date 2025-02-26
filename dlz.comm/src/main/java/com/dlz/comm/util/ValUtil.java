@@ -1,10 +1,14 @@
 package com.dlz.comm.util;
 
+import com.dlz.comm.exception.SystemException;
 import com.dlz.comm.json.JSONList;
+import com.dlz.comm.util.system.ConvertUtil;
 import com.fasterxml.jackson.databind.JavaType;
 import lombok.extern.slf4j.Slf4j;
 
 import java.lang.reflect.Array;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
 import java.math.BigDecimal;
 import java.util.*;
 
@@ -21,6 +25,7 @@ public class ValUtil {
     public final static Double ZERO_DOUBLE = 0.0;
     public final static String STR_BLANK = "";
     public final static String STR_NULL = "null";
+
     private static Number toNumber(Object input, Number defaultV) {
         if (input == null || "".equals(input)) {
             return defaultV;
@@ -143,8 +148,9 @@ public class ValUtil {
     public static String toStrBlank(Object input) {
         return toStr(input, STR_BLANK);
     }
+
     public static String toStrWithEmpty(Object input, String defaultValue) {
-        if (null == input || input.equals( STR_NULL) || input.equals( STR_BLANK)) {
+        if (null == input || input.equals(STR_NULL) || input.equals(STR_BLANK)) {
             return defaultValue;
         }
         return toStr(input, defaultValue);
@@ -190,10 +196,10 @@ public class ValUtil {
         }
         return Arrays.asList(array);
     }
+
     public static JSONList toListEmputy(Object input) {
         return toList(input, new ArrayList());
     }
-
 
 
     public static Object[] toArray(Object input) {
@@ -216,6 +222,7 @@ public class ValUtil {
         }
         return defaultV;
     }
+
     public static <T> T[] toArray(Collection input, Class<T> clazz) {
         if (input == null) {
             return null;
@@ -239,6 +246,7 @@ public class ValUtil {
         }
         return re;
     }
+
     public static <T> T[] toArray(Object input, Class<T> clazz) {
         if (input == null) {
             return null;
@@ -343,14 +351,21 @@ public class ValUtil {
             return (T) input;
         }
         T re = toNativeObj(input, classs);
-        if (re == null) {
-            re = JacksonUtil.coverObj(input, classs);
-        }
-
-        if (re == null) {
-            re = JacksonUtil.coverObj(input, classs);
-        }
         return re != null ? re : JacksonUtil.coverObj(input, classs);
+    }
+
+    public static <T> T toObj(Object input, Type type) {
+        if (input == null || type == null) {
+            return (T) input;
+        }
+        if (type instanceof Class) {
+            return toObj(input, (Class<? extends T>) type);
+        } else if (type instanceof ParameterizedType) {
+            return JacksonUtil.coverObj(input, JacksonUtil.mkJavaType(type));
+        } else if (type instanceof JavaType) {
+            return JacksonUtil.coverObj(input, (JavaType) type);
+        }
+        throw new SystemException(type + "未识别泛型参数");
     }
 
     public static <T> T toObj(Object input, JavaType javaType) {
@@ -377,8 +392,9 @@ public class ValUtil {
             return false;
         }
     }
+
     public static boolean isStrEmpty(CharSequence cs) {
-        if (cs == null||cs.length()==0) {
+        if (cs == null || cs.length() == 0) {
             return true;
         }
         String trim = cs.toString().trim();

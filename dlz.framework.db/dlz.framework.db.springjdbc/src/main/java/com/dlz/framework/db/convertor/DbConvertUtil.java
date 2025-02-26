@@ -1,12 +1,10 @@
 package com.dlz.framework.db.convertor;
 
-import com.dlz.comm.json.JSONMap;
 import com.dlz.comm.util.ValUtil;
 import com.dlz.framework.db.convertor.clumnname.AColumnNameConvertor;
 import com.dlz.framework.db.convertor.clumnname.ColumnNameCamel;
 import com.dlz.framework.db.convertor.dbtype.ITableColumnMapper;
 import com.dlz.framework.db.modal.result.ResultMap;
-import com.dlz.framework.util.bean.BeanConvert;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -17,7 +15,7 @@ import java.util.stream.Collectors;
  * @author dingkui 2017-06-26
  *
  */
-public class ConvertUtil {
+public class DbConvertUtil {
 	/**
 	 * 数据库字段名转换器
 	 */
@@ -48,11 +46,11 @@ public class ConvertUtil {
 	 * @return
 	 */
 	public static boolean isClumnExists(String tableName,String clumnName) {
-		return tableCloumnMapper==null?true:tableCloumnMapper.isClumnExists(tableName, clumnName);
+		return tableCloumnMapper==null?true:tableCloumnMapper.isClumnExists(tableName, str2DbClumn(clumnName.replaceAll("`", "")));
 	}
 
 	public static <T> List<T> getColumnList(List<ResultMap> r, Class<T> classs) {
-		return r.stream().map((m) -> classs == null ? (T) m : ConvertUtil.getFistColumn(m, classs)).collect(Collectors.toList());
+		return r.stream().map((m) -> classs == null ? (T) m : DbConvertUtil.getFistColumn(m, classs)).collect(Collectors.toList());
 	}
 
 
@@ -83,15 +81,6 @@ public class ConvertUtil {
 	public static <T> T getFistColumn(ResultMap m, Class<T> classs){
 		return ValUtil.toObj(getFistColumn(m), classs);
 	}
-
-
-	public static <T> List<T> conver(List<ResultMap> r, Class<T> classs) {
-		return BeanConvert.cover2Bean(r.stream().map((m) -> (JSONMap)m).collect(Collectors.toList()), classs);
-	}
-	public static <T> T conver(ResultMap r, Class<T> classs) {
-		return BeanConvert.cover2Bean(r, classs);
-	}
-
 
 	public static String clumn2Str(String dbKey) {
 		return columnMapper.clumn2Str(dbKey);

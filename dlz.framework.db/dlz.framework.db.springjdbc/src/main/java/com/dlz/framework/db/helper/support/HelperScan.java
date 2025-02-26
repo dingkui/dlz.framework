@@ -5,15 +5,12 @@ import com.dlz.comm.util.StringUtils;
 import com.dlz.framework.db.enums.DbTypeEnum;
 import com.dlz.framework.db.helper.util.DbNameUtil;
 import com.dlz.framework.db.holder.SqlHolder;
-import com.dlz.framework.util.system.FieldReflections;
-import com.dlz.framework.util.system.Reflections;
-import lombok.AllArgsConstructor;
+import com.dlz.comm.util.system.FieldReflections;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.ClassPathScanningCandidateComponentProvider;
 import org.springframework.core.type.filter.AnnotationTypeFilter;
 
-import javax.annotation.PostConstruct;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.util.HashSet;

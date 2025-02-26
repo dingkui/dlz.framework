@@ -5,11 +5,10 @@ import com.dlz.comm.exception.SystemException;
 import com.dlz.comm.util.VAL;
 import com.dlz.framework.db.helper.util.DbNameUtil;
 import com.dlz.framework.db.holder.DBHolder;
-import com.dlz.framework.util.system.MFunction;
-import com.dlz.framework.util.system.FieldReflections;
+import com.dlz.comm.util.system.MFunction;
+import com.dlz.comm.util.system.FieldReflections;
 
 import java.lang.reflect.Field;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.stream.Collectors;

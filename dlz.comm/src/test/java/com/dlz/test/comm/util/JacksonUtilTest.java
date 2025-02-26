@@ -1,14 +1,10 @@
 package com.dlz.test.comm.util;
 
 import com.dlz.comm.util.JacksonUtil;
-import com.dlz.comm.util.ValUtil;
 import com.fasterxml.jackson.databind.JavaType;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Test;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
-import java.lang.reflect.Array;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -33,8 +29,8 @@ public class JacksonUtilTest {
 	public void JacsonArrayTest() throws ClassNotFoundException {
 		Map<String,Float>[] c=new HashMap[0];
 		System.out.println(c.getClass());
-		JavaType javaType2 = JacksonUtil.constructType(Map.class,String.class,Float.class);
-		JavaType javaType = JacksonUtil.constructTypeByTypes(Class.forName("[L"),javaType2);
+		JavaType javaType2 = JacksonUtil.mkJavaType(Map.class,String.class,Float.class);
+		JavaType javaType = JacksonUtil.mkJavaTypeByJavaTypes(Class.forName("[L"),javaType2);
 		String a="[{\"a\":1}]";
 		Map<String,Float>[] b = JacksonUtil.readValue(a,javaType);
 		log.debug("123123");

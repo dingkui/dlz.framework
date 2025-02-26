@@ -1,7 +1,7 @@
 package com.dlz.framework.db.helper.wrapper;
 
-import com.dlz.framework.util.system.FieldReflections;
-import com.dlz.framework.util.system.MFunction;
+import com.dlz.comm.util.system.FieldReflections;
+import com.dlz.comm.util.system.MFunction;
 
 import java.util.Arrays;
 import java.util.Collection;

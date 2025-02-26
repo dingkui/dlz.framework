@@ -1,9 +1,8 @@
-package com.dlz.framework.util.system;
+package com.dlz.comm.util.system;
 
 import com.dlz.comm.exception.SystemException;
 import com.dlz.comm.util.ExceptionUtils;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.util.Assert;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.ParameterizedType;
@@ -121,7 +120,6 @@ public class Reflections {
         return clazz;
     }
     public static Class<?> getTargetClass(Object instance) {
-        Assert.notNull(instance, "Instance must not be null");
         return getTargetClass(instance.getClass());
     }
 

@@ -1,4 +1,4 @@
-package com.dlz.framework.util.system;
+package com.dlz.comm.util.system;
 
 import java.io.Serializable;
 import java.util.function.Function;

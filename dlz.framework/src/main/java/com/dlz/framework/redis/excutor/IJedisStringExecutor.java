@@ -121,11 +121,11 @@ public interface IJedisStringExecutor extends IJedisExecutor {
     }
 
     default <T> T getSo(String key, Class<T> tClass) {
-        return getSo(key, tClass == null ? null : JacksonUtil.constructType(tClass));
+        return getSo(key, tClass == null ? null : JacksonUtil.mkJavaType(tClass));
     }
 
     default <T extends Serializable> T getSo(String key, Type type) {
-        return getSo(key, type == null ? null : JacksonUtil.getJavaType(type));
+        return getSo(key, type == null ? null : JacksonUtil.mkJavaType(type));
     }
 
     // ========getSe 序列化保存保存Object,支持直接取得类型==============
@@ -164,10 +164,10 @@ public interface IJedisStringExecutor extends IJedisExecutor {
     }
 
     default <T> T getSe(String key, Class<T> tClass) {
-        return getSe(key, tClass == null ? null : JacksonUtil.constructType(tClass));
+        return getSe(key, tClass == null ? null : JacksonUtil.mkJavaType(tClass));
     }
 
     default <T extends Serializable> T getSe(String key, Type type) {
-        return getSe(key, type == null ? null : JacksonUtil.getJavaType(type));
+        return getSe(key, type == null ? null : JacksonUtil.mkJavaType(type));
     }
 }

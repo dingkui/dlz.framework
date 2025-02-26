@@ -10,6 +10,7 @@ import java.util.Map;
  */
 @Data
 public class TestA {
-	private String xxx;
-	private List<Map> c;
+	private String a;
+	private String a1;
+	private List<Map> aList;
 }

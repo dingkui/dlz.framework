@@ -1,11 +1,10 @@
-package com.dlz.framework.util.system;
+package com.dlz.comm.util.system;
 
 import com.dlz.comm.cache.CaheMap;
 import com.dlz.comm.exception.SystemException;
 import com.dlz.comm.util.ExceptionUtils;
 import com.dlz.comm.util.ValUtil;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.util.ClassUtils;
 
 import java.beans.Introspector;
 import java.lang.invoke.SerializedLambda;
@@ -82,7 +81,7 @@ public class FieldReflections {
             throw new IllegalArgumentException("field is null");
         }
         try {
-            field.set(obj, ValUtil.toObj(value, field.getType()));
+            field.set(obj, ValUtil.toObj(value, field.getGenericType()));
         } catch (IllegalAccessException e) {
             log.error("不可能抛出的异常:{}", e.getMessage());
         }
@@ -152,18 +151,17 @@ public class FieldReflections {
                 String implMethodName = serializedLambda.getImplMethodName();
                 if (implMethodName.startsWith("get") && implMethodName.length() > 3) {
                     fieldName = Introspector.decapitalize(implMethodName.substring(3));
-
                 } else if (implMethodName.startsWith("is") && implMethodName.length() > 2) {
                     fieldName = Introspector.decapitalize(implMethodName.substring(2));
                 } else if (implMethodName.startsWith("lambda$")) {
                     throw new IllegalArgumentException("SerializableFunction不能传递lambda表达式,只能使用方法引用");
-
                 } else {
                     throw new IllegalArgumentException(implMethodName + "不是Getter方法引用");
                 }
                 // 第3步 获取的Class是字符串，并且包名是“/”分割，需要替换成“.”，才能获取到对应的Class对象
                 String declaredClass = serializedLambda.getImplClass().replace("/", ".");
-                Class<?> aClass = Class.forName(declaredClass, false, ClassUtils.getDefaultClassLoader());
+//                Class<?> aClass = Class.forName(declaredClass, false, ClassUtils.getDefaultClassLoader());
+                Class<?> aClass = Class.forName(declaredClass);
 
                 // 第4步 Spring 中的反射工具类获取Class中定义的Field
                 return getField(aClass, fieldName,false);

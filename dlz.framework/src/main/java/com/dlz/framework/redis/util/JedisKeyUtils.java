@@ -16,7 +16,7 @@ public class JedisKeyUtils {
         JavaType javaType = javaType_map.get(clazz);
         if(javaType == null){
             try {
-                javaType = JacksonUtil.constructType(Class.forName(clazz));
+                javaType = JacksonUtil.mkJavaType(Class.forName(clazz));
                 javaType_map.put(clazz,javaType);
             } catch (ClassNotFoundException e) {
                 throw new SystemException(e.getMessage(), e);

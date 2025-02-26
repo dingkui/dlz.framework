@@ -10,6 +10,6 @@ import java.util.Map;
  */
 @Data
 public class TestB extends TestA{
-	private String x1;
-	private List<Map> c1;
+	private String b1;
+	private List<Map> b;
 }

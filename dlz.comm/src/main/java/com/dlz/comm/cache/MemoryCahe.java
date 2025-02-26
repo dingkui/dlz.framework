@@ -57,7 +57,7 @@ public class MemoryCahe implements ICache {
             return null;
         }
         if (tClass != null) {
-            return ValUtil.toObj(obj.item, JacksonUtil.getJavaType(tClass));
+            return ValUtil.toObj(obj.item, JacksonUtil.mkJavaType(tClass));
         }
         return (T) obj.item;
     }
