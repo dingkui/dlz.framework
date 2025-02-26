@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.dlz</groupId>
     <artifactId>dlz-dependencies</artifactId>
-    <version>6.1.1-SNAPSHOT</version><!--RootVer-->
+    <version>6.2.0</version><!--RootVer-->
     <packaging>pom</packaging>
     <modules>
         <module>dlz.comm</module>
@@ -31,7 +31,7 @@
         <mybatis.version>3.4.0</mybatis.version>
         <mybatis-spring.version>2.0.2</mybatis-spring.version>
         <dlz.framework.version>${dlz.fw.version}</dlz.framework.version>
-        <dlz.fw.version>6.1.1-SNAPSHOT</dlz.fw.version>
+        <dlz.fw.version>6.2.0</dlz.fw.version>
     </properties>
     <dependencies>
         <dependency>
