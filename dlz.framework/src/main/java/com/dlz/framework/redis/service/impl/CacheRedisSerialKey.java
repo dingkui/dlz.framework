@@ -18,25 +18,29 @@ public class CacheRedisSerialKey implements ICache {
     @Autowired
     JedisExecutor jedisExecutor;
 
+    private String getRedisKey(String key, Serializable... other){
+        return jedisExecutor.getRedisKey(key, other);
+    }
+
     @Override
     public <T extends Serializable> T get(String name, Serializable key, Type type) {
-        return jedisExecutor.getSe(JedisKeyUtils.getKey(name,key),type);
+        return jedisExecutor.getSe(getRedisKey(name,key),type);
     }
 
     @Override
     public void put(String name, Serializable key, Serializable value, int seconds) {
-        jedisExecutor.setSe(JedisKeyUtils.getKey(name, key),value,seconds);
+        jedisExecutor.setSe(getRedisKey(name, key),value,seconds);
     }
 
     @Override
     public void remove(String name, Serializable key) {
-        jedisExecutor.del(JedisKeyUtils.getKey(name, key));
+        jedisExecutor.del(getRedisKey(name, key));
     }
 
     @Override
     public void removeAll(String name) {
-        jedisExecutor.excuteByJedis(j -> {
-            Set<String> keys = j.keys(JedisKeyUtils.getRedisKey(name+"*"));
+        jedisExecutor.excute(j -> {
+            Set<String> keys = j.keys(getRedisKey(name+"*"));
             if(keys.size()>0){
                 j.del(keys.toArray(new String[keys.size()]));
             }

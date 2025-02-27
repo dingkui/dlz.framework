@@ -54,26 +54,9 @@ public class JedisKeyUtils {
         return key.getBytes();
     }
 
-    private static IKeyMaker keyMaker;
-    public static void init(IKeyMaker km) {
-        keyMaker = km;
-    }
-    public static String getClientKey(String key) {
-        return keyMaker.getClientKey(key);
-    }
-    public static String getRedisKey(String key, Serializable... othrer) {
-        return keyMaker.getKeyWithPrefix(key,othrer);
-    }
-    public static String getKey(String key, Serializable... othrer) {
-        return keyMaker.getKey(key,othrer);
-    }
-    public static String[] getRedisKeyArray(String... keys) {
-        String[] newkeys=new String[keys.length];
-        for (int i = 0; i < keys.length; i++) {
-            newkeys[i] = getRedisKey(keys[i]);
-        }
-        return newkeys;
-    }
+
+
+
 //    public static void main(String[] args) {
 //        init(new RedisKeyMaker());
 ////        System.out.println(getRedisKey(":xxx:xxx::"));

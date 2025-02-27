@@ -1,19 +1,19 @@
 package com.dlz.framework.db.service;
 
 import com.dlz.comm.exception.DbException;
-import com.dlz.comm.util.VAL;
 import com.dlz.comm.util.system.ConvertUtil;
 import com.dlz.framework.db.convertor.DbConvertUtil;
 import com.dlz.framework.db.dao.IDlzDao;
+import com.dlz.framework.db.modal.map.ParaJDBC;
 import com.dlz.framework.db.modal.result.Page;
 import com.dlz.framework.db.modal.result.ResultMap;
 import com.dlz.framework.db.modal.wrapper.AWrapper;
 import com.dlz.framework.db.modal.wrapper.InsertWrapper;
 import com.dlz.framework.db.modal.wrapper.QueryWrapper;
-import com.dlz.framework.executor.Executor;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.function.Function;
 
 
 /**
@@ -26,9 +26,9 @@ import java.util.List;
  */
 public interface IDbQwService {
     IDlzDao getDao();
-    default <T,R> R doDb(AWrapper<T> wrapper, Executor<VAL<String, Object[]>, R> executor, boolean cnt) {
+    default <T,R> R doDb(AWrapper<T> wrapper, Function<ParaJDBC, R> executor, boolean cnt) {
         try {
-            return executor.excute(wrapper.buildSql(cnt));
+            return executor.apply(wrapper.buildSql(cnt));
         } catch (Exception e) {
             if (e instanceof DbException) {
                 throw e;
@@ -37,27 +37,27 @@ public interface IDbQwService {
         }
     }
     default <T> List<T> getColumnList(QueryWrapper<T> wrapper, Class<T> tClass) {
-        return doDb(wrapper, jdbcSql -> DbConvertUtil.getColumnList(getDao().getList(jdbcSql.v1, jdbcSql.v2), tClass),false);
+        return doDb(wrapper, jdbcSql -> DbConvertUtil.getColumnList(getDao().getList(jdbcSql.sql, jdbcSql.paras), tClass),false);
     }
 
     default <T> T getFistColumn(QueryWrapper<T> wrapper, Class<T> tClass) {
-        return doDb(wrapper, jdbcSql -> getDao().getFistColumn(jdbcSql.v1, tClass, jdbcSql.v2),false);
+        return doDb(wrapper, jdbcSql -> getDao().getFistColumn(jdbcSql.sql, tClass, jdbcSql.paras),false);
     }
 
     default <T> List<T> getBeanList(QueryWrapper<T> wrapper) {
-        return doDb(wrapper, jdbcSql -> ConvertUtil.convertList(getDao().getList(jdbcSql.v1, jdbcSql.v2),wrapper.getBeanClass()),false);
+        return doDb(wrapper, jdbcSql -> ConvertUtil.convertList(getDao().getList(jdbcSql.sql, jdbcSql.paras),wrapper.getBeanClass()),false);
     }
 
     default <T> T getBean(QueryWrapper<T> wrapper, boolean throwEx) {
-        return doDb(wrapper, jdbcSql -> ConvertUtil.convert(getDao().getOne(jdbcSql.v1, throwEx, jdbcSql.v2),wrapper.getBeanClass()),false);
+        return doDb(wrapper, jdbcSql -> ConvertUtil.convert(getDao().getOne(jdbcSql.sql, throwEx, jdbcSql.paras),wrapper.getBeanClass()),false);
     }
 
     default List<ResultMap> getMapList(QueryWrapper<?> wrapper) {
-        return doDb(wrapper, jdbcSql -> getDao().getList(jdbcSql.v1, jdbcSql.v2),false);
+        return doDb(wrapper, jdbcSql -> getDao().getList(jdbcSql.sql, jdbcSql.paras),false);
     }
 
     default ResultMap getMap(QueryWrapper<?> wrapper, Boolean throwEx) {
-        return doDb(wrapper, jdbcSql -> getDao().getOne(jdbcSql.v1,throwEx, jdbcSql.v2),false);
+        return doDb(wrapper, jdbcSql -> getDao().getOne(jdbcSql.sql,throwEx, jdbcSql.paras),false);
     }
 
     default ResultMap getMap(QueryWrapper wrapper) {
@@ -113,7 +113,7 @@ public interface IDbQwService {
     }
 
     default <T> int getCnt(QueryWrapper<T> wrapper) {
-        return doDb(wrapper,jdbcSql -> getDao().getFistColumn(jdbcSql.v1, Integer.class, jdbcSql.v2),true);
+        return doDb(wrapper,jdbcSql -> getDao().getFistColumn(jdbcSql.sql, Integer.class, jdbcSql.paras),true);
     }
 
     default <T> Page<T> getPage(QueryWrapper<T> wrapper) {
@@ -125,9 +125,9 @@ public interface IDbQwService {
         return page.doPage(() -> getCnt(wrapper), () -> getBeanList(wrapper));
     }
     default <T> Long insertWithAutoKey(InsertWrapper<T> wrapper) {
-        return doDb(wrapper,jdbcSql -> getDao().updateForId(jdbcSql.v1, jdbcSql.v2),false);
+        return doDb(wrapper,jdbcSql -> getDao().updateForId(jdbcSql.sql, jdbcSql.paras),false);
     }
     default <T> int excute(AWrapper<T> wrapper) {
-        return doDb(wrapper,jdbcSql -> getDao().update(jdbcSql.v1, jdbcSql.v2),false);
+        return doDb(wrapper,jdbcSql -> getDao().update(jdbcSql.sql, jdbcSql.paras),false);
     }
 }

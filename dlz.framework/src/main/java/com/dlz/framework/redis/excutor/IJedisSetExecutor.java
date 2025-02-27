@@ -1,7 +1,5 @@
 package com.dlz.framework.redis.excutor;
 
-import com.dlz.framework.redis.util.JedisKeyUtils;
-
 import java.util.Set;
 
 /**
@@ -18,7 +16,7 @@ public interface IJedisSetExecutor extends IJedisExecutor {
      * @return
      */
     default Set<String> smembers(String key) {
-        return excuteByJedis(j -> j.smembers(JedisKeyUtils.getRedisKey(key)));
+        return excute(j -> j.smembers(getRedisKey(key)));
     }
 
     /**
@@ -29,7 +27,7 @@ public interface IJedisSetExecutor extends IJedisExecutor {
      * @return true 存在 false不存在
      */
     default Boolean sHasKey(String key, String value) {
-        return excuteByJedis(j -> j.sismember(JedisKeyUtils.getRedisKey(key), value));
+        return excute(j -> j.sismember(getRedisKey(key), value));
     }
 
     /**
@@ -40,8 +38,8 @@ public interface IJedisSetExecutor extends IJedisExecutor {
      * @return 成功个数
      */
     default long sSet(String key, int seconds, String... values) {
-        return excuteByJedis(j -> {
-            String key1 = JedisKeyUtils.getRedisKey(key);
+        return excute(j -> {
+            String key1 = getRedisKey(key);
             Long sadd = j.sadd(key1, values);
             if (seconds > 0) {
                 j.expire(key1, seconds);
@@ -58,7 +56,7 @@ public interface IJedisSetExecutor extends IJedisExecutor {
      * @return 成功个数
      */
     default long sSet(String key, String... values) {
-        return sSet(JedisKeyUtils.getRedisKey(key), 0, values);
+        return sSet(getRedisKey(key), 0, values);
     }
 
     /**
@@ -69,6 +67,6 @@ public interface IJedisSetExecutor extends IJedisExecutor {
      * @return 移除的个数
      */
     default Long setRemove(String key, String... values) {
-        return excuteByJedis(j -> j.srem(JedisKeyUtils.getRedisKey(key), values));
+        return excute(j -> j.srem(getRedisKey(key), values));
     }
 }

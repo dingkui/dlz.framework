@@ -5,6 +5,7 @@ import com.dlz.framework.db.convertor.DbConvertUtil;
 import com.dlz.framework.db.holder.DBHolder;
 import com.dlz.framework.db.modal.DbInfoCache;
 import com.dlz.framework.db.modal.condition.*;
+import com.dlz.framework.db.modal.map.ParaJDBC;
 import com.dlz.framework.db.modal.map.ParaMapSearch;
 import com.dlz.framework.db.modal.result.Page;
 
@@ -61,7 +62,7 @@ public class QueryWrapper<T> extends AWrapper<T> implements ICondition<QueryWrap
     }
 
     @Override
-    public VAL<String, Object[]> buildSql(boolean cnt) {
+    public ParaJDBC buildSql(boolean cnt) {
         generatWithBean(conditionBean);
         if (cnt) {
             return pm.jdbcCnt();

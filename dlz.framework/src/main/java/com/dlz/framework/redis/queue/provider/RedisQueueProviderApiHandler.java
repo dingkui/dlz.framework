@@ -37,7 +37,7 @@ public class RedisQueueProviderApiHandler extends ApiProxyHandler {
             String redisQueueName = keyMaker.getKeyWithPrefix(queueName);
             String json = ValUtil.toStr(args[0]);
             try {
-                rId = jedisExecutor.excuteByJedis(j -> j.rpush(redisQueueName, json));
+                rId = jedisExecutor.excute(j -> j.rpush(redisQueueName, json));
                 log.debug("同步发消息成功!{} -> {}", redisQueueName, json);
             } catch (Exception e) {
                 log.error("同步发消息失败!{} -> {}", redisQueueName, json);

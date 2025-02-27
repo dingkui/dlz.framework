@@ -5,6 +5,7 @@ import com.dlz.comm.util.VAL;
 import com.dlz.framework.db.helper.util.DbNameUtil;
 import com.dlz.framework.db.modal.DbInfoCache;
 import com.dlz.comm.util.system.FieldReflections;
+import com.dlz.framework.db.modal.map.ParaJDBC;
 
 import java.lang.reflect.Field;
 import java.util.List;
@@ -58,7 +59,7 @@ public abstract class AWrapper<T> {
      * @param cnt 是否是查询数量
      * @return
      */
-    public abstract VAL<String, Object[]> buildSql(boolean cnt);
+    public abstract ParaJDBC buildSql(boolean cnt);
 
     public Class<T> getBeanClass() {
         return beanClass;

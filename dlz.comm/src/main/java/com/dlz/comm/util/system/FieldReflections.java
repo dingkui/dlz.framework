@@ -2,6 +2,7 @@ package com.dlz.comm.util.system;
 
 import com.dlz.comm.cache.CaheMap;
 import com.dlz.comm.exception.SystemException;
+import com.dlz.comm.fn.DlzFn;
 import com.dlz.comm.util.ExceptionUtils;
 import com.dlz.comm.util.ValUtil;
 import lombok.extern.slf4j.Slf4j;
@@ -15,13 +16,12 @@ import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @Slf4j
 public class FieldReflections {
     private static CaheMap<Class<?>, Map<String, Field>> classFieldCache =new CaheMap<>();
-    private static CaheMap<Function,Field> fnFieldCache = new CaheMap<>();
+    private static CaheMap<DlzFn,Field> fnFieldCache = new CaheMap<>();
     /**
      * 直接读取对象属性值, 无视private/protected修饰符, 不经过getter函数.
      */
@@ -133,13 +133,11 @@ public class FieldReflections {
         });
     }
 
-
-
     public static List<Field> getFields(Class<?> beanClass) {
         return getFieldsMap(beanClass).values().stream().collect(Collectors.toList());
     }
 
-    public static Field getField(Function<?, ?> function) {
+    public static Field getField(DlzFn<?, ?> function) {
         return fnFieldCache.getAndSet(function, ()->{
             String fieldName = null;
             try {
@@ -172,7 +170,7 @@ public class FieldReflections {
         });
     }
 
-    public static <T> String getFieldName(MFunction<T,?> property) {
+    public static <T> String getFieldName(DlzFn<T,?> property) {
         return getField(property).getName();
     }
     /**

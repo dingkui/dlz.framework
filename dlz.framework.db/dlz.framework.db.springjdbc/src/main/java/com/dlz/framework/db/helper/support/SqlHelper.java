@@ -17,7 +17,7 @@ import com.dlz.framework.db.holder.DBHolder;
 import com.dlz.framework.db.modal.result.Page;
 import com.dlz.framework.db.modal.result.ResultMap;
 import com.dlz.framework.db.modal.result.Sort;
-import com.dlz.comm.util.system.MFunction;
+import com.dlz.comm.fn.DlzFn;
 import com.dlz.comm.util.system.FieldReflections;
 
 import java.lang.reflect.Field;
@@ -322,7 +322,7 @@ public abstract class SqlHelper {
      * 累加某一个字段的数量,原子操作
      *
      */
-    public <T, R> void addCountById(String id, MFunction<T, R> property, Long count, Class<?> clazz) {
+    public <T, R> void addCountById(String id, DlzFn<T, R> property, Long count, Class<?> clazz) {
         addCountById(id, FieldReflections.getFieldName(property), count, clazz);
     }
 
@@ -520,7 +520,7 @@ public abstract class SqlHelper {
     /**
      * 根据条件查找某个属性
      */
-    public <T, R> List<T> findPropertiesByQuery(ConditionWrapper conditionWrapper, Class<?> documentClass, MFunction<T, R> property, Class<T> propertyClass) {
+    public <T, R> List<T> findPropertiesByQuery(ConditionWrapper conditionWrapper, Class<?> documentClass, DlzFn<T, R> property, Class<T> propertyClass) {
         return findPropertiesByQuery(conditionWrapper, documentClass, FieldReflections.getFieldName(property), propertyClass);
     }
 
@@ -534,7 +534,7 @@ public abstract class SqlHelper {
     /**
      * 根据条件查找某个属性
      */
-    public <T, R> List<String> findPropertiesByQuery(ConditionWrapper conditionWrapper, Class<?> documentClass, MFunction<T, R> property) {
+    public <T, R> List<String> findPropertiesByQuery(ConditionWrapper conditionWrapper, Class<?> documentClass, DlzFn<T, R> property) {
         return findPropertiesByQuery(conditionWrapper, documentClass, FieldReflections.getFieldName(property), String.class);
     }
 
@@ -553,7 +553,7 @@ public abstract class SqlHelper {
     /**
      * 根据id查找某个属性
      */
-    public <T, R> List<String> findPropertiesByIds(Collection<String> ids, Class<?> documentClass, MFunction<T, R> property) {
+    public <T, R> List<String> findPropertiesByIds(Collection<String> ids, Class<?> documentClass, DlzFn<T, R> property) {
         return findPropertiesByIds(ids, documentClass, FieldReflections.getFieldName(property));
     }
 
@@ -567,7 +567,7 @@ public abstract class SqlHelper {
     /**
      * 根据id查找某个属性
      */
-    public <T, R> List<String> findPropertiesByIds(String[] ids, Class<?> documentClass, MFunction<T, R> property) {
+    public <T, R> List<String> findPropertiesByIds(String[] ids, Class<?> documentClass, DlzFn<T, R> property) {
         return findPropertiesByIds(Arrays.asList(ids), documentClass, FieldReflections.getFieldName(property));
     }
 

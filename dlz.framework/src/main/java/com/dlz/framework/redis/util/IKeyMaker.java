@@ -18,14 +18,6 @@ public interface IKeyMaker {
     String getKeyWithPrefix(String key, Serializable... obj);
 
     /**
-     * 取得key(不带前缀)
-     * @param key
-     * @param obj
-     * @return
-     */
-    String getKey(String key, Serializable... obj);
-
-    /**
      * 取得客户端key(去掉前缀)
      * @param key
      * @return

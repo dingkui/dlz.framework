@@ -2,6 +2,7 @@ package com.dlz.framework.db.modal.wrapper;
 
 import com.dlz.comm.util.VAL;
 import com.dlz.framework.db.holder.DBHolder;
+import com.dlz.framework.db.modal.map.ParaJDBC;
 import com.dlz.framework.db.modal.map.ParaMapInsert;
 
 /**
@@ -30,7 +31,7 @@ public class InsertWrapper<T> extends AWrapper<T>{
 	}
 
 	@Override
-	public VAL<String,Object[]> buildSql(boolean cnt) {
+	public ParaJDBC buildSql(boolean cnt) {
 		generatWithBean(valueBean);
 		return pm.jdbcSql();
 	}

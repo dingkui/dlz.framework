@@ -3,7 +3,7 @@ package com.dlz.framework.db.modal.map;
 import com.dlz.framework.db.convertor.DbConvertUtil;
 import com.dlz.framework.db.holder.DBHolder;
 import com.dlz.framework.db.modal.DbInfoCache;
-import com.dlz.comm.util.system.MFunction;
+import com.dlz.comm.fn.DlzFn;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.HashMap;
@@ -62,15 +62,14 @@ public class ParaMapUpdate extends AParaMapSearch<ParaMapUpdate>{
 
 	public ParaMapUpdate set(String paraName, Object value){
 		paraName = DbConvertUtil.str2DbClumn(paraName);
-		boolean isClumnExists = isClumnExists(paraName);
-		if(!isClumnExists){
+		if(!isClumnExists(paraName)){
 			log.warn("column is not exists:"+tableName+"."+paraName);
 			return this;
 		}
 		updateSets.put(paraName, value);
 		return this;
 	}
-	public <T> void set(MFunction<T, ?> column, Object value){
+	public <T> void set(DlzFn<T, ?> column, Object value){
 		set(DbInfoCache.fnName(column),value);
 	}
 

@@ -3,7 +3,7 @@ package com.dlz.framework.db.helper.util;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.dlz.comm.util.StringUtils;
-import com.dlz.comm.util.system.MFunction;
+import com.dlz.comm.fn.DlzFn;
 import com.dlz.comm.util.system.FieldReflections;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -46,7 +46,7 @@ public class DbNameUtil {
         }
         return getDbClumnName(field.getName());
     }
-    public static String getDbClumnName(MFunction property) {
+    public static String getDbClumnName(DlzFn property) {
         Field field = FieldReflections.getField(property);
         return field == null ? null : getDbClumnName(field);
     }

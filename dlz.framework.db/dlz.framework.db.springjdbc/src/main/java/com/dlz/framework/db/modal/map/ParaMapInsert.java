@@ -4,7 +4,7 @@ import com.dlz.comm.util.VAL;
 import com.dlz.framework.db.convertor.DbConvertUtil;
 import com.dlz.framework.db.holder.DBHolder;
 import com.dlz.comm.util.system.FieldReflections;
-import com.dlz.comm.util.system.MFunction;
+import com.dlz.comm.fn.DlzFn;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.HashMap;
@@ -67,7 +67,7 @@ public class ParaMapInsert extends ParaMapMaker {
 		return VAL.of(sbColums.toString(),sbValues.toString());
 	}
 
-	public <T> void value(MFunction<T, ?>  column, Object value){
+	public <T> void value(DlzFn<T, ?> column, Object value){
 		value(FieldReflections.getFieldName(column),value);
 	}
 	public ParaMapInsert value(String key, Object value){

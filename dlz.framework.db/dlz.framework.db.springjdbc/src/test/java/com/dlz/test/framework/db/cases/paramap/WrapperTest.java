@@ -22,7 +22,6 @@ public class WrapperTest extends SpingDbBaseTest {
     @Test
     public void insertWrapperTest2() {
         SysSql dict = new SysSql();
-//        dict.setId(123L);
         dict.setSqlKey("xxx");
         InsertWrapper<SysSql> insert = DB.insert(dict);
         showSql(insert,"insertWrapperTest2","insert into SYS_SQL(SQL_KEY) values('xxx')");
@@ -79,6 +78,4 @@ public class WrapperTest extends SpingDbBaseTest {
         QueryWrapper<SysSql> query = DB.query(SysSql.class).eq(SysSql::getId, 123);
         showSql(query,"searchWrapperTest3","select * from SYS_SQL t where ID = 123");
     }
-
-
 }

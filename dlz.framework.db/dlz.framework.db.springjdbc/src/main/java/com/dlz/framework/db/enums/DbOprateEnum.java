@@ -7,7 +7,7 @@ import com.dlz.framework.db.SqlUtil;
 import com.dlz.framework.db.convertor.DbConvertUtil;
 import com.dlz.framework.db.modal.DbInfoCache;
 import com.dlz.framework.db.modal.condition.Condition;
-import com.dlz.comm.util.system.MFunction;
+import com.dlz.comm.fn.DlzFn;
 import lombok.AllArgsConstructor;
 
 @AllArgsConstructor
@@ -80,7 +80,7 @@ public enum DbOprateEnum {
     }
 
 
-    public <T> Condition mk(MFunction<T,?> dbn, Object value) {
+    public <T> Condition mk(DlzFn<T,?> dbn, Object value) {
         return mk(DbInfoCache.fnName(dbn), value);
     }
 

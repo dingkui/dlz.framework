@@ -28,15 +28,11 @@ public class RedisKeyMaker implements IKeyMaker{
     }
 
     public String getKeyWithPrefix(String key, Serializable... obj) {
+        if(!key.startsWith(prefix)){
+            return key;
+        }
         StringBuilder sb = new StringBuilder(prefix);
         sb.append(keySplit).append(key);
-        for (int i = 0; i < obj.length; i++) {
-            sb.append(keySplit).append(ValUtil.toStr(obj[i]));
-        }
-        return sb.toString().replaceAll("[:]+", ":").replaceAll(":$", "");
-    }
-    public String getKey(String key, Serializable... obj) {
-        StringBuilder sb = new StringBuilder(key);
         for (int i = 0; i < obj.length; i++) {
             sb.append(keySplit).append(ValUtil.toStr(obj[i]));
         }

@@ -2,6 +2,7 @@ package com.dlz.framework.db.dao;
 
 import com.dlz.comm.exception.DbException;
 import com.dlz.framework.db.convertor.DbConvertUtil;
+import com.dlz.framework.db.modal.map.ParaJDBC;
 import com.dlz.framework.db.modal.result.ResultMap;
 import org.springframework.context.annotation.Lazy;
 

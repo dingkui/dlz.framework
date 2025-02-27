@@ -1,14 +1,14 @@
 package com.dlz.test.framework.db.config;
 
-import com.dlz.comm.util.VAL;
 import com.dlz.comm.util.ValUtil;
+import com.dlz.comm.util.system.FieldReflections;
 import com.dlz.framework.db.SqlUtil;
 import com.dlz.framework.db.helper.support.SqlHelper;
 import com.dlz.framework.db.modal.items.SqlItem;
+import com.dlz.framework.db.modal.map.ParaJDBC;
 import com.dlz.framework.db.modal.map.ParaMapBase;
 import com.dlz.framework.db.modal.wrapper.AWrapper;
 import com.dlz.framework.db.service.ICommService;
-import com.dlz.comm.util.system.FieldReflections;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,12 +31,12 @@ public class SpingDbBaseTest {
     public void showSql(ParaMapBase paraMap, String fn, String re) {
         log.debug("-------------------  "+fn+"  -------------------");
         log.debug(ValUtil.toStr(paraMap));
-        VAL<String, Object[]> jdbcSql = paraMap.jdbcSql();
+        ParaJDBC jdbcSql = paraMap.jdbcSql();
 //        SqlUtil.dealParm(paraMap,1,true);
         SqlItem sqlItem = paraMap.getSqlItem();
         log.debug(sqlItem.toString());
         log.debug(paraMap.getPara().toString());
-        String runSqlByJdbc = SqlUtil.getRunSqlByJdbc(jdbcSql.v1, jdbcSql.v2).trim();
+        String runSqlByJdbc = SqlUtil.getRunSqlByJdbc(jdbcSql.sql, jdbcSql.paras).trim();
         if(re==null){
             log.info(runSqlByJdbc);
         }else if(re.equals(runSqlByJdbc)){

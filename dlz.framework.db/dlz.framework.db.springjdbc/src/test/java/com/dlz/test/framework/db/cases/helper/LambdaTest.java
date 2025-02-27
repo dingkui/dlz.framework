@@ -1,7 +1,7 @@
 package com.dlz.test.framework.db.cases.helper;
 
 import com.dlz.framework.db.helper.util.DbNameUtil;
-import com.dlz.comm.util.system.MFunction;
+import com.dlz.comm.fn.DlzFn;
 import com.dlz.test.framework.db.entity.Dict;
 import org.junit.Test;
 
@@ -12,7 +12,7 @@ public class LambdaTest {
     public void LambdaTest1() {
         System.out.println("方法名：" + doSFunction(Dict::getA2));
     }
-    private <T, R> String doSFunction(MFunction<T, R> func) {
+    private <T, R> String doSFunction(DlzFn<T, R> func) {
 //        // 直接调用writeReplace
 //        Method writeReplace = func.getClass().getDeclaredMethod("writeReplace");
 //        writeReplace.setAccessible(true);

@@ -5,7 +5,7 @@ import com.dlz.comm.exception.SystemException;
 import com.dlz.comm.util.VAL;
 import com.dlz.framework.db.helper.util.DbNameUtil;
 import com.dlz.framework.db.holder.DBHolder;
-import com.dlz.comm.util.system.MFunction;
+import com.dlz.comm.fn.DlzFn;
 import com.dlz.comm.util.system.FieldReflections;
 
 import java.lang.reflect.Field;
@@ -21,7 +21,7 @@ import java.util.stream.Collectors;
 public class DbInfoCache {
     private static final CaheMap<Class<?>, String> tableNameCahe = new CaheMap<>();
     private static final CaheMap<String, List<Field>> tableFieldCahe = new CaheMap<>();
-    private static final CaheMap<MFunction, VAL<String, String>> fnCahe = new CaheMap<>();
+    private static final CaheMap<DlzFn, VAL<String, String>> fnCahe = new CaheMap<>();
 
     public static String getTableName(Class<?> beanClass) {
         return tableNameCahe.getAndSet(beanClass, () -> DbNameUtil.getDbTableName(beanClass));
@@ -40,7 +40,7 @@ public class DbInfoCache {
         });
     }
 
-    public static <T> VAL<String, String> fnInfo(MFunction<T, ?> column) {
+    public static <T> VAL<String, String> fnInfo(DlzFn<T, ?> column) {
         return fnCahe.getAndSet(column, () -> {
             Field field = FieldReflections.getField(column);
             if (column == null) {
@@ -50,11 +50,11 @@ public class DbInfoCache {
         });
     }
 
-    public static <T> String fnName(MFunction<T, ?> column) {
+    public static <T> String fnName(DlzFn<T, ?> column) {
         return fnInfo(column).v1;
     }
 
-    public static <T> String fnTableName(MFunction<T, ?> column) {
+    public static <T> String fnTableName(DlzFn<T, ?> column) {
         return fnInfo(column).v2;
     }
 }

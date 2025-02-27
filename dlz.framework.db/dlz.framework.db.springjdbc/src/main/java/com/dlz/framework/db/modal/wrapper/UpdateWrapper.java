@@ -7,8 +7,9 @@ import com.dlz.framework.db.modal.condition.Condition;
 import com.dlz.framework.db.modal.condition.ICondAddByLamda;
 import com.dlz.framework.db.modal.condition.ICondAuto;
 import com.dlz.framework.db.modal.condition.ICondition;
+import com.dlz.framework.db.modal.map.ParaJDBC;
 import com.dlz.framework.db.modal.map.ParaMapUpdate;
-import com.dlz.comm.util.system.MFunction;
+import com.dlz.comm.fn.DlzFn;
 import com.dlz.comm.util.system.FieldReflections;
 
 import java.lang.reflect.Field;
@@ -42,7 +43,7 @@ public class UpdateWrapper<T> extends AWrapper<T> implements ICondition<UpdateWr
 		this.conditionBean = conditionBean;
 	}
 
-	public UpdateWrapper<T> set(MFunction<T, ?> column, Object value) {
+	public UpdateWrapper<T> set(DlzFn<T, ?> column, Object value) {
 		pm.set(column,value);
 		return this;
 	}
@@ -69,7 +70,7 @@ public class UpdateWrapper<T> extends AWrapper<T> implements ICondition<UpdateWr
 		pm.eq(columnName, value);
 	}
 	@Override
-	public VAL<String,Object[]> buildSql(boolean cnt) {
+	public ParaJDBC buildSql(boolean cnt) {
 		generatWithBean(conditionBean);
 		return pm.jdbcSql();
 	}

@@ -1,13 +1,12 @@
 package com.dlz.framework.db.modal.map;
 
 import com.dlz.comm.json.JSONMap;
-import com.dlz.comm.util.VAL;
 import com.dlz.framework.db.SqlUtil;
 import com.dlz.framework.db.enums.ParaTypeEnum;
 import com.dlz.framework.db.modal.items.SqlItem;
 import com.dlz.framework.db.modal.result.Page;
 import com.dlz.comm.util.system.FieldReflections;
-import com.dlz.comm.util.system.MFunction;
+import com.dlz.comm.fn.DlzFn;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -72,7 +71,7 @@ public class ParaMapBase implements Serializable {
 		para.put(key, value == null ? "" : value);
         return this;
     }
-    public <T> ParaMapBase addPara(MFunction<T, ?> column, Object value){
+    public <T> ParaMapBase addPara(DlzFn<T, ?> column, Object value){
         return addPara(FieldReflections.getFieldName(column),value);
     }
 
@@ -89,17 +88,17 @@ public class ParaMapBase implements Serializable {
         return this;
     }
 
-    public VAL<String,Object[]> jdbcSql() {
+    public ParaJDBC jdbcSql() {
         SqlUtil.dealParm(this,1,true);
-        return new VAL(sqlItem.getSqlJdbc(),sqlItem.getSqlJdbcPara());
+        return new ParaJDBC(sqlItem.getSqlJdbc(),sqlItem.getSqlJdbcPara());
     }
-    public VAL<String,Object[]> jdbcCnt() {
+    public ParaJDBC jdbcCnt() {
         SqlUtil.dealParm(this,2,true);
-        return new VAL(sqlItem.getSqlJdbc(),sqlItem.getSqlJdbcPara());
+        return new ParaJDBC(sqlItem.getSqlJdbc(),sqlItem.getSqlJdbcPara());
     }
-    public VAL<String,Object[]> jdbcPage() {
+    public ParaJDBC jdbcPage() {
         SqlUtil.dealParm(this,3,true);
-        return new VAL(sqlItem.getSqlJdbc(),sqlItem.getSqlJdbcPara());
+        return new ParaJDBC(sqlItem.getSqlJdbc(),sqlItem.getSqlJdbcPara());
     }
 
 }

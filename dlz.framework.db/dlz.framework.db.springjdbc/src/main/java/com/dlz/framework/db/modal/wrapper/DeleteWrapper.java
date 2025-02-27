@@ -6,6 +6,7 @@ import com.dlz.framework.db.modal.condition.Condition;
 import com.dlz.framework.db.modal.condition.ICondAddByLamda;
 import com.dlz.framework.db.modal.condition.ICondAuto;
 import com.dlz.framework.db.modal.condition.ICondition;
+import com.dlz.framework.db.modal.map.ParaJDBC;
 import com.dlz.framework.db.modal.map.ParaMapDelete;
 
 /**
@@ -40,7 +41,7 @@ public class DeleteWrapper<T> extends AWrapper<T> implements ICondition<DeleteWr
 		pm.eq(columnName, value);
 	}
 	@Override
-	public VAL<String,Object[]> buildSql(boolean cnt) {
+	public ParaJDBC buildSql(boolean cnt) {
 		generatWithBean(conditionBean);
 		return pm.jdbcSql();
 	}

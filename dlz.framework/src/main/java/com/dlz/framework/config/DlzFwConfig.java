@@ -113,10 +113,9 @@ public class DlzFwConfig {
     @Bean(name = "jedisExecutor")
     @Lazy
     @ConditionalOnMissingBean(name = "jedisExecutor")
-    public JedisExecutor jedisExecutor(IKeyMaker keyMaker) {
+    public JedisExecutor jedisExecutor(JedisPool jedisPool,IKeyMaker keyMaker) {
         log.info("default jedisExecutor init ...");
-        JedisKeyUtils.init(keyMaker);
-        return new JedisExecutor();
+        return new JedisExecutor(jedisPool,keyMaker);
     }
 
     /**

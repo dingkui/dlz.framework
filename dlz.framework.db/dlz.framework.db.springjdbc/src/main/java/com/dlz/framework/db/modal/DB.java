@@ -8,7 +8,7 @@ import com.dlz.framework.db.modal.wrapper.DeleteWrapper;
 import com.dlz.framework.db.modal.wrapper.InsertWrapper;
 import com.dlz.framework.db.modal.wrapper.QueryWrapper;
 import com.dlz.framework.db.modal.wrapper.UpdateWrapper;
-import com.dlz.comm.util.system.MFunction;
+import com.dlz.comm.fn.DlzFn;
 import com.dlz.comm.util.system.FieldReflections;
 
 import java.lang.reflect.Field;
@@ -44,7 +44,7 @@ public class DB {
         return new ParaMapSearch(tableName);
     }
 
-    public static <T> ParaMapSearchColumn select(MFunction<T, ?> column) {
+    public static <T> ParaMapSearchColumn select(DlzFn<T, ?> column) {
         Field field = FieldReflections.getField(column);
         if (field == null) {
             throw new SystemException("字段无效");
