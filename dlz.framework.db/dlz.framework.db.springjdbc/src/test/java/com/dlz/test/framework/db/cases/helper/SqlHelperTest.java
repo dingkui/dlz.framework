@@ -1,7 +1,7 @@
 package com.dlz.test.framework.db.cases.helper;
 
-import com.dlz.framework.db.helper.wrapper.ConditionOrWrapper;
 import com.dlz.comm.util.system.FieldReflections;
+import com.dlz.framework.db.helper.wrapper.ConditionOrWrapper;
 import com.dlz.test.framework.db.config.SpingDbBaseTest;
 import com.dlz.test.framework.db.entity.Dict;
 import org.junit.Test;

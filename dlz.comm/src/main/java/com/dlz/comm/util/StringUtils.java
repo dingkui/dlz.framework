@@ -1,6 +1,5 @@
 package com.dlz.comm.util;
 
-import com.dlz.comm.exception.DbException;
 import com.dlz.comm.json.JSONMap;
 import lombok.extern.slf4j.Slf4j;
 

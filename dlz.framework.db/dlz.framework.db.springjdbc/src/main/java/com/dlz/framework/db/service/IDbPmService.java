@@ -1,7 +1,6 @@
 package com.dlz.framework.db.service;
 
 import com.dlz.comm.exception.DbException;
-import com.dlz.comm.util.VAL;
 import com.dlz.comm.util.system.ConvertUtil;
 import com.dlz.framework.db.convertor.DbConvertUtil;
 import com.dlz.framework.db.dao.IDlzDao;

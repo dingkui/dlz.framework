@@ -1,7 +1,7 @@
 package com.dlz.framework.db.modal.condition;
 
-import com.dlz.framework.db.modal.result.Order;
 import com.dlz.comm.fn.DlzFn;
+import com.dlz.framework.db.modal.result.Order;
 
 /**
  * 添加and or条件

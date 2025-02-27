@@ -1,6 +1,5 @@
 package com.dlz.framework.db.modal.wrapper;
 
-import com.dlz.comm.util.VAL;
 import com.dlz.framework.db.holder.DBHolder;
 import com.dlz.framework.db.modal.condition.Condition;
 import com.dlz.framework.db.modal.condition.ICondAddByLamda;

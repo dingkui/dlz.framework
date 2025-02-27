@@ -1,7 +1,7 @@
 package com.dlz.framework.db.modal.condition;
 
-import com.dlz.framework.db.inf.IChained;
 import com.dlz.comm.fn.DlzFn;
+import com.dlz.framework.db.inf.IChained;
 
 import static com.dlz.framework.db.enums.DbOprateEnum.*;
 

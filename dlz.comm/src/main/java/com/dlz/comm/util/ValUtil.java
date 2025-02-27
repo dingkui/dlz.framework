@@ -2,7 +2,6 @@ package com.dlz.comm.util;
 
 import com.dlz.comm.exception.SystemException;
 import com.dlz.comm.json.JSONList;
-import com.dlz.comm.util.system.ConvertUtil;
 import com.fasterxml.jackson.databind.JavaType;
 import lombok.extern.slf4j.Slf4j;
 
@@ -11,7 +10,6 @@ import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.math.BigDecimal;
 import java.util.*;
-import java.util.stream.Stream;
 
 /**
  * 对象转换工具类

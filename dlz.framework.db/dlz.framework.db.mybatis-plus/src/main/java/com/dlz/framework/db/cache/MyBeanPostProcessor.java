@@ -5,7 +5,6 @@ import com.dlz.framework.holder.SpringHolder;
 import org.mybatis.spring.mapper.MapperFactoryBean;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.config.BeanPostProcessor;
-import org.springframework.stereotype.Component;
 
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;

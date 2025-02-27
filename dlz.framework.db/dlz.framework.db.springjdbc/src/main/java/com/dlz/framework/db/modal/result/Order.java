@@ -1,7 +1,7 @@
 package com.dlz.framework.db.modal.result;
 
-import com.dlz.framework.db.modal.DbInfoCache;
 import com.dlz.comm.fn.DlzFn;
+import com.dlz.framework.db.modal.DbInfoCache;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;

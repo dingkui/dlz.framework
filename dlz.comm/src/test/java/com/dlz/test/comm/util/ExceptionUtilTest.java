@@ -1,7 +1,6 @@
 package com.dlz.test.comm.util;
 
 import com.dlz.comm.util.ExceptionTrace;
-import com.dlz.comm.util.ExceptionUtils;
 import com.dlz.comm.util.encry.TraceUtil;
 import com.dlz.comm.util.web.HttpEnum;
 import lombok.extern.slf4j.Slf4j;

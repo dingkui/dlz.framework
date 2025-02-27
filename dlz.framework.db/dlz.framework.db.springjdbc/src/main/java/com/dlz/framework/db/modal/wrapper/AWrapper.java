@@ -1,10 +1,9 @@
 package com.dlz.framework.db.modal.wrapper;
 
 import com.dlz.comm.exception.DbException;
-import com.dlz.comm.util.VAL;
+import com.dlz.comm.util.system.FieldReflections;
 import com.dlz.framework.db.helper.util.DbNameUtil;
 import com.dlz.framework.db.modal.DbInfoCache;
-import com.dlz.comm.util.system.FieldReflections;
 import com.dlz.framework.db.modal.map.ParaJDBC;
 
 import java.lang.reflect.Field;

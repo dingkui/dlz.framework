@@ -2,7 +2,6 @@ package com.dlz.framework.redis.service.impl;
 
 import com.dlz.comm.cache.ICache;
 import com.dlz.framework.redis.excutor.JedisExecutor;
-import com.dlz.framework.redis.util.JedisKeyUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.io.Serializable;

@@ -6,8 +6,6 @@ import com.dlz.comm.util.encry.EncryptDlz;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Test;
 
-import java.io.UnsupportedEncodingException;
-
 /**
  * 加密工具测试
  * 加密含有效期校验，随机数密码，混淆等

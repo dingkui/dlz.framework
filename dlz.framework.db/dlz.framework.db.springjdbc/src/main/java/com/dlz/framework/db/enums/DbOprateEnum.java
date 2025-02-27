@@ -1,13 +1,13 @@
 package com.dlz.framework.db.enums;
 
 import com.dlz.comm.exception.SystemException;
+import com.dlz.comm.fn.DlzFn;
 import com.dlz.comm.util.ValUtil;
 import com.dlz.comm.util.encry.TraceUtil;
 import com.dlz.framework.db.SqlUtil;
 import com.dlz.framework.db.convertor.DbConvertUtil;
 import com.dlz.framework.db.modal.DbInfoCache;
 import com.dlz.framework.db.modal.condition.Condition;
-import com.dlz.comm.fn.DlzFn;
 import lombok.AllArgsConstructor;
 
 @AllArgsConstructor

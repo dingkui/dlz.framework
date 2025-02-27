@@ -2,7 +2,6 @@ package com.dlz.test.comm.util;
 
 import com.dlz.comm.exception.HttpException;
 import com.dlz.comm.json.JSONMap;
-import com.dlz.comm.util.ValUtil;
 import com.dlz.comm.util.web.HttpEnum;
 import com.dlz.comm.util.web.HttpRequestParam;
 import org.apache.http.client.config.RequestConfig;

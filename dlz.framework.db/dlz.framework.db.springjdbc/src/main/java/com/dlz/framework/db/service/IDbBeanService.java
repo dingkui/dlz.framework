@@ -2,11 +2,11 @@ package com.dlz.framework.db.service;
 
 import com.dlz.comm.exception.ValidateException;
 import com.dlz.comm.util.StringUtils;
+import com.dlz.comm.util.system.FieldReflections;
 import com.dlz.framework.db.modal.wrapper.DeleteWrapper;
 import com.dlz.framework.db.modal.wrapper.InsertWrapper;
 import com.dlz.framework.db.modal.wrapper.QueryWrapper;
 import com.dlz.framework.db.modal.wrapper.UpdateWrapper;
-import com.dlz.comm.util.system.FieldReflections;
 
 import java.util.List;
 

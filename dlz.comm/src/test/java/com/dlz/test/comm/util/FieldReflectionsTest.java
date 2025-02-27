@@ -1,7 +1,7 @@
 package com.dlz.test.comm.util;
 
-import com.dlz.comm.util.system.FieldReflections;
 import com.dlz.comm.fn.DlzFn;
+import com.dlz.comm.util.system.FieldReflections;
 import com.dlz.test.beans.AA;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Test;

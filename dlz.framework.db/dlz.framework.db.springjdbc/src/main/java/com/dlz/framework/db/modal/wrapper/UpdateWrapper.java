@@ -1,6 +1,7 @@
 package com.dlz.framework.db.modal.wrapper;
 
-import com.dlz.comm.util.VAL;
+import com.dlz.comm.fn.DlzFn;
+import com.dlz.comm.util.system.FieldReflections;
 import com.dlz.framework.db.helper.util.DbNameUtil;
 import com.dlz.framework.db.holder.DBHolder;
 import com.dlz.framework.db.modal.condition.Condition;
@@ -9,8 +10,6 @@ import com.dlz.framework.db.modal.condition.ICondAuto;
 import com.dlz.framework.db.modal.condition.ICondition;
 import com.dlz.framework.db.modal.map.ParaJDBC;
 import com.dlz.framework.db.modal.map.ParaMapUpdate;
-import com.dlz.comm.fn.DlzFn;
-import com.dlz.comm.util.system.FieldReflections;
 
 import java.lang.reflect.Field;
 import java.util.List;

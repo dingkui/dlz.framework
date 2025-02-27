@@ -1,6 +1,8 @@
 package com.dlz.framework.db.modal;
 
 import com.dlz.comm.exception.SystemException;
+import com.dlz.comm.fn.DlzFn;
+import com.dlz.comm.util.system.FieldReflections;
 import com.dlz.framework.db.helper.util.DbNameUtil;
 import com.dlz.framework.db.modal.map.*;
 import com.dlz.framework.db.modal.result.Page;
@@ -8,8 +10,6 @@ import com.dlz.framework.db.modal.wrapper.DeleteWrapper;
 import com.dlz.framework.db.modal.wrapper.InsertWrapper;
 import com.dlz.framework.db.modal.wrapper.QueryWrapper;
 import com.dlz.framework.db.modal.wrapper.UpdateWrapper;
-import com.dlz.comm.fn.DlzFn;
-import com.dlz.comm.util.system.FieldReflections;
 
 import java.lang.reflect.Field;
 import java.util.Map;

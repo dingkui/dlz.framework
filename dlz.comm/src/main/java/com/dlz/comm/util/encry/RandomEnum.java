@@ -4,7 +4,6 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
 import java.security.SecureRandom;
-import java.util.Random;
 
 /**
  * 生成的随机数类型
