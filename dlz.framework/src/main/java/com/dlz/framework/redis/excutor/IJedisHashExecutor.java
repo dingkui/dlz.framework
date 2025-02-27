@@ -77,7 +77,7 @@ interface IJedisHashExecutor extends IJedisExecutor {
             String key1 = getRedisKey(key);
             map.entrySet().forEach(m -> j.hset(key1, m.getKey(), m.getValue()));
             if (seconds > 0) {
-                j.expire(key1, seconds);
+                j.expire(key1, (long)seconds);
             }
             return true;
         });
@@ -109,7 +109,7 @@ interface IJedisHashExecutor extends IJedisExecutor {
             String key1 = getRedisKey(key);
             j.hset(key1, item, value);
             if (seconds > 0) {
-                j.expire(key1, seconds);
+                j.expire(key1, (long)seconds);
             }
             return true;
         });
@@ -188,7 +188,7 @@ interface IJedisHashExecutor extends IJedisExecutor {
             byte[] item1 = SafeEncoder.encode(item);
             j.hset(key1, item1, SerializeUtil.serialize(value));
             if (seconds > 0) {
-                j.expire(key1, seconds);
+                j.expire(key1, (long)seconds);
             }
             return true;
         });

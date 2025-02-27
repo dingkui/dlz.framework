@@ -33,7 +33,7 @@ public class JSONMap extends HashMap<String,Object> implements IUniversalVals{
 			if(string==null){
 				return;
 			}
-			putAll(JacksonUtil.readValue(string, JSONMap.class));
+			putAll(JacksonUtil.readValue(string));
 		}
 	}
 	public JSONMap(CharSequence obj){
@@ -48,7 +48,7 @@ public class JSONMap extends HashMap<String,Object> implements IUniversalVals{
 //				.collect(Collectors.joining(""));
 		String str= obj.toString().trim().replaceAll("//.*","");
 		if(JacksonUtil.isJsonObj(str)){
-			putAll(JacksonUtil.readValue(str, JSONMap.class));
+			putAll(JacksonUtil.readValue(str));
 		}else{
 			throw new SystemException("参数不能转换成JSONMap:"+str);
 		}

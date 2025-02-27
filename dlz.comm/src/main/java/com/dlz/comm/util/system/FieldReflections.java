@@ -105,7 +105,7 @@ public class FieldReflections {
         Field field = getFieldsMap(clazz).get(fieldName);
         if (field == null) {
             if(ignore){
-                log.warn("NoSuchField:" + clazz + "." + fieldName);
+                log.info("NoSuchField:" + clazz + "." + fieldName);
                 return null;
             }
             throw new SystemException("NoSuchField:" + clazz + "." + fieldName);

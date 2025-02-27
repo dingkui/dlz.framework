@@ -126,7 +126,7 @@ public class JSONMapGetTest {
 		
 		String json1=paras.toString();
 		System.out.println(json1);
-		JSONMap paras4 = JacksonUtil.readValue(json1, JSONMap.class);
+		JSONMap paras4 = JacksonUtil.readValue(json1);
 		System.out.println(paras4.getMap("a.b").get("c"));
 		System.out.println(paras4.getStr("a.b.c"));
 	}

@@ -104,7 +104,7 @@ public class JSONList extends ArrayList<Object> implements IUniversalVals,IUnive
 			if (objectClass != null) {
 				this.addAll(JacksonUtil.readListValue(string, objectClass));
 			} else {
-				this.addAll(JacksonUtil.readValue(string, JSONList.class));
+				this.addAll(JacksonUtil.readList(string));
 			}
 		}
 	}
@@ -135,7 +135,7 @@ public class JSONList extends ArrayList<Object> implements IUniversalVals,IUnive
 		}
 		if(o instanceof CharSequence){
 			if(((CharSequence)o).charAt(0)=='{'){
-				return JacksonUtil.readValue(o.toString(), JSONMap.class);
+				return JacksonUtil.readValue(o.toString());
 			}
 			throw new RuntimeException("对象是简单类型【"+o.getClass().getName()+"】，不能转换为JSONMap");
 		}

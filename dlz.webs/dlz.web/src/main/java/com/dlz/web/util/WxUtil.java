@@ -8,7 +8,7 @@ import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.URL;
 import java.net.URLEncoder;
-import java.nio.charset.StandardCharsets;
+import com.dlz.comm.consts.Charsets;
 import java.security.AlgorithmParameters;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -842,7 +842,7 @@ public class WxUtil {
 	      Cipher cipher = Cipher.getInstance("AES/CBC/NoPadding");
 	      cipher.init(Cipher.DECRYPT_MODE, new SecretKeySpec(Base64.decode(sessionKey.toCharArray()), "AES"), params);
 
-	      return new String(PKCS7Encoder.decode(cipher.doFinal(Base64.decode(encryptedData.toCharArray()))), StandardCharsets.UTF_8);
+	      return new String(PKCS7Encoder.decode(cipher.doFinal(Base64.decode(encryptedData.toCharArray()))), Charsets.UTF_8);
 	    } catch (Exception e) {
 	      throw new RuntimeException("AES解密失败", e);
 	    }

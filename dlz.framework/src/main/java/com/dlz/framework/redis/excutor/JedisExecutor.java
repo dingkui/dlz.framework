@@ -36,7 +36,7 @@ public class JedisExecutor implements IJedisKeyExecutor, IJedisStringExecutor, I
         try (Jedis jedis = jedisPool.getResource()) {
             return j.apply(jedis);
         } catch (Exception e) {
-            log.error(ExceptionUtils.getStackTrace(RemoteException.buildException("redis异常:" + e.getMessage(), e)));
+            log.error(ExceptionUtils.getStackTrace(RemoteException.build("redis异常:" + e.getMessage(), e)));
         }
         return null;
     }

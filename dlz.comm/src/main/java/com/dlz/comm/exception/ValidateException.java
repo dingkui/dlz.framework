@@ -17,7 +17,9 @@ public class ValidateException extends BaseException {
 	public ValidateException(String message) {
 		super(DEFUALT_ERROR_CODE, message);
 	}
-
+	public static ValidateException build(String message) {
+		return new ValidateException(message);
+	}
 
 	/**
 	 * 断言这个 boolean 为 true

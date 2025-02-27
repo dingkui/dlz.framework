@@ -11,6 +11,7 @@ import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.math.BigDecimal;
 import java.util.*;
+import java.util.stream.Stream;
 
 /**
  * 对象转换工具类
@@ -393,13 +394,7 @@ public class ValUtil {
         }
     }
 
-    public static boolean isStrEmpty(CharSequence cs) {
-        if (cs == null || cs.length() == 0) {
-            return true;
-        }
-        String trim = cs.toString().trim();
-        return trim.equals(STR_NULL);
-    }
+
 
 
 //    public static void main(String[] args) {

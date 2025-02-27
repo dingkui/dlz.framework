@@ -2,6 +2,7 @@ package com.dlz.comm.exception;
 
 import com.dlz.comm.util.StringUtils;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.function.Supplier;
 
 /**
@@ -21,6 +22,31 @@ public class SystemException extends BaseException {
 
 	public SystemException(String message) {
 		super(DEFUALT_ERROR_CODE, message);
+	}
+
+	public static SystemException build(Throwable cause) {
+		if (cause instanceof Error) {
+			new SystemException(cause.getMessage(), cause);
+		} else if (cause instanceof IllegalAccessException ||
+				cause instanceof IllegalArgumentException ||
+				cause instanceof NoSuchMethodException) {
+			return new SystemException("无效访问："+cause.getMessage(), cause);
+		} else if (cause instanceof InvocationTargetException) {
+			final String message = ((InvocationTargetException) cause).getTargetException().getMessage();
+			return new SystemException("无效目标："+message, cause);
+		} else if (cause instanceof RuntimeException) {
+			return new SystemException("运行异常："+cause.getMessage(), cause);
+		} else if (cause instanceof InterruptedException) {
+			Thread.currentThread().interrupt();
+			return new SystemException("中断异常："+cause.getMessage(), cause);
+		}
+		return new SystemException(cause.getMessage(), cause);
+	}
+	public static SystemException build(String message, Throwable cause) {
+		return new SystemException(message, cause);
+	}
+	public static SystemException build(String message) {
+		return new SystemException(message);
 	}
 
 	/**
