@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.annotation.TableName;
 import com.dlz.comm.util.StringUtils;
 import com.dlz.comm.fn.DlzFn;
 import com.dlz.comm.util.system.FieldReflections;
+import com.dlz.framework.db.convertor.DbConvertUtil;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 
@@ -52,7 +53,7 @@ public class DbNameUtil {
     }
 
     public static String getDbClumnName(String field) {
-        return StringUtils.camelToUnderScore(field).toUpperCase();
+        return DbConvertUtil.str2Clumn(field);
     }
 
     public static String getClumnCommont(Field field) {

@@ -1,5 +1,7 @@
 package com.dlz.comm.util;
 
+import com.dlz.comm.exception.DbException;
+import com.dlz.comm.json.JSONMap;
 import lombok.extern.slf4j.Slf4j;
 
 import java.lang.reflect.Array;
@@ -69,7 +71,6 @@ public class StringUtils {
         return cs == null ? defaultStr : cs;
     }
 
-    private static Pattern myMsgPattern = Pattern.compile("\\{([^\\{\\}]*)\\}");
 
     public static String getBeanId(String className) {
         int lastIndexOf = className.lastIndexOf(".");
@@ -80,30 +81,41 @@ public class StringUtils {
         return getBeanId(clazz.getName());
     }
 
+    private static Pattern myMsgPattern = Pattern.compile("\\{([\\w]*)\\}");
+    private static Pattern myMsgPatternSub = Pattern.compile(".*([\\d]+)$");
+    /**
+     * 格式化文本, {} 表示占位符<br>
+     *  {xxx0},{0}表示用参数下标,支持用字符说明，结尾的数字是下标<br>
+     *  无下标时，默认采用当前所在的序号<br>
+     *  下标无效时，此处不做替换<br>
+     * 例：<br>
+     * 通常使用：formatMsg("this is {} for {}", "a", "b") -> this is a for b<br>
+     * 指定下标： formatMsg("this is {1} for {}", "a", "b") -> this is b for b<br>
+     * 说明+明确下标： formatMsg("this is {b1} for {}", "a", "b") -> this is b for b<br>
+     * 说明+明确下标： formatMsg("this is {xx1x_1} for {}", "a", "b") -> this is b for b<br>
+     * 下标无效： formatMsg("this is {9} for {}", "a", "b") -> this is {9} for b<br>
+     * 下标无效： formatMsg("this is {} for {} and {}", "a", "b") -> this is a for b and {}<br>
+     *
+     * @return 格式化后的文本
+     */
     public static String formatMsg(Object message, Object... paras) {
         String msg = ValUtil.toStr(message, "");
-        if (paras == null) {
-            paras = new Object[]{null};
-        }
         Matcher mat = myMsgPattern.matcher(msg);
         StringBuffer sb = new StringBuffer();
         int end = 0;
         int i = 0;
         while (mat.find()) {
-            String indexStr = mat.group(1).replaceAll("[^\\d]*", "");
-            int index = 0;
-            if (!"".equals(indexStr)) {
-                if (indexStr.length() > 2) {
-                    index = -1;
-                } else {
-                    index = Integer.parseInt(indexStr);
+            int index=i;
+            String indexStr = mat.group(1);
+            if(indexStr.length()>0){
+                indexStr = myMsgPatternSub.matcher(indexStr).replaceAll("$1");
+                if (indexStr.length()>0) {
+                     index = Integer.parseInt(indexStr);
                 }
-            } else {
-                index = i;
             }
             sb.append(msg, end, mat.start());
-            if (index > -1 && paras.length > index) {
-                sb.append(ValUtil.toStr(paras[index], null));
+            if (paras.length > index) {
+                sb.append(ValUtil.toStr(paras[index]));
             } else {
                 sb.append(mat.group(0));
             }
@@ -111,6 +123,38 @@ public class StringUtils {
             i++;
         }
         return sb.append(msg, end, msg.length()).toString();
+    }
+
+    /**
+     * 替换内容匹配符：如  ${bb}
+     */
+    private static Pattern PATTERN_REPLACE = Pattern.compile("\\$\\{(\\w[\\.\\w]*)\\}");
+    /**
+     * msg 语句中 ${aa} 的内容进行文本替换
+     * @param input
+     * @param m
+     * @return
+     */
+    public static String formatMsg(Object input, JSONMap m) {
+        String msg = ValUtil.toStr(input, "");
+        int length = msg.length();
+        Matcher mat = PATTERN_REPLACE.matcher(msg);
+        int start = 0;
+        StringBuffer sb = new StringBuffer();
+        while (mat.find()) {
+            String key = mat.group(1);
+            String o = m.getStr(key);
+            sb.append(msg, start, mat.start());
+            if(o != null){
+                sb.append(o);
+            }
+            start = mat.end();
+        }
+        if (start == 0) {
+            return msg;
+        }
+        sb.append(msg, start, length);
+        return formatMsg(sb.toString(), m);
     }
 
     /**
@@ -352,19 +396,6 @@ public class StringUtils {
         return key.replaceAll("([A-Z])", "_$1").toLowerCase(Locale.ROOT);
     }
 
-     public static void main(String[] args) {
-         log.debug(repeat('2',3));
-         log.debug(underScoreToCamel("aa_bb_cc"));
-         log.debug(camelToUnderScore("A_CC_VV_c"));
-         log.debug(camelToUnderScore("aaBbCc"));
-         log.debug("{}",isLongOrInt("-111"));
-         log.debug("{}",isLongOrInt("1111"));
-         log.debug("{}",isLongOrInt("+111.11"));
-         log.debug("{}",ValUtil.toFloat("-111.11"));
-
-         System.out.println(startsWith(new StringBuilder("123"),new StringBuilder("12")));
-     }
-
     /**
      * <p>
      * 试用指定字符构造字符串
@@ -382,17 +413,12 @@ public class StringUtils {
         if (array == null) {
             return null;
         }
-        separator = NVL(separator);
-        final int noOfItems = array.length;
-        if (noOfItems <= 0) {
+        if (array.length == 0) {
             return "";
         }
-        final StringBuilder buf = new StringBuilder(noOfItems * 16);
-        for (int i = 0; i < noOfItems; i++) {
-            if (i > 0) {
-                buf.append(separator);
-            }
-            buf.append(array[i]);
+        final StringJoiner buf = new StringJoiner(NVL(separator));
+        for (T element : array){
+            buf.add(ValUtil.toStr(element,""));
         }
         return buf.toString();
     }
