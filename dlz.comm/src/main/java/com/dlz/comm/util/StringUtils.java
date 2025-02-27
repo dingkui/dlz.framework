@@ -361,41 +361,6 @@ public class StringUtils {
     }
 
     /**
-     * 下划线转驼峰 aa_bb_cc→aaBbCc
-     * @param key
-     * @return
-     * @author dk 2015-04-09
-     */
-    public static String underScoreToCamel(String key) {
-        if (key == null) {
-            return "";
-        }
-        key = key.toLowerCase();
-        Matcher mat = Pattern.compile("_([a-z])").matcher(key);
-        while (mat.find()) {
-            key = key.replace("_" + mat.group(1), mat.group(1).toUpperCase());
-        }
-        return key.replaceAll("_", "");
-    }
-
-    /**
-     * 驼峰转下划线 aaBbCc→aa_bb_cc<br>
-     * 如果参数含有_则不做转换
-     * @param key
-     * @author dk 2015-04-10
-     * @return
-     */
-    public static String camelToUnderScore(String key) {
-        if(key==null){
-            return null;
-        }
-        if(key.indexOf("_")>-1){
-            return key;
-        }
-        return key.replaceAll("([A-Z])", "_$1").toLowerCase(Locale.ROOT);
-    }
-
-    /**
      * <p>
      * 试用指定字符构造字符串
      * </p>
