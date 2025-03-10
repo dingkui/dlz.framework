@@ -4,11 +4,13 @@
 CHANGED_FILES=$(git diff --name-only HEAD^ HEAD)
 # 初始化一个空数组来存储发生变化的模块路径
 CHANGED_MODULES=()
+# 打印发生变化的模块路径
+echo "Changed files:"
 # 遍历变更的文件，确定发生变化的模块路径
 for FILE in $CHANGED_FILES; do
     # 获取文件所在的目录
     DIR=$(dirname $FILE)
-
+    echo $MODULE
     # 查找最近的pom.xml文件所在的目录
     while [ "$DIR" != "." ]; do
         if [ -f "$DIR/pom.xml" ]; then
@@ -17,11 +19,6 @@ for FILE in $CHANGED_FILES; do
         fi
         DIR=$(dirname $DIR)
     done
-done
-# 打印发生变化的模块路径
-echo "Changed files:"
-for MODULE in "${CHANGED_MODULES[@]}"; do
-    echo $MODULE
 done
 # 去重
 UNIQUE_MODULES=($(printf "%s\n" "${CHANGED_MODULES[@]}" | sort -u))
