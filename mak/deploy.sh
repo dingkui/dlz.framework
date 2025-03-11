@@ -62,7 +62,7 @@ done
 
 ## 构建Maven命令
 MVN_CMD="mvn -B clean source:jar deploy"
-if [ ${#BUILD_MODULES[@]} -gt 0 ]; then
+if [ ${#BUILD_MODULES[@]} -gt 1 ]; then
     # 使用 IFS 临时设置为逗号，并将数组元素连接成一个字符串
     IFS=','; BUILD_MODULES_STR="'${BUILD_MODULES[*]}'"
     MVN_CMD+=" -pl $BUILD_MODULES_STR"
