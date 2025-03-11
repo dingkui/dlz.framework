@@ -10,10 +10,10 @@ spring:
     name: ${appname}-test
   redis:
     #数据库索引
-    database: 1
-    host: 192.168.1.4
+    database: 3
+    host: 192.168.1.126
     port: 6379
-    password:
+    password: 1234qwer
     #连接超时时间
     timeout: 5000
 

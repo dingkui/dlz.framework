@@ -1,13 +1,11 @@
 package com.dlz.comm.cache;
 
+import com.dlz.comm.util.JacksonUtil;
 import com.dlz.comm.util.VAL;
 
 import java.io.Serializable;
 import java.lang.reflect.Type;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.Callable;
 
 public interface ICache {
@@ -23,6 +21,30 @@ public interface ICache {
                 }
             }
             return re;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+    default <T> List<T> getAndSetList(String name, Serializable key, Callable<VAL<List<T>,Integer>> valueLoader,Class<T> tClass){
+        try {
+            List<T> re = get(name, key, JacksonUtil.mkJavaType(List.class,tClass));
+            if (re == null && valueLoader != null) {
+                VAL<List<T>,Integer> v = valueLoader.call();
+                if (v != null) {
+                    re= v.v1;
+                    put(name, key, (Serializable)re, v.v2);
+                }
+            }
+            return re;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+    default <T> List<T> getAndSetListForever(String name, Serializable key, Callable<List<T>> valueLoader,Class<T> tClass){
+        try {
+            return getAndSetList(name, key, ()->VAL.of(valueLoader.call(), -1),tClass);
         } catch (Exception e) {
             e.printStackTrace();
             return null;

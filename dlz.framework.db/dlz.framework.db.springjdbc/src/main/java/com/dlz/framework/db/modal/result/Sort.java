@@ -27,6 +27,9 @@ public class Sort<T extends Sort> implements Serializable, IChained<T> {
     public Sort(Order... order){
         this.orders.addAll( Arrays.asList(order));
     }
+    public Sort(List<Order> orders){
+        this.orders.addAll(orders);
+    }
     @JsonIgnore
     public String getSortSql() {
         if(orders ==null|| orders.size()==0){

@@ -11,13 +11,14 @@ import java.util.Map;
 
 public class JedisKeyUtils {
     private static final String SPL = "$CLASS$";
-    private static Map<String,JavaType> javaType_map=new Hashtable<>();
+    private static Map<String, JavaType> javaType_map = new Hashtable<>();
+
     public static JavaType getJavaType(String clazz) {
         JavaType javaType = javaType_map.get(clazz);
-        if(javaType == null){
+        if (javaType == null) {
             try {
                 javaType = JacksonUtil.mkJavaType(Class.forName(clazz));
-                javaType_map.put(clazz,javaType);
+                javaType_map.put(clazz, javaType);
             } catch (ClassNotFoundException e) {
                 throw new SystemException(e.getMessage(), e);
             }
@@ -45,7 +46,7 @@ public class JedisKeyUtils {
             }
         }
         if (javaType == null) {
-            return (T)str;
+            return (T) str;
         }
         return ValUtil.toObj(str, javaType);
     }
@@ -54,18 +55,4 @@ public class JedisKeyUtils {
         return key.getBytes();
     }
 
-
-
-
-//    public static void main(String[] args) {
-//        init(new RedisKeyMaker());
-////        System.out.println(getRedisKey(":xxx:xxx::"));
-////        System.out.println(getRedisKey(":xxx::xxx::"));
-////        System.out.println(getRedisKey(":xxx::xxx::","aa"));
-////        System.out.println(getRedisKey(":xxx::xxx::",":aa:"));
-////        System.out.println(getRedisKey(":xxx::xxx::","aa:"));
-////        System.out.println(getRedisKey(":xxx::xxx::", "*:"));
-////        System.out.println(getClientKey("auto::xxx:xxx::"));
-//        System.out.println(getRedisKey("auto::xxx:xxx::","ss","xxx"));
-//    }
 }

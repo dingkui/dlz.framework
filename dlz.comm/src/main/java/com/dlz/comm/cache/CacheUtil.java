@@ -4,6 +4,7 @@ import com.dlz.comm.util.ExceptionUtils;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.Serializable;
+import java.util.List;
 import java.util.concurrent.Callable;
 
 /**
@@ -70,6 +71,17 @@ public class CacheUtil {
     public static <T> T get(String cacheName, String key, Callable<T> valueLoader) {
         try {
             return getCache(cacheName).getAndSetForever(cacheName, key, valueLoader);
+        } catch (Exception e) {
+            log.error(ExceptionUtils.getStackTrace(e));
+            return null;
+        }
+    }
+    /**
+     * 获取缓存
+     */
+    public static <T> List<T> getList(String cacheName, String key, Callable<List<T>> valueLoader, Class<T> type) {
+        try {
+            return getCache(cacheName).getAndSetListForever(cacheName, key, valueLoader,type);
         } catch (Exception e) {
             log.error(ExceptionUtils.getStackTrace(e));
             return null;

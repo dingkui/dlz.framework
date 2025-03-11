@@ -62,12 +62,18 @@ public class DB {
     public static <T> QueryWrapper<T> query(Class<T> re) {
         return QueryWrapper.wrapper(re);
     }
+    public static <T> QueryWrapper<T> query(Map<String, Object> query,Class<T> re) {
+        return QueryWrapper.wrapper(re).auto(query);
+    }
 
     public static <T> InsertWrapper<T> insert(T bean) {
         return new InsertWrapper(bean);
     }
     public static <T> UpdateWrapper<T> update(Class<T> re) {
         return UpdateWrapper.wrapper(re);
+    }
+    public static <T> UpdateWrapper<T> update(T re) {
+        return UpdateWrapper.wrapper((Class<T>) re.getClass()).set(re);
     }
     public static <T> DeleteWrapper<T> delete(Class<T> re) {
         return DeleteWrapper.wrapper(re);

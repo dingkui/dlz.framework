@@ -40,18 +40,22 @@ public class Order implements Serializable {
         return build(column, false);
     }
 
-    public static List<Order> ascs(String... columns) {
-        return Arrays.stream(columns).map(Order::asc).collect(Collectors.toList());
+//    public static List<Order> ascs(String... columns) {
+//        return Arrays.stream(columns).map(Order::asc).collect(Collectors.toList());
+//    }
+
+    public static Order[] ascs(String... columns) {
+        return (Order[]) Arrays.stream(columns).map(Order::asc).toArray();
     }
-    public static <T> List<Order> ascs(DlzFn<T, ?>... columns) {
-        return Arrays.stream(columns).map(item->Order.asc(DbInfoCache.fnName(item))).collect(Collectors.toList());
+    public static <T> Order[] ascs(DlzFn<T, ?>... columns) {
+        return (Order[])Arrays.stream(columns).map(item->Order.asc(DbInfoCache.fnName(item))).toArray();
     }
-    public static <T1> List<Order> descs(DlzFn<T1, ?>... columns) {
-        return Arrays.stream(columns).map(item->Order.desc(DbInfoCache.fnName(item))).collect(Collectors.toList());
+    public static <T1> Order[] descs(DlzFn<T1, ?>... columns) {
+        return (Order[])Arrays.stream(columns).map(item->Order.desc(DbInfoCache.fnName(item))).toArray();
     }
 
-    public static List<Order> descs(String... columns) {
-        return Arrays.stream(columns).map(Order::desc).collect(Collectors.toList());
+    public static Order[] descs(String... columns) {
+        return (Order[])Arrays.stream(columns).map(Order::desc).toArray();
     }
 
     public static Order build(String column, boolean asc) {

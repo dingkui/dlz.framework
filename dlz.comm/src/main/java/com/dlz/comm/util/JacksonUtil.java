@@ -521,8 +521,8 @@ public class JacksonUtil {
 //        } else if(type instanceof TypeVariable){
 //        } else if(type instanceof WildcardType) {
         } else {
-//            return objectMapper.getTypeFactory().constructParametricType((Class) type, new JavaType[0]);
-            return TypeFactory.defaultInstance().constructParametricType((Class) type, new JavaType[0]);
+//            return TypeFactory.defaultInstance().constructParametricType((Class) type, new JavaType[0]);
+            return objectMapper.getTypeFactory().constructType(type);
         }
     }
 

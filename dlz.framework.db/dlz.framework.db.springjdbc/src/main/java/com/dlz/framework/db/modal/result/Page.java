@@ -8,7 +8,9 @@ import lombok.experimental.Accessors;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Function;
 import java.util.function.Supplier;
+import java.util.stream.Collectors;
 
 @Data
 @Accessors(chain = true)
@@ -48,7 +50,12 @@ public class Page<T> extends Sort<Page> implements Serializable {
     public Page() {
         super();
     }
-
+    public <E> Page<E> cover(Function<T, E> c) {
+        Page<E> page = new Page<>(current,size);
+        page.setTotal(this.total);
+        page.setRecords(this.records.stream().map(c).collect(Collectors.toList()));
+        return page;
+    }
 
     public Page<T> setSize(long size) {
         if (size > 5000) {
