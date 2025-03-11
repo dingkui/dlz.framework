@@ -5,12 +5,12 @@ CHANGED_FILES=$(git diff --name-only HEAD^ HEAD)
 # 初始化一个空数组来存储发生变化的模块路径
 CHANGED_MODULES=()
 # 打印发生变化的模块路径
-echo "Changed files:"
+#echo "Changed files:"
 # 遍历变更的文件，确定发生变化的模块路径
 for FILE in $CHANGED_FILES; do
     # 获取文件所在的目录
     DIR=$(dirname $FILE)
-    echo $MODULE
+    #echo $DIR
     # 查找最近的pom.xml文件所在的目录
     while [ "$DIR" != "." ]; do
         if [ -f "$DIR/pom.xml" ]; then
@@ -49,7 +49,7 @@ for module in "${ignore_MODULES[@]}"; do
   ignore_map["$module"]=1
 done
 
-BUILD_MODULES=()
+BUILD_MODULES=("./pom.xml")
 for module in "${UNIQUE_MODULES[@]}"; do
     # 调试语句（正式使用可删除）
     if [[ -z "${ignore_map[$module]}" ]]; then
@@ -60,13 +60,12 @@ for module in "${UNIQUE_MODULES[@]}"; do
     fi
 done
 
-
 ## 构建Maven命令
 MVN_CMD="mvn -B clean source:jar deploy"
 if [ ${#BUILD_MODULES[@]} -gt 0 ]; then
     # 使用 IFS 临时设置为逗号，并将数组元素连接成一个字符串
-    IFS=','; EXCLUDE_MODULES_STR="'${BUILD_MODULES[*]}'"
-    MVN_CMD+=" -pl $EXCLUDE_MODULES_STR"
+    IFS=','; BUILD_MODULES_STR="'${BUILD_MODULES[*]}'"
+    MVN_CMD+=" -pl $BUILD_MODULES_STR"
 
     # 执行Maven编译
     echo "Maven command: $MVN_CMD"
