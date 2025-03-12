@@ -40,7 +40,7 @@ public class MethodReflections {
      * @param methodPrefix 方法前缀 get set is
      * @return
      */
-    private static String mkMethodName(String propertyName, String methodPrefix) {
+    public static String mkMethodName(String propertyName, String methodPrefix) {
         return (methodPrefix + Character.toUpperCase(propertyName.charAt(0)) + propertyName.substring(1)).intern();
     }
 

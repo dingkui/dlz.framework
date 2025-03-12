@@ -58,6 +58,13 @@ public class Order implements Serializable {
         return (Order[])Arrays.stream(columns).map(Order::desc).toArray();
     }
 
+    public static Order[] buildWithSql(String columns) {
+        return (Order[])Arrays.stream(columns.split(",")).map(item->{
+            String[] split = item.split(" ");
+            return build(split[0], split[1]);
+        }).toArray();
+    }
+
     public static Order build(String column, boolean asc) {
         return new Order(column, asc);
     }

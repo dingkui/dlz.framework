@@ -1,6 +1,7 @@
 package com.dlz.framework.db.modal.condition;
 
 import com.dlz.comm.fn.DlzFn;
+import com.dlz.framework.db.enums.DbOprateEnum;
 import com.dlz.framework.db.inf.IChained;
 
 import static com.dlz.framework.db.enums.DbOprateEnum.*;
@@ -231,6 +232,19 @@ public interface ICondAddByLamda<ME extends ICondAddByLamda, T> extends IChained
      */
     default ME le(DlzFn<T, ?> column, Object value) {
         addChildren(le.mk(column, value));
+        return me();
+    }
+
+    /**
+     * 添加一个自定义条件
+     *
+     * @param column 列的名称
+     * @param op 自定义
+     * @param value     用于比较的值
+     * @return 返回当前条件对象，支持链式调用
+     */
+    default ME op(DlzFn<T, ?> column, DbOprateEnum op, Object value) {
+        addChildren(op.mk(column, value));
         return me();
     }
 }

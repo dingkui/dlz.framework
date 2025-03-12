@@ -1,5 +1,6 @@
 package com.dlz.framework.db.modal.condition;
 
+import com.dlz.framework.db.enums.DbOprateEnum;
 import com.dlz.framework.db.inf.IChained;
 
 import static com.dlz.framework.db.enums.DbOprateEnum.*;
@@ -225,6 +226,18 @@ public interface ICondAddByKey<T extends ICondAddByKey>  extends IChained<T> {
      */
     default T le(String clumnName, Object value) {
         addChildren(le.mk(clumnName, value));
+        return me();
+    }
+    /**
+     * 添加一个自定义条件
+     *
+     * @param clumnName 列的名称
+     * @param op 自定义
+     * @param value     用于比较的值
+     * @return 返回当前条件对象，支持链式调用
+     */
+    default T op(String clumnName, DbOprateEnum op, Object value) {
+        addChildren(op.mk(clumnName, value));
         return me();
     }
 }

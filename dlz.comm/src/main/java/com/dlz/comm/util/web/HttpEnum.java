@@ -54,6 +54,9 @@ public enum HttpEnum {
     public String send(String url, Map<String, Object> para) {
         return send(HttpRequestParam.createFormReq(url, para));
     }
+    public String send(String url, Map<String, String> header,Map<String, Object> para) {
+        return send(HttpRequestParam.createFormReq(url, para).addHeader(header));
+    }
 
     public String send(String url) {
         return send(HttpRequestParam.createFormReq(url, null));
