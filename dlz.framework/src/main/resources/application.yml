@@ -1,8 +1,0 @@
-dlz:
-  redis:
-    # 是否初始化JeJedisPool
-    initPool: false
-    # 是否启动队列处理
-    queue: false
-    # redis前缀 auto未自动获取当前的 ${spring.application.name}:${spring.profiles.active}
-    prefix: auto
