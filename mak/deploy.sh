@@ -1,14 +1,17 @@
 #!/bin/bash
 
-if [ "$CI_COMMIT_SHA_1" == "" ]; then
-  CI_COMMIT_SHA_1="HEAD^"
+if [ "$CI_COMMIT_BEFORE_SHA" == "" ]; then
+  CI_COMMIT_BEFORE_SHA="HEAD^"
 fi
+echo CI_COMMIT_BEFORE_SHA=$CI_COMMIT_BEFORE_SHA
 # 获取变更的文件列表
-CHANGED_FILES=$(git diff --name-only $CI_COMMIT_SHA_1 HEAD)
+CHANGED_FILES=$(git diff --name-only $CI_COMMIT_BEFORE_SHA HEAD)
 # 初始化一个空数组来存储发生变化的模块路径
 CHANGED_MODULES=()
 # 打印发生变化的模块路径
 #echo "Changed files:"
+CHANGED_FILES_SIZE=$(echo "$CHANGED_FILES" | wc -l)
+echo "Number of changed files: $CHANGED_FILES_SIZE"
 # 遍历变更的文件，确定发生变化的模块路径
 for FILE in $CHANGED_FILES; do
     # 获取文件所在的目录
