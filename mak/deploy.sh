@@ -1,7 +1,10 @@
 #!/bin/bash
 
+if [ "$CI_COMMIT_SHA_1" == "" ]; then
+  CI_COMMIT_SHA_1="HEAD^"
+fi
 # 获取变更的文件列表
-CHANGED_FILES=$(git diff --name-only HEAD^ HEAD)
+CHANGED_FILES=$(git diff --name-only $CI_COMMIT_SHA_1 HEAD)
 # 初始化一个空数组来存储发生变化的模块路径
 CHANGED_MODULES=()
 # 打印发生变化的模块路径
@@ -64,12 +67,12 @@ done
 MVN_CMD="mvn -B clean source:jar deploy"
 if [ ${#BUILD_MODULES[@]} -gt 1 ]; then
     # 使用 IFS 临时设置为逗号，并将数组元素连接成一个字符串
-    IFS=','; BUILD_MODULES_STR="'${BUILD_MODULES[*]}'"
+    IFS=','; BUILD_MODULES_STR="${BUILD_MODULES[*]}"
     MVN_CMD+=" -pl $BUILD_MODULES_STR"
 
     # 执行Maven编译
-    echo "Maven command: $MVN_CMD"
-    eval $MVN_CMD
+    echo "Maven command11: $MVN_CMD"
+    bash -c "$MVN_CMD"
 else
     echo "No modules to deploy."
 fi
