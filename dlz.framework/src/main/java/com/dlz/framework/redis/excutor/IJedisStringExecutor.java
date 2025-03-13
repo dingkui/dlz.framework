@@ -138,7 +138,7 @@ public interface IJedisStringExecutor extends IJedisExecutor {
             byte[] key1 = SafeEncoder.encode(getRedisKey(key));
             j.set(key1, SerializeUtil.serialize(value));
             if (seconds > 0) {
-                j.expire(key1, (long)seconds);
+                j.expire(key1, seconds);
             }
             return true;
         });

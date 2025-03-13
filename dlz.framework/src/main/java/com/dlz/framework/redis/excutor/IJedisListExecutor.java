@@ -65,7 +65,7 @@ public interface IJedisListExecutor extends IJedisExecutor {
             String key1 = getRedisKey(key);
             Long lpush = j.lpush(key1, value);
             if (seconds > 0) {
-                j.expire(key1, (long)seconds);
+                j.expire(key1, seconds);
             }
             return lpush;
         });

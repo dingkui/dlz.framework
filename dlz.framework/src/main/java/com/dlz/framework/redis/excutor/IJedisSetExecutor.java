@@ -42,7 +42,7 @@ public interface IJedisSetExecutor extends IJedisExecutor {
             String key1 = getRedisKey(key);
             Long sadd = j.sadd(key1, values);
             if (seconds > 0) {
-                j.expire(key1, (long)seconds);
+                j.expire(key1, seconds);
             }
             return sadd;
         });

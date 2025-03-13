@@ -18,7 +18,7 @@ public interface IJedisKeyExecutor extends IJedisExecutor {
      */
     default Boolean expire(String key, int seconds) {
         if (seconds > 0) {
-            excute(j -> j.expire(getRedisKey(key), (long)seconds));
+            excute(j -> j.expire(getRedisKey(key), seconds));
         }
         return true;
     }
