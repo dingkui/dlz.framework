@@ -12,6 +12,7 @@
 <!--		<module>dlz.plugin.redis</module>-->
 <!--		<module>dlz.plugin.websocket</module>-->
 		<module>dlz.plugin.netty</module>
+		<module>dlz.plugin.jsons</module>
 <!--		<module>dlz.plugin.socket</module>-->
 <!--		<module>dlz.plugin.quartz</module>-->
 <!--		<module>dlz.plugin.component</module>-->

@@ -10,6 +10,7 @@ import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.math.BigDecimal;
 import java.util.*;
+import java.util.function.Function;
 
 /**
  * 对象转换工具类
@@ -321,26 +322,29 @@ public class ValUtil {
         return toDateStr(input, null, new Date());
     }
 
+    private static Map<Class<?>, Function<?,?>> natveConverts= new HashMap<>();
+    static {
+        natveConverts.put(String.class, ValUtil::toStr);
+        natveConverts.put(Integer.class, ValUtil::toInt);
+        natveConverts.put(Long.class, ValUtil::toLong);
+        natveConverts.put(Date.class, ValUtil::toDate);
+        natveConverts.put(BigDecimal.class, ValUtil::toBigDecimal);
+        natveConverts.put(Float.class, ValUtil::toFloat);
+        natveConverts.put(Double.class, ValUtil::toDouble);
+        natveConverts.put(Boolean.class, ValUtil::toBoolean);
+        natveConverts.put(null, input -> input);
+    }
 
-    private static <T> T toNativeObj(Object input, Class<T> classs) {
-        if (classs.isAssignableFrom(input.getClass())) {
+    public static <T> T toNativeObj(Object input, Class<T> clazz) {
+        if (input == null) {
+            return null;
+        }
+        if (clazz.isAssignableFrom(input.getClass())) {
             return (T) input;
-        } else if (classs == String.class) {
-            return (T) toStr(input);
-        } else if (classs == Integer.class) {
-            return (T) toInt(input);
-        } else if (classs == Long.class) {
-            return (T) toLong(input);
-        } else if (classs == Date.class) {
-            return (T) toDate(input);
-        } else if (classs == BigDecimal.class) {
-            return (T) toBigDecimal(input);
-        } else if (classs == Float.class) {
-            return (T) toFloat(input);
-        } else if (classs == Double.class) {
-            return (T) toDouble(input);
-        } else if (classs == Boolean.class) {
-            return (T) toBoolean(input);
+        }
+        final Function function = natveConverts.get(clazz);
+        if(function!=null){
+            return (T) function.apply(input);
         }
         return null;
     }
@@ -349,7 +353,7 @@ public class ValUtil {
         if (input == null || classs == null) {
             return (T) input;
         }
-        T re = toNativeObj(input, classs);
+        T re = (T)toNativeObj(input, classs);
         return re != null ? re : JacksonUtil.coverObj(input, classs);
     }
 

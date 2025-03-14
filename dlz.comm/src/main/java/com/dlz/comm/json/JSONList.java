@@ -27,6 +27,49 @@ public class JSONList extends ArrayList<Object> implements IUniversalVals,IUnive
 	public JSONList(Object obj){
 		this(obj,null);
 	}
+
+	public JSONList(Collection<?> collection){
+		super();
+		if(collection==null){
+			return;
+		}
+		addAll(collection);
+	}
+	public JSONList(Object[] objs){
+		super();
+		if(objs==null){
+			return;
+		}
+		Collections.addAll(this, objs);
+	}
+	public <T> JSONList(Collection<?> collection,Class<T> objectClass){
+		super();
+		if(collection==null){
+			return;
+		}
+		if(objectClass!=null){
+			final Iterator input2 = collection.iterator();
+			while(input2.hasNext()){
+				add(ValUtil.toObj(input2.next(), objectClass));
+			}
+		}else{
+			addAll(collection);
+		}
+	}
+
+	public <T> JSONList(Object[] objs,Class<T> objectClass){
+		super();
+		if(objs==null){
+			return;
+		}
+		if(objectClass!=null){
+			for (int i = 0; i < objs.length; i++) {
+				add(ValUtil.toObj(objs[i], objectClass));
+			}
+		}else{
+			Collections.addAll(this, objs);
+		}
+	}
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	public <T> JSONList(Object obj,Class<T> objectClass){
 		super();

@@ -15,7 +15,7 @@ ValUtil.toArray(obj, clazz);
 ValUtil.toArray(obj,defaultV);
 ValUtil.toArrayObj(obj,clazz,clazzs);
 ValUtil.toList(obj,defaultV);
-ValUtil.toListObj(obj,clazz);
+ValUtil.toList(obj,clazz);
 ValUtil.toStr(obj,defaultV);
 ValUtil.toBoolean(obj,defaultV);
 ValUtil.toDate(obj);
