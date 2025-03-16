@@ -28,7 +28,7 @@ public class RedisKeyMaker implements IKeyMaker{
     }
 
     public String getKeyWithPrefix(String key, Serializable... obj) {
-        if(!key.startsWith(prefix)){
+        if(key.startsWith(prefix)){
             return key;
         }
         StringBuilder sb = new StringBuilder(prefix);
