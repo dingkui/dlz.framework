@@ -17,7 +17,7 @@ public enum DbOprateEnum {
     eq("dbn = #{key}"),
     lt("dbn < #{key}"),//小于
     le("dbn <= #{key}"),//小于等于
-    gt("dbn < #{key}"),//大于
+    gt("dbn > #{key}"),//大于
     ge("dbn >= #{key}"),//大于等于
     ne("dbn <> #{key}"),//不等于
     in("dbn in (${key})"),
