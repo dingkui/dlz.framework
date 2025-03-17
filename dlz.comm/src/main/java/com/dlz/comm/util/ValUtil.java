@@ -9,6 +9,8 @@ import java.lang.reflect.Array;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.*;
 import java.util.function.Function;
 
@@ -292,7 +294,13 @@ public class ValUtil {
         if (Number.class.isAssignableFrom(input.getClass())) {
             return new Date(((Number) input).longValue());
         }
-        return DateUtil.getDateStr(toStr(input), format);
+        if (LocalDateTime.class.isAssignableFrom(input.getClass())) {
+            return DateUtil.getDate((LocalDateTime) input);
+        }
+        if (LocalDate.class.isAssignableFrom(input.getClass())) {
+            return DateUtil.getDate((LocalDate) input);
+        }
+        return DateUtil.getDate(toStr(input), format);
     }
 
     public static Date toDateNow(Object input) {
