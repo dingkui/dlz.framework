@@ -52,6 +52,9 @@ public interface IJedisStringExecutor extends IJedisExecutor {
      * @return true成功 false 失败
      */
     default Boolean set(String key, String value, long seconds) {
+        if(value == null){
+            return false;
+        }
         return excute(j -> {
             String key1 = getRedisKey(key);
             j.set(key1, value);

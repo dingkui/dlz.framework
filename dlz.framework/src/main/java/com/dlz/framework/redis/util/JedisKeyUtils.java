@@ -26,6 +26,9 @@ public class JedisKeyUtils {
         return javaType;
     }
     public static String getValueStr(Serializable value) {
+        if (value == null) {
+            return null;
+        }
         if (value instanceof CharSequence) {
             return value.toString();
         }
