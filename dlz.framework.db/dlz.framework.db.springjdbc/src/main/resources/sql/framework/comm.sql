@@ -32,7 +32,11 @@
 			[) ${_orderBy}]
 		[) a1 where rownum <=#{_end} ) [where rownum_> #{_begin}]]
     ]]></sql>
- 	
+
+    <sql sqlId="key.comm.pageSql.dm8"><![CDATA[
+    ${_sql} ${_orderBy} [ LIMIT [#{_begin},]#{_pageSize} ]
+ 	]]></sql>
+
  	<sql sqlId="key.comm.pageSql.mysql"><![CDATA[
 	 ${_sql} ${_orderBy} [ LIMIT [#{_begin},]#{_pageSize} ]
  	]]></sql>
