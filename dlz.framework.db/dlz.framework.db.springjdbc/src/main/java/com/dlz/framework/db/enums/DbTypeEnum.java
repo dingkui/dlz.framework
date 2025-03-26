@@ -6,6 +6,7 @@ public enum DbTypeEnum {
     MYSQL(".mysql"),
     POSTGRESQL(".postgresql"),
     ORACLE(".oracle"),
+    DM8(".dm8"),
     SQLITE(".sqlite"),
     MSSQL(".sqlserver");
     private String end;

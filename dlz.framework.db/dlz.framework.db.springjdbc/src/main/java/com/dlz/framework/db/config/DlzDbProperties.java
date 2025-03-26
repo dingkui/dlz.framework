@@ -14,6 +14,10 @@ public class DlzDbProperties {
      */
     private DbTypeEnum dbtype = DbTypeEnum.MYSQL;
     /**
+     * 数据库支持类
+     */
+    private String dbSupport = "";
+    /**
      * 数据库中blob类型编码
      */
     private String blob_charsetname = "GBK";

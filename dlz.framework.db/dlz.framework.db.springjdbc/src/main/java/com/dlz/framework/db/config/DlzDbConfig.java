@@ -1,5 +1,7 @@
 package com.dlz.framework.db.config;
 
+import com.dlz.comm.exception.SystemException;
+import com.dlz.comm.util.system.Reflections;
 import com.dlz.framework.config.DlzFwConfig;
 import com.dlz.framework.db.convertor.DbConvertUtil;
 import com.dlz.framework.db.convertor.dbtype.TableColumnMapper;
@@ -8,9 +10,7 @@ import com.dlz.framework.db.dao.IDlzDao;
 import com.dlz.framework.db.enums.DbTypeEnum;
 import com.dlz.framework.db.helper.support.HelperScan;
 import com.dlz.framework.db.helper.support.SqlHelper;
-import com.dlz.framework.db.helper.support.dbs.DbOpMysql;
-import com.dlz.framework.db.helper.support.dbs.DbOpPostgresql;
-import com.dlz.framework.db.helper.support.dbs.DbOpSqlite;
+import com.dlz.framework.db.helper.support.dbs.*;
 import com.dlz.framework.db.holder.SqlHolder;
 import com.dlz.framework.db.service.ICommService;
 import com.dlz.framework.db.service.impl.CommServiceImpl;
@@ -81,13 +81,26 @@ public class DlzDbConfig extends DlzFwConfig {
     public SqlHelper dlzHelperDbOp(IDlzDao dao,DlzDbProperties properties) {
         log.info("dlzHelper init dbType is:" + properties.getDbtype());
         SqlHelper helpler;
-        if (properties.getDbtype() == DbTypeEnum.SQLITE) {
-            helpler = new DbOpSqlite(dao);
-        } else if (properties.getDbtype() == DbTypeEnum.POSTGRESQL) {
-            helpler = new DbOpPostgresql(dao);
+        if(properties.getDbSupport()!=null){
+            final Class<?> aClass;
+            try {
+                aClass = Class.forName(properties.getDbSupport());
+                helpler = (SqlHelper)Reflections.newInstance(aClass, dao);
+            } catch (ClassNotFoundException e) {
+                throw new SystemException("dbSupport:"+properties.getDbSupport()+" not found");
+            }
         }else{
-            helpler = new DbOpMysql(dao);
+            if (properties.getDbtype() == DbTypeEnum.SQLITE) {
+                helpler = new DbOpSqlite(dao);
+            }else if (properties.getDbtype() == DbTypeEnum.POSTGRESQL) {
+                helpler = new DbOpPostgresql(dao);
+            }else if (properties.getDbtype() == DbTypeEnum.ORACLE||properties.getDbtype() == DbTypeEnum.DM8) {
+                helpler = new DbOpDm8(dao);
+            }else{
+                helpler = new DbOpMysql(dao);
+            }
         }
+
         //自动扫描
         if(properties.getHelper().autoUpdate){
             log.info("dlzHelper autoUpdate ...");
