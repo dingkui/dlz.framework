@@ -20,14 +20,14 @@ import java.util.stream.Stream;
  * @author dk
  */
 @Slf4j
-public class MemoryCahe implements ICache {
+public class MemoryCache implements ICache {
     private final static Map<String, Map<Serializable, Element>> CACHE = new ConcurrentHashMap<>();
     private static ExpiredRunnable Expired = null;
     private static Long BEGIN = System.currentTimeMillis() / 1000;
 
-    public MemoryCahe() {
+    public MemoryCache() {
         if (Expired == null) {
-            synchronized (MemoryCahe.class) {
+            synchronized (MemoryCache.class) {
                 if (Expired == null) {
                     Expired = new ExpiredRunnable();
                     new Thread(Expired).start();
@@ -39,7 +39,7 @@ public class MemoryCahe implements ICache {
     protected static Map<Serializable, Element> getCache(String name) {
         Map<Serializable, Element> cache = CACHE.get(name);
         if (cache == null) {
-            synchronized (MemoryCahe.class) {
+            synchronized (MemoryCache.class) {
                 cache = CACHE.get(name);
                 if (cache == null) {
                     cache = new ConcurrentHashMap<>();
@@ -139,7 +139,7 @@ public class MemoryCahe implements ICache {
             while (true) {
                 try {
                     Thread.sleep(1000);//实现定时去删除过期
-                    expired(System.currentTimeMillis() / 1000 - MemoryCahe.BEGIN);
+                    expired(System.currentTimeMillis() / 1000 - MemoryCache.BEGIN);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
@@ -152,7 +152,7 @@ public class MemoryCahe implements ICache {
             }
             begin = null;
             end = null;
-            MemoryCahe.CACHE.entrySet().stream().parallel().forEach(item -> {
+            MemoryCache.CACHE.entrySet().stream().parallel().forEach(item -> {
                 Map<Serializable, Element> cache = item.getValue();
                 cache.forEach((key, value) -> {
                     if (value.expired != null) {
@@ -169,7 +169,7 @@ public class MemoryCahe implements ICache {
 
         private void expiredWithLog(long curr) {
             Long l = System.currentTimeMillis();
-            BigDecimal n1 = MemoryCahe.CACHE.entrySet().stream().map(item ->
+            BigDecimal n1 = MemoryCache.CACHE.entrySet().stream().map(item ->
                     new BigDecimal(item.getValue().size())
             ).reduce(BigDecimal.ZERO, BigDecimal::add);
 
@@ -177,7 +177,7 @@ public class MemoryCahe implements ICache {
                 log.debug("sikp:" + n1.intValue());
             }
 
-            BigDecimal n2 = MemoryCahe.CACHE.entrySet().stream().map(item ->
+            BigDecimal n2 = MemoryCache.CACHE.entrySet().stream().map(item ->
                     new BigDecimal(item.getValue().size())
             ).reduce(BigDecimal.ZERO, BigDecimal::add);
 

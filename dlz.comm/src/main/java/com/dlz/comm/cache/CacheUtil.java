@@ -46,7 +46,7 @@ public class CacheUtil {
      */
     public static ICache getCache(String cacheName,ICache cache) {
         if(cache == null){
-            cache = new MemoryCahe();
+            cache = new MemoryCache();
         }
         return CacheHolder.get(cacheName,cache);
     }
