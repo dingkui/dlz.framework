@@ -578,6 +578,30 @@ public class ValUtil {
             setValue(target, name, o, true);
         });
     }
+    /**
+     * 对象拷贝
+     * @param source 支持pojo对象
+     * @param target 目标数据，支持JSONMap
+     * @param onlySetValue 是否只复制注解了@SetValue的属性
+     */
+    public static void copy(Object source, JSONMap target, boolean onlySetValue) {
+        if (source instanceof CharSequence || source instanceof Map || source instanceof List || source.getClass().isArray()) {
+            throw new IllegalArgumentException("不支持的复制类型：" + source.getClass());
+        }
+        FieldReflections.getFields(target.getClass()).forEach(method ->{
+            SetValue annotation = method.getAnnotation(SetValue.class);
+            if(annotation==null && onlySetValue){
+                return;
+            }
+            String name = method.getName();
+            Object o = getValue(source, name, true);
+            if(!"".equals(annotation.value())){
+                target.set(annotation.value()+"."+name,o);
+            }else{
+                target.set(name,o);
+            }
+        });
+    }
 
 //    public static void main(String[] args) {
 //        System.out.println(toDate("2018-21-24 19:23:39.583"));
