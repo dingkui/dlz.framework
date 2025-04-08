@@ -558,7 +558,7 @@ public class ValUtil {
      * @param target 支持pojo对象
      * @param onlySetValue 是否只复制注解了@SetValue的属性
      */
-    public static void copy(Object source, Object target, boolean onlySetValue) {
+    public static <T> T copy(Object source, T target, boolean onlySetValue) {
         if (target instanceof CharSequence || target instanceof Map || target instanceof List || target.getClass().isArray()) {
             throw new IllegalArgumentException("不支持的复制类型：" + target.getClass());
         }
@@ -577,6 +577,7 @@ public class ValUtil {
             Object o = toObj(getValue(source, sourceName, true), method.getType());
             setValue(target, name, o, true);
         });
+        return target;
     }
     /**
      * 对象拷贝
