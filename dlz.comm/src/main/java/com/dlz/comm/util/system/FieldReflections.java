@@ -42,41 +42,40 @@ public class FieldReflections {
      * 直接读取对象属性值, 无视private/protected修饰符, 不经过getter函数.
      */
     public static <T> T getValue(final Object obj, final String fieldName, final boolean ignore) {
-        Field field = getField(obj, fieldName,ignore);
-        if (field == null) {
+        if (obj == null) {
             if(ignore){
                 return null;
             }
-            throw new IllegalArgumentException("Could not find field [" + fieldName + "] on target [" + obj + "]");
+            throw new IllegalArgumentException("Could not getValue [" + fieldName + "] on target [null]");
         }
-        return (T) getValue(obj,field);
+        return getValue(obj,getField(obj, fieldName,ignore));
     }
 
     /**
      * 直接设置对象属性值, 无视private/protected修饰符, 不经过setter函数.
+     * @return
      */
-    public static void setValue(final Object obj, final String fieldName, final Object value, final boolean ignore) {
-        Field field = getField(obj, fieldName,ignore);
-        if (field == null) {
+    public static boolean setValue(final Object obj, final String fieldName, final Object value, final boolean ignore) {
+        if (obj == null) {
             if(ignore){
-                return;
+                return false;
             }
-            throw new IllegalArgumentException("Could not find field [" + fieldName + "] on target [" + obj + "]");
+            throw new IllegalArgumentException("Could not setValue [" + fieldName + "] on target [null]");
         }
-        setValue(obj, field, value);
+        return setValue(obj, getField(obj, fieldName,ignore), value);
     }
 
     /**
      * 直接设置对象属性值, 无视private/protected修饰符, 不经过setter函数.
      */
-    public static void setValue(final Object obj, final String fieldName, final Object value) {
-        setValue(obj, fieldName, value, false);
+    public static boolean setValue(final Object obj, final String fieldName, final Object value) {
+        return setValue(obj, fieldName, value, false);
     }
 
     /**
      * 直接设置对象属性值, 无视private/protected修饰符, 不经过setter函数.
      */
-    public static void setValue(final Object obj, final Field field, final Object value) {
+    public static boolean setValue(final Object obj, final Field field, final Object value) {
         if (field == null) {
             throw new IllegalArgumentException("field is null");
         }
@@ -84,7 +83,9 @@ public class FieldReflections {
             field.set(obj, ValUtil.toObj(value, field.getGenericType()));
         } catch (IllegalAccessException e) {
             log.error("不可能抛出的异常:{}", e.getMessage());
+            return false;
         }
+        return true;
     }
 
 
