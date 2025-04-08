@@ -273,22 +273,16 @@ public class StringUtils {
         return true;
     }
 
-
-
     public static boolean isNumber(CharSequence o) {
-        return o.length() > 0 && o.toString().replaceAll("[\\d.+-]", "").length() > 0;
+        return o.length() > 0 && o.toString().replaceAll("[\\d\\.+-]", "").length() == 0;
     }
 
     public static boolean isLongOrInt(CharSequence o) {
-        return o.length() > 0 && o.toString().replaceAll("[\\d+-]", "").length() > 0;
+        return o.length() > 0 && o.toString().replaceAll("[\\d+-]", "").length() == 0;
     }
 
     public static boolean isNotEmpty(Object cs) {
         return !isEmpty(cs);
-    }
-
-    public static String joinObject(Object cs, Object b) {
-        return String.valueOf(cs) + String.valueOf(b);
     }
 
     /**

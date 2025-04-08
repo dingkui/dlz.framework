@@ -2,7 +2,9 @@ package com.dlz.comm.util;
 
 import com.dlz.comm.exception.SystemException;
 import com.dlz.comm.json.JSONList;
+import com.dlz.comm.json.JSONMap;
 import com.dlz.comm.util.system.FieldReflections;
+import com.dlz.comm.util.system.annotation.SetValue;
 import com.fasterxml.jackson.databind.JavaType;
 import lombok.extern.slf4j.Slf4j;
 
@@ -331,7 +333,8 @@ public class ValUtil {
         return toDateStr(input, null, new Date());
     }
 
-    private static Map<Class<?>, Function<?,?>> natveConverts= new HashMap<>();
+    private static Map<Class<?>, Function<?, ?>> natveConverts = new HashMap<>();
+
     static {
         natveConverts.put(String.class, ValUtil::toStr);
         natveConverts.put(Integer.class, ValUtil::toInt);
@@ -352,7 +355,7 @@ public class ValUtil {
             return (T) input;
         }
         final Function function = natveConverts.get(clazz);
-        if(function!=null){
+        if (function != null) {
             return (T) function.apply(input);
         }
         return null;
@@ -362,7 +365,7 @@ public class ValUtil {
         if (input == null || classs == null) {
             return (T) input;
         }
-        T re = (T)toNativeObj(input, classs);
+        T re = (T) toNativeObj(input, classs);
         return re != null ? re : JacksonUtil.coverObj(input, classs);
     }
 
@@ -407,104 +410,173 @@ public class ValUtil {
 
     /**
      * 获取对象属性值,无视private/protected修饰符, 不经过getter函数，支持多级取值
-     * @param obj  支持pojo对象,map,数组和list
-     * @param fieldNames 支持多级取值
-     *                   如： {a:1}  取值1： fieldNames="a"
-     *                       {a:{b:"xx"}}  取值xx： fieldNames="a.b"
-     *                       {a:{b:[1,2]}}  取值2： fieldNames="a.b.1"
-     * @param ignore 忽略空值或错误的属性
+     *
+     * @param obj       支持pojo对象,map,数组和list
+     * @param fieldName 支持多级取值
+     *                  如： {a:1}  取值1： fieldNames="a"
+     *                  {a:{b:"xx"}}  取值xx： fieldNames="a.b"
+     *                  {a:{b:[1,2]}}  取值2： fieldNames="a.b.1"
+     * @param ignore    忽略空值或错误的属性
      * @param <T>
      * @return
      */
-    public static <T> T getValue(final Object obj, final String fieldNames, final boolean ignore) {
+    public static <T> T getValue(final Object obj, final String fieldName, final boolean ignore) {
         Object object = obj;
-        String[] names = StringUtils.split(fieldNames, ".");
-        for (int i = 0; i < names.length; i++){
-            if (object == null) {
-                if(ignore){
+        Object res = null;
+        final int i = fieldName.indexOf(".");
+        if (i > -1) {
+            String name = fieldName.substring(0, i);
+            String subFieldName = fieldName.substring(i + 1);
+            return getValue(getValue(obj, name, ignore), subFieldName, ignore);
+        }
+
+        if (object instanceof CharSequence) {
+            if (StringUtils.isNumber(fieldName)) {
+                res = new JSONList(object.toString()).get(Integer.parseInt(fieldName));
+            } else {
+                res = new JSONMap(object.toString()).get(fieldName);
+            }
+        } else if (object instanceof Map) {
+            res = ((Map) object).get(fieldName);
+        } else if (object instanceof List || object.getClass().isArray()) {
+            if (!StringUtils.isLongOrInt(fieldName)) {
+                if (ignore) {
                     return null;
                 }
-                throw new IllegalArgumentException("can't getValue [" + fieldNames + "] from [" + obj + "]");
+                throw new IllegalArgumentException("can't getValue [" + fieldName + "] from [" + obj + "]");
             }
-            if(object instanceof Map){
-                object = ((Map)object).get(names[i]);
-            }else if(object instanceof List || object.getClass().isArray()){
-                if(!StringUtils.isNumber(names[i])){
-                    if(ignore){
-                        return null;
-                    }
-                    throw new IllegalArgumentException("can't getValue [" + fieldNames + "] from [" + obj + "]");
-                }
-                final int i1 = Integer.parseInt(names[i]);
-                if(object instanceof List){
-                    object = ((List)object).get(i1);
-                }else if(object.getClass().isArray()){
-                    object = ((Object[])object)[i1];
-                }
-            }else{
-                object = FieldReflections.getValue(object, names[i],ignore);
+            final int i1 = Integer.parseInt(fieldName);
+            if (object instanceof List) {
+                res = ((List) object).get(i1);
+            } else if (object.getClass().isArray()) {
+                res = ((Object[]) object)[i1];
             }
+        } else {
+            res = FieldReflections.getValue(object, fieldName, ignore);
         }
-        return (T) object;
+        return (T) res;
     }
-    /**
-     * 直接设置对象属性值, 无视private/protected修饰符, 不经过setter函数.
-     */
+
     /**
      * 直接设置对象属性值, 无视private/protected修饰符, 不经过setter函数.支持多级属性
-     * @param obj 支持pojo对象,map,数组和list
-     * @param fieldNames 支持多级属性
-     * @param value 属性值
-     * @param ignore 忽略空值或错误的属性
+     *
+     * @param obj       支持pojo对象,map,数组和list
+     * @param fieldName 支持多级属性
+     * @param value     属性值
+     * @param ignore    忽略空值或错误的属性
      */
-    public static boolean setValue(final Object obj, final String fieldNames, final Object value, final boolean ignore) {
-        Object object = obj;
-        String[] names = StringUtils.split(fieldNames, ".");
-        for (int i = 0; i < names.length; i++){
-            if (object == null) {
-                if(ignore){
-                    return false;
-                }
-                throw new IllegalArgumentException("can't setValue [" + fieldNames + "] from [" + obj + "]");
+    public static Object setValue(final Object obj, final String fieldName, final Object value, final boolean ignore) {
+        if (obj == null) {
+            if (ignore) {
+                return obj;
             }
-            if (i < names.length - 1){
-                object = getValue(object, names[i], true);
-            }else{
-                if(object instanceof Map){
-                    ((Map)object).put(names[i],value);
-                }else if(object instanceof List || object.getClass().isArray()){
-                    if(!StringUtils.isNumber(names[i])){
-                        if(ignore){
-                            return false;
-                        }
-                        throw new IllegalArgumentException("can't setValue [" + fieldNames + "] from [" + obj + "]");
-                    }
-                    final int i1 = Integer.parseInt(names[i]);
-                    if(object instanceof List){
-                        final List list = (List) object;
-                        if(list.size()<=i1){
-                            if(ignore){
-                                return false;
-                            }
-                            throw new IllegalArgumentException("can't setValue [" + fieldNames + "] from [" + obj + "]");
-                        }
-                        list.set(i1,value);
-                    }else if(object.getClass().isArray()){
-                        final Object[] array = (Object[]) object;
-                        if(array.length<=i1){
-                            if(ignore){
-                                return false;
-                            }
-                            throw new IllegalArgumentException("can't setValue [" + fieldNames + "] from [" + obj + "]");
-                        }
-                        array[i1]=value;
-                    }
-                }else{
-                    return FieldReflections.setValue(object, names[i],value,ignore);
-                }
-            }
+            throw new IllegalArgumentException("can't setValue [" + fieldName + "] from [" + obj + "]");
         }
-        return true;
+        Object object = obj;
+        final int i = fieldName.indexOf(".");
+        if (i > -1) {
+            //多级处理
+            String name = fieldName.substring(0, i);
+            String subFieldName = fieldName.substring(i + 1);
+            Object subObject = setValue(getValue(obj, name, true), subFieldName, value, ignore);
+            return setValue(obj, name, subObject, true);
+        }
+
+        //一级处理
+        if (obj instanceof CharSequence) {
+            if (StringUtils.isNumber(fieldName)) {
+                final int index = Integer.parseInt(fieldName);
+                JSONList list = new JSONList(object.toString());
+                if (list.size() <= index) {
+                    if (ignore) {
+                        return obj;
+                    }
+                    throw new IllegalArgumentException("can't setValue [" + fieldName + "] from [" + obj + "]");
+                }
+                list.set(index, value);
+                return list.toString();
+            } else {
+                JSONMap map = new JSONMap(object.toString());
+                map.put(fieldName, value);
+                return map.toString();
+            }
+        } else if (object instanceof Map) {
+            ((Map) object).put(fieldName, value);
+        } else if (object instanceof List || object.getClass().isArray()) {
+            if (!StringUtils.isLongOrInt(fieldName)) {
+                if (ignore) {
+                    return obj;
+                }
+                throw new IllegalArgumentException("can't setValue [" + fieldName + "] from [" + obj + "]");
+            }
+            final int i1 = Integer.parseInt(fieldName);
+            if (object instanceof List) {
+                final List list = (List) object;
+                if (list.size() <= i1) {
+                    if (ignore) {
+                        return obj;
+                    }
+                    throw new IllegalArgumentException("can't setValue [" + fieldName + "] from [" + obj + "]");
+                }
+                list.set(i1, value);
+            } else if (object.getClass().isArray()) {
+                final Object[] array = (Object[]) object;
+                if (array.length <= i1) {
+                    if (ignore) {
+                        return obj;
+                    }
+                    throw new IllegalArgumentException("can't setValue [" + fieldName + "] from [" + obj + "]");
+                }
+                array[i1] = value;
+            }
+        } else {
+            FieldReflections.setValue(object, fieldName, value, ignore);
+        }
+        return object;
+    }
+
+    public static void join(Object source, Map target) {
+        target.putAll(new JSONMap(source));
+    }
+
+    public static void join(Object source, List target) {
+        if (source instanceof Collection) {
+            target.addAll((Collection) source);
+        }else if (source.getClass().isArray()) {
+            final Object[] objects = (Object[]) source;
+            for (Object object : objects) {
+                target.add(object);
+            }
+        }else if (target instanceof CharSequence) {
+            target.addAll(ValUtil.toList(source));
+        }
+    }
+
+    /**
+     * 对象拷贝
+     * @param source 源数据，支持pojo对象,map,数组和list
+     * @param target 支持pojo对象
+     * @param onlySetValue 是否只复制注解了@SetValue的属性
+     */
+    public static void copy(Object source, Object target, boolean onlySetValue) {
+        if (target instanceof CharSequence || target instanceof Map || target instanceof List || target.getClass().isArray()) {
+            throw new IllegalArgumentException("不支持的复制类型：" + target.getClass());
+        }
+        FieldReflections.getFields(target.getClass()).parallelStream().forEach(method -> {
+            SetValue annotation = method.getAnnotation(SetValue.class);
+            if (annotation == null && onlySetValue) {
+                return;
+            }
+
+            String name = method.getName();
+            String sourceName = name;
+            if (annotation != null && !"".equals(annotation.value())) {
+                sourceName = annotation.value() + "." + name;
+            }
+
+            Object o = toObj(getValue(source, sourceName, true), method.getType());
+            setValue(target, name, o, true);
+        });
     }
 
 //    public static void main(String[] args) {
