@@ -1,5 +1,6 @@
 package com.dlz.comm.util;
 
+import com.dlz.comm.consts.Charsets;
 import com.dlz.comm.exception.SystemException;
 import com.dlz.comm.json.JSONList;
 import com.dlz.comm.json.JSONMap;
@@ -12,6 +13,7 @@ import java.lang.reflect.Array;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.math.BigDecimal;
+import java.nio.charset.Charset;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.*;
@@ -173,6 +175,12 @@ public class ValUtil {
             return input.toString();
         }
         return JacksonUtil.getJson(input);
+    }
+    public static String toStr(byte[] input, Charset charset) {
+        return new String(input,charset);
+    }
+    public static String toStr(byte[] input) {
+        return new String(input, Charsets.UTF_8);
     }
 
     public static JSONList toList(Object input) {
