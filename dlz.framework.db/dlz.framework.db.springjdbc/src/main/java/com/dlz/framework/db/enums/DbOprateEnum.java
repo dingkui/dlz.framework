@@ -10,43 +10,62 @@ import com.dlz.framework.db.modal.DbInfoCache;
 import com.dlz.framework.db.modal.condition.Condition;
 import lombok.AllArgsConstructor;
 
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.regex.Pattern;
+
 @AllArgsConstructor
 public enum DbOprateEnum {
     isn("dbn is null"),//为空
     isnn("dbn is not null"),//不为空
-    eq("dbn = #{key}"),
-    lt("dbn < #{key}"),//小于
-    le("dbn <= #{key}"),//小于等于
-    gt("dbn > #{key}"),//大于
-    ge("dbn >= #{key}"),//大于等于
-    ne("dbn <> #{key}"),//不等于
-    in("dbn in (${key})"),
-    lk("dbn like #{key}"),//like:%xxx%
-    ll("dbn like #{key}"),//左like:xxx%
-    lr("dbn like #{key}"),//右like：%xxx
-    nl("dbn not like #{key}"),//不like
-    bt("dbn between #{key1} and #{key2}"),//BETWEEN 值1 AND 值2
-    nb("dbn not between #{key1} and #{key2}");//BETWEEN 值1 AND 值2
+    eq("dbn = #{#key}"),
+    lt("dbn < #{#key}"),//小于
+    le("dbn <= #{#key}"),//小于等于
+    gt("dbn > #{#key}"),//大于
+    ge("dbn >= #{#key}"),//大于等于
+    ne("dbn <> #{#key}"),//不等于
+    in("dbn in (${#key})"),
+    lk("dbn like #{#key}"),//like:%xxx%
+    ll("dbn like #{#key}"),//左like:xxx%
+    lr("dbn like #{#key}"),//右like：%xxx
+    nl("dbn not like #{#key}"),//不like
+    bt("dbn between #{#key1} and #{#key2}"),//BETWEEN 值1 AND 值2
+    nb("dbn not between #{#key1} and #{#key2}");//BETWEEN 值1 AND 值2
     public final String _sql;
+    private final static Pattern pk = Pattern.compile("#key");
+    private final static Pattern pdbn = Pattern.compile("dbn");
+    private static final ThreadLocal<AtomicInteger> index = ThreadLocal.withInitial(AtomicInteger::new);
+
+
+    /**
+     * 增加当前线程的计数器值（默认增加1）
+     *
+     * @return 增加后的值
+     */
+    public static int getIndex() {
+        return index.get().addAndGet(1);
+    }
+
+    private String mkSql(String dbn, String key) {
+        final String dbnSql = pdbn.matcher(this._sql).replaceAll(DbConvertUtil.str2DbClumn(dbn));
+        return key==null?dbnSql:pk.matcher(dbnSql).replaceAll(key);
+    }
 
     private Condition paraZero(String dbn) {
         Condition condition = new Condition();
-        condition.setRunsql(this._sql.replaceAll("dbn", DbConvertUtil.str2DbClumn(dbn)));
+        condition.setRunsql(mkSql(dbn, null));
         return condition;
     }
 
     private Condition paraOne(String dbn, Object value) {
-        String key = this + "_" + TraceUtil.generateShortUuid();
+        String key = this + "_" + getIndex();
         Condition condition = new Condition();
         condition.addPara(key, value);
-        condition.setRunsql(this._sql
-                .replaceAll("dbn", DbConvertUtil.str2DbClumn(dbn))
-                .replaceAll("key", key));
+        condition.setRunsql(mkSql(dbn, key));
         return condition;
     }
 
     private Condition paraTwo(String dbn, Object value) {
-        String key = this + "_" + TraceUtil.generateShortUuid();
+        String key = this + "_" + getIndex();
         Object[] array = ValUtil.toArray(value);
         if (array.length < 2) {
             throw new SystemException("参数有误，需要有2个值：" + this);
@@ -56,18 +75,14 @@ public enum DbOprateEnum {
         String key2 = key + "2";
         condition.addPara(key1, array[0]);
         condition.addPara(key2, array[1]);
-        condition.setRunsql(this._sql
-                .replaceAll("dbn", DbConvertUtil.str2DbClumn(dbn))
-                .replaceAll("key1", key1)
-                .replaceAll("key2", key2));
+        condition.setRunsql(mkSql(dbn, key));
         return condition;
     }
+
     private Condition paraIn(String dbn, Object value) {
-        String key = this + "_" + TraceUtil.generateShortUuid();
+        String key = this + "_" + getIndex();
         Condition condition = new Condition();
-        condition.setRunsql(this._sql
-                .replaceAll("dbn", DbConvertUtil.str2DbClumn(dbn))
-                .replaceAll("key", key));
+        condition.setRunsql(mkSql(dbn, key));
         if (value instanceof String) {
             String v = ((String) value);
             if (v.startsWith("sql:")) {
