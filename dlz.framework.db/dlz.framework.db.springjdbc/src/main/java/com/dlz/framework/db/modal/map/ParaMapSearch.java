@@ -35,11 +35,23 @@ public class ParaMapSearch extends AParaMapSearch<ParaMapSearch> implements IQue
     public List<ResultMap> queryMapList() {
         return DBHolder.doDb(s->s.getMapList(this));
     }
+    public <T> List<T> queryBeanList(Class<T> tClass) {
+        return DBHolder.doDb(s->s.getBeanList(this,tClass));
+    }
+    public <T> Page<T> queryPageBean(Class<T> tClass) {
+        return DBHolder.doDb(s->s.getPage(this,tClass));
+    }
     public Page<ResultMap> queryPageData() {
         return DBHolder.doDb(s->s.getPage(this));
     }
     public ResultMap queryMap() {
         return DBHolder.doDb(s->s.getMap(this));
+    }
+    public <T> T queryBean(Class<T> tClass) {
+        return DBHolder.doDb(s->s.getBean(this,tClass));
+    }
+    public String getStr() {
+        return DBHolder.doDb(s->s.getStr(this));
     }
 
     @Override
