@@ -6,11 +6,10 @@ import lombok.extern.slf4j.Slf4j;
 
 import java.io.Serializable;
 import java.lang.reflect.Type;
-import java.math.BigDecimal;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -37,17 +36,7 @@ public class MemoryCache implements ICache {
     }
 
     protected static Map<Serializable, Element> getCache(String name) {
-        Map<Serializable, Element> cache = CACHE.get(name);
-        if (cache == null) {
-            synchronized (MemoryCache.class) {
-                cache = CACHE.get(name);
-                if (cache == null) {
-                    cache = new ConcurrentHashMap<>();
-                    CACHE.put(name, cache);
-                }
-            }
-        }
-        return cache;
+        return CACHE.computeIfAbsent(name, key -> new ConcurrentHashMap<>());
     }
 
     @Override
@@ -84,29 +73,38 @@ public class MemoryCache implements ICache {
 
     @Override
     public Set<String> keys(String name, String keyPrefix) {
+        // 获取缓存中的键流
         Stream<String> stringStream = getCache(name).keySet().stream()
                 .map(key -> ValUtil.toStr(key));
-        if("*".equals(keyPrefix)||".*".equals(keyPrefix)){
+
+        // 如果 keyPrefix 是 "*" 或 ".*"，直接返回所有键
+        if ("*".equals(keyPrefix) || ".*".equals(keyPrefix)) {
             return stringStream.collect(Collectors.toSet());
         }
-        String keyMatch=keyPrefix.replaceAll("\\.\\*","*").replaceAll("\\*",".*");
-        return stringStream.filter(key->key.matches(keyMatch)).collect(Collectors.toSet());
+
+        // 将 keyPrefix 转换为正则表达式
+        String regex = keyPrefix.replaceAll("\\.\\*", ".*").replaceAll("\\*", ".*");
+        Pattern pattern = Pattern.compile(regex);
+
+        // 过滤并返回匹配的键
+        return stringStream
+                .filter(pattern.asPredicate())
+                .collect(Collectors.toSet());
+
     }
 
     @Override
     public Map<String,Serializable> all(String name,String keyPrefix){
         Map<Serializable, Element> cache = getCache(name);
-        Map<String,Serializable> map=new HashMap<>();
+        Map<String,Serializable> map=new ConcurrentHashMap<>();
         if("*".equals(keyPrefix)||".*".equals(keyPrefix)){
-            cache.entrySet().forEach(item->{
-                map.put(ValUtil.toStr(item.getKey()),item.getValue().item);
-            });
+            cache.forEach((key, value) -> map.put(ValUtil.toStr(key), value.item));
         }else{
-            String keyMatch=keyPrefix.replaceAll("\\.\\*","*").replaceAll("\\*",".*");
-            cache.entrySet().forEach(item->{
-                String key = ValUtil.toStr(item.getKey());
-                if(key.matches(keyMatch)){
-                    map.put(key,item.getValue().item);
+            Pattern p = Pattern.compile(keyPrefix.replaceAll("\\.\\*","*").replaceAll("\\*",".*"));
+            cache.forEach((key, value) -> {
+                String keyStr = ValUtil.toStr(key);
+                if (p.matcher(keyStr).matches()) {
+                    map.put(keyStr, value.item);
                 }
             });
         }
@@ -123,8 +121,8 @@ public class MemoryCache implements ICache {
     }
 
     class ExpiredRunnable implements Runnable {
-        Long begin;
-        Long end;
+        private volatile Long begin;
+        private volatile Long end;
 
         public void setExpiredRange(Long expired) {//设置过期区间
             if (begin == null || expired < begin) {
@@ -141,7 +139,8 @@ public class MemoryCache implements ICache {
                     Thread.sleep(1000);//实现定时去删除过期
                     expired(System.currentTimeMillis() / 1000 - MemoryCache.BEGIN);
                 } catch (InterruptedException e) {
-                    e.printStackTrace();
+                    Thread.currentThread().interrupt();
+                    log.error("ExpiredRunnable interrupted", e);
                 }
             }
         }
@@ -168,24 +167,17 @@ public class MemoryCache implements ICache {
         }
 
         private void expiredWithLog(long curr) {
-            Long l = System.currentTimeMillis();
-            BigDecimal n1 = MemoryCache.CACHE.entrySet().stream().map(item ->
-                    new BigDecimal(item.getValue().size())
-            ).reduce(BigDecimal.ZERO, BigDecimal::add);
+            long startTime = System.currentTimeMillis();
+            long totalSize = MemoryCache.CACHE.entrySet().stream().mapToLong(item -> item.getValue().size()).sum();
 
             if (!expired(curr)) {
-                log.debug("sikp:" + n1.intValue());
+                log.debug("skip: {}", totalSize);
             }
 
-            BigDecimal n2 = MemoryCache.CACHE.entrySet().stream().map(item ->
-                    new BigDecimal(item.getValue().size())
-            ).reduce(BigDecimal.ZERO, BigDecimal::add);
+            long newSize = MemoryCache.CACHE.entrySet().stream().mapToLong(item -> item.getValue().size()).sum();
+            long memoryUsage = Runtime.getRuntime().totalMemory();
 
-            log.debug("sum:" + n1.intValue() + " " + n2.intValue()
-                    + " memory:" + Runtime.getRuntime().totalMemory()
-                    + " time:" + (System.currentTimeMillis() - l)
-                    + " " + begin + " " + curr + " " + end
-            );
+            log.debug("sum: {} {} memory: {} time: {} {} {} {}", totalSize, newSize, memoryUsage, System.currentTimeMillis() - startTime, begin, curr, end);
         }
     }
 }
