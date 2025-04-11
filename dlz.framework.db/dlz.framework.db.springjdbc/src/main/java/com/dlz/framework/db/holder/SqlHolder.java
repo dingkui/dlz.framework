@@ -21,6 +21,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * 数据库配置信息
@@ -34,7 +35,7 @@ public class SqlHolder {
     private final static String STR_SQL_JAR = "sqllist.sql.jar.";
     private final static String STR_SQL_FILE = "sqllist.sql.file.";
     private final static String STR_SQL_FOLDER = "sqllist.sql.folder.";
-    static final Map<String, String> m_sqlList = new HashMap<>();
+    static final Map<String, String> m_sqlList = new ConcurrentHashMap<>();
     private static boolean initIng = false;
     public static DlzDbProperties properties;
 
@@ -68,7 +69,7 @@ public class SqlHolder {
             SAXReader reader = new SAXReader();
             Document doc = reader.read(is);
             for (Element sql : doc.getRootElement().elements()) {
-                addSqlSetting(sql.attributeValue("sqlId"),sql.getData().toString());
+                addSqlSetting(sql.attributeValue("sqlId"),sql.getData().toString(),false);
             }
         } catch (DocumentException e) {
             log.error(ExceptionUtils.getStackTrace(" 文件读取异常！",e));
@@ -82,9 +83,12 @@ public class SqlHolder {
             }
         }
     }
-    public static void addSqlSetting(String sqlId,String sqlStr){
+    public static void addSqlSetting(String sqlId,String sqlStr,boolean force){
         sqlId = DbTypeEnum.dropSqlKeySufix(sqlId);
         if(sqlId==null||sqlStr==null){
+            return;
+        }
+        if(!force && m_sqlList.containsKey(sqlId)){
             return;
         }
         sqlStr = clearSql(sqlStr);
@@ -152,7 +156,7 @@ public class SqlHolder {
             String sql = clearSql(properties.getSql());
             try {
                 List<ResultMap> mapList = service.getMapList(sql);
-                mapList.forEach(item->addSqlSetting("key."+item.getStr("key"),item.getStr("sql")));
+                mapList.forEach(item->addSqlSetting("key."+item.getStr("key"),item.getStr("sql"),true));
             }catch (Exception e){
                 log.error(ExceptionUtils.getStackTrace(e));
                 log.warn("取得数据库配置无效：sql="+sql);
