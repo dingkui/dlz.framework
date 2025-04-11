@@ -3,7 +3,7 @@
 	<parent>
 		<groupId>com.dlz</groupId>
 		<artifactId>dlz.plugin</artifactId>
-		<version>6.3.0-SNAPSHOT</version>
+		<version>6.3.0-RELEASE</version>
 	</parent>
 	<version>${dlz.framework.version}</version>
 	<artifactId>dlz.plugin.netty</artifactId>
