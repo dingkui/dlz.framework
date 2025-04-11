@@ -2,7 +2,8 @@ package com.dlz.framework.db.modal.result;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 import lombok.experimental.Accessors;
 
 import java.io.Serializable;
@@ -12,7 +13,8 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
-@Data
+@Getter
+@Setter
 @Accessors(chain = true)
 @ApiModel(value = "分页对象")
 public class Page<T> extends Sort<Page> implements Serializable {
