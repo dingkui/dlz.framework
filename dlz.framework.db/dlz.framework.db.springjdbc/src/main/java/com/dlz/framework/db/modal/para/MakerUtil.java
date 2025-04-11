@@ -1,0 +1,132 @@
+package com.dlz.framework.db.modal.para;
+
+import com.dlz.comm.util.StringUtils;
+import com.dlz.framework.db.convertor.DbConvertUtil;
+import lombok.extern.slf4j.Slf4j;
+
+
+/**
+ * sql操作Util
+ *
+ * @author ding_kui 2010-12-14
+ */
+@Slf4j
+public class MakerUtil {
+    public static final String MAKER_SQL_INSERT = "insert into ${tableName}(${colums}) values(${values})";
+    public static final String MAKER_SQL_DELETE = "delete from ${tableName} t ${where} ${otherwhere}";
+    public static final String MAKER_SQL_UPDATE = "update ${tableName} t set ${sets} ${where} ${otherwhere}";
+    public static final String MAKER_SQL_SEARCHE = "select ${colums} from ${tableName} t ${where} ${otherwhere}";
+
+    private static final String MAKER_TABLENAME = "tableName";
+    private static final String MAKER_COLUMS = "colums";
+    private static final String MAKER_VALUES = "values";
+    private static final String MAKER_STR_SETS = "sets";
+    private static final String MAKER_WHERE = "where";
+    /**
+     * 生成查询条件sql
+     *
+     * @return
+     */
+    public static void buildSql(AMaker maker) {
+        maker.getSqlItem().setSqlKey(maker.getSql());
+        maker.addPara(MAKER_TABLENAME, maker.getTableName());
+        if(maker instanceof AMakerSearch){
+            buildWhere((AMakerSearch)maker);
+        }
+        if(maker instanceof MakerQuery){
+            buildWhereColums((MakerQuery)maker);
+        }
+        if(maker instanceof MakerUpdate){
+            buildUpdateSql((MakerUpdate)maker);
+        }
+        if(maker instanceof MakerInsert){
+            buildInsertSql((MakerInsert)maker);
+        }
+    }
+
+    /**
+     * 生成查询条件sql
+     *
+     * @return
+     */
+    public static void buildWhereColums(MakerQuery maker) {
+        maker.addPara(MAKER_COLUMS, maker.colums);
+    }
+    /**
+     * 生成查询条件sql
+     *
+     * @return
+     */
+    public static void buildWhere(AMakerSearch maker) {
+        String where = maker.where().getRunsql(maker);
+        if (!maker.isAllowFullQuery() && StringUtils.isEmpty(where)) {
+            where = "where false";
+        }
+        maker.addPara(MAKER_WHERE, where);
+    }
+
+    /**
+     * 生成掺入sql
+     *
+     * @return
+     */
+    public static void buildInsertSql(MakerInsert maker) {
+        StringBuilder sbColums = new StringBuilder();
+        StringBuilder sbValues = new StringBuilder();
+        maker.insertValues.entrySet().forEach(e -> {
+            String paraName = e.getKey();
+            Object value = e.getValue();
+            String clumnName = paraName.replaceAll("`", "");
+
+            if (sbColums.length() > 0) {
+                sbColums.append(',');
+                sbValues.append(',');
+            }
+            sbColums.append(paraName);
+            if (value instanceof String) {
+                String v = ((String) value);
+                if (v.startsWith("sql:")) {
+                    sbValues.append(DbConvertUtil.str2Clumn(v.substring(4)));
+                    return;
+                }
+            }
+            sbValues.append("#{").append(clumnName).append("}");
+            if (value == null)
+                value = "";
+            maker.addPara(clumnName, DbConvertUtil.getVal4Db(maker.getTableName(), clumnName, value));
+        });
+        maker.addPara(MAKER_COLUMS, sbColums.toString());
+        maker.addPara(MAKER_VALUES, sbValues.toString());
+        maker.addPara(MAKER_TABLENAME, maker.getTableName());
+    }
+
+    /**
+     * 生成更新信息
+     *
+     * @return
+     */
+    public static void buildUpdateSql(MakerUpdate maker) {
+        StringBuilder sbSets = new StringBuilder();
+        maker.updateSets.entrySet().forEach(e -> {
+            String paraName = e.getKey();
+            Object value = e.getValue();
+            String clumnName = paraName.replaceAll("`", "");
+
+            if (sbSets.length() > 0) {
+                sbSets.append(",");
+            }
+            sbSets.append(paraName);
+            sbSets.append('=');
+            if (value instanceof String) {
+                String v = ((String) value);
+                if (v.startsWith("sql:")) {
+                    sbSets.append(DbConvertUtil.str2Clumn(v.substring(4)));
+                    return;
+                }
+            }
+            sbSets.append("#{").append(clumnName).append("}");
+            maker.addPara(clumnName, DbConvertUtil.getVal4Db(maker.getTableName(), clumnName, value));
+        });
+        maker.addPara(MAKER_STR_SETS, sbSets.toString());
+    }
+}

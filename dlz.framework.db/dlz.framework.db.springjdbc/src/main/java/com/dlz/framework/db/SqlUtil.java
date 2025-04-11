@@ -10,8 +10,9 @@ import com.dlz.comm.util.ValUtil;
 import com.dlz.framework.db.enums.ParaTypeEnum;
 import com.dlz.framework.db.holder.SqlHolder;
 import com.dlz.framework.db.modal.items.SqlItem;
-import com.dlz.framework.db.modal.map.ParaMapBase;
-import com.dlz.framework.db.modal.map.ParaMapMaker;
+import com.dlz.framework.db.modal.para.ParaMap;
+import com.dlz.framework.db.modal.para.AMaker;
+import com.dlz.framework.db.modal.para.MakerUtil;
 import com.dlz.framework.db.modal.result.Page;
 import lombok.extern.slf4j.Slf4j;
 
@@ -65,7 +66,7 @@ public class SqlUtil {
      * @throws Exception
      * @author dk 2015-04-09
      */
-    public static ParaMapBase dealParmToJdbc(ParaMapBase paraMap) {
+    public static ParaMap dealParmToJdbc(ParaMap paraMap) {
         SqlItem sqlItem = paraMap.getSqlItem();
         String sqlRun = sqlItem.getSqlRun();
         if(sqlRun == null){
@@ -103,7 +104,7 @@ public class SqlUtil {
      * @throws Exception
      * @author dk 2015-04-09
      */
-    public static String getRunSqlByParaMap(ParaMapBase paraMap) {
+    public static String getRunSqlByParaMap(ParaMap paraMap) {
         SqlItem sqlItem = paraMap.getSqlItem();
         String sqlRun = sqlItem.getSqlRun();
         if(sqlRun == null){
@@ -173,15 +174,15 @@ public class SqlUtil {
      * @throws Exception
      * @author dk 2015-04-09
      */
-    public static SqlItem dealParm(ParaMapBase paraMap, int dealType, boolean jdbc) {
+    public static SqlItem dealParm(ParaMap paraMap, int dealType, boolean jdbc) {
         SqlItem sqlItem = paraMap.getSqlItem();
+        if(sqlItem.getSqlKey() == null && paraMap instanceof AMaker){
+             MakerUtil.buildSql((AMaker) paraMap);
+        }
         if (sqlItem.getSqlKey() != null){
             String sql = sqlItem.getSqlDeal();
             String sqlInput = sqlItem.getSqlKey();
             if (sql == null && sqlInput != null) {
-                if(paraMap instanceof ParaMapMaker){
-                    ((ParaMapMaker) paraMap).buildSql();
-                }
                 sql = createSqlDeal(paraMap.getPara(), sqlInput);
                 sqlItem.setSqlDeal(sql);
             }
@@ -203,22 +204,22 @@ public class SqlUtil {
         return sqlItem;
     }
 
-    /**
-     * 转换参数
-     *
-     * @param sql
-     * @param para
-     * @return
-     * @throws Exception
-     * @author dk 2015-04-09
-     */
-    public static ParaMapBase getParmMap(String sql, Object... para) {
-        ParaMapBase paraMap = new ParaMapBase(null);
-        SqlItem sqlItem = paraMap.getSqlItem();
-        sqlItem.setSqlJdbc(sql);
-        sqlItem.setSqlJdbcPara(para);
-        return paraMap;
-    }
+//    /**
+//     * 转换参数
+//     *
+//     * @param sql
+//     * @param para
+//     * @return
+//     * @throws Exception
+//     * @author dk 2015-04-09
+//     */
+//    public static ParaMapBase getParmMap(String sql, Object... para) {
+//        ParaMapBase paraMap = new ParaMapBase(null);
+//        SqlItem sqlItem = paraMap.getSqlItem();
+//        sqlItem.setSqlJdbc(sql);
+//        sqlItem.setSqlJdbcPara(para);
+//        return paraMap;
+//    }
 
     /**
      * 创建执行sql(带替换符)
@@ -243,7 +244,7 @@ public class SqlUtil {
      * @return
      * @throws Exception
      */
-    public static String getPageSql(ParaMapBase paraMap) {
+    public static String getPageSql(ParaMap paraMap) {
         SqlItem sqlItem = paraMap.getSqlItem();
         String sqlDeal = sqlItem.getSqlDeal();
         if(sqlDeal == null){

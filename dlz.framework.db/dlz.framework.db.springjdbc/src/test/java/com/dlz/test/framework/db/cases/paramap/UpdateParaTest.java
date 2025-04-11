@@ -2,8 +2,8 @@ package com.dlz.test.framework.db.cases.paramap;
 
 import com.dlz.framework.db.modal.DB;
 import com.dlz.framework.db.modal.condition.Condition;
-import com.dlz.framework.db.modal.map.ParaMapDelete;
-import com.dlz.framework.db.modal.map.ParaMapUpdate;
+import com.dlz.framework.db.modal.para.MakerDelete;
+import com.dlz.framework.db.modal.para.MakerUpdate;
 import com.dlz.test.framework.db.config.SpingDbBaseTest;
 import org.junit.Test;
 
@@ -15,14 +15,13 @@ import org.junit.Test;
 public class UpdateParaTest  extends SpingDbBaseTest {
 	@Test
 	public void UpdateParaMapTest(){
-		ParaMapUpdate where = DB.update("Sys_Sql")
-				.set("room_id", 1)
+		MakerUpdate where = DB.update("Sys_Sql")
+				.set("sql_key", 1)
 				.where(Condition.where()
 						.eq("equipment_id", 1)
 						.eq("equipment_id2", 1)
 				);
-
-		showSql(where,"UpdateParaMapTest","insert into SYS_SQL(SQL_KEY,ID) values('xxx',123)");
+		showSql(where,"UpdateParaMapTest","update  Sys_Sql t set sql_key='1' where equipment_id = 1 and equipment_id2 = 1");
 	}
 	@Test
 	public void DeleteParaMapTest(){
@@ -33,9 +32,9 @@ public class UpdateParaTest  extends SpingDbBaseTest {
 				.and(Condition.OR().eq("xxId2", 3).eq("xxId1", 4))
 				.eq("xxId3", 5);
 
-		ParaMapDelete dh_room = DB
+		MakerDelete dh_room = DB
 				.delete("dh_room")
 				.where(where);
-		showSql(dh_room,"insertWrapperTest1","insert into SYS_SQL(SQL_KEY,ID) values('xxx',123)");
+		showSql(dh_room,"DeleteParaMapTest","delete from dh_room t where equipment_id = 1 and equipment_id2 = 2 or (XX_ID2 = 3 and XX_ID1 = 4) and (XX_ID2 = 3 or XX_ID1 = 4) and XX_ID3 = 5");
 	}
 }

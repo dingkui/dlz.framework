@@ -22,6 +22,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.regex.Pattern;
 
 /**
  * 数据库配置信息
@@ -174,11 +175,12 @@ public class SqlHolder {
         return sqlStr.replaceAll("--.*", "").replaceAll("[\\s]+", " ");
     }
 
+    private static Pattern sqlRegex = Pattern.compile("[\\s]*(?i)(select|update|delete|insert).*");
     public static String getSql(String key) {
         if (key == null) {
             throw new DbException("输入的sql为空！", 1002);
         }
-        if(key.matches("[\\s]*(?i)select.*") ){
+        if(sqlRegex.matcher(key).matches()){
             return key;
         }
         if (!key.startsWith("key.")) {

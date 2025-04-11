@@ -2,13 +2,16 @@ package com.dlz.framework.db.modal.condition;
 
 import com.dlz.comm.json.JSONMap;
 import com.dlz.framework.db.enums.DbBuildEnum;
-import com.dlz.framework.db.modal.map.ParaMapBase;
+import com.dlz.framework.db.inf.ICondAddByFn;
+import com.dlz.framework.db.inf.ICondAddByKey;
+import com.dlz.framework.db.inf.ICondAndOr;
+import com.dlz.framework.db.modal.para.ParaMap;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class Condition implements ICondition<Condition>,ICondAddByFn<Condition>{
+public class Condition implements ICondAndOr<Condition>, ICondAddByKey<Condition>, ICondAddByFn<Condition> {
     boolean isMake = false;
     String runsql;
     JSONMap paras = new JSONMap();
@@ -22,7 +25,7 @@ public class Condition implements ICondition<Condition>,ICondAddByFn<Condition>{
     public Condition() {
     }
 
-    private void make(ParaMapBase pm) {
+    private void make(ParaMap pm) {
         if (isMake) {
             pm.addParas(paras);
             return;
@@ -35,7 +38,7 @@ public class Condition implements ICondition<Condition>,ICondAddByFn<Condition>{
                 return;
             }
             if (children.size() == 0) {
-                runsql="";
+                runsql = "";
 //                runsql = runsql.replace("sql", "false");
                 return;
             }
@@ -67,7 +70,7 @@ public class Condition implements ICondition<Condition>,ICondAddByFn<Condition>{
         return DbBuildEnum.muAnd.build();
     }
 
-    public String getRunsql(ParaMapBase pm) {
+    public String getRunsql(ParaMap pm) {
         make(pm);
         return runsql;
     }

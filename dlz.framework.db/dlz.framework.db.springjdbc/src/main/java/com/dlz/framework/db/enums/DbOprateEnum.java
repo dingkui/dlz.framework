@@ -3,7 +3,6 @@ package com.dlz.framework.db.enums;
 import com.dlz.comm.exception.SystemException;
 import com.dlz.comm.fn.DlzFn;
 import com.dlz.comm.util.ValUtil;
-import com.dlz.comm.util.encry.TraceUtil;
 import com.dlz.framework.db.SqlUtil;
 import com.dlz.framework.db.convertor.DbConvertUtil;
 import com.dlz.framework.db.modal.DbInfoCache;
@@ -15,39 +14,38 @@ import java.util.regex.Pattern;
 
 @AllArgsConstructor
 public enum DbOprateEnum {
-    isn("dbn is null"),//为空
-    isnn("dbn is not null"),//不为空
-    eq("dbn = #{#key}"),
-    lt("dbn < #{#key}"),//小于
-    le("dbn <= #{#key}"),//小于等于
-    gt("dbn > #{#key}"),//大于
-    ge("dbn >= #{#key}"),//大于等于
-    ne("dbn <> #{#key}"),//不等于
-    in("dbn in (${#key})"),
-    lk("dbn like #{#key}"),//like:%xxx%
-    ll("dbn like #{#key}"),//左like:xxx%
-    lr("dbn like #{#key}"),//右like：%xxx
-    nl("dbn not like #{#key}"),//不like
-    bt("dbn between #{#key1} and #{#key2}"),//BETWEEN 值1 AND 值2
-    nb("dbn not between #{#key1} and #{#key2}");//BETWEEN 值1 AND 值2
+    isn("#n is null"),//为空
+    isnn("#n is not null"),//不为空
+    eq("#n = #{#k}"),
+    lt("#n < #{#k}"),//小于
+    le("#n <= #{#k}"),//小于等于
+    gt("#n > #{#k}"),//大于
+    ge("#n >= #{#k}"),//大于等于
+    ne("#n <> #{#k}"),//不等于
+    in("#n in (${#k})"),
+    lk("#n like #{#k}"),//like:%xxx%
+    ll("#n like #{#k}"),//左like:xxx%
+    lr("#n like #{#k}"),//右like：%xxx
+    nl("#n not like #{#k}"),//不like
+    bt("#n between #{#k1} and #{#k2}"),//BETWEEN 值1 AND 值2
+    nb("#n not between #{#k1} and #{#k2}");//BETWEEN 值1 AND 值2
     public final String _sql;
-    private final static Pattern pk = Pattern.compile("#key");
-    private final static Pattern pdbn = Pattern.compile("dbn");
-    private static final ThreadLocal<AtomicInteger> index = ThreadLocal.withInitial(AtomicInteger::new);
-
+    private final static Pattern patternKey = Pattern.compile("#k");
+    private final static Pattern patternColumnName = Pattern.compile("#n");
+    private static final ThreadLocal<AtomicInteger> paraNameIndex = ThreadLocal.withInitial(AtomicInteger::new);
 
     /**
      * 增加当前线程的计数器值（默认增加1）
      *
      * @return 增加后的值
      */
-    public static int getIndex() {
-        return index.get().addAndGet(1);
+    private static int getParaNameIndex() {
+        return paraNameIndex.get().addAndGet(1);
     }
 
     private String mkSql(String dbn, String key) {
-        final String dbnSql = pdbn.matcher(this._sql).replaceAll(DbConvertUtil.str2DbClumn(dbn));
-        return key==null?dbnSql:pk.matcher(dbnSql).replaceAll(key);
+        final String dbnSql = patternColumnName.matcher(this._sql).replaceAll(DbConvertUtil.str2DbClumn(dbn));
+        return key==null?dbnSql: patternKey.matcher(dbnSql).replaceAll(key);
     }
 
     private Condition paraZero(String dbn) {
@@ -57,7 +55,7 @@ public enum DbOprateEnum {
     }
 
     private Condition paraOne(String dbn, Object value) {
-        String key = this + "_" + getIndex();
+        String key = this + "_" + getParaNameIndex();
         Condition condition = new Condition();
         condition.addPara(key, value);
         condition.setRunsql(mkSql(dbn, key));
@@ -65,7 +63,7 @@ public enum DbOprateEnum {
     }
 
     private Condition paraTwo(String dbn, Object value) {
-        String key = this + "_" + getIndex();
+        String key = this + "_" + getParaNameIndex();
         Object[] array = ValUtil.toArray(value);
         if (array.length < 2) {
             throw new SystemException("参数有误，需要有2个值：" + this);
@@ -80,7 +78,7 @@ public enum DbOprateEnum {
     }
 
     private Condition paraIn(String dbn, Object value) {
-        String key = this + "_" + getIndex();
+        String key = this + "_" + getParaNameIndex();
         Condition condition = new Condition();
         condition.setRunsql(mkSql(dbn, key));
         if (value instanceof String) {

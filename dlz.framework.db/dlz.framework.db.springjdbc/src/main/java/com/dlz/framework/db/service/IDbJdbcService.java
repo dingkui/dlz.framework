@@ -23,10 +23,10 @@ public interface IDbJdbcService {
     IDlzDao getDao();
 
     default List<ResultMap> getMapList(String sql, Object... para) {
-		return doDb(() -> getDao().getList(sql, para));
+		return doJdbc(() -> getDao().getList(sql, para));
     }
 
-	default <T> T doDb(Callable<T> executor) {
+	default <T> T doJdbc(Callable<T> executor) {
 		try {
 			return executor.call();
 		} catch (Exception e) {
@@ -37,11 +37,11 @@ public interface IDbJdbcService {
 		}
 	}
 	default <T> List<T> getColumnList(String sql, Class<T> tClass, Object... para) {
-		return doDb(() -> DbConvertUtil.getColumnList(getDao().getList(sql, para), tClass));
+		return doJdbc(() -> DbConvertUtil.getColumnList(getDao().getList(sql, para), tClass));
 	}
 
 	default <T> T getFistColumn(String sql, Class<T> tClass, Object... para) {
-		return doDb(() -> getDao().getFistColumn(sql,tClass, para));
+		return doJdbc(() -> getDao().getFistColumn(sql,tClass, para));
 	}
 
     /**
@@ -51,12 +51,12 @@ public interface IDbJdbcService {
      * @param para ：参数数组
      */
     default int excuteSql(String sql, Object... para) {
-		return doDb(() -> getDao().update(sql, para));
+		return doJdbc(() -> getDao().update(sql, para));
     }
 
 
     default ResultMap getMap(String sql, Boolean throwEx, Object... para) {
-		return doDb(() -> getDao().getOne(sql,throwEx, para));
+		return doJdbc(() -> getDao().getOne(sql,throwEx, para));
     }
 
     default String getStr(String sql, Object... para) {
@@ -112,10 +112,10 @@ public interface IDbJdbcService {
     }
 
     default <T> T getBean(String sql, Class<T> t, Object... para) {
-		return doDb(() -> ConvertUtil.convert(getDao().getOne(sql, true,para),t));
+		return doJdbc(() -> ConvertUtil.convert(getDao().getOne(sql, true,para),t));
     }
 
     default <T> List<T> getBeanList(String sql, Class<T> t, Object... para) {
-        return doDb(() ->  ConvertUtil.convertList(getDao().getList(sql, para),t));
+        return doJdbc(() ->  ConvertUtil.convertList(getDao().getList(sql, para),t));
     }
 }
