@@ -26,7 +26,7 @@ public class SearchParaMapTest  extends SpingDbBaseTest{
         paraMap.addPara(Dict::getA2, "1");
         JSONMap param = new JSONMap("id","sql:id");
         paraMap.where(Condition.where().sql("[id=#{id2}]",param));
-        showSql(paraMap,"conditionSqlTest2","select * from t_b_dict t where false");
+        showSql(paraMap,"conditionSqlTest2_1","select * from t_b_dict t where false");
     }
     @Test
     public void conditionSqlTest2_2() {
@@ -35,7 +35,7 @@ public class SearchParaMapTest  extends SpingDbBaseTest{
         paraMap.setAllowFullQuery(true);
         JSONMap param = new JSONMap("id","sql:id");
         paraMap.where(Condition.where().sql("[id=#{id2}]",param));
-        showSql(paraMap,"conditionSqlTest2","select * from t_b_dict t");
+        showSql(paraMap,"conditionSqlTest2_2","select * from t_b_dict t");
     }
     @Test
     public void conditionSqlTest3() {
@@ -43,7 +43,7 @@ public class SearchParaMapTest  extends SpingDbBaseTest{
         paraMap.addPara(Dict::getA2, "1");
         JSONMap param = new JSONMap("id","sql:id");
         paraMap.where(Condition.where().sql("[id=#{id2}]",param));
-        showSql(paraMap,"conditionSqlTest2","select XX from t_b_dict t");
+        showSql(paraMap,"conditionSqlTest3","select XX from t_b_dict t where false1");
     }
     @Test
     public void conditionTest1() {

@@ -18,7 +18,7 @@ public class DbUtilContitionTest  extends SpingDbBaseTest {
 //		ParaMap ump=new ParaMap("select 1 from dual");
 //		ump.setPage(Page.build(1, 1));
 //		cs.getMap(ump);
-		DB.sqlSelect("select t.* from PTN t where t.id=${key.comm.cntSql} and t.cc=${a} and c=${b} and ccc",null)
+		DB.sqlSelect("select t.* from PTN t where t.id=${key.comm.pageSql} and t.cc=${a} and c=${b} and ccc")
 				.addPara("a", "a${b}")
 				.addPara("b", "b${c}")
 				.addPara("_sql", "_sql${a}").query();

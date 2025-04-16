@@ -60,7 +60,7 @@ public class ParaMap<ME extends ParaMap> implements Serializable , ISqlPara, IPa
                 para.put(key, v);
             }
         }
-        return (ME)me();
+        return me();
     }
 
     /**
@@ -88,20 +88,20 @@ public class ParaMap<ME extends ParaMap> implements Serializable , ISqlPara, IPa
      */
     public ME addPara(String key, String value, ParaTypeEnum pte) {
 		para.put(key, SqlUtil.coverString2Object(value, pte));
-        return (ME)me();
+        return me();
     }
 
     public JdbcItem jdbcSql() {
-        if (this.getPage() == null || this.getPage().getCurrent() > 0) {
-            SqlUtil.dealParm(this,1,true);
+        if (this.getPage() == null) {
+            SqlUtil.dealParm(this,1);
         }else{
-            SqlUtil.dealParm(this,3,true);
+            SqlUtil.dealParm(this,3);
         }
-        return new JdbcItem(sqlItem.getSqlJdbc(),sqlItem.getSqlJdbcPara());
+        return SqlUtil.dealParmToJdbc(this);
     }
     public JdbcItem jdbcCnt() {
-        SqlUtil.dealParm(this,2,true);
-        return new JdbcItem(sqlItem.getSqlJdbc(),sqlItem.getSqlJdbcPara());
+        SqlUtil.dealParm(this,2);
+        return SqlUtil.dealParmToJdbc(this);
     }
 
     @Override

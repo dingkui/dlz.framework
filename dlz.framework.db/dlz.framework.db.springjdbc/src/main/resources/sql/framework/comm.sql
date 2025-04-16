@@ -5,26 +5,6 @@
 <!--=========================================================================-->
 
 <sqlList>
-	<sql sqlId="key.comm.searchTable"><![CDATA[
-	  select ${colums} from ${tableName} t ${where} ${otherwhere}
-    ]]></sql>
-
-	<sql sqlId="key.comm.updateTable"><![CDATA[
-	  update ${tableName} t set ${sets} ${where} ${otherwhere}
-    ]]></sql>
-
-	<sql sqlId="key.comm.insertTable"><![CDATA[
-	  insert into ${tableName}(${colums}) values(${values})
-    ]]></sql>
-
-	<sql sqlId="key.comm.deleteTable"><![CDATA[
-	  delete from ${tableName} t ${where} ${otherwhere}
-    ]]></sql>
-
- 	<sql sqlId="key.comm.cntSql"><![CDATA[
-	  select count(1) from (${_sql}) t
-    ]]></sql>
-
  	<sql sqlId="key.comm.pageSql.oracle"><![CDATA[
 		[select * from (select a1.*,rownum rownum_ from ( ^#{_end}]
 			[select * from ( ^#{_orderBy}]

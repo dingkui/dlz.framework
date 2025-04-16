@@ -6,18 +6,27 @@ import com.dlz.comm.util.system.FieldReflections;
 import com.dlz.framework.db.helper.util.DbNameUtil;
 import com.dlz.framework.db.modal.para.*;
 import com.dlz.framework.db.modal.result.Page;
+import com.dlz.framework.db.modal.result.ResultMap;
 
 import java.lang.reflect.Field;
 import java.util.Map;
 import java.util.Set;
 
 public class DB {
-    public static SqlKeyQuery sqlSelect(String sql, Page page) {
-        return new SqlKeyQuery(sql, page);
+    public static JdbcQuery jdbcSelect(String sql, Object... para) {
+        return new JdbcQuery(sql,para);
+    }
+
+    public static JdbcInsert jdbcInsert(String sql, Object... para) {
+        return new JdbcInsert(sql, para);
+    }
+
+    public static JdbcExcute jdbcExute(String sql, Object... para) {
+        return new JdbcExcute(sql, para);
     }
 
     public static SqlKeyQuery sqlSelect(String sql) {
-        return new SqlKeyQuery(sql, null);
+        return new SqlKeyQuery(sql);
     }
 
     public static SqlKeyInsert sqlInsert(String sql) {
@@ -70,6 +79,7 @@ public class DB {
     public static <T> WrapperQuery<T> query(Map<String, Object> query, Class<T> re) {
         return WrapperQuery.wrapper(re).auto(query);
     }
+
     public static <T> WrapperQuery<T> query(T contion) {
         return WrapperQuery.wrapper(contion);
     }
@@ -93,6 +103,7 @@ public class DB {
     public static <T> WrapperUpdate<T> update(T condition) {
         return WrapperUpdate.wrapper(condition);
     }
+
     public static <T> WrapperUpdate<T> update(T condition, T value) {
         return WrapperUpdate.wrapper(condition).set(value);
     }
