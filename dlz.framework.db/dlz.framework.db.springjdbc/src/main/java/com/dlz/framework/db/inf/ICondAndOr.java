@@ -19,7 +19,7 @@ public interface ICondAndOr<T extends ICondAndOr> extends ICondBase<T> {
      * @return 返回Condition对象本身，支持链式调用
      */
     default T sql(String _sql, JSONMap paras) {
-        String sql = _sql.replaceAll("\\$", "\\\\\\$");
+        String sql = _sql.replaceAll("\\$\\.", "\\\\\\$\\\\\\.");
         sql = SqlUtil.getConditionStr(sql, paras);
         sql = SqlUtil.replaceSql(sql, paras, 0);
         Condition sqlCond = DbBuildEnum.sql.build(sql, paras);
