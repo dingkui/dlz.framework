@@ -1,8 +1,14 @@
 package com.dlz.framework.db.modal.para;
 
 import com.dlz.comm.util.StringUtils;
+import com.dlz.comm.util.system.FieldReflections;
 import com.dlz.framework.db.convertor.DbConvertUtil;
+import com.dlz.framework.db.helper.util.DbNameUtil;
 import lombok.extern.slf4j.Slf4j;
+
+import java.lang.reflect.Field;
+import java.util.ArrayList;
+import java.util.List;
 
 
 /**
@@ -129,4 +135,30 @@ public class MakerUtil {
         });
         maker.addPara(MAKER_STR_SETS, sbSets.toString());
     }
+
+
+    public static String buildInsertSql(String dbName, List<Field> fields) {
+        List<String> fieldsPart = new ArrayList<>();
+        List<String> placeHolder = new ArrayList<>();
+        for (Field field : fields) {
+            String dbClumnName = DbNameUtil.getDbClumnName(field);
+            if (dbClumnName != null) {
+                fieldsPart.add("`" + dbClumnName + "`");
+                placeHolder.add("?");
+            }
+        }
+        return  "INSERT INTO `" + dbName + "` (" + StringUtils.join(",", fieldsPart) + ") VALUES (" + StringUtils.join(",", placeHolder) + ")";
+    }
+    public static String buildUpdateSql(String dbName, List<Field> fields) {
+        List<String> fieldsPart = new ArrayList<String>();
+        for (Field field : fields) {
+            String dbClumnName = DbNameUtil.getDbClumnName(field);
+            if (dbClumnName!=null && !dbClumnName.equals("id")) {
+                fieldsPart.add("`" + dbClumnName + "`=?");
+            }
+        }
+        return  "UPDATE `" + dbName + "` SET " + StringUtils.join(",", fieldsPart) + " WHERE id = ?";
+    }
+
+
 }

@@ -19,6 +19,16 @@ import java.lang.reflect.Type;
 public class Reflections {
     private static final String CGLIB_CLASS_SEPARATOR = "$$";
 
+    public static <T> void copy(T source,T target){
+        if(source==null){
+            throw new SystemException("source不能为空");
+        }
+        if(target==null){
+            throw new SystemException("target不能为空");
+        }
+        FieldReflections.getFields(source.getClass())
+                .forEach(field -> FieldReflections.setValue(target, field, FieldReflections.getValue(source,field)));
+    }
 
     /**
      * 取得泛型参数类型

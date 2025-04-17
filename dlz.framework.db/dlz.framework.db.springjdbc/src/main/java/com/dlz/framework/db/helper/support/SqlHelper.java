@@ -16,13 +16,14 @@ import com.dlz.framework.db.helper.util.DbNameUtil;
 import com.dlz.framework.db.helper.wrapper.ConditionAndWrapper;
 import com.dlz.framework.db.helper.wrapper.ConditionWrapper;
 import com.dlz.framework.db.holder.DBHolder;
+import com.dlz.framework.db.modal.DbInfoCache;
+import com.dlz.framework.db.modal.para.MakerUtil;
 import com.dlz.framework.db.modal.result.Page;
 import com.dlz.framework.db.modal.result.ResultMap;
 import com.dlz.framework.db.modal.result.Sort;
 
 import java.lang.reflect.Field;
 import java.util.*;
-import java.util.stream.Collectors;
 
 public abstract class SqlHelper {
     protected final IDlzDao dao;
@@ -176,20 +177,9 @@ public abstract class SqlHelper {
     }
 
     private VAL<List<Field>, String> mkInsertInfo(Class<?> cls) {
-        String dbName = DbNameUtil.getDbTableName(cls);
-        List<Field> fields = FieldReflections.getFields(cls).stream().filter(field ->DbNameUtil.getDbClumnName(field) != null).collect(Collectors.toList());
-
-        List<String> fieldsPart = new ArrayList<>();
-        List<String> placeHolder = new ArrayList<>();
-        for (Field field : fields) {
-            String dbClumnName = DbNameUtil.getDbClumnName(field);
-            if (dbClumnName != null) {
-                fieldsPart.add("`" + dbClumnName + "`");
-                placeHolder.add("?");
-            }
-        }
-        String sql=  "INSERT INTO `" + dbName + "` (" + StringUtils.join(",", fieldsPart) + ") VALUES (" + StringUtils.join(",", placeHolder) + ")";
-        return VAL.of(fields,sql);
+        String dbName = DbInfoCache.getTableName(cls);
+        List<Field> fields = DbInfoCache.getTableFields(cls);
+        return VAL.of(fields, MakerUtil.buildInsertSql(dbName, fields));
     }
     /**
      * 插入

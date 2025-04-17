@@ -3,9 +3,12 @@ package com.dlz.framework.db.modal.para;
 import com.dlz.comm.fn.DlzFn;
 import com.dlz.comm.util.system.FieldReflections;
 import com.dlz.framework.db.helper.util.DbNameUtil;
+import com.dlz.framework.db.holder.DBHolder;
 import com.dlz.framework.db.inf.*;
+import com.dlz.framework.db.modal.DbInfoCache;
 
 import java.lang.reflect.Field;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -59,5 +62,27 @@ public class WrapperUpdate<T> extends AWrapperSearch<WrapperUpdate<T>,T, MakerUp
 	@Override
 	public WrapperUpdate<T> me() {
 		return this;
+	}
+
+
+	public boolean batch(List<T> valueBeans){
+		String dbName = DbInfoCache.getTableName(getBeanClass());
+		final List<Field> fields = DbInfoCache.getTableFields(getBeanClass());
+		String sql = MakerUtil.buildUpdateSql(dbName, fields);
+
+		List<Object[]> paramValues = new ArrayList<>();
+		for (Object object : valueBeans) {
+			List<Object> params = new ArrayList<Object>();
+			for (Field field : fields) {
+				String dbClumnName = DbNameUtil.getDbClumnName(field);
+				if (dbClumnName!=null && !dbClumnName.equals("id")) {
+					params.add(FieldReflections.getValue(object, field));
+				}
+			}
+			params.add(FieldReflections.getValue(object, "id",true));
+			paramValues.add(params.toArray());
+		}
+		DBHolder.getService().getDao().batchUpdate(sql, paramValues);
+		return true;
 	}
 }
