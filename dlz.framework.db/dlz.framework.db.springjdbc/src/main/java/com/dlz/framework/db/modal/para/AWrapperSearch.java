@@ -11,7 +11,6 @@ import com.dlz.framework.db.modal.condition.Condition;
  * @author dingkui
  */
 public abstract class AWrapperSearch<ME extends AWrapperSearch, T, PM extends AMakerSearch> extends AWrapper<T, PM> implements ISqlWrapperSearch<ME, T> {
-    private boolean allowFullQuery = false;//是否允许全表查询，默认不允许
     public AWrapperSearch(Class<T> beanClass) {
         super(beanClass);
     }
@@ -29,11 +28,11 @@ public abstract class AWrapperSearch<ME extends AWrapperSearch, T, PM extends AM
     }
 
     public ME setAllowFullQuery(boolean allowFullQuery) {
-        this.allowFullQuery = allowFullQuery;
+        getPm().setAllowFullQuery(allowFullQuery);
         return me();
     }
     public boolean isAllowFullQuery() {
-        return this.allowFullQuery;
+        return getPm().isAllowFullQuery();
     }
 
     protected void wrapValue(String columnName, Object value) {

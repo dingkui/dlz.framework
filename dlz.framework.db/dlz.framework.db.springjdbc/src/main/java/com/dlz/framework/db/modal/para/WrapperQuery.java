@@ -33,11 +33,13 @@ public class WrapperQuery<T> extends AWrapperSearch<WrapperQuery<T>,T, MakerQuer
     public WrapperQuery(Class<T> beanClass) {
         super(beanClass);
         setPm(new MakerQuery(getTableName()));
+        setAllowFullQuery(true);
     }
 
     public WrapperQuery(T conditionBean) {
         super(conditionBean);
         setPm(new MakerQuery(getTableName()));
+        setAllowFullQuery(true);
     }
 
 
