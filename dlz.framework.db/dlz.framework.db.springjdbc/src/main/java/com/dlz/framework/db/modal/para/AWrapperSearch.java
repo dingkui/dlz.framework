@@ -1,5 +1,6 @@
 package com.dlz.framework.db.modal.para;
 
+import com.dlz.comm.util.StringUtils;
 import com.dlz.framework.db.inf.ISqlWrapperSearch;
 import com.dlz.framework.db.modal.condition.Condition;
 
@@ -36,6 +37,8 @@ public abstract class AWrapperSearch<ME extends AWrapperSearch, T, PM extends AM
     }
 
     protected void wrapValue(String columnName, Object value) {
-        getPm().eq(columnName, value);
+        if (StringUtils.isNotEmpty(value)) {
+            getPm().eq(columnName, value);
+        }
     }
 }
