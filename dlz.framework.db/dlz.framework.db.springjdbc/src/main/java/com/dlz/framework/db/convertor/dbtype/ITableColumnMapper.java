@@ -13,16 +13,4 @@ public interface ITableColumnMapper {
      * @Title: converObj4Db
      */
      Object converObj4Db(String tableName, String clumnName, Object value);
-
-    /**
-     * 判断字符串是否在表中存在
-     *
-     * @param @param  tableName
-     * @param @param  clumnName
-     * @param @return 设定文件
-     * @return boolean    返回类型
-     * @throws
-     * @Title: isClumnExists
-     */
-    boolean isClumnExists(String tableName, String clumnName);
 }

@@ -22,7 +22,7 @@ public class DelteParaMapTest  extends SpingDbBaseTest {
         paraMap.where(Condition.where().sql("[id=#{id}]",param));
 //        paraMap.where(DbBuildEnum.where.build().eq(Dict::getA2, "3"));
 
-        showSql(paraMap,"conditionSqlTest1");
+        showSql(paraMap,"conditionSqlTest1","delete from t_b_dict t where (id='123')");
         //delete from t_b_dict where (id='123')
     }
     @Test
@@ -32,7 +32,7 @@ public class DelteParaMapTest  extends SpingDbBaseTest {
         JSONMap param = new JSONMap("id","123");
         paraMap.where(Condition.where().sql("[id=#{id2}]",param));
 
-        showSql(paraMap,"conditionTest1");
+        showSql(paraMap,"conditionTest1","delete from t_b_dict t where false");
         //delete from t_b_dict where false
     }
     @Test
@@ -41,7 +41,7 @@ public class DelteParaMapTest  extends SpingDbBaseTest {
         paraMap.addPara(Dict::getA2, "1");
 //        paraMap.where(DbBuildEnum.where.build())
 
-        showSql(paraMap,"conditionTest1");
+        showSql(paraMap,"conditionTest1","delete from t_b_dict t where false");
     }
     @Test
     public void conditionTest() {
@@ -59,7 +59,7 @@ public class DelteParaMapTest  extends SpingDbBaseTest {
                 .sql("exists (select 1 from dual where t_b_dict where 1=#{xx}) ",new JSONMap("xx",999)))
         ;
 
-        showSql(paraMap,"conditionTest");
+        showSql(paraMap,"conditionTest","delete from t_b_dict t where XXSS <> '3' and A4 = '2' and A6 <= '10' and (A6 = '10' or A6 = '10') or (A6 = '10' and A6 = '10') and (exists (select 1 from dual where t_b_dict where 1=999) )");
     }
 
 
@@ -74,7 +74,7 @@ public class DelteParaMapTest  extends SpingDbBaseTest {
                 .or(Condition.AND().in(Dict::getA2, "sql:select 2 from dual")))
         ;
 
-        showSql(paraMap,"conditionTest2");
+        showSql(paraMap,"conditionTest2","delete from t_b_dict t where XXSS in (3,4,5,6) or XXSS in ('31','111','5','6') or XXSS in (1) or XXSS in (SELECT 2 FROM DUAL)");
     }
 
 

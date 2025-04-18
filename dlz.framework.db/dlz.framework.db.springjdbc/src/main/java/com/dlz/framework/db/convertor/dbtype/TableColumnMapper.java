@@ -2,6 +2,7 @@ package com.dlz.framework.db.convertor.dbtype;
 
 import com.dlz.comm.util.ValUtil;
 import com.dlz.framework.db.dao.IDlzDao;
+import com.dlz.framework.db.holder.BeanInfoHolder;
 import lombok.AllArgsConstructor;
 
 import java.sql.Types;
@@ -12,7 +13,7 @@ public class TableColumnMapper implements ITableColumnMapper {
 	final IDlzDao dao;
 	@Override
 	public Object converObj4Db(String tableName, String clumnName, Object value) {
-		Map<String, Integer> map = dao.getTableColumnsInfo(tableName);
+		Map<String, Integer> map = BeanInfoHolder.getTableColumnsInfo(tableName);
 		if (map != null) {
 			Integer dbClass = map.get(clumnName.toUpperCase());
 			if(dbClass==null){
@@ -21,14 +22,6 @@ public class TableColumnMapper implements ITableColumnMapper {
 			return cover(dbClass, value);
 		}
 		return value;
-	}
-	@Override
-	public boolean isClumnExists(String tableName, String clumnName) {
-		Map<String, Integer> map = dao.getTableColumnsInfo(tableName);
-		if (map == null) {
-			return false;
-		}
-		return map.containsKey(clumnName.toUpperCase());
 	}
 
 	private static Object cover(Integer dbClass, Object obj) {

@@ -1,6 +1,5 @@
 package com.dlz.framework.db.modal.para;
 
-import com.dlz.framework.db.convertor.DbConvertUtil;
 import com.dlz.framework.db.inf.ISqlMaker;
 
 /**
@@ -17,14 +16,5 @@ public abstract class AMaker<T extends AMaker> extends ParaMap<T> implements ISq
     @Override
     public String getTableName() {
         return tableName;
-    }
-    /**
-     * 判断字段是否存在
-     *
-     * @param clumnName
-     * @return
-     */
-    public boolean isClumnExists(String clumnName) {
-        return DbConvertUtil.isClumnExists(tableName, clumnName);
     }
 }

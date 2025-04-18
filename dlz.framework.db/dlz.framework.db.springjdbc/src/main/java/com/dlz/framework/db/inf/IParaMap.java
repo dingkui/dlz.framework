@@ -1,11 +1,11 @@
 package com.dlz.framework.db.inf;
 
 import com.dlz.comm.fn.DlzFn;
+import com.dlz.comm.inf.IChained;
 import com.dlz.comm.json.JSONMap;
 import com.dlz.comm.util.system.FieldReflections;
 import com.dlz.framework.db.SqlUtil;
 import com.dlz.framework.db.enums.ParaTypeEnum;
-import com.dlz.comm.inf.IChained;
 
 import java.util.Map;
 

@@ -3,7 +3,7 @@ package com.dlz.framework.db.modal.para;
 import com.dlz.comm.fn.DlzFn;
 import com.dlz.framework.db.convertor.DbConvertUtil;
 import com.dlz.framework.db.inf.IOperatorExec;
-import com.dlz.framework.db.modal.DbInfoCache;
+import com.dlz.framework.db.holder.BeanInfoHolder;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.HashMap;
@@ -26,7 +26,7 @@ public class MakerUpdate extends AMakerSearch<MakerUpdate> implements IOperatorE
 
     public MakerUpdate set(String paraName, Object value) {
         paraName = DbConvertUtil.str2DbClumn(paraName);
-        if (!isClumnExists(paraName)) {
+        if (!BeanInfoHolder.isColumnExists(getTableName(),paraName)) {
             log.warn("column is not exists:" + getTableName() + "." + paraName);
             return this;
         }
@@ -35,7 +35,7 @@ public class MakerUpdate extends AMakerSearch<MakerUpdate> implements IOperatorE
     }
 
     public <T> void set(DlzFn<T, ?> column, Object value) {
-        set(DbInfoCache.fnName(column), value);
+        set(BeanInfoHolder.fnName(column), value);
     }
 
     /**

@@ -58,7 +58,7 @@ public class WrapperTest extends SpingDbBaseTest {
         SysSql dict = new SysSql();
         dict.setId(123L);
         MakerQuery select = DB.select(SysSql::getId);
-        showSql(select,"searchWrapperTest1","select ID from SYS_SQL t");
+        showSql(select,"searchWrapperTest1","select ID from SYS_SQL t where false");
     }
     @Test
     public void searchWrapperTest2() {

@@ -3,7 +3,7 @@ package com.dlz.framework.db.modal.para;
 import com.dlz.comm.util.StringUtils;
 import com.dlz.comm.util.system.FieldReflections;
 import com.dlz.framework.db.convertor.DbConvertUtil;
-import com.dlz.framework.db.helper.util.DbNameUtil;
+import com.dlz.framework.db.holder.BeanInfoHolder;
 import lombok.extern.slf4j.Slf4j;
 
 import java.lang.reflect.Field;
@@ -141,24 +141,43 @@ public class MakerUtil {
         List<String> fieldsPart = new ArrayList<>();
         List<String> placeHolder = new ArrayList<>();
         for (Field field : fields) {
-            String dbClumnName = DbNameUtil.getDbClumnName(field);
-            if (dbClumnName != null) {
+            String dbClumnName = BeanInfoHolder.getColumnName(field);
+            if (!dbClumnName.equals("")) {
                 fieldsPart.add("`" + dbClumnName + "`");
                 placeHolder.add("?");
             }
         }
         return  "INSERT INTO `" + dbName + "` (" + StringUtils.join(",", fieldsPart) + ") VALUES (" + StringUtils.join(",", placeHolder) + ")";
     }
+    public static Object[] buildInsertParams(Object object, List<Field> fields) {
+        List<Object> params = new ArrayList<>();
+        for (Field field : fields) {
+            String dbClumnName = BeanInfoHolder.getColumnName(field);
+            if (!dbClumnName.equals("")) {
+                params.add(FieldReflections.getValue(object, field));
+            }
+        }
+        return params.toArray();
+    }
     public static String buildUpdateSql(String dbName, List<Field> fields) {
         List<String> fieldsPart = new ArrayList<String>();
         for (Field field : fields) {
-            String dbClumnName = DbNameUtil.getDbClumnName(field);
-            if (dbClumnName!=null && !dbClumnName.equals("id")) {
+            String dbClumnName = BeanInfoHolder.getColumnName(field);
+            if (!dbClumnName.equals("id") && !dbClumnName.equals("")) {
                 fieldsPart.add("`" + dbClumnName + "`=?");
             }
         }
         return  "UPDATE `" + dbName + "` SET " + StringUtils.join(",", fieldsPart) + " WHERE id = ?";
     }
-
-
+    public static Object[] buildUpdateParams(Object object, List<Field> fields) {
+        List<Object> params = new ArrayList<Object>();
+        for (Field field : fields) {
+            String dbClumnName = BeanInfoHolder.getColumnName(field);
+            if (!dbClumnName.equals("id") && !dbClumnName.equals("")) {
+                params.add(FieldReflections.getValue(object, field));
+            }
+        }
+        params.add(FieldReflections.getValue(object, "id",true));
+        return params.toArray();
+    }
 }

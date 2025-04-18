@@ -2,11 +2,11 @@ package com.dlz.framework.db.modal;
 
 import com.dlz.comm.exception.SystemException;
 import com.dlz.comm.fn.DlzFn;
+import com.dlz.comm.util.VAL;
 import com.dlz.comm.util.system.FieldReflections;
-import com.dlz.framework.db.helper.util.DbNameUtil;
+import com.dlz.framework.db.holder.BeanInfoHolder;
 import com.dlz.framework.db.modal.para.*;
 import com.dlz.framework.db.modal.result.Page;
-import com.dlz.framework.db.modal.result.ResultMap;
 
 import java.lang.reflect.Field;
 import java.util.Map;
@@ -62,9 +62,8 @@ public class DB {
         if (field == null) {
             throw new SystemException("字段无效");
         }
-        String fieldName = field.getName();
-        String tableName = DbNameUtil.getDbTableName(field.getDeclaringClass());
-        return new MakerQuery(fieldName, tableName);
+        final VAL<String, String> val = BeanInfoHolder.fnInfo(column);
+        return new MakerQuery(val.v1, val.v2);
     }
 
     public static <T> WrapperQuery<T> query(Class<T> re, Map<String, Object> query, Set<String> exclude, Page page) {

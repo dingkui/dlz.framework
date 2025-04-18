@@ -5,7 +5,7 @@ import com.dlz.comm.fn.DlzFn;
 import com.dlz.comm.util.ValUtil;
 import com.dlz.framework.db.SqlUtil;
 import com.dlz.framework.db.convertor.DbConvertUtil;
-import com.dlz.framework.db.modal.DbInfoCache;
+import com.dlz.framework.db.holder.BeanInfoHolder;
 import com.dlz.framework.db.modal.condition.Condition;
 import lombok.AllArgsConstructor;
 
@@ -94,7 +94,7 @@ public enum DbOprateEnum {
 
 
     public <T> Condition mk(DlzFn<T,?> dbn, Object value) {
-        return mk(DbInfoCache.fnName(dbn), value);
+        return mk(BeanInfoHolder.fnName(dbn), value);
     }
 
     public Condition mk(String dbn, Object value) {

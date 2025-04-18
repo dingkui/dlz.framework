@@ -2,15 +2,15 @@ package com.dlz.framework.db.modal.para;
 
 import com.dlz.comm.fn.DlzFn;
 import com.dlz.comm.util.system.FieldReflections;
-import com.dlz.framework.db.helper.util.DbNameUtil;
 import com.dlz.framework.db.holder.DBHolder;
-import com.dlz.framework.db.inf.*;
-import com.dlz.framework.db.modal.DbInfoCache;
+import com.dlz.framework.db.inf.IOperatorExec;
+import com.dlz.framework.db.inf.ISqlWrapperSearch;
+import com.dlz.framework.db.holder.BeanInfoHolder;
 
 import java.lang.reflect.Field;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * 更新语句生成器
@@ -54,7 +54,7 @@ public class WrapperUpdate<T> extends AWrapperSearch<WrapperUpdate<T>,T, MakerUp
 		for (Field field : fields) {
 			Object fieldValue = FieldReflections.getValue(bean, field);
 			if(fieldValue!=null){
-				getPm().set(DbNameUtil.getDbClumnName(field),fieldValue);
+				getPm().set(BeanInfoHolder.getColumnName(field),fieldValue);
 			}
 		}
 		return this;
@@ -64,24 +64,13 @@ public class WrapperUpdate<T> extends AWrapperSearch<WrapperUpdate<T>,T, MakerUp
 		return this;
 	}
 
-
 	public boolean batch(List<T> valueBeans){
-		String dbName = DbInfoCache.getTableName(getBeanClass());
-		final List<Field> fields = DbInfoCache.getTableFields(getBeanClass());
+		String dbName = BeanInfoHolder.getTableName(getBeanClass());
+		final List<Field> fields = BeanInfoHolder.getBeanFields(getBeanClass());
 		String sql = MakerUtil.buildUpdateSql(dbName, fields);
-
-		List<Object[]> paramValues = new ArrayList<>();
-		for (Object object : valueBeans) {
-			List<Object> params = new ArrayList<Object>();
-			for (Field field : fields) {
-				String dbClumnName = DbNameUtil.getDbClumnName(field);
-				if (dbClumnName!=null && !dbClumnName.equals("id")) {
-					params.add(FieldReflections.getValue(object, field));
-				}
-			}
-			params.add(FieldReflections.getValue(object, "id",true));
-			paramValues.add(params.toArray());
-		}
+		List<Object[]> paramValues = valueBeans.stream()
+				.map(v->MakerUtil.buildUpdateParams(v,fields))
+				.collect(Collectors.toList());
 		DBHolder.getService().getDao().batchUpdate(sql, paramValues);
 		return true;
 	}

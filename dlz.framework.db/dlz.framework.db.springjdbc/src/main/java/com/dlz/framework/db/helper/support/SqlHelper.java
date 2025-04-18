@@ -12,11 +12,10 @@ import com.dlz.comm.util.system.FieldReflections;
 import com.dlz.framework.db.dao.IDlzDao;
 import com.dlz.framework.db.helper.bean.TableInfo;
 import com.dlz.framework.db.helper.bean.Update;
-import com.dlz.framework.db.helper.util.DbNameUtil;
 import com.dlz.framework.db.helper.wrapper.ConditionAndWrapper;
 import com.dlz.framework.db.helper.wrapper.ConditionWrapper;
 import com.dlz.framework.db.holder.DBHolder;
-import com.dlz.framework.db.modal.DbInfoCache;
+import com.dlz.framework.db.holder.BeanInfoHolder;
 import com.dlz.framework.db.modal.para.MakerUtil;
 import com.dlz.framework.db.modal.result.Page;
 import com.dlz.framework.db.modal.result.ResultMap;
@@ -142,11 +141,11 @@ public abstract class SqlHelper {
         boolean autoId = false;//是否自动生成Id
         Class<?> beanClass = object.getClass();
         if(idField != null){
-            String id = (String)FieldReflections.getValue(object, idField);
+            String id = FieldReflections.getValue(object, idField);
             if(StringUtils.isNotEmpty(id)){
                 Object objectOrg = findById(id, beanClass);
                 if(objectOrg!=null){
-                    throw new SystemException("添加数据时ID重复！"+ DbNameUtil.getDbTableName(beanClass) +" id="+id);
+                    throw new SystemException("添加数据时ID重复！"+ BeanInfoHolder.getTableName(beanClass) +" id="+id);
                 }
             }
 
@@ -177,8 +176,8 @@ public abstract class SqlHelper {
     }
 
     private VAL<List<Field>, String> mkInsertInfo(Class<?> cls) {
-        String dbName = DbInfoCache.getTableName(cls);
-        List<Field> fields = DbInfoCache.getTableFields(cls);
+        String dbName = BeanInfoHolder.getTableName(cls);
+        List<Field> fields = BeanInfoHolder.getBeanFields(cls);
         return VAL.of(fields, MakerUtil.buildInsertSql(dbName, fields));
     }
     /**
@@ -189,33 +188,19 @@ public abstract class SqlHelper {
     public int update(Object obj) {
         Field idField = FieldReflections.getField(obj, "id",true);
         Class<?> objClass = obj.getClass();
+        final String dbTableName = BeanInfoHolder.getTableName(objClass);
         if(idField==null){
-            throw new SystemException("更新操作有误:"+DbNameUtil.getDbTableName(objClass)+" 定义无id字段");
+            throw new SystemException("更新操作有误:"+ dbTableName +" 定义无id字段");
         }
         String id = (String)FieldReflections.getValue(obj, idField);
         if(StringUtils.isEmpty(id)){
-            throw new SystemException("更新操作有误:"+DbNameUtil.getDbTableName(objClass)+" id为空"+ ValUtil.toStr(obj));
+            throw new SystemException("更新操作有误:"+ dbTableName +" id为空"+ ValUtil.toStr(obj));
         }
-
         FieldReflections.setValue(obj,"updateTime",System.currentTimeMillis(),true);
-
         // 更新
         List<Field> fields = FieldReflections.getFields(objClass);
-
-        List<String> fieldsPart = new ArrayList<String>();
-        List<Object> paramValues = new ArrayList<Object>();
-
-        for (Field field : fields) {
-            String dbClumnName = DbNameUtil.getDbClumnName(field);
-            if (dbClumnName!=null && !dbClumnName.equals("id") && FieldReflections.getValue(obj, field) != null) {
-                fieldsPart.add("`" + dbClumnName + "`=?");
-                paramValues.add(FieldReflections.getValue(obj, field));
-            }
-        }
-        paramValues.add(id);
-
-        String sql = "UPDATE `" + DbNameUtil.getDbTableName(objClass) + "` SET " + StringUtils.join(",", fieldsPart) + " WHERE id = ?";
-        return  DBHolder.doDao(w->w.update(sql, paramValues.toArray()));
+        String sql = MakerUtil.buildUpdateSql(dbTableName, fields);
+        return  DBHolder.doDao(w->w.update(sql, MakerUtil.buildUpdateParams(obj, fields)));
     }
 
     /**
@@ -286,12 +271,12 @@ public abstract class SqlHelper {
         List<String> paramValues = new ArrayList<String>();
         for (Map.Entry<String, Object> entry : update.getSets().entrySet()) {
             if (entry.getKey() != null && entry.getValue() != null) {
-                fieldsPart.add("`" + DbNameUtil.getDbClumnName(entry.getKey()) + "`=?");
+                fieldsPart.add("`" + BeanInfoHolder.getColumnName(entry.getKey()) + "`=?");
                 paramValues.add(entry.getValue().toString());
             }
         }
 
-        String sql = "UPDATE `" + DbNameUtil.getDbTableName(clazz) + "` SET " + StringUtils.join(",", fieldsPart);
+        String sql = "UPDATE `" + BeanInfoHolder.getTableName(clazz) + "` SET " + StringUtils.join(",", fieldsPart);
         if (conditionWrapper != null && conditionWrapper.notEmpty()) {
             sql += " WHERE " + conditionWrapper.build(paramValues);
         }
@@ -303,7 +288,7 @@ public abstract class SqlHelper {
      *
      */
     public void addCountById(String id, String property, Long count, Class<?> clazz) {
-        String sql = "UPDATE `" + DbNameUtil.getDbTableName(clazz) + "` SET `" + property + "` = CAST(`" + property + "` AS DECIMAL(30,10)) + ? WHERE `id` =  ?";
+        String sql = "UPDATE `" + BeanInfoHolder.getTableName(clazz) + "` SET `" + property + "` = CAST(`" + property + "` AS DECIMAL(30,10)) + ? WHERE `id` =  ?";
         Object[] params = new Object[] { count, id };
         dao.update(sql, params);
     }
@@ -322,28 +307,12 @@ public abstract class SqlHelper {
      * @param object 对象
      */
     public void updateAllColumnById(Object object) {
-        if (StringUtils.isEmpty((String) FieldReflections.getValue(object, "id",true))) {
+        if (StringUtils.isEmpty(FieldReflections.getValue(object, "id",true))) {
             return;
         }
-
         List<Field> fields = FieldReflections.getFields(object.getClass());
-
-        List<String> fieldsPart = new ArrayList<String>();
-        List<Object> paramValues = new ArrayList<Object>();
-
-        for (Field field : fields) {
-            String dbClumnName = DbNameUtil.getDbClumnName(field);
-            if (dbClumnName!=null && !dbClumnName.equals("id")) {
-                fieldsPart.add("`" + dbClumnName + "`=?");
-                paramValues.add(FieldReflections.getValue(object, field));
-            }
-        }
-        paramValues.add((String) FieldReflections.getValue(object, "id",true));
-
-        String sql = "UPDATE `" + DbNameUtil.getDbTableName(object.getClass()) + "` SET " + StringUtils.join(",", fieldsPart) + " WHERE id = ?";
-
-        dao.update(sql, paramValues.toArray());
-
+        String sql = MakerUtil.buildUpdateSql(BeanInfoHolder.getTableName(object.getClass()),fields);
+        dao.update(sql, MakerUtil.buildUpdateParams(object, fields));
     }
 
     /**
@@ -384,8 +353,8 @@ public abstract class SqlHelper {
      *
      */
     public void deleteByQuery(ConditionWrapper conditionWrapper, Class<?> clazz) {
-        List<String> values = new ArrayList<String>();
-        String sql = "DELETE FROM `" + DbNameUtil.getDbTableName(clazz) + "`";
+        List<String> values = new ArrayList<>();
+        String sql = "DELETE FROM `" + BeanInfoHolder.getTableName(clazz) + "`";
         if (conditionWrapper != null && conditionWrapper.notEmpty()) {
             sql += " WHERE " + conditionWrapper.build(values);
         }
@@ -400,7 +369,7 @@ public abstract class SqlHelper {
         // 查询出一共的条数
         return page.doPage(() -> findCountByQuery(conditionWrapper, clazz), () -> {
             List<String> values = new ArrayList<>();
-            String sql = "SELECT * FROM `" + DbNameUtil.getDbTableName(clazz) + "`";
+            String sql = "SELECT * FROM `" + BeanInfoHolder.getTableName(clazz) + "`";
             if (conditionWrapper != null && conditionWrapper.notEmpty()) {
                 sql += " WHERE " + conditionWrapper.build(values);
             }
@@ -448,7 +417,7 @@ public abstract class SqlHelper {
     }
 
     private <T> String getQuerySql(ConditionWrapper conditionWrapper, Sort sort, Class<T> clazz, List<String> values) {
-        String sql = "SELECT * FROM `" + DbNameUtil.getDbTableName(clazz) + "`";
+        String sql = "SELECT * FROM `" + BeanInfoHolder.getTableName(clazz) + "`";
         if (conditionWrapper != null && conditionWrapper.notEmpty()) {
             sql += " WHERE " + conditionWrapper.build(values);
         }
@@ -641,7 +610,7 @@ public abstract class SqlHelper {
      */
     public Integer findCountByQuery(ConditionWrapper conditionWrapper, Class<?> clazz) {
         List<String> values = new ArrayList<>();
-        String sql = "SELECT COUNT(*) FROM `" + DbNameUtil.getDbTableName(clazz) + "`";
+        String sql = "SELECT COUNT(*) FROM `" + BeanInfoHolder.getTableName(clazz) + "`";
         if (conditionWrapper != null && conditionWrapper.notEmpty()) {
             sql += " WHERE " + conditionWrapper.build(values);
         }

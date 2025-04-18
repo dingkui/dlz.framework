@@ -6,7 +6,7 @@ import com.dlz.framework.db.dao.IDlzDao;
 import com.dlz.framework.db.helper.bean.ColumnInfo;
 import com.dlz.framework.db.helper.bean.TableInfo;
 import com.dlz.framework.db.helper.support.SqlHelper;
-import com.dlz.framework.db.helper.util.DbNameUtil;
+import com.dlz.framework.db.holder.BeanInfoHolder;
 import com.dlz.framework.db.modal.result.ResultMap;
 import lombok.extern.slf4j.Slf4j;
 
@@ -25,7 +25,7 @@ public class DbOpPostgresql extends SqlHelper {
     public void createTable(String tableName, Class<?> clazz) {
         String sql = "CREATE TABLE IF NOT EXISTS public.\"" + tableName + "\" (id VARCHAR(32) NOT NULL PRIMARY KEY)";
         dao.execute(sql);
-        String clumnCommont = DbNameUtil.getTableCommont(clazz);
+        String clumnCommont = BeanInfoHolder.getTableComment(clazz);
         if (StringUtils.isNotEmpty(clumnCommont)) {
             sql = "COMMENT ON TABLE \"public\".\"" + tableName + "\" IS '" + clumnCommont + "'";
             dao.execute(sql);
@@ -126,7 +126,7 @@ public class DbOpPostgresql extends SqlHelper {
     public void createColumn(String tableName, String name, Field field) {
         String sql = "ALTER TABLE public." + tableName + " ADD COLUMN " + name + " " + getDbClumnType(field);
         dao.execute(sql);
-        String clumnCommont = DbNameUtil.getClumnCommont(field);
+        String clumnCommont = BeanInfoHolder.getColumnComment(field);
         if (StringUtils.isNotEmpty(clumnCommont)) {
             sql = "COMMENT ON COLUMN " + tableName + "." + name + " IS '" + clumnCommont + "'";
             dao.execute(sql);

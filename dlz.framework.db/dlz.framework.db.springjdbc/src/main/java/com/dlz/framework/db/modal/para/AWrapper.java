@@ -2,11 +2,10 @@ package com.dlz.framework.db.modal.para;
 
 import com.dlz.comm.exception.DbException;
 import com.dlz.comm.util.system.FieldReflections;
-import com.dlz.framework.db.helper.util.DbNameUtil;
-import com.dlz.framework.db.modal.DbInfoCache;
 import com.dlz.framework.db.inf.ISqlPara;
-import com.dlz.framework.db.modal.items.SqlItem;
+import com.dlz.framework.db.holder.BeanInfoHolder;
 import com.dlz.framework.db.modal.items.JdbcItem;
+import com.dlz.framework.db.modal.items.SqlItem;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -34,8 +33,8 @@ public abstract class AWrapper<T,P extends ParaMap> implements ISqlPara {
             throw new DbException("bean需要为实体对象",1002);
         }
         this.bean=null;
-        tableName= DbInfoCache.getTableName(beanClass);
-        fields= DbInfoCache.getTableFields(beanClass);
+        tableName= BeanInfoHolder.getTableName(beanClass);
+        fields= BeanInfoHolder.getBeanFields(beanClass);
     }
     public AWrapper(T bean) {
         this.bean = bean;
@@ -43,8 +42,8 @@ public abstract class AWrapper<T,P extends ParaMap> implements ISqlPara {
             throw new DbException("bean不能为空",1002);
         }
         this.beanClass = (Class<T>) bean.getClass();
-        tableName= DbInfoCache.getTableName(beanClass);
-        fields= DbInfoCache.getTableFields(beanClass);
+        tableName= BeanInfoHolder.getTableName(beanClass);
+        fields= BeanInfoHolder.getBeanFields(beanClass);
     }
 
     protected String getTableName() {
@@ -53,10 +52,10 @@ public abstract class AWrapper<T,P extends ParaMap> implements ISqlPara {
 
     protected void generatWithBean(T bean) {
         if (!isGenerator && bean != null) {
-            fields.forEach(fieldName->{
-                Object fieldValue = FieldReflections.getValue(bean, fieldName);
+            fields.forEach(field->{
+                Object fieldValue = FieldReflections.getValue(bean, field);
                 if (fieldValue != null) {
-                    wrapValue(DbNameUtil.getDbClumnName(fieldName), fieldValue);
+                    wrapValue(BeanInfoHolder.getColumnName(field), fieldValue);
                 }
             });
             isGenerator = true;

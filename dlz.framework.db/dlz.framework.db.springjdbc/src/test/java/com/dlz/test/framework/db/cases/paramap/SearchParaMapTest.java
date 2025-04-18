@@ -43,7 +43,7 @@ public class SearchParaMapTest  extends SpingDbBaseTest{
         paraMap.addPara(Dict::getA2, "1");
         JSONMap param = new JSONMap("id","sql:id");
         paraMap.where(Condition.where().sql("[id=#{id2}]",param));
-        showSql(paraMap,"conditionSqlTest3","select XX from t_b_dict t where false1");
+        showSql(paraMap,"conditionSqlTest3","select xx from t_b_dict t where false");
     }
     @Test
     public void conditionTest1() {

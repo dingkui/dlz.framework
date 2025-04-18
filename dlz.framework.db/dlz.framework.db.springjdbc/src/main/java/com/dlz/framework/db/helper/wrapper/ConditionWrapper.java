@@ -1,7 +1,7 @@
 package com.dlz.framework.db.helper.wrapper;
 
 import com.dlz.comm.util.StringUtils;
-import com.dlz.framework.db.helper.util.DbNameUtil;
+import com.dlz.framework.db.holder.BeanInfoHolder;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -73,11 +73,11 @@ public abstract class ConditionWrapper {
 	}
 
 	public String buildColumn(String column, Class<?> clazz) {
-		return "`" + DbNameUtil.getDbClumnName(column) + "`";
+		return "`" + BeanInfoHolder.getColumnName(column) + "`";
 	}
 
 	public String buildIn(Object value) {
-		List<String> ask = new ArrayList<String>();
+		List<String> ask = new ArrayList<>();
 		for (Object obj : (Collection<?>) value) {
 			ask.add("?");
 		}

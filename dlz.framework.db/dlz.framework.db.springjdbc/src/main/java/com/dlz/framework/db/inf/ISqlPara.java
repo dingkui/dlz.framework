@@ -1,7 +1,7 @@
 package com.dlz.framework.db.inf;
 
-import com.dlz.framework.db.modal.items.SqlItem;
 import com.dlz.framework.db.modal.items.JdbcItem;
+import com.dlz.framework.db.modal.items.SqlItem;
 
 /**
  * 添加and or条件

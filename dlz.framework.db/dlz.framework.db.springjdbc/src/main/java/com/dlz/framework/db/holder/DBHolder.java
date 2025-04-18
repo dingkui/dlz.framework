@@ -2,7 +2,6 @@ package com.dlz.framework.db.holder;
 
 import com.dlz.comm.util.encry.TraceUtil;
 import com.dlz.framework.db.dao.IDlzDao;
-import com.dlz.framework.db.modal.DbInfoCache;
 import com.dlz.framework.db.service.ICommService;
 import com.dlz.framework.holder.SpringHolder;
 import com.dlz.framework.redis.excutor.JedisExecutor;
@@ -46,7 +45,7 @@ public class DBHolder {
         return seq;
     }
     public static long sequence(Class<?> beanClass,long initSeq) {
-        return sequence(DbInfoCache.getTableName(beanClass),initSeq);
+        return sequence(BeanInfoHolder.getTableName(beanClass),initSeq);
     }
     public static <R> R doDb(Function<ICommService, R> s) {
         ICommService service = getService();

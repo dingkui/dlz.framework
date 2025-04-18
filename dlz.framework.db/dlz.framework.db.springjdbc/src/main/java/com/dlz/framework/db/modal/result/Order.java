@@ -1,7 +1,7 @@
 package com.dlz.framework.db.modal.result;
 
 import com.dlz.comm.fn.DlzFn;
-import com.dlz.framework.db.modal.DbInfoCache;
+import com.dlz.framework.db.holder.BeanInfoHolder;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -43,13 +43,13 @@ public class Order implements Serializable {
         return build(column, true);
     }
     public static <T> Order asc(DlzFn<T, ?> column) {
-        return build(DbInfoCache.fnName(column), true);
+        return build(BeanInfoHolder.fnName(column), true);
     }
     public static Order desc(String column) {
         return build(column, false);
     }
     public static <T> Order desc(DlzFn<T, ?> column) {
-        return build(DbInfoCache.fnName(column), false);
+        return build(BeanInfoHolder.fnName(column), false);
     }
     public static Order[] ascs(String... columns) {
         return Arrays.stream(columns).map(Order::asc).toArray(Order[]::new);

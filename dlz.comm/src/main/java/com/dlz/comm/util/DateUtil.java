@@ -88,11 +88,11 @@ public class DateUtil {
     public static DateFormatter DATETIME_MINI = formatter("yyyyMMddHHmmss");
     public static final DateFormatter DATETIME = formatter(PATTERN_DATETIME);
     private final static VAL<String, Pattern>[] date_trans = new VAL[]{
-            new VAL("yyyy-MM-dd HH:mm:ss", Pattern.compile("^\\d{4}-[0,1]?\\d-[0-3]?\\d \\d{2}:\\d{2}:\\d{2}.*")),
-            new VAL("yyyy-MM-dd", Pattern.compile("^\\d{4}-\\d{1,2}-\\d{1,2}$")),
-            new VAL("yyyy-MM", Pattern.compile("^\\d{4}-\\d{1,2}$")),
-            new VAL("yyyy-MM-dd HH:mm", Pattern.compile("^\\d{4}-\\d{1,2}-\\d{1,2} \\d{1,2}:\\d{1,2}$")),
-            new VAL("yyyy年MM月dd日 HH时mm分ss秒", Pattern.compile("^\\d{4}年[0,1]?\\d月[0-3]?\\d日 \\d{2}时\\d{2}分\\d{2}秒"))
+            VAL.of("yyyy-MM-dd HH:mm:ss", Pattern.compile("^\\d{4}-[0,1]?\\d-[0-3]?\\d \\d{2}:\\d{2}:\\d{2}.*")),
+            VAL.of("yyyy-MM-dd", Pattern.compile("^\\d{4}-\\d{1,2}-\\d{1,2}$")),
+            VAL.of("yyyy-MM", Pattern.compile("^\\d{4}-\\d{1,2}$")),
+            VAL.of("yyyy-MM-dd HH:mm", Pattern.compile("^\\d{4}-\\d{1,2}-\\d{1,2} \\d{1,2}:\\d{1,2}$")),
+            VAL.of("yyyy年MM月dd日 HH时mm分ss秒", Pattern.compile("^\\d{4}年[0,1]?\\d月[0-3]?\\d日 \\d{2}时\\d{2}分\\d{2}秒"))
     };
 
     /**

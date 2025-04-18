@@ -27,8 +27,7 @@ public class DbConvertUtil {
 
 
 	/**
-	 * 把传入的参数转换成数据库识别的参数
-	 * 主要用于postgresql类似的强制类型
+	 * 将值转换成数据库字段对应的数据类型
 	 * @param tableName
 	 * @param clumnName
 	 * @param value
@@ -38,22 +37,10 @@ public class DbConvertUtil {
 	public static Object getVal4Db(String tableName,String clumnName,Object value) {
 		return tableCloumnMapper==null?value:tableCloumnMapper.converObj4Db(tableName, clumnName, value);
 	}
-	/**
-	 * 判断字段是否存在
-	 * @param tableName
-	 * @param clumnName
-	 * @author dk 2018-09-28
-	 * @return
-	 */
-	public static boolean isClumnExists(String tableName,String clumnName) {
-		return tableCloumnMapper==null?true:tableCloumnMapper.isClumnExists(tableName, str2DbClumn(clumnName.replaceAll("`", "")));
-	}
 
 	public static <T> List<T> getColumnList(List<ResultMap> r, Class<T> classs) {
 		return r.stream().map((m) -> classs == null ? (T) m : DbConvertUtil.getFistColumn(m, classs)).collect(Collectors.toList());
 	}
-
-
 	/**
 	 * 从Map里取得字符串
 	 * @param m
@@ -82,12 +69,23 @@ public class DbConvertUtil {
 		return ValUtil.toObj(getFistColumn(m), classs);
 	}
 
+	/**
+	 * 数据库字段名转换成bean字段名,一般都是下划线转驼峰
+	 * @param dbKey
+	 * @return
+	 */
 	public static String clumn2Str(String dbKey) {
 		return columnMapper.clumn2Str(dbKey);
 	}
 	public static String str2Clumn(String beanKey) {
 		return columnMapper.str2Clumn(beanKey);
 	}
+
+	/**
+	 * bean字段名转换成数据库字段名,一般是驼峰转下划线
+	 * @param beanKey
+	 * @return
+	 */
 	public static String str2DbClumn(String beanKey) {
 		return columnMapper.str2Clumn(beanKey.replaceAll("\\s+", " "));
 	}

@@ -3,6 +3,7 @@ package com.dlz.framework.db.modal.para;
 import com.dlz.comm.fn.DlzFn;
 import com.dlz.comm.util.system.FieldReflections;
 import com.dlz.framework.db.convertor.DbConvertUtil;
+import com.dlz.framework.db.holder.BeanInfoHolder;
 import com.dlz.framework.db.inf.IOperatorInsert;
 import lombok.extern.slf4j.Slf4j;
 
@@ -34,8 +35,7 @@ public class MakerInsert extends AMaker implements IOperatorInsert {
 
     public MakerInsert value(String key, Object value) {
         String paraName = DbConvertUtil.str2DbClumn(key);
-        boolean isClumnExists = isClumnExists(paraName);
-        if (!isClumnExists) {
+        if (!BeanInfoHolder.isColumnExists(getTableName(),paraName)) {
             log.warn("column is not exists:" + getTableName() + "." + paraName);
             return this;
         }

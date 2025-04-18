@@ -4,8 +4,8 @@ import com.baomidou.mybatisplus.annotation.TableName;
 import com.dlz.comm.util.StringUtils;
 import com.dlz.comm.util.system.FieldReflections;
 import com.dlz.framework.db.enums.DbTypeEnum;
-import com.dlz.framework.db.helper.util.DbNameUtil;
 import com.dlz.framework.db.holder.SqlHolder;
+import com.dlz.framework.db.holder.BeanInfoHolder;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.ClassPathScanningCandidateComponentProvider;
@@ -51,7 +51,7 @@ public class HelperScan {
     public static void initTable(Class<?> clazz,SqlHelper helper) {
         TableName table = clazz.getAnnotation(TableName.class);
         if (table != null) {
-            String tableName = DbNameUtil.getDbTableName(clazz);
+            String tableName = BeanInfoHolder.getTableName(clazz);
             Set<String> columns = helper.getTableColumnNames(tableName);
             if (columns.size()==0) {
                 // 创建表
@@ -61,8 +61,8 @@ public class HelperScan {
             // 建立字段
             List<Field> fields = FieldReflections.getFields(clazz);
             for (Field field : fields) {
-                String columnName=DbNameUtil.getDbClumnName(field);
-                if(columnName==null
+                String columnName= BeanInfoHolder.getColumnName(field);
+                if(columnName.equals("")
                         || columns.contains(columnName)
                         || columnName.equalsIgnoreCase("id")
                 ){

@@ -1,10 +1,11 @@
 package com.dlz.framework.db.modal.para;
 
 import com.dlz.comm.fn.DlzFn;
-import com.dlz.framework.db.convertor.DbConvertUtil;
 import com.dlz.framework.db.holder.DBHolder;
-import com.dlz.framework.db.modal.DbInfoCache;
-import com.dlz.framework.db.inf.*;
+import com.dlz.framework.db.inf.IOperatorQuery;
+import com.dlz.framework.db.inf.ISqlMakerPage;
+import com.dlz.framework.db.inf.ISqlWrapperSearch;
+import com.dlz.framework.db.holder.BeanInfoHolder;
 import com.dlz.framework.db.modal.items.JdbcItem;
 import com.dlz.framework.db.modal.result.Order;
 import com.dlz.framework.db.modal.result.Page;
@@ -51,8 +52,8 @@ public class WrapperQuery<T> extends AWrapperSearch<WrapperQuery<T>,T, MakerQuer
      * @return 返回当前条件对象，支持链式调用
      */
     public WrapperQuery<T> auto(Map<String, Object> req) {
-        String tableName = DbInfoCache.getTableName(getBeanClass());
-        return auto(req, (key)-> DbConvertUtil.isClumnExists(tableName,key));
+        String tableName = BeanInfoHolder.getTableName(getBeanClass());
+        return auto(req, (key)-> BeanInfoHolder.isColumnExists(tableName,key));
     }
 
     @Override

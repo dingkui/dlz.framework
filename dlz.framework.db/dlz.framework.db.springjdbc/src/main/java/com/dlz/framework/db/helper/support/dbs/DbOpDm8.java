@@ -5,7 +5,7 @@ import com.dlz.framework.db.dao.IDlzDao;
 import com.dlz.framework.db.helper.bean.ColumnInfo;
 import com.dlz.framework.db.helper.bean.TableInfo;
 import com.dlz.framework.db.helper.support.SqlHelper;
-import com.dlz.framework.db.helper.util.DbNameUtil;
+import com.dlz.framework.db.holder.BeanInfoHolder;
 import com.dlz.framework.db.modal.result.ResultMap;
 
 import java.lang.reflect.Field;
@@ -25,7 +25,7 @@ public class DbOpDm8 extends SqlHelper {
     public void createTable(String tableName, Class<?> clazz) {
         // 达梦数据库表名需大写
         String sql = "CREATE TABLE \"" + tableName.toUpperCase() + "\" (ID VARCHAR2(32) NOT NULL PRIMARY KEY)";
-        String tableComment = DbNameUtil.getTableCommont(clazz);
+        String tableComment = BeanInfoHolder.getTableComment(clazz);
         if (StringUtils.isNotEmpty(tableComment)) {
             sql += " COMMENT ON TABLE \"" + tableName.toUpperCase() + "\" IS '" + tableComment + "'";
         }
@@ -109,7 +109,7 @@ public class DbOpDm8 extends SqlHelper {
     @Override
     public void createColumn(String tableName, String name, Field field) {
         String sql = "ALTER TABLE \"" + tableName.toUpperCase() + "\" ADD \"" + name.toUpperCase() + "\" " + getDbClumnType(field);
-        String columnComment = DbNameUtil.getClumnCommont(field);
+        String columnComment = BeanInfoHolder.getColumnComment(field);
         if (StringUtils.isNotEmpty(columnComment)) {
             sql += "; COMMENT ON COLUMN \"" + tableName.toUpperCase() + "\".\"" + name.toUpperCase() + "\" IS '" + columnComment + "'";
         }

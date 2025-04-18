@@ -1,13 +1,7 @@
 package com.dlz.framework.db.modal.para;
 
 import com.dlz.framework.db.inf.IOperatorExec;
-import com.dlz.framework.db.inf.IOperatorQuery;
-import com.dlz.framework.db.inf.ISqlMakerPage;
-import com.dlz.framework.db.inf.ISqlPara;
-import com.dlz.framework.db.modal.result.Page;
 import lombok.extern.slf4j.Slf4j;
-
-import java.io.Serializable;
 
 /**
  * 构造单表的查询操作sql
