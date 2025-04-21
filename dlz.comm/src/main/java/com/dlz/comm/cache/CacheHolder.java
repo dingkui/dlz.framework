@@ -1,8 +1,10 @@
 package com.dlz.comm.cache;
 
 import com.dlz.comm.exception.SystemException;
+import com.dlz.comm.json.JSONMap;
 import lombok.extern.slf4j.Slf4j;
 
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
@@ -21,12 +23,27 @@ public class CacheHolder {
     public static Map<String, ICache> getCacheSet() {
         return CacheSet;
     }
+
     public static Set<String> cacheNames() {
         return CacheSet.entrySet().stream().map(item -> item.getKey()).collect(Collectors.toSet());
     }
 
-    public static Set<String> keys(String cacheName,String keyPrefix) {
-        return get(cacheName).keys(cacheName,keyPrefix);
+    public static Set<String> keys(String cacheName, String keyPrefix) {
+        return get(cacheName).keys(cacheName, keyPrefix);
+    }
+
+    public static List<JSONMap> cacheInfos() {
+        return CacheSet.entrySet().stream()
+                .map(item -> {
+                    final String name = item.getKey();
+                    final ICache cache = item.getValue();
+                    final JSONMap map = new JSONMap();
+                    map.put("name", name);
+                    map.put("cla", cache.getClass().getName());
+                    map.put("size", cache.keys(name).size());
+                    return map;
+                }).collect(Collectors.toList());
+
     }
 
     public static void clearAll() {

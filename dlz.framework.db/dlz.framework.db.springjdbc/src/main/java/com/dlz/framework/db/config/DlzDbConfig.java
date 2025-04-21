@@ -1,6 +1,7 @@
 package com.dlz.framework.db.config;
 
 import com.dlz.comm.exception.SystemException;
+import com.dlz.comm.util.StringUtils;
 import com.dlz.comm.util.system.Reflections;
 import com.dlz.framework.config.DlzFwConfig;
 import com.dlz.framework.db.convertor.DbConvertUtil;
@@ -84,7 +85,7 @@ public class DlzDbConfig extends DlzFwConfig {
     public SqlHelper dlzHelperDbOp(IDlzDao dao,DlzDbProperties properties) {
         log.info("dlzHelper init dbType is:" + properties.getDbtype());
         SqlHelper helpler;
-        if(properties.getDbSupport()!=null){
+        if(StringUtils.isNotEmpty(properties.getDbSupport())){
             final Class<?> aClass;
             try {
                 aClass = Class.forName(properties.getDbSupport());

@@ -2,7 +2,7 @@ package com.dlz.framework.db.holder;
 
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
-import com.dlz.comm.cache.CaheMap;
+import com.dlz.comm.cache.CacheMap;
 import com.dlz.comm.exception.SystemException;
 import com.dlz.comm.fn.DlzFn;
 import com.dlz.comm.util.StringUtils;
@@ -23,18 +23,21 @@ import java.util.stream.Collectors;
  * @author dk
  */
 public class BeanInfoHolder {
-    private static final CaheMap<Class<?>, String> tableNameCahe = new CaheMap<>();
-    private static final CaheMap<String, List<Field>> tableFieldCahe = new CaheMap<>();
-    private static final CaheMap<DlzFn, VAL<String, String>> fnCahe = new CaheMap<>();
-    private static final CaheMap<Field, String> cnCahe = new CaheMap<>();
-    private static final CaheMap<String, HashMap<String, Integer>> tableColumnsInfoCahe = new CaheMap<>();
+    private static final CacheMap<Class<?>, String> tableNameCache = new CacheMap<>();
+    private static final CacheMap<String, List<Field>> tableFieldCache = new CacheMap<>();
+    private static final CacheMap<DlzFn, VAL<String, String>> fnCache = new CacheMap<>();
+    private static final CacheMap<Field, String> columnNameCache = new CacheMap<>();
+    private static final CacheMap<String, HashMap<String, Integer>> tableColumnsInfoCahe = new CacheMap<>();
+    public static void clearAll() {
+        tableColumnsInfoCahe.clear();
+    }
     /**
      * （带缓存）取得字段对应的数据库字段名
      * @param field
      * @return
      */
     public static String getColumnName(Field field) {
-        return cnCahe.getAndSet(field, () -> {
+        return columnNameCache.getAndSet(field, () -> {
             TableField name = field.getAnnotation(TableField.class);
             if (name != null) {
                 if (!name.exist()) {
@@ -102,7 +105,7 @@ public class BeanInfoHolder {
      * @return
      */
     public static String getTableName(Class<?> clazz) {
-        return tableNameCahe.getAndSet(clazz, () -> {
+        return tableNameCache.getAndSet(clazz, () -> {
             TableName name = clazz.getAnnotation(TableName.class);
             String tName = null;
             String schema = null;
@@ -136,7 +139,7 @@ public class BeanInfoHolder {
      */
     public static List<Field> getBeanFields(Class<?> beanClass) {
         String tableName = getTableName(beanClass);
-        return tableFieldCahe.getAndSet(tableName, () -> {
+        return tableFieldCache.getAndSet(tableName, () -> {
             HashMap<String, Integer> tableColumnsInfo = getTableColumnsInfo(tableName);
             return FieldReflections.getFields(beanClass).stream()
                     .filter(field -> tableColumnsInfo.containsKey(getColumnName(field.getName())))
@@ -152,7 +155,7 @@ public class BeanInfoHolder {
      * @return val v1:数据库字段名 v2:表名
      */
     public static <T> VAL<String, String> fnInfo(DlzFn<T, ?> column) {
-        return fnCahe.getAndSet(column, () -> {
+        return fnCache.getAndSet(column, () -> {
             Field field = FieldReflections.getField(column);
             if (column == null) {
                 throw new SystemException("字段无效");

@@ -1,6 +1,6 @@
 package com.dlz.comm.util.system;
 
-import com.dlz.comm.cache.CaheMap;
+import com.dlz.comm.cache.CacheMap;
 import lombok.extern.slf4j.Slf4j;
 
 import java.lang.reflect.Field;
@@ -14,8 +14,8 @@ public class MethodReflections {
     private static final String GETTER_PREFIX = "get";
     private static final String IS_PREFIX = "is";
 
-    private static CaheMap<Class<?>, CaheMap<String, Field>> fieldCache = new CaheMap<>();
-    private static CaheMap<Function, Field> fnCache = new CaheMap<>();
+    private static CacheMap<Class<?>, CacheMap<String, Field>> fieldCache = new CacheMap<>();
+    private static CacheMap<Function, Field> fnCache = new CacheMap<>();
 
     /**
      * 从method名中取得属性名称,属性名称首字母小写

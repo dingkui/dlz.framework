@@ -11,7 +11,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * @author dk
  */
 @Slf4j
-public class CaheMap<K,V> extends ConcurrentHashMap<K,V>{
+public class CacheMap<K,V> extends ConcurrentHashMap<K,V>{
     public V getAndSet(K key, Callable<V> valueLoader){
         try {
             V v = get(key);

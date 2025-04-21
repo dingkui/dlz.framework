@@ -637,7 +637,7 @@ public abstract class SqlHelper {
      * @return List<T> 列表
      */
     private <T> List<T> extractProperty(List<?> list, String property, Class<T> clazz) {
-        Set<T> rs = new HashSet<T>();
+        Set<T> rs = new HashSet<>();
         for (Object object : list) {
             Object value = FieldReflections.getValue(object, property,true);
             if (value != null && value.getClass().equals(clazz)) {

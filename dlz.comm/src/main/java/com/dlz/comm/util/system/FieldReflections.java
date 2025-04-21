@@ -1,6 +1,6 @@
 package com.dlz.comm.util.system;
 
-import com.dlz.comm.cache.CaheMap;
+import com.dlz.comm.cache.CacheMap;
 import com.dlz.comm.exception.SystemException;
 import com.dlz.comm.fn.DlzFn;
 import com.dlz.comm.util.ExceptionUtils;
@@ -20,8 +20,8 @@ import java.util.stream.Collectors;
 
 @Slf4j
 public class FieldReflections {
-    private static CaheMap<Class<?>, Map<String, Field>> classFieldCache =new CaheMap<>();
-    private static CaheMap<DlzFn,Field> fnFieldCache = new CaheMap<>();
+    private static CacheMap<Class<?>, Map<String, Field>> classFieldCache =new CacheMap<>();
+    private static CacheMap<DlzFn,Field> fnFieldCache = new CacheMap<>();
     /**
      * 直接读取对象属性值, 无视private/protected修饰符, 不经过getter函数.
      */
