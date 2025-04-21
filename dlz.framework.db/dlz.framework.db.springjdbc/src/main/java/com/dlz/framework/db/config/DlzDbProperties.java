@@ -38,6 +38,10 @@ public class DlzDbProperties {
      **/
     private int tableCacheTime= -1;
     /**
+     * 逻辑删除字段
+     **/
+    private String logicDeleteField= "IS_DELETED";
+    /**
      * sqlHelper配置
      */
     private Helper helper=new Helper();

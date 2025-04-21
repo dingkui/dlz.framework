@@ -1,6 +1,6 @@
 package com.dlz.framework.db.modal.para;
 
-import com.dlz.framework.db.inf.IOperatorExec;
+import com.dlz.framework.db.inf.IOperatorDelete;
 import com.dlz.framework.db.inf.ISqlWrapperSearch;
 
 /**
@@ -10,7 +10,7 @@ import com.dlz.framework.db.inf.ISqlWrapperSearch;
  */
 public class WrapperDelete<T> extends AWrapperSearch<WrapperDelete<T>,T, MakerDelete> implements
         ISqlWrapperSearch<WrapperDelete<T>, T>,
-        IOperatorExec {
+        IOperatorDelete<WrapperDelete<T>> {
 
     public static <T> WrapperDelete<T> wrapper(T conditionBean) {
         return new WrapperDelete(conditionBean);

@@ -5,8 +5,10 @@ import com.dlz.framework.db.enums.DbBuildEnum;
 import com.dlz.framework.db.modal.DB;
 import com.dlz.framework.db.modal.condition.Condition;
 import com.dlz.framework.db.modal.para.MakerQuery;
+import com.dlz.framework.db.modal.para.WrapperQuery;
 import com.dlz.test.framework.db.config.SpingDbBaseTest;
 import com.dlz.test.framework.db.entity.Dict;
+import com.dlz.test.framework.db.entity.Menu;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Test;
 
@@ -111,9 +113,76 @@ public class SearchParaMapTest  extends SpingDbBaseTest{
                 .or(Condition.AND().in(Dict::getA2, "sql:select 2 from dual"));
         showSql(paraMap,"conditionWhereTest2_1",reult_2);
     }
+    @Test
+    public void conditionWhereTest3_1() {
+        Menu menu = new Menu();
+        menu.setId(100L);
+        menu.setCode("qsm");
+        menu.setCode("qsm");
+        menu.setName("全生命周期项目");
+        final WrapperQuery<Menu> menuQueryWrapper = DB.query(Menu.class);
+        if (menu.getId() != null) {
+            menuQueryWrapper.ne(Menu::getId, menu.getId());
+        }
+        menuQueryWrapper.and(Condition.OR()
+                .eq(Menu::getCode, menu.getCode())
+                .or(Condition.AND().eq(Menu::getName, menu.getName()).eq(Menu::getCategory, "1")));
+        showSql(menuQueryWrapper,"conditionWhereTest3_1","select * from sys_menu t where ID <> 100 and (CODE = 'qsm' or (NAME = '全生命周期项目' and CATEGORY = '1')) and IS_DELETED = 0");
+    }
 
+    @Test
+    public void conditionWhereTest3_2() {
+        Menu menu = new Menu();
+        menu.setCode("qsm");
+        menu.setName("全生命周期项目");
+        final WrapperQuery<Menu> menuQueryWrapper = DB.query(Menu.class);
+        if (menu.getId() != null) {
+            menuQueryWrapper.ne(Menu::getId, menu.getId());
+        }
+        menuQueryWrapper.and(Condition.OR()
+                .eq(Menu::getCode, menu.getCode())
+                .or(Condition.AND().eq(Menu::getName, menu.getName()).eq(Menu::getCategory, "1")));
+        showSql(menuQueryWrapper,"conditionWhereTest3_2","select * from sys_menu t where and (CODE = 'qsm' or (NAME = '全生命周期项目' and CATEGORY = '1')) and IS_DELETED = 0");
+    }
 
-
-
-
+    @Test
+    public void conditionWhereTest3_3() {
+        Menu menu = new Menu();
+        menu.setCode("qsm");
+        menu.setName("全生命周期项目");
+        final WrapperQuery<Menu> menuQueryWrapper = DB.query(Menu.class);
+        if (menu.getId() != null) {
+            menuQueryWrapper.ne(Menu::getId, menu.getId());
+        }
+        menuQueryWrapper.eq(Menu::getCategory, "1");
+        menuQueryWrapper.and(xx-> xx.eq(Menu::getCode, menu.getCode()).eq(Menu::getName, "1"));
+        showSql(menuQueryWrapper,"conditionWhereTest3_3","select * from sys_menu t where CATEGORY = '1' and (CODE = 'qsm' or NAME = '1') and IS_DELETED = 0");
+    }
+    @Test
+    public void conditionWhereTest3_4() {
+        Menu menu = new Menu();
+        menu.setCode("qsm");
+        menu.setName("全生命周期项目");
+        final WrapperQuery<Menu> menuQueryWrapper = DB.query(Menu.class);
+        if (menu.getId() != null) {
+            menuQueryWrapper.ne(Menu::getId, menu.getId());
+        }
+        menuQueryWrapper.eq(Menu::getCategory, "1");
+        menuQueryWrapper.or(xx-> xx.eq(Menu::getCode, menu.getCode()).eq(Menu::getName, "1"));
+        showSql(menuQueryWrapper,"conditionWhereTest3_4","select * from sys_menu t where CATEGORY = '1' or (CODE = 'qsm' and NAME = '1') and IS_DELETED = 0");
+    }
+    @Test
+    public void conditionWhereTest3_5() {
+        Menu menu = new Menu();
+        menu.setCode("qsm");
+        menu.setName("全生命周期项目");
+        final WrapperQuery<Menu> menuQueryWrapper = DB.query(Menu.class);
+        if (menu.getId() != null) {
+            menuQueryWrapper.ne(Menu::getId, menu.getId());
+        }
+        menuQueryWrapper.and(xx->
+                xx.eq(Menu::getCode, menu.getCode())
+                .and(xx1->xx1.eq(Menu::getName, menu.getName()).eq(Menu::getCategory, "1")));
+        showSql(menuQueryWrapper,"conditionWhereTest3_5");
+    }
 }

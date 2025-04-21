@@ -1,5 +1,8 @@
 package com.dlz.framework.db.inf;
 
+import com.dlz.framework.db.holder.BeanInfoHolder;
+import com.dlz.framework.db.holder.DBHolder;
+import com.dlz.framework.db.holder.SqlHolder;
 import com.dlz.framework.db.modal.condition.Condition;
 
 /**
@@ -21,6 +24,6 @@ public interface ISqlSearch<T extends ISqlSearch> extends
     T where(Condition cond);
 
     T setAllowFullQuery(boolean allowFullQuery);
-
+    String getTableName();
     boolean isAllowFullQuery();
 }

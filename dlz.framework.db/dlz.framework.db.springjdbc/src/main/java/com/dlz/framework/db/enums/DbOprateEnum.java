@@ -23,6 +23,7 @@ public enum DbOprateEnum {
     ge("#n >= #{#k}"),//大于等于
     ne("#n <> #{#k}"),//不等于
     in("#n in (${#k})"),
+    ni("#n not in (${#k})"),
     lk("#n like #{#k}"),//like:%xxx%
     ll("#n like #{#k}"),//左like:xxx%
     lr("#n like #{#k}"),//右like：%xxx
@@ -120,6 +121,7 @@ public enum DbOprateEnum {
             case isnn:
                 return paraZero(dbn);
             case in:
+            case ni:
                 return paraIn(dbn, value);
             default:
                 throw new SystemException("匹配符有误：" + this);

@@ -47,8 +47,7 @@ public class Condition implements ICondAndOr<Condition>, ICondAddByKey<Condition
                     .map(item -> item.getRunsql(pm))
                     .filter(item -> item != null && !item.isEmpty())
                     .collect(Collectors.joining(" " + join + " "));
-            sub = sub.replaceAll(join + " and", "and")
-                    .replaceAll(join + " or", "or");
+            sub = sub.replaceAll(join + " and", "and").replaceAll(join + " or", "or");
             if (children.size() > 1 && builder != DbBuildEnum.where) {
                 sub = "(" + sub + ")";
             }
@@ -101,6 +100,4 @@ public class Condition implements ICondAndOr<Condition>, ICondAddByKey<Condition
     public void addChildren(Condition child) {
         children.add(child);
     }
-
-
 }

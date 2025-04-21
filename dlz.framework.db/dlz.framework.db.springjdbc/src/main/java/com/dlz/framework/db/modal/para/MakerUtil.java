@@ -4,6 +4,8 @@ import com.dlz.comm.util.StringUtils;
 import com.dlz.comm.util.system.FieldReflections;
 import com.dlz.framework.db.convertor.DbConvertUtil;
 import com.dlz.framework.db.holder.BeanInfoHolder;
+import com.dlz.framework.db.holder.DBHolder;
+import com.dlz.framework.db.holder.SqlHolder;
 import lombok.extern.slf4j.Slf4j;
 
 import java.lang.reflect.Field;
@@ -64,6 +66,10 @@ public class MakerUtil {
      * @return
      */
     public static void buildWhere(AMakerSearch maker) {
+        final String logicDeleteField = SqlHolder.properties.getLogicDeleteField();
+        if(BeanInfoHolder.isColumnExists(maker.getTableName(), logicDeleteField)){
+            maker.where().eq(logicDeleteField, 0);
+        }
         String where = maker.where().getRunsql(maker);
         if (!maker.isAllowFullQuery() && StringUtils.isEmpty(where)) {
             where = "where false";

@@ -168,6 +168,19 @@ public interface ICondAddByLamda<ME extends ICondAddByLamda, T> extends ICondBas
     }
 
     /**
+     * 添加一个"not in"条件到当前条件对象
+     * 此方法接受一个列名和一个值，用于构建"in"查询条件，值通常是一个集合
+     *
+     * @param column 列的名称，通过反射获取
+     * @param value  用于比较的值，可以是数组或集合或逗号分隔的字符串
+     * @return 返回当前条件对象，支持链式调用
+     */
+    default ME ni(DlzFn<T, ?> column, Object value) {
+        addChildren(ni.mk(column, value));
+        return me();
+    }
+
+    /**
      * 添加一个"in"条件到当前条件对象
      * 此方法接受一个列名和一个值，用于构建"in"查询条件，值通常是一个集合
      *

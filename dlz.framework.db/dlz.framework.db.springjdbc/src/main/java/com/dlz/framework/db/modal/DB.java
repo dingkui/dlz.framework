@@ -2,6 +2,7 @@ package com.dlz.framework.db.modal;
 
 import com.dlz.comm.exception.SystemException;
 import com.dlz.comm.fn.DlzFn;
+import com.dlz.comm.util.StringUtils;
 import com.dlz.comm.util.VAL;
 import com.dlz.comm.util.system.FieldReflections;
 import com.dlz.framework.db.holder.BeanInfoHolder;
@@ -9,6 +10,7 @@ import com.dlz.framework.db.modal.para.*;
 import com.dlz.framework.db.modal.result.Page;
 
 import java.lang.reflect.Field;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -94,6 +96,12 @@ public class DB {
     public static <T> WrapperInsert<T> insert(T bean) {
         return new WrapperInsert(bean);
     }
+    public static <T> boolean saveBatch(List<T> bean) {
+        if(bean.size()>0){
+            return new WrapperInsert<>(bean.get(0)).batch(bean);
+        }
+        return false;
+    }
 
     public static <T> WrapperUpdate<T> update(Class<T> beanClass) {
         return WrapperUpdate.wrapper(beanClass);
@@ -105,6 +113,45 @@ public class DB {
 
     public static <T> WrapperUpdate<T> update(T condition, T value) {
         return WrapperUpdate.wrapper(condition).set(value);
+    }
+
+    public static <T> int insertOrUpdate(T obj,String idName){
+        final Object id = FieldReflections.getValue(obj, idName, true);
+        if(StringUtils.isEmpty(id)){
+            return DB.insert(obj).excute();
+        }
+        return DB.update(obj).eq(idName,id).excute();
+    }
+    public static <T> int insertOrUpdate(T obj){
+        return insertOrUpdate(obj,"id");
+    }
+    public static <T> int updateById(T obj){
+        return updateById(obj,"id");
+    }
+    public static <T> int updateById(T obj,String idName){
+        final Object id = FieldReflections.getValue(obj, idName, true);
+        if(StringUtils.isEmpty(id)){
+            throw new SystemException(idName+"不能为空");
+        }
+        return DB.update(obj).eq(idName,id).excute();
+    }
+    public static <T> T getById(Class<T> c,Object id,String idName){
+        if(StringUtils.isEmpty(id)){
+            throw new SystemException(idName+"不能为空");
+        }
+        return DB.query(c).eq(idName,id).queryBean();
+    }
+    public static <T> T getById(Class<T> c,Object id){
+        return getById(c,id,"id");
+    }
+    public static <T> int removeByIds(Class<T> c,String ids){
+        return removeByIds(c,ids,"id");
+    }
+    public static <T> int removeByIds(Class<T> c,String ids,String idName){
+        if(StringUtils.isEmpty(ids)){
+            throw new SystemException(idName+"不能为空");
+        }
+        return DB.delete(c).in(idName,ids).excute();
     }
 
 }

@@ -6,6 +6,8 @@ import com.dlz.comm.util.StringUtils;
 import com.dlz.framework.db.modal.condition.Condition;
 import lombok.AllArgsConstructor;
 
+import java.util.regex.Pattern;
+
 @AllArgsConstructor
 public enum DbBuildEnum {
     and("and _sql_"),//and多条件语句,
@@ -15,6 +17,8 @@ public enum DbBuildEnum {
     sql("(_sql_)"),//自定义sql,
     where("where _sql_");//自定义sql,
     private final String _sql;
+
+    private final static Pattern patternKey = Pattern.compile("#s");
 
     public Condition build(String sql, JSONMap paras) {
         switch (this) {

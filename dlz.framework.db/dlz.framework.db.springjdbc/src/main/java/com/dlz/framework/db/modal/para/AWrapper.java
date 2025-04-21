@@ -46,7 +46,7 @@ public abstract class AWrapper<T,P extends ParaMap> implements ISqlPara {
         fields= BeanInfoHolder.getBeanFields(beanClass);
     }
 
-    protected String getTableName() {
+    public String getTableName() {
         return tableName;
     }
 
