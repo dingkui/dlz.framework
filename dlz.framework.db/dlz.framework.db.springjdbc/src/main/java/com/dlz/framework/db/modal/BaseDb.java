@@ -1,9 +1,8 @@
-package com.dlz.framework.db.inf;
+package com.dlz.framework.db.modal;
 
 import com.dlz.comm.exception.SystemException;
 import com.dlz.comm.inf.IChained;
 import com.dlz.comm.util.system.Reflections;
-import com.dlz.framework.db.modal.DB;
 import com.dlz.framework.db.modal.para.WrapperQuery;
 
 import java.util.function.Consumer;
@@ -14,28 +13,28 @@ import java.util.function.Consumer;
  *
  * @author dingkui
  */
-public interface IDb<ME extends IDb> extends IChained<ME> {
-    Long getId();
-    void setId(Long id);
-    default void read(){
+public abstract class BaseDb<ME extends BaseDb> implements IChained<ME> {
+    abstract Long getId();
+    abstract void setId(Long id);
+    public void read(){
         Long id = getId();
         if(id==null){
             throw new SystemException("id不能为空");
         }
-        final IDb me = DB.query(this).eq("id", id).queryBean();
+        final BaseDb me = DB.query(this).eq("id", id).queryBean();
         if(me==null){
             throw new SystemException("id不存在");
         }
         Reflections.copy(me,this);
     }
-    default boolean update(){
+    public boolean update(){
         Long id = getId();
         if(id==null){
             throw new SystemException("id不能为空");
         }
         return DB.update(this).eq("id", id).excute()>0;
     }
-    default boolean insertOrUpdate(){
+    public boolean insertOrUpdate(){
         Long id = getId();
         if(id==null){
             final Long aLong = DB.insert(this).insertWithAutoKey();
@@ -46,7 +45,7 @@ public interface IDb<ME extends IDb> extends IChained<ME> {
         }
         return DB.update(this).eq("id", id).excute()>0;
     }
-    default boolean insert(){
+    public boolean insert(){
         Long id = getId();
         if(id==null){
             final Long aLong = DB.insert(this).insertWithAutoKey();
@@ -58,7 +57,7 @@ public interface IDb<ME extends IDb> extends IChained<ME> {
         return DB.insert(this).excute()>0;
     }
 
-    default ME selectOne(Consumer<WrapperQuery<ME>> ors){
+    public ME selectOne(Consumer<WrapperQuery<ME>> ors){
         final WrapperQuery<ME> query = DB.query((Class<ME>)this.getClass());
         ors.accept(query);
         return query.queryBean();
