@@ -98,6 +98,12 @@ public class DB {
         }
         return false;
     }
+    public static <T> boolean saveBatch(List<T> bean, int batchSize) {
+        if(bean.size()>0){
+            return new WrapperInsert<>(bean.get(0)).batch(bean,batchSize);
+        }
+        return false;
+    }
 
     public static <T> WrapperUpdate<T> update(Class<T> beanClass) {
         return WrapperUpdate.wrapper(beanClass);

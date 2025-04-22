@@ -5,6 +5,7 @@ import com.dlz.framework.db.inf.IOperatorInsert;
 import com.dlz.framework.db.holder.BeanInfoHolder;
 
 import java.lang.reflect.Field;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -30,13 +31,25 @@ public class WrapperInsert<T> extends AWrapper<T, MakerInsert> implements IOpera
 	}
 
 	public boolean batch(List<T> valueBeans){
+		return batch(valueBeans,1000);
+	}
+
+	public boolean batch(List<T> valueBeans,int batchSize){
 		String dbName = BeanInfoHolder.getTableName(getBeanClass());
 		final List<Field> fields = BeanInfoHolder.getBeanFields(getBeanClass());
 		String sql = MakerUtil.buildInsertSql(dbName, fields);
-		List<Object[]> paramValues = valueBeans.stream()
-				.map(v->MakerUtil.buildInsertParams(v,fields))
-				.collect(Collectors.toList());
-		DBHolder.getService().getDao().batchUpdate(sql, paramValues);
+		while (valueBeans.size()>0 && batchSize>0){
+			if(batchSize>valueBeans.size()){
+				batchSize=valueBeans.size();
+			}
+			final List<T> ts = valueBeans.subList(0, batchSize);
+
+			List<Object[]> paramValues = ts.stream()
+					.map(v->MakerUtil.buildInsertParams(v,fields))
+					.collect(Collectors.toList());
+			DBHolder.getService().getDao().batchUpdate(sql,paramValues);
+			valueBeans = valueBeans.subList(batchSize, valueBeans.size());
+ 		}
 		return true;
 	}
 }
