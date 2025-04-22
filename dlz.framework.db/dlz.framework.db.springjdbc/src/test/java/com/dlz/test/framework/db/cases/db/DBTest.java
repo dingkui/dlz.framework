@@ -3,6 +3,8 @@ package com.dlz.test.framework.db.cases.db;
 import com.dlz.framework.db.modal.DB;
 import com.dlz.framework.db.modal.para.JdbcQuery;
 import com.dlz.framework.db.modal.para.MakerQuery;
+import com.dlz.framework.db.modal.para.MakerUpdate;
+import com.dlz.framework.db.modal.para.WrapperUpdate;
 import com.dlz.framework.db.modal.result.Order;
 import com.dlz.framework.db.modal.result.Page;
 import com.dlz.test.framework.db.config.SpingDbBaseTest;
@@ -28,5 +30,15 @@ public class DBTest extends SpingDbBaseTest{
                 .in(Role::getId, "a11,x22")
                 .eq(Role::getIsDeleted, 0);
         showSql(eq,"dbSqlTest2","select ROLE_ALIAS from sys_role t where ID in ('a11','x22') and IS_DELETED = 0");
+    }
+
+    @Test
+    public void dbSqlTest3() {
+        Role role = new Role();
+        role.setId(11L);
+        role.setRoleName("xx");
+        role.setRoleAlias("xx2");
+        final WrapperUpdate<Role> id = DB.update(role).eq("id", role.getId());
+        showSql(id,"dbSqlTest2","update sys_role t set ROLE_ALIAS='xx2',ROLE_NAME='xx' where ID = 11 and IS_DELETED = 0");
     }
 }

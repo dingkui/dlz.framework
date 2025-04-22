@@ -20,12 +20,12 @@ public class WrapperDelete<T> extends AWrapperSearch<WrapperDelete<T>,T, MakerDe
         return new WrapperDelete(beanClass);
     }
 
-    public WrapperDelete(Class<T> beanClass) {
+    private WrapperDelete(Class<T> beanClass) {
         super(beanClass);
         setPm(new MakerDelete(getTableName()));
     }
 
-    public WrapperDelete(T conditionBean) {
+    private WrapperDelete(T conditionBean) {
         super(conditionBean);
         setPm(new MakerDelete(getTableName()));
     }

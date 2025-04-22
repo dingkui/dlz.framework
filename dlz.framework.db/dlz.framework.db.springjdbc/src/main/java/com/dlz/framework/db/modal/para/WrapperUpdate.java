@@ -6,10 +6,14 @@ import com.dlz.framework.db.holder.DBHolder;
 import com.dlz.framework.db.inf.IOperatorExec;
 import com.dlz.framework.db.inf.ISqlWrapperSearch;
 import com.dlz.framework.db.holder.BeanInfoHolder;
+import com.dlz.framework.db.modal.DB;
 
 import java.lang.reflect.Field;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.function.Consumer;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 /**
@@ -21,19 +25,12 @@ import java.util.stream.Collectors;
 public class WrapperUpdate<T> extends AWrapperSearch<WrapperUpdate<T>,T, MakerUpdate> implements
 		ISqlWrapperSearch<WrapperUpdate<T>, T>,
 		IOperatorExec {
-	public static <T> WrapperUpdate<T> wrapper(T conditionBean) {
-		return new WrapperUpdate(conditionBean);
-	}
 	public static <T> WrapperUpdate<T> wrapper(Class<T> beanClass) {
 		return new WrapperUpdate(beanClass);
 	}
 
 	public WrapperUpdate(Class<T> beanClass) {
 		super(beanClass);
-		setPm(new MakerUpdate(getTableName()));
-	}
-	public WrapperUpdate(T conditionBean) {
-		super(conditionBean);
 		setPm(new MakerUpdate(getTableName()));
 	}
 
@@ -49,15 +46,22 @@ public class WrapperUpdate<T> extends AWrapperSearch<WrapperUpdate<T>,T, MakerUp
 		getPm().set(setValues);
 		return this;
 	}
-	public WrapperUpdate<T> set(T bean) {
+	public WrapperUpdate<T> set(T bean, Function<String,Boolean> ignore) {
 		List<Field> fields = FieldReflections.getFields(bean.getClass());
 		for (Field field : fields) {
 			Object fieldValue = FieldReflections.getValue(bean, field);
 			if(fieldValue!=null){
-				getPm().set(BeanInfoHolder.getColumnName(field),fieldValue);
+				final String columnName = BeanInfoHolder.getColumnName(field);
+				if(ignore!=null && ignore.apply(columnName)){
+					continue;
+				}
+				getPm().set(columnName,fieldValue);
 			}
 		}
 		return this;
+	}
+	public WrapperUpdate<T> set(T bean) {
+		return set(bean, name->name.equals("ID"));
 	}
 	@Override
 	public WrapperUpdate<T> me() {

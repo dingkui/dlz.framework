@@ -28,15 +28,17 @@ public class WrapperTest extends SpingDbBaseTest {
     public void updateWrapperTest1() {
         SysSql dict = new SysSql();
         dict.setId(123L);
-        WrapperUpdate<SysSql> eq = DB.update(SysSql.class).set(dict).eq(SysSql::getId, 123);
-        showSql(eq,"updateWrapperTest1","update SYS_SQL t set ID=123 where ID = 123");
+        dict.setName("123L");
+        WrapperUpdate<SysSql> eq = DB.update(dict).eq(SysSql::getId, 123);
+        showSql(eq,"updateWrapperTest1","update SYS_SQL t set NAME='123L' where ID = 123");
     }
     @Test
     public void updateWrapperTest2() {
         SysSql dict = new SysSql();
         dict.setId(123L);
-        WrapperUpdate<SysSql> eq = DB.update(SysSql.class).set(dict);
-        showSql(eq,"updateWrapperTest2","update SYS_SQL t set ID=123 where false");
+        dict.setName("123L");
+        WrapperUpdate<SysSql> eq = DB.update(dict);
+        showSql(eq,"updateWrapperTest2","update SYS_SQL t set NAME='123L' where false");
     }
     @Test
     public void deleteWrapperTest1() {

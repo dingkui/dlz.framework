@@ -13,6 +13,7 @@ import java.lang.reflect.Field;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.function.Function;
 
 public class DB {
     public static JdbcQuery jdbcSelect(String sql, Object... para) {
@@ -90,31 +91,31 @@ public class DB {
     }
 
     public static <T> WrapperInsert<T> insert(T bean) {
-        return new WrapperInsert(bean);
+        return WrapperInsert.wrapper(bean);
     }
     public static <T> boolean saveBatch(List<T> bean) {
         if(bean.size()>0){
-            return new WrapperInsert<>(bean.get(0)).batch(bean);
+            return  WrapperInsert.wrapper(bean.get(0)).batch(bean);
         }
         return false;
     }
     public static <T> boolean saveBatch(List<T> bean, int batchSize) {
         if(bean.size()>0){
-            return new WrapperInsert<>(bean.get(0)).batch(bean,batchSize);
+            return WrapperInsert.wrapper(bean.get(0)).batch(bean,batchSize);
         }
         return false;
     }
 
     public static <T> WrapperUpdate<T> update(Class<T> beanClass) {
-        return WrapperUpdate.wrapper(beanClass);
+        return new WrapperUpdate<>(beanClass);
     }
 
-    public static <T> WrapperUpdate<T> update(T condition) {
-        return WrapperUpdate.wrapper(condition);
+    public static <T> WrapperUpdate<T> update(T value, Function<String,Boolean> ignore) {
+        return WrapperUpdate.wrapper((Class<T>)value.getClass()).set(value,ignore);
     }
 
-    public static <T> WrapperUpdate<T> update(T condition, T value) {
-        return WrapperUpdate.wrapper(condition).set(value);
+    public static <T> WrapperUpdate<T> update(T value) {
+        return WrapperUpdate.wrapper((Class<T>)value.getClass()).set(value);
     }
 
     public static <T> int insertOrUpdate(T obj,String idName){
@@ -122,7 +123,7 @@ public class DB {
         if(StringUtils.isEmpty(id)){
             return DB.insert(obj).excute();
         }
-        return DB.update(obj).eq(idName,id).excute();
+        return DB.update(obj, name->name.equalsIgnoreCase(idName)).eq(idName,id).excute();
     }
     public static <T> int insertOrUpdate(T obj){
         return insertOrUpdate(obj,"id");
@@ -135,7 +136,7 @@ public class DB {
         if(StringUtils.isEmpty(id)){
             throw new SystemException(idName+"不能为空");
         }
-        return DB.update(obj).eq(idName,id).excute();
+        return DB.update((Class<T>) obj.getClass()).set(obj,name->name.equalsIgnoreCase(idName)).eq(idName,id).excute();
     }
     public static <T> T getById(Class<T> c,Object id,String idName){
         if(StringUtils.isEmpty(id)){

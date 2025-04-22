@@ -11,11 +11,11 @@ import com.dlz.framework.db.modal.condition.Condition;
  * @author dingkui
  */
 public abstract class AWrapperSearch<ME extends AWrapperSearch, T, PM extends AMakerSearch> extends AWrapper<T, PM> implements ISqlWrapperSearch<ME, T> {
-    public AWrapperSearch(Class<T> beanClass) {
+    protected AWrapperSearch(Class<T> beanClass) {
         super(beanClass);
     }
 
-    public AWrapperSearch(T conditionBean) {
+    protected AWrapperSearch(T conditionBean) {
         super(conditionBean);
     }
 
@@ -24,6 +24,10 @@ public abstract class AWrapperSearch<ME extends AWrapperSearch, T, PM extends AM
     }
     public ME where(Condition cond) {
         getPm().where(cond);
+        return me();
+    }
+    public ME where(T bean) {
+        this.bean = bean;
         return me();
     }
 

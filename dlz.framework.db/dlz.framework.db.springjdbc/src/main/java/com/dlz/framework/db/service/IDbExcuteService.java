@@ -3,8 +3,10 @@ package com.dlz.framework.db.service;
 import com.dlz.comm.exception.ValidateException;
 import com.dlz.comm.util.StringUtils;
 import com.dlz.comm.util.system.FieldReflections;
+import com.dlz.framework.db.inf.ICondAddByKey;
 import com.dlz.framework.db.inf.IOperatorExec;
 import com.dlz.framework.db.inf.IOperatorInsert;
+import com.dlz.framework.db.modal.DB;
 import com.dlz.framework.db.modal.para.WrapperDelete;
 import com.dlz.framework.db.modal.para.WrapperInsert;
 import com.dlz.framework.db.modal.para.WrapperUpdate;
@@ -55,10 +57,6 @@ public interface IDbExcuteService extends IDbBaseService{
         return delete(WrapperDelete.wrapper(bean));
     }
 
-
-    default <T> int update(T condition,T bean){
-        return excute(WrapperUpdate.wrapper(condition).set(bean));
-    }
     default <T> int updateByIdOrInsert(T bean){
         Object id = FieldReflections.getValue(bean, "id",false);
         if(StringUtils.isEmpty(id)){

@@ -20,7 +20,7 @@ public class WrapperInsert<T> extends AWrapper<T, MakerInsert> implements IOpera
 		return new WrapperInsert(valueBean);
 	}
 
-	public WrapperInsert(T valueBean) {
+	private WrapperInsert(T valueBean) {
 		super(valueBean);
 		setPm(new MakerInsert(getTableName()));
 	}

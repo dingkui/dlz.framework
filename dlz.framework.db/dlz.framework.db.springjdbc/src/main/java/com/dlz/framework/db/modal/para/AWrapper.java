@@ -19,7 +19,7 @@ import java.util.List;
  */
 public abstract class AWrapper<T,P extends ParaMap> implements ISqlPara {
     private final Class<T> beanClass;
-    protected final T bean;
+    protected T bean;
     private final String tableName;
     private final List<Field> fields;
     private boolean isGenerator = false;
