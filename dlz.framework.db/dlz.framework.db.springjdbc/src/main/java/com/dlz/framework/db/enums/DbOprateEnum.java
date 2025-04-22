@@ -9,7 +9,6 @@ import com.dlz.framework.db.holder.BeanInfoHolder;
 import com.dlz.framework.db.modal.condition.Condition;
 import lombok.AllArgsConstructor;
 
-import java.util.concurrent.atomic.AtomicInteger;
 import java.util.regex.Pattern;
 
 @AllArgsConstructor
@@ -33,16 +32,6 @@ public enum DbOprateEnum {
     public final String _sql;
     private final static Pattern patternKey = Pattern.compile("#k");
     private final static Pattern patternColumnName = Pattern.compile("#n");
-    private static final ThreadLocal<AtomicInteger> paraNameIndex = ThreadLocal.withInitial(AtomicInteger::new);
-
-    /**
-     * 增加当前线程的计数器值（默认增加1）
-     *
-     * @return 增加后的值
-     */
-    private static int getParaNameIndex() {
-        return paraNameIndex.get().addAndGet(1);
-    }
 
     private String mkSql(String dbn, String key) {
         final String dbnSql = patternColumnName.matcher(this._sql).replaceAll(DbConvertUtil.str2DbClumn(dbn));
@@ -56,7 +45,7 @@ public enum DbOprateEnum {
     }
 
     private Condition paraOne(String dbn, Object value) {
-        String key = this + "_" + getParaNameIndex();
+        String key = KeyUtil.getKeyName(this + "_" );
         Condition condition = new Condition();
         condition.addPara(key, value);
         condition.setRunsql(mkSql(dbn, key));
@@ -64,7 +53,7 @@ public enum DbOprateEnum {
     }
 
     private Condition paraTwo(String dbn, Object value) {
-        String key = this + "_" + getParaNameIndex();
+        String key =  KeyUtil.getKeyName(this + "_" );
         Object[] array = ValUtil.toArray(value);
         if (array.length < 2) {
             throw new SystemException("参数有误，需要有2个值：" + this);
@@ -79,7 +68,7 @@ public enum DbOprateEnum {
     }
 
     private Condition paraIn(String dbn, Object value) {
-        String key = this + "_" + getParaNameIndex();
+        String key =  KeyUtil.getKeyName(this + "_" );
         Condition condition = new Condition();
         condition.setRunsql(mkSql(dbn, key));
         if (value instanceof String) {

@@ -183,6 +183,30 @@ public class SearchParaMapTest  extends SpingDbBaseTest{
         menuQueryWrapper.and(xx->
                 xx.eq(Menu::getCode, menu.getCode())
                 .and(xx1->xx1.eq(Menu::getName, menu.getName()).eq(Menu::getCategory, "1")));
-        showSql(menuQueryWrapper,"conditionWhereTest3_5");
+        showSql(menuQueryWrapper,"conditionWhereTest3_5","select * from sys_menu t where (CODE = 'qsm' or (NAME = '全生命周期项目' or CATEGORY = '1')) and IS_DELETED = 0");
+    }
+    @Test
+    public void conditionWhereTest4_1() {
+        Menu menu = new Menu();
+        menu.setId(1L);
+        menu.setCode("qsm");
+        menu.setName("全生命周期项目");
+        final WrapperQuery<Menu> menuQueryWrapper = DB.query(Menu.class);
+        if (menu.getId() != null) {
+            menuQueryWrapper.ne(Menu::getId, menu.getId());
+        }
+        menuQueryWrapper.apply("xx in (select x from dual where 1={0} and 2={1})", 1, 2);
+        showSql(menuQueryWrapper, "conditionWhereTest4_1","select * from sys_menu t where ID <> 1 and (xx in (select x from dual where 1=1 and 2=2)) and IS_DELETED = 0");
+    }
+    @Test
+    public void conditionWhereTest4_2() {
+        Menu menu = new Menu();
+        menu.setId(1L);
+        menu.setCode("qsm");
+        menu.setName("全生命周期项目");
+        final WrapperQuery<Menu> menuQueryWrapper = DB.query(Menu.class);
+        menuQueryWrapper.ne(Menu::getId, menu.getId());
+        menuQueryWrapper.sql("xx in (select x from dual where 1=#{a} and 2=#{b})",new JSONMap("a",1,"b",2));
+        showSql(menuQueryWrapper, "conditionWhereTest4_2","select * from sys_menu t where ID <> 1 and (xx in (select x from dual where 1=1 and 2=2)) and IS_DELETED = 0");
     }
 }

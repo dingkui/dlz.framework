@@ -33,7 +33,7 @@ public class Condition implements ICondAndOr<Condition>, ICondAddByKey<Condition
         isMake = true;
 
         if (builder != null) {
-            if (builder == DbBuildEnum.sql) {
+            if (builder == DbBuildEnum.sql||builder==DbBuildEnum.apply) {
                 pm.addParas(paras);
                 return;
             }
