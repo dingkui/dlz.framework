@@ -5,7 +5,10 @@ import com.dlz.comm.inf.IChained;
 import com.dlz.comm.util.system.Reflections;
 import com.dlz.framework.db.modal.para.WrapperQuery;
 
+import java.io.Serializable;
+import java.util.Date;
 import java.util.function.Consumer;
+import java.util.function.Supplier;
 
 
 /**
@@ -13,15 +16,15 @@ import java.util.function.Consumer;
  *
  * @author dingkui
  */
-public abstract class BaseDb<ME extends BaseDb> implements IChained<ME> {
-    abstract Long getId();
-    abstract void setId(Long id);
+public abstract class BaseDb<ME extends BaseDb> implements Serializable {
+    public abstract Long getId();
+    public abstract void setId(Long id);
     public void read(){
         Long id = getId();
         if(id==null){
             throw new SystemException("id不能为空");
         }
-        final BaseDb me = DB.query(this).eq("id", id).queryBean();
+        final BaseDb me = DB.query(getClass()).eq("id", id).queryBean();
         if(me==null){
             throw new SystemException("id不存在");
         }
@@ -37,13 +40,38 @@ public abstract class BaseDb<ME extends BaseDb> implements IChained<ME> {
     public boolean insertOrUpdate(){
         Long id = getId();
         if(id==null){
-            final Long aLong = DB.insert(this).insertWithAutoKey();
+            final Long aLong = DB.insert(getClass()).insertWithAutoKey();
             if(aLong>0){
                 this.setId(aLong);
             }
             return aLong >0;
         }
         return DB.update(this).eq("id", id).excute()>0;
+    }
+    public boolean insertOrUpdate(Supplier<Long> idMaker, Consumer<ME> update){
+        Long id = getId();
+        if(id !=null) {
+            BaseDb one = DB.query(getClass()).eq("id",id).queryBean();
+            if (one != null) {
+                if(update!=null){
+                    update.accept((ME)this);
+                }
+                return DB.update(this).eq("id", id).excute()>0;
+            } else {
+                return DB.insert(getClass()).excute()>0;
+            }
+        } else {
+            if(idMaker!=null){
+                setId(idMaker.get());
+                return DB.insert(getClass()).excute()>0;
+            }else{
+                final Long aLong = DB.insert(getClass()).insertWithAutoKey();
+                if(aLong>0){
+                    this.setId(aLong);
+                }
+                return aLong >0;
+            }
+        }
     }
     public boolean insert(){
         Long id = getId();
