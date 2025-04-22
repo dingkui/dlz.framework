@@ -41,7 +41,7 @@ public class SearchParaMapTest  extends SpingDbBaseTest{
     }
     @Test
     public void conditionSqlTest3() {
-        MakerQuery paraMap = new MakerQuery("xx","t_b_dict");
+        MakerQuery paraMap = new MakerQuery("t_b_dict").select("xx");
         paraMap.addPara(Dict::getA2, "1");
         JSONMap param = new JSONMap("id","sql:id");
         paraMap.where(Condition.where().sql("[id=#{id2}]",param));

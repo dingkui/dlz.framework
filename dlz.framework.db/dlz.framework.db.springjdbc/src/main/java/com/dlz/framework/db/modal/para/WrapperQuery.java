@@ -1,6 +1,7 @@
 package com.dlz.framework.db.modal.para;
 
 import com.dlz.comm.fn.DlzFn;
+import com.dlz.comm.util.StringUtils;
 import com.dlz.framework.db.holder.DBHolder;
 import com.dlz.framework.db.inf.IOperatorQuery;
 import com.dlz.framework.db.inf.ISqlMakerPage;
@@ -10,8 +11,10 @@ import com.dlz.framework.db.modal.items.JdbcItem;
 import com.dlz.framework.db.modal.result.Order;
 import com.dlz.framework.db.modal.result.Page;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * 查询语句生成器
@@ -43,6 +46,19 @@ public class WrapperQuery<T> extends AWrapperSearch<WrapperQuery<T>,T, MakerQuer
         setAllowFullQuery(true);
     }
 
+    public WrapperQuery<T> select(String... colums) {
+        if (colums.length > 0) {
+            getPm().select(colums);
+        }
+        return this;
+    }
+
+    public WrapperQuery<T> select(DlzFn<T, ?>... colums) {
+        if (colums.length > 0) {
+            getPm().select(colums);
+        }
+        return this;
+    }
 
     /**
      * 自动根据map的键值对添加查询条件

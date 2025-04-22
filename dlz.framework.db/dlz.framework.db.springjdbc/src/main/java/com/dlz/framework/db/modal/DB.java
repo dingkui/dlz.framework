@@ -51,10 +51,6 @@ public class DB {
         return new MakerUpdate(tableName);
     }
 
-    public static MakerQuery select(String colums, String tableName) {
-        return new MakerQuery(colums, tableName);
-    }
-
     public static MakerQuery select(String tableName) {
         return new MakerQuery(tableName);
     }
@@ -65,7 +61,7 @@ public class DB {
             throw new SystemException("字段无效");
         }
         final VAL<String, String> val = BeanInfoHolder.fnInfo(column);
-        return new MakerQuery(val.v1, val.v2);
+        return new MakerQuery(val.v2).select(val.v1);
     }
 
     public static <T> WrapperQuery<T> query(Class<T> re, Map<String, Object> query, Set<String> exclude, Page page) {
