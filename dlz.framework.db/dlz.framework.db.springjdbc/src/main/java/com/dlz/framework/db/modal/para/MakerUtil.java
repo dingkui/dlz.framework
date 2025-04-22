@@ -68,7 +68,9 @@ public class MakerUtil {
     public static void buildWhere(AMakerSearch maker) {
         final String logicDeleteField = SqlHolder.properties.getLogicDeleteField();
         if(BeanInfoHolder.isColumnExists(maker.getTableName(), logicDeleteField)){
-            maker.where().eq(logicDeleteField, 0);
+            if(!maker.where().isContainCondition(logicDeleteField)){
+                maker.where().eq(logicDeleteField, 0);
+            }
         }
         String where = maker.where().getRunsql(maker);
         if (!maker.isAllowFullQuery() && StringUtils.isEmpty(where)) {

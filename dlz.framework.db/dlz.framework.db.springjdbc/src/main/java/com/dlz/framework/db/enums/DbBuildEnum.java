@@ -21,7 +21,6 @@ public enum DbBuildEnum {
     where("where #s");//自定义sql,
     private final String _sql;
 
-    private final static Pattern patternKey = Pattern.compile("#s");
     private static Pattern PATTERN_INDEX = Pattern.compile("\\{(\\d+)\\}");
 
     public Condition build(String sql, JSONMap paras) {
@@ -92,10 +91,10 @@ public enum DbBuildEnum {
         throw new SystemException("匹配符有误：" + this);
     }
     public String buildSql(String sql) {
-        if(sql.length()==0){
+        if (sql.length() == 0) {
             return "";
         }
-        return patternKey.matcher(_sql).replaceAll(sql);
+        return _sql.replace("#s", sql);
     }
 
 }

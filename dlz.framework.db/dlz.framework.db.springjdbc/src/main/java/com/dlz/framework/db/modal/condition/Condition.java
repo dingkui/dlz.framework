@@ -100,4 +100,8 @@ public class Condition implements ICondAndOr<Condition>, ICondAddByKey<Condition
     public void addChildren(Condition child) {
         children.add(child);
     }
+
+    public boolean isContainCondition(String column){
+        return children.stream().anyMatch(item->item.runsql.startsWith(column+" "));
+    }
 }
