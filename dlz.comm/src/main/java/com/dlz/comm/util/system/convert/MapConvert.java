@@ -72,11 +72,7 @@ public class MapConvert implements IConvert{
         for (Field field : targetFields) {
             Object value = input.get(field.getName());
             if (value != null) {
-                Type genericType = field.getGenericType();
-                if(genericType instanceof TypeVariable){
-                    genericType = Reflections.getActualType(tClazz, (TypeVariable<?>) genericType);
-                }
-                FieldReflections.setValue(obj, field, ValUtil.toObj(value, genericType));
+                FieldReflections.setValue(obj, field, value);
             }
         }
         if (fn != null) {

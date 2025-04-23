@@ -89,7 +89,7 @@ public class BeanConvert implements IConvert{
             if (sourceField != null) {
                 Object value = FieldReflections.getValue(input, sourceField);
                 if (value != null) {
-                    FieldReflections.setValue(obj, field, ValUtil.toObj(value, field.getGenericType()));
+                    FieldReflections.setValue(obj, field, value);
                 }
             }
         }

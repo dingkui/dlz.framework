@@ -9,9 +9,7 @@ import lombok.extern.slf4j.Slf4j;
 
 import java.beans.Introspector;
 import java.lang.invoke.SerializedLambda;
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
+import java.lang.reflect.*;
 import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -80,7 +78,11 @@ public class FieldReflections {
             throw new IllegalArgumentException("field is null");
         }
         try {
-            field.set(obj, ValUtil.toObj(value, field.getGenericType()));
+            Type genericType = field.getGenericType();
+            if(genericType instanceof TypeVariable){
+                genericType = Reflections.getActualType(field.getClass(), (TypeVariable) genericType);
+            }
+            field.set(obj, ValUtil.toObj(value, genericType));
         } catch (IllegalAccessException e) {
             log.error("不可能抛出的异常:{}", e.getMessage());
             return false;
