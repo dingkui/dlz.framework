@@ -33,6 +33,12 @@ public class SnowFlake {
         this.dataCenterId = dataCenterId;
         this.machineId = machineId;
     }
+
+    private final static SnowFlake snowFlake = new SnowFlake(1, 1);
+
+    public static String id() {
+        return snowFlake.nextId();
+    }
   
     //产生下一个ID
     public synchronized String nextId() {

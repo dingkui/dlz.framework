@@ -29,7 +29,7 @@ public class WrapperUpdate<T> extends AWrapperSearch<WrapperUpdate<T>,T, MakerUp
 		return new WrapperUpdate(beanClass);
 	}
 
-	public WrapperUpdate(Class<T> beanClass) {
+	private WrapperUpdate(Class<T> beanClass) {
 		super(beanClass);
 		setPm(new MakerUpdate(getTableName()));
 	}

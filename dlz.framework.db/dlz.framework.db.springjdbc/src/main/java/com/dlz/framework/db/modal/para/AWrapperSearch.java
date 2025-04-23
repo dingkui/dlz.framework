@@ -1,8 +1,13 @@
 package com.dlz.framework.db.modal.para;
 
 import com.dlz.comm.util.StringUtils;
+import com.dlz.comm.util.system.FieldReflections;
+import com.dlz.framework.db.holder.BeanInfoHolder;
 import com.dlz.framework.db.inf.ISqlWrapperSearch;
 import com.dlz.framework.db.modal.condition.Condition;
+
+import java.lang.reflect.Field;
+import java.util.List;
 
 
 /**
@@ -38,10 +43,13 @@ public abstract class AWrapperSearch<ME extends AWrapperSearch, T, PM extends AM
     public boolean isAllowFullQuery() {
         return getPm().isAllowFullQuery();
     }
-
-    protected void wrapValue(String columnName, Object value) {
-        if (StringUtils.isNotEmpty(value)) {
-            getPm().eq(columnName, value);
-        }
+    @Override
+    protected void wrapValues(List<Field> fields, T bean) {
+        fields.forEach(field->{
+            Object value = FieldReflections.getValue(bean, field);
+            if (StringUtils.isNotEmpty(value)) {
+                getPm().eq(BeanInfoHolder.getColumnName(field), value);
+            }
+        });
     }
 }

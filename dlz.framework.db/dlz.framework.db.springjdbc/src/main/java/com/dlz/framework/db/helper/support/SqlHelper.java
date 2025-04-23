@@ -14,8 +14,8 @@ import com.dlz.framework.db.helper.bean.TableInfo;
 import com.dlz.framework.db.helper.bean.Update;
 import com.dlz.framework.db.helper.wrapper.ConditionAndWrapper;
 import com.dlz.framework.db.helper.wrapper.ConditionWrapper;
-import com.dlz.framework.db.holder.DBHolder;
 import com.dlz.framework.db.holder.BeanInfoHolder;
+import com.dlz.framework.db.holder.DBHolder;
 import com.dlz.framework.db.modal.para.MakerUtil;
 import com.dlz.framework.db.modal.result.Page;
 import com.dlz.framework.db.modal.result.ResultMap;
@@ -90,7 +90,7 @@ public abstract class SqlHelper {
     public abstract String getDbClumnType(Field field);
 
 
-    private final static SnowFlake snowFlake = new SnowFlake(1, 1);
+
 
 
 //    public int update(String sql, Object... args) {
@@ -153,7 +153,7 @@ public abstract class SqlHelper {
             if (tableId != null && tableId.type() == IdType.AUTO) {
                 autoId = true;
             }else{
-                FieldReflections.setValue(object, "id", snowFlake.nextId());
+                FieldReflections.setValue(object, "id", SnowFlake.id());
             }
         }
 
@@ -227,7 +227,7 @@ public abstract class SqlHelper {
                 Object objectOrg = findById(id, object.getClass());
                 idMap.put(id, objectOrg);
             }else{
-                FieldReflections.setValue(object, "id", snowFlake.nextId());
+                FieldReflections.setValue(object, "id", SnowFlake.id());
             }
         }
 
@@ -236,12 +236,12 @@ public abstract class SqlHelper {
             String id = FieldReflections.getValue(object, "id",true);
             if (id != null && idMap.get(id) != null) {
                 // 数据库里已有相同id, 使用新id以便插入
-                FieldReflections.setValue(object, "id", snowFlake.nextId());
+                FieldReflections.setValue(object, "id", SnowFlake.id());
             }
 
             // 没有id生成id
             if (id == null) {
-                FieldReflections.setValue(object, "id", snowFlake.nextId());
+                FieldReflections.setValue(object, "id", SnowFlake.id());
             }
 
             // 设置插入时间

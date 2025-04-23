@@ -52,12 +52,7 @@ public abstract class AWrapper<T,P extends ParaMap> implements ISqlPara {
 
     protected void generatWithBean(T bean) {
         if (!isGenerator && bean != null) {
-            fields.forEach(field->{
-                Object fieldValue = FieldReflections.getValue(bean, field);
-                if (fieldValue != null) {
-                    wrapValue(BeanInfoHolder.getColumnName(field), fieldValue);
-                }
-            });
+            wrapValues(fields, bean);
             isGenerator = true;
         }
     }
@@ -65,10 +60,10 @@ public abstract class AWrapper<T,P extends ParaMap> implements ISqlPara {
     /**
      * 自动构建参数
      *
-     * @param columnName
-     * @param value
+     * @param fields
+     * @param bean
      */
-    protected abstract void wrapValue(String columnName, Object value);
+    protected abstract void wrapValues(List<Field> fields, T bean) ;
 
     public Class<T> getBeanClass() {
         return beanClass;
