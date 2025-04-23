@@ -61,14 +61,6 @@ public class Condition implements ICondAndOr<Condition>, ICondAddByKey<Condition
         return DbBuildEnum.where.build();
     }
 
-    public static Condition OR() {
-        return DbBuildEnum.muOr.build();
-    }
-
-    public static Condition AND() {
-        return DbBuildEnum.muAnd.build();
-    }
-
     public String getRunsql(ParaMap pm) {
         make(pm);
         return runsql;

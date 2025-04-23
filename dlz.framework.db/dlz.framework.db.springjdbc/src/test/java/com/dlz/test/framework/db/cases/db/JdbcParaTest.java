@@ -1,4 +1,4 @@
-package com.dlz.test.framework.db.cases.paramap;
+package com.dlz.test.framework.db.cases.db;
 
 import com.dlz.framework.db.modal.DB;
 import com.dlz.framework.db.modal.para.JdbcQuery;

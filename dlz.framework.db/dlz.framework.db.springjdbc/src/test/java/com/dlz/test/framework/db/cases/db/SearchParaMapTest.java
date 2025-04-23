@@ -1,4 +1,4 @@
-package com.dlz.test.framework.db.cases.paramap;
+package com.dlz.test.framework.db.cases.db;
 
 import com.dlz.comm.json.JSONMap;
 import com.dlz.framework.db.enums.DbBuildEnum;
@@ -54,7 +54,7 @@ public class SearchParaMapTest  extends SpingDbBaseTest{
                 .setAllowFullQuery(true);
         showSql(paraMap,"conditionTest1","select * from t_b_dict t");
     }
-    final String reult_1 = "select * from t_b_dict t where XXSS <> '3' and A4 = '2' and A6 <= '10' and (A6 = '10' or A6 = '10') or (A6 = '10' and A6 = '10') and (exists (select 1 from dual where t_b_dict where 1=999) )";
+    final String reult_1 = "select * from t_b_dict t where XXSS <> '3' and A4 = '2' and A6 <= '10' and (A6 = '10' or A6 = '10') and (A6 = '10' and A6 = '10') and (exists (select 1 from dual where t_b_dict where 1=999) )";
     @Test
     public void conditionWhereTest1_1() {
         MakerQuery paraMap = new MakerQuery("t_b_dict");
@@ -63,11 +63,8 @@ public class SearchParaMapTest  extends SpingDbBaseTest{
                 .ne(Dict::getA2, "3")
                 .eq(Dict::getA4, "2")
                 .le(Dict::getA6, "10")
-//                .and(Condition.OR())
-                .and(Condition.OR().eq(Dict::getA6, "10")
-                        .eq(Dict::getA6, "10"))
-                .or(Condition.AND().eq(Dict::getA6, "10")
-                        .eq(Dict::getA6, "10"))
+                .or(w->w.eq(Dict::getA6, "10").eq(Dict::getA6, "10"))
+                .and(w->w.eq(Dict::getA6, "10").eq(Dict::getA6, "10"))
                 .sql("exists (select 1 from dual where t_b_dict where 1=#{xx}) ",new JSONMap("xx",999)))
         ;
         showSql(paraMap,"conditionWhereTest1_1",reult_1);
@@ -80,37 +77,24 @@ public class SearchParaMapTest  extends SpingDbBaseTest{
                 .ne(Dict::getA2, "3")
                 .eq(Dict::getA4, "2")
                 .le(Dict::getA6, "10")
-                .and(Condition.OR())
-                .and(Condition.OR().eq(Dict::getA6, "10")
-                        .eq(Dict::getA6, "10"))
-                .or(Condition.AND().eq(Dict::getA6, "10")
-                        .eq(Dict::getA6, "10"))
+                .or(w->w.eq(Dict::getA6, "10").eq(Dict::getA6, "10"))
+                .and(w->w.eq(Dict::getA6, "10").eq(Dict::getA6, "10"))
                 .sql("exists (select 1 from dual where t_b_dict where 1=#{xx}) ",new JSONMap("xx",999)))
         ;
         showSql(paraMap,"conditionWhereTest1_2", reult_1);
 
     }
-    String reult_2="select * from t_b_dict t where XXSS in (3,4,5,6) or XXSS in ('31','111','5','6') or XXSS in (1) or XXSS in (SELECT 2 FROM DUAL)";
+    String reult_2="select * from t_b_dict t where (XXSS in (3,4,5,6) or XXSS in ('31','111','5','6') or XXSS in (1) or XXSS in (SELECT 2 FROM DUAL))";
     @Test
     public void conditionWhereTest2_1() {
         MakerQuery paraMap = DB.select("t_b_dict");
         paraMap.addPara(Dict::getA2, "1");
-        paraMap.where(DbBuildEnum.where.build()
+        paraMap.or(w->w
                 .in(Dict::getA2, "3,4,5,6")
-                .or(Condition.AND().in(Dict::getA2, "'31',111,5,6"))
-                .or(Condition.AND().in(Dict::getA2, "1"))
-                .or(Condition.AND().in(Dict::getA2, "sql:select 2 from dual")))
+                .in(Dict::getA2, "'31',111,5,6")
+                .in(Dict::getA2, "1")
+                .in(Dict::getA2, "sql:select 2 from dual"))
         ;
-        showSql(paraMap,"conditionWhereTest2_1",reult_2);
-    }
-    @Test
-    public void conditionWhereTest2_2() {
-        MakerQuery paraMap = DB.select("t_b_dict");
-        paraMap.addPara(Dict::getA2, "1");
-        paraMap.in(Dict::getA2, "3,4,5,6")
-                .or(Condition.AND().in(Dict::getA2, "'31',111,5,6"))
-                .or(Condition.AND().in(Dict::getA2, "1"))
-                .or(Condition.AND().in(Dict::getA2, "sql:select 2 from dual"));
         showSql(paraMap,"conditionWhereTest2_1",reult_2);
     }
     @Test
@@ -124,9 +108,9 @@ public class SearchParaMapTest  extends SpingDbBaseTest{
         if (menu.getId() != null) {
             menuQueryWrapper.ne(Menu::getId, menu.getId());
         }
-        menuQueryWrapper.and(Condition.OR()
+        menuQueryWrapper.or(w->w
                 .eq(Menu::getCode, menu.getCode())
-                .or(Condition.AND().eq(Menu::getName, menu.getName()).eq(Menu::getCategory, "1")));
+                .and(s->s.eq(Menu::getName, menu.getName()).eq(Menu::getCategory, "1")));
         showSql(menuQueryWrapper,"conditionWhereTest3_1","select * from sys_menu t where ID <> 100 and (CODE = 'qsm' or (NAME = '全生命周期项目' and CATEGORY = '1')) and IS_DELETED = 0");
     }
 
@@ -139,10 +123,10 @@ public class SearchParaMapTest  extends SpingDbBaseTest{
         if (menu.getId() != null) {
             menuQueryWrapper.ne(Menu::getId, menu.getId());
         }
-        menuQueryWrapper.and(Condition.OR()
+        menuQueryWrapper.or(w->w
                 .eq(Menu::getCode, menu.getCode())
-                .or(Condition.AND().eq(Menu::getName, menu.getName()).eq(Menu::getCategory, "1")));
-        showSql(menuQueryWrapper,"conditionWhereTest3_2","select * from sys_menu t where and (CODE = 'qsm' or (NAME = '全生命周期项目' and CATEGORY = '1')) and IS_DELETED = 0");
+                .and(s->s.eq(Menu::getName, menu.getName()).eq(Menu::getCategory, "1")));
+        showSql(menuQueryWrapper,"conditionWhereTest3_2","select * from sys_menu t where (CODE = 'qsm' or (NAME = '全生命周期项目' and CATEGORY = '1')) and IS_DELETED = 0");
     }
 
     @Test
@@ -155,7 +139,7 @@ public class SearchParaMapTest  extends SpingDbBaseTest{
             menuQueryWrapper.ne(Menu::getId, menu.getId());
         }
         menuQueryWrapper.eq(Menu::getCategory, "1");
-        menuQueryWrapper.and(xx-> xx.eq(Menu::getCode, menu.getCode()).eq(Menu::getName, "1"));
+        menuQueryWrapper.or(xx-> xx.eq(Menu::getCode, menu.getCode()).eq(Menu::getName, "1"));
         showSql(menuQueryWrapper,"conditionWhereTest3_3","select * from sys_menu t where CATEGORY = '1' and (CODE = 'qsm' or NAME = '1') and IS_DELETED = 0");
     }
     @Test
@@ -169,7 +153,7 @@ public class SearchParaMapTest  extends SpingDbBaseTest{
         }
         menuQueryWrapper.eq(Menu::getCategory, "1");
         menuQueryWrapper.or(xx-> xx.eq(Menu::getCode, menu.getCode()).eq(Menu::getName, "1"));
-        showSql(menuQueryWrapper,"conditionWhereTest3_4","select * from sys_menu t where CATEGORY = '1' or (CODE = 'qsm' and NAME = '1') and IS_DELETED = 0");
+        showSql(menuQueryWrapper,"conditionWhereTest3_4","select * from sys_menu t where CATEGORY = '1' and (CODE = 'qsm' or NAME = '1') and IS_DELETED = 0");
     }
     @Test
     public void conditionWhereTest3_5() {
@@ -180,10 +164,10 @@ public class SearchParaMapTest  extends SpingDbBaseTest{
         if (menu.getId() != null) {
             menuQueryWrapper.ne(Menu::getId, menu.getId());
         }
-        menuQueryWrapper.and(xx->
-                xx.eq(Menu::getCode, menu.getCode())
+        menuQueryWrapper.or(w->w
+                .eq(Menu::getCode, menu.getCode())
                 .and(xx1->xx1.eq(Menu::getName, menu.getName()).eq(Menu::getCategory, "1")));
-        showSql(menuQueryWrapper,"conditionWhereTest3_5","select * from sys_menu t where (CODE = 'qsm' or (NAME = '全生命周期项目' or CATEGORY = '1')) and IS_DELETED = 0");
+        showSql(menuQueryWrapper,"conditionWhereTest3_5","select * from sys_menu t where (CODE = 'qsm' or (NAME = '全生命周期项目' and CATEGORY = '1')) and IS_DELETED = 0");
     }
     @Test
     public void conditionWhereTest4_1() {

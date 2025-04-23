@@ -80,7 +80,7 @@ public class FieldReflections {
         try {
             Type genericType = field.getGenericType();
             if(genericType instanceof TypeVariable){
-                genericType = Reflections.getActualType(field.getClass(), (TypeVariable) genericType);
+                genericType = Reflections.getActualType(obj.getClass(), (TypeVariable) genericType);
             }
             field.set(obj, ValUtil.toObj(value, genericType));
         } catch (IllegalAccessException e) {

@@ -44,19 +44,19 @@ public interface ICondAndOr<T extends ICondAndOr> extends ICondBase<T> {
         return me();
     }
 
-    /**
-     * 添加一个and语句到当前条件对象中，子条件有多个条件时用括号包装
-     * 内部连接方式根据子第一级子条件来判断，如children=and 括号内用and连接，如children=or 括号内用or连接
-     *
-     * @param children
-     * @return 返回Condition对象本身，支持链式调用
-     */
-    default T and(Condition children) {
-        Condition and = DbBuildEnum.and.build();
-        and.addChildren(children);
-        addChildren(and);
-        return me();
-    }
+//    /**
+//     * 添加一个and语句到当前条件对象中，子条件有多个条件时用括号包装
+//     * 内部连接方式根据子第一级子条件来判断，如children=and 括号内用and连接，如children=or 括号内用or连接
+//     *
+//     * @param children
+//     * @return 返回Condition对象本身，支持链式调用
+//     */
+//    default T and(Condition children) {
+//        Condition and = DbBuildEnum.and.build();
+//        and.addChildren(children);
+//        addChildren(and);
+//        return me();
+//    }
     /**
      * 添加一个and语句到当前条件对象中，子条件有多个条件时用括号包装
      * 内部连接方式根据子第一级子条件来判断，如children=and 括号内用and连接，如children=or 括号内用or连接
@@ -64,16 +64,8 @@ public interface ICondAndOr<T extends ICondAndOr> extends ICondBase<T> {
      * @param ors
      * @return 返回Condition对象本身，支持链式调用
      */
-//    default T and(Consumer<Condition> ors) {
-//        Condition and = DbBuildEnum.and.build();
-//        final Condition or = Condition.OR();
-//        and.addChildren(or);
-//        addChildren(and);
-//        ors.accept(or);
-//        return me();
-//    }
     default T and(Consumer<Condition> ors) {
-        Condition and = DbBuildEnum.muOr.build();
+        Condition and = DbBuildEnum.muAnd.build();
         addChildren(and);
         ors.accept(and);
         return me();
@@ -87,22 +79,22 @@ public interface ICondAndOr<T extends ICondAndOr> extends ICondBase<T> {
      * @return 返回Condition对象本身，支持链式调用
      */
     default T or(Consumer<Condition> ands) {
-        Condition and = DbBuildEnum.or.build();
+        Condition and = DbBuildEnum.muOr.build();
         addChildren(and);
         ands.accept(and);
         return me();
     }
-    /**
-     * 添加一个or语句到当前条件对象中，子条件有多个条件时用括号包装
-     * 内部连接方式根据第一级子条件来判断，如children=and 括号内用and连接，如children=or 括号内用or连接
-     *
-     * @param children
-     * @return 返回Condition对象本身，支持链式调用
-     */
-    default T or(Condition children) {
-        Condition or = DbBuildEnum.or.build();
-        addChildren(or);
-        or.addChildren(children);
-        return me();
-    }
+//    /**
+//     * 添加一个or语句到当前条件对象中，子条件有多个条件时用括号包装
+//     * 内部连接方式根据第一级子条件来判断，如children=and 括号内用and连接，如children=or 括号内用or连接
+//     *
+//     * @param children
+//     * @return 返回Condition对象本身，支持链式调用
+//     */
+//    default T or(Condition children) {
+//        Condition or = DbBuildEnum.or.build();
+//        addChildren(or);
+//        or.addChildren(children);
+//        return me();
+//    }
 }

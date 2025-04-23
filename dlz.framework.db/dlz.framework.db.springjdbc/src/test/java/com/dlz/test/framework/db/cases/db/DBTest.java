@@ -1,12 +1,8 @@
 package com.dlz.test.framework.db.cases.db;
 
 import com.dlz.framework.db.modal.DB;
-import com.dlz.framework.db.modal.para.JdbcQuery;
 import com.dlz.framework.db.modal.para.MakerQuery;
-import com.dlz.framework.db.modal.para.MakerUpdate;
 import com.dlz.framework.db.modal.para.WrapperUpdate;
-import com.dlz.framework.db.modal.result.Order;
-import com.dlz.framework.db.modal.result.Page;
 import com.dlz.test.framework.db.config.SpingDbBaseTest;
 import com.dlz.test.framework.db.entity.Role;
 import lombok.extern.slf4j.Slf4j;

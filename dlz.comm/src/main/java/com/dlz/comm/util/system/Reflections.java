@@ -43,11 +43,16 @@ public class Reflections {
         //取得泛型参数
         ParameterizedType genericSuperclass;
         if (type instanceof Class) {
-            Type genericSuper = ((Class) type).getGenericSuperclass();
+            final Class aClass = (Class) type;
+            Type genericSuper = aClass.getGenericSuperclass();
             if (genericSuper instanceof ParameterizedType) {
                 genericSuperclass = (ParameterizedType) genericSuper;
             } else {
-                throw new SystemException(type + "无泛型参数");
+                final Class superclass = aClass.getSuperclass();
+                if(superclass ==Object.class){
+                    throw new SystemException(type + "无泛型参数");
+                }
+                return getActualType(superclass, typeVariable);
             }
         } else if (type instanceof ParameterizedType) {
             genericSuperclass = (ParameterizedType) type;
