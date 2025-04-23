@@ -1,7 +1,5 @@
 package com.dlz.framework.db.modal;
 
-import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableId;
 import com.dlz.comm.exception.SystemException;
 import com.dlz.comm.fn.DlzFn;
 import com.dlz.comm.util.StringUtils;
@@ -124,10 +122,7 @@ public class DB {
         final Field field = FieldReflections.getField(obj, idName,false);
         final Object id = FieldReflections.getValue(obj, field);
         if(StringUtils.isEmpty(id)){
-            final TableId tableId = field.getAnnotation(TableId.class);
-            if(tableId==null || tableId.type()== IdType.AUTO){
-                return DB.insert(obj).excute();
-            }
+            return DB.insert(obj).excute();
         }
         return DB.update(obj, name->name.equalsIgnoreCase(idName)).eq(idName,id).excute();
     }

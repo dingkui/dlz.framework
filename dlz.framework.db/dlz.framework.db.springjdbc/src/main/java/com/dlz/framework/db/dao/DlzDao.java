@@ -44,7 +44,7 @@ public class DlzDao implements IDlzDao {
 
     @Override
     public void logInfo(String sql, String methodName, long startTime, Object[] args,Exception error) {
-        if (error!=null||log.isDebugEnabled()) {
+        if (log.isInfoEnabled()) {
             long useTime = System.currentTimeMillis() - startTime;
             if (SqlHolder.properties.getLog().isShowRunSql()) {
                 if(error!=null){
