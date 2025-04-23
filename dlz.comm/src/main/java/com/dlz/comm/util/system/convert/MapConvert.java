@@ -6,6 +6,8 @@ import com.dlz.comm.util.system.FieldReflections;
 import com.dlz.comm.util.system.Reflections;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.Type;
+import java.lang.reflect.TypeVariable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -70,7 +72,11 @@ public class MapConvert implements IConvert{
         for (Field field : targetFields) {
             Object value = input.get(field.getName());
             if (value != null) {
-                FieldReflections.setValue(obj, field, ValUtil.toObj(value, field.getGenericType()));
+                Type genericType = field.getGenericType();
+                if(genericType instanceof TypeVariable){
+                    genericType = Reflections.getActualType(tClazz, (TypeVariable<?>) genericType);
+                }
+                FieldReflections.setValue(obj, field, ValUtil.toObj(value, genericType));
             }
         }
         if (fn != null) {

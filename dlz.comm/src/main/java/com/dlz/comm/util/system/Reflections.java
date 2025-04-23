@@ -4,9 +4,7 @@ import com.dlz.comm.exception.SystemException;
 import com.dlz.comm.util.ExceptionUtils;
 import lombok.extern.slf4j.Slf4j;
 
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.ParameterizedType;
-import java.lang.reflect.Type;
+import java.lang.reflect.*;
 
 /**
  * 反射工具类.
@@ -29,6 +27,44 @@ public class Reflections {
         FieldReflections.getFields(source.getClass())
                 .forEach(field -> FieldReflections.setValue(target, field, FieldReflections.getValue(source,field)));
     }
+
+    /**
+     * 取得泛型参数类型
+     * Map<String, HashMap<Integer,Double>> test = new HashMap<String, HashMap<Integer,Double>>(){};
+     * getActualType(test.getClass(),0);  ->class java.lang.String
+     * getActualType(test.getClass(),1);	->java.util.HashMap<java.lang.Integer, java.lang.Double>
+     * getActualType(test.getClass(),1,0);	->class java.lang.Integer
+     * getActualType(test.getClass(),1,1);	->class java.lang.Double
+     *
+     * @param type   需要判断的class
+     * @param typeVariable 泛型
+     */
+    public static Type getActualType(Type type, TypeVariable typeVariable) {
+        //取得泛型参数
+        ParameterizedType genericSuperclass;
+        if (type instanceof Class) {
+            Type genericSuper = ((Class) type).getGenericSuperclass();
+            if (genericSuper instanceof ParameterizedType) {
+                genericSuperclass = (ParameterizedType) genericSuper;
+            } else {
+                throw new SystemException(type + "无泛型参数");
+            }
+        } else if (type instanceof ParameterizedType) {
+            genericSuperclass = (ParameterizedType) type;
+        } else {
+            throw new SystemException(type + "未识别泛型参数");
+        }
+
+        final Type[] actualTypeArguments = genericSuperclass.getActualTypeArguments();
+        final TypeVariable<?>[] typeParameters = ((GenericDeclaration) genericSuperclass.getRawType()).getTypeParameters();
+        for (int i = 0; i < actualTypeArguments.length; i++) {
+            if(typeVariable==typeParameters[i]){
+                return actualTypeArguments[i];
+            }
+        }
+        return typeVariable;
+    }
+
 
     /**
      * 取得泛型参数类型
