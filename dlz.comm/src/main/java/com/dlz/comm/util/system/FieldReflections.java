@@ -46,7 +46,11 @@ public class FieldReflections {
             }
             throw new IllegalArgumentException("Could not getValue [" + fieldName + "] on target [null]");
         }
-        return getValue(obj,getField(obj, fieldName,ignore));
+        final Field field = getField(obj, fieldName, ignore);
+        if(ignore){
+            return null;
+        }
+        return getValue(obj, field);
     }
 
     /**
@@ -108,7 +112,7 @@ public class FieldReflections {
         Field field = getFieldsMap(clazz).get(fieldName);
         if (field == null) {
             if(ignore){
-                log.info("NoSuchField:" + clazz + "." + fieldName);
+                log.info("NoSuchField and ignore:" + clazz + "." + fieldName);
                 return null;
             }
             throw new SystemException("NoSuchField:" + clazz + "." + fieldName);
