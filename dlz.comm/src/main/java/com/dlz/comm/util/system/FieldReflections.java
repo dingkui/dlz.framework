@@ -47,7 +47,7 @@ public class FieldReflections {
             throw new IllegalArgumentException("Could not getValue [" + fieldName + "] on target [null]");
         }
         final Field field = getField(obj, fieldName, ignore);
-        if(ignore){
+        if(field==null && ignore){
             return null;
         }
         return getValue(obj, field);
