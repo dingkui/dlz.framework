@@ -3,7 +3,6 @@ package com.dlz.framework.db.util;
 import com.dlz.comm.util.ValUtil;
 import com.dlz.framework.db.convertor.clumnname.IColumnNameConvertor;
 import com.dlz.framework.db.convertor.dbtype.ITableColumnMapper;
-import com.dlz.framework.db.holder.DBHolder;
 import com.dlz.framework.db.modal.result.ResultMap;
 
 import java.util.List;

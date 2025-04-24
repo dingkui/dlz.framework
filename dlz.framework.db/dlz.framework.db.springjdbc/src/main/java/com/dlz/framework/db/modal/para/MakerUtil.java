@@ -5,11 +5,11 @@ import com.baomidou.mybatisplus.annotation.TableId;
 import com.dlz.comm.exception.SystemException;
 import com.dlz.comm.util.StringUtils;
 import com.dlz.comm.util.system.FieldReflections;
-import com.dlz.framework.db.util.DbConvertUtil;
 import com.dlz.framework.db.helper.support.SnowFlake;
 import com.dlz.framework.db.holder.BeanInfoHolder;
 import com.dlz.framework.db.holder.DBHolder;
 import com.dlz.framework.db.holder.SqlHolder;
+import com.dlz.framework.db.util.DbConvertUtil;
 import lombok.extern.slf4j.Slf4j;
 
 import java.lang.reflect.Field;

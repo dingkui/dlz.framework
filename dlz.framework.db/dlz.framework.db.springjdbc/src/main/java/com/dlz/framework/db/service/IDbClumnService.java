@@ -1,7 +1,7 @@
 package com.dlz.framework.db.service;
 
-import com.dlz.framework.db.util.DbConvertUtil;
 import com.dlz.framework.db.inf.IOperatorQuery;
+import com.dlz.framework.db.util.DbConvertUtil;
 
 import java.math.BigDecimal;
 import java.util.List;

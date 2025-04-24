@@ -1,6 +1,5 @@
 package com.dlz.framework.db.inf;
 
-import com.dlz.comm.inf.IChained;
 import com.dlz.framework.db.modal.result.Order;
 import com.dlz.framework.db.modal.result.Page;
 

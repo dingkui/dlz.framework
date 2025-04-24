@@ -2,10 +2,9 @@ package com.dlz.framework.db.service;
 
 import com.dlz.comm.exception.DbException;
 import com.dlz.comm.util.system.ConvertUtil;
-import com.dlz.framework.db.convertor.clumnname.IColumnNameConvertor;
-import com.dlz.framework.db.util.DbConvertUtil;
 import com.dlz.framework.db.dao.IDlzDao;
 import com.dlz.framework.db.modal.result.ResultMap;
+import com.dlz.framework.db.util.DbConvertUtil;
 import org.springframework.jdbc.core.RowMapper;
 
 import java.math.BigDecimal;

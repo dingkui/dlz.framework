@@ -3,13 +3,13 @@ package com.dlz.framework.db.modal.para;
 import com.dlz.comm.fn.DlzFn;
 import com.dlz.comm.json.JSONMap;
 import com.dlz.comm.util.system.FieldReflections;
-import com.dlz.framework.db.util.SqlUtil;
 import com.dlz.framework.db.enums.ParaTypeEnum;
 import com.dlz.framework.db.inf.IParaMap;
 import com.dlz.framework.db.inf.ISqlPara;
 import com.dlz.framework.db.modal.items.JdbcItem;
 import com.dlz.framework.db.modal.items.SqlItem;
 import com.dlz.framework.db.modal.result.Page;
+import com.dlz.framework.db.util.SqlUtil;
 import lombok.Getter;
 import lombok.Setter;
 
