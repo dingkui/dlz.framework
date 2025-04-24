@@ -1,6 +1,7 @@
 package com.dlz.framework.db.dao;
 
 import com.dlz.comm.exception.DbException;
+import com.dlz.comm.fn.DlzFn2;
 import com.dlz.framework.db.convertor.DbConvertUtil;
 import com.dlz.framework.db.modal.result.ResultMap;
 import org.springframework.context.annotation.Lazy;
@@ -20,14 +21,15 @@ import java.util.function.Supplier;
  */
 @Lazy
 public interface IDlzDao {
-    List<ResultMap> query(String sql,Object... args);
+    List<ResultMap> query(String sql, Object... args);
 
-    default List<ResultMap> getList(String sql, Object... args){
-        return doDb(()-> query(sql, args), "getList", sql, args);
+    default List<ResultMap> getList(String sql, Object... args) {
+        return doDb(() -> query(sql, args),
+                (t,r) -> DbLogUtil.generateSqlMessage(t,r,"getList", sql, args));
     }
 
     default ResultMap getOne(String sql, boolean checkOne, Object... args) {
-        return doDb(()-> {
+        return doDb(() -> {
             List<ResultMap> list = query(sql, args);
             if (list.size() == 0) {
                 return null;
@@ -36,30 +38,31 @@ public interface IDlzDao {
                 throw new DbException("查询结果为多条", 1004);
             }
             return list.get(0);
-        }, "getOne", sql, args);
+        }, (t,r) -> DbLogUtil.generateSqlMessage(t,r,"getOne", sql, args));
     }
+
     default <T> T getFistColumn(String sql, Class<T> requiredType, Object... args) {
-        return DbConvertUtil.getFistColumn(getOne(sql,false, args),requiredType);
+        return DbConvertUtil.getFistColumn(getOne(sql, false, args), requiredType);
     }
 
-    void logInfo(String sql, String method, long t, Object[] args,Exception error);
-
-    default <T> T doDb(Supplier<T> s, String fn, String sql, Object... args) {
-        if(fn==null){
+    default <T> T doDb(Supplier<T> s, DlzFn2<Long,T,String> msg) {
+        if (msg == null) {
             return s.get();
         }
         long t = System.currentTimeMillis();
+        T re=null;
         Exception err = null;
         try {
-            return s.get();
-        }catch (Exception e){
-            err=e;
+            re = s.get();
+            return re;
+        } catch (Exception e) {
+            err = e;
             if (e instanceof DbException) {
                 throw e;
             }
             throw new DbException("sql执行错误:", 1001);
-        }finally {
-            logInfo(sql, fn, t, args,err);
+        } finally {
+            DbLogUtil.logInfo(msg,t, re,err);
         }
     }
 

@@ -1,10 +1,7 @@
 package com.dlz.framework.db.dao;
 
 import com.dlz.comm.cache.CacheUtil;
-import com.dlz.comm.util.ExceptionUtils;
-import com.dlz.comm.util.StringUtils;
 import com.dlz.comm.util.VAL;
-import com.dlz.framework.db.SqlUtil;
 import com.dlz.framework.db.convertor.rowMapper.MySqlColumnMapRowMapper;
 import com.dlz.framework.db.convertor.rowMapper.OracleColumnMapRowMapper;
 import com.dlz.framework.db.convertor.rowMapper.ResultMapRowMapper;
@@ -30,8 +27,6 @@ import java.util.List;
 public class DlzDao implements IDlzDao {
     private final JdbcTemplate dao;
     private final RowMapper<ResultMap> rowMapper;
-    private final boolean isShowRunSql;
-    private final boolean isShowCaller;
 
     public DlzDao(JdbcTemplate jdbcTemplate) {
         this.dao = jdbcTemplate;
@@ -43,33 +38,9 @@ public class DlzDao implements IDlzDao {
         } else {
             rowMapper = new ResultMapRowMapper();
         }
-        this.isShowCaller = SqlHolder.properties.getLog().isShowCaller();
-        this.isShowRunSql = SqlHolder.properties.getLog().isShowRunSql();
-    }
-
-    @Override
-    public void logInfo(String sql, String methodName, long startTime, Object[] args,Exception error) {
-        if (log.isInfoEnabled()) {
-            if(isShowCaller){
-                CallerUtil.setCaller(1);
-            }
-            try {
-                long useTime = System.currentTimeMillis() - startTime;
-                String sqlMsg = isShowRunSql?
-                        StringUtils.formatMsg("{} {}ms sql:{}", methodName, useTime, SqlUtil.getRunSqlByJdbc(sql, args)):
-                        StringUtils.formatMsg("{} {}ms sql:{} {}", methodName, useTime, sql, args);
-                if(error!=null){
-                    DlzDao.log.error(ExceptionUtils.getStackTrace(error));
-                    DlzDao.log.error(sqlMsg);
-                }else{
-                    DlzDao.log.info(sqlMsg);
-                }
-            } finally {
-                if(isShowCaller){
-                    CallerUtil.clearCaller();
-                }
-            }
-        }
+        DbLogUtil.showCaller = SqlHolder.properties.getLog().isShowCaller();
+        DbLogUtil.showRunSql = SqlHolder.properties.getLog().isShowRunSql();
+        DbLogUtil.showResult = SqlHolder.properties.getLog().isShowResult();
     }
 
     @Override
@@ -79,7 +50,8 @@ public class DlzDao implements IDlzDao {
 
     @Override
     public int update(String sql, Object... args) {
-        return doDb(() -> args.length > 0 ? dao.update(sql, args) : dao.update(sql), "update", sql, args);
+        return doDb(() -> args.length > 0 ? dao.update(sql, args) : dao.update(sql),
+                (t,r) -> DbLogUtil.generateSqlMessage(t,r, "update", sql, args));
     }
 
     @Override
@@ -94,12 +66,12 @@ public class DlzDao implements IDlzDao {
                 }
                 return ps;
             }, keyHolder);
-            if(keyHolder.getKey()==null){
+            if (keyHolder.getKey() == null) {
                 log.warn("无自动增长主键");
                 return null;
             }
             return keyHolder.getKey().longValue();
-        }, "updateForId", sql, args);
+        }, (t,r) -> DbLogUtil.generateSqlMessage(t,r, "updateForId", sql, args));
     }
 
     @Override
@@ -117,19 +89,13 @@ public class DlzDao implements IDlzDao {
                 dao.execute(sql);
             }
             return 0;
-        }, "execute", sql, args);
+        }, (t,r) -> DbLogUtil.generateSqlMessage(t,r, "execute", sql, args));
     }
 
     @Override
     public int[] batchUpdate(String sql, List<Object[]> batchArgs) {
-        long t = System.currentTimeMillis();
-        try {
-            return dao.batchUpdate(sql, batchArgs);
-        } finally {
-            if (log.isDebugEnabled()) {
-                log.debug("{} ms batchUpdate:{} size:{}", System.currentTimeMillis() - t, sql, batchArgs.size());
-            }
-        }
+        return doDb(() -> dao.batchUpdate(sql, batchArgs),
+                (t,r) -> DbLogUtil.generateSqlMessage(t, "batchUpdate", sql, batchArgs));
     }
 
     @Override
