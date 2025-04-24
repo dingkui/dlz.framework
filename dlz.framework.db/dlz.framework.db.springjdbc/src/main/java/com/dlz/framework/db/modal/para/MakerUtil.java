@@ -1,8 +1,12 @@
 package com.dlz.framework.db.modal.para;
 
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableId;
+import com.dlz.comm.exception.SystemException;
 import com.dlz.comm.util.StringUtils;
 import com.dlz.comm.util.system.FieldReflections;
 import com.dlz.framework.db.convertor.DbConvertUtil;
+import com.dlz.framework.db.helper.support.SnowFlake;
 import com.dlz.framework.db.holder.BeanInfoHolder;
 import com.dlz.framework.db.holder.DBHolder;
 import com.dlz.framework.db.holder.SqlHolder;
@@ -11,6 +15,7 @@ import lombok.extern.slf4j.Slf4j;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 
 /**
@@ -30,6 +35,7 @@ public class MakerUtil {
     private static final String MAKER_VALUES = "values";
     private static final String MAKER_STR_SETS = "sets";
     private static final String MAKER_WHERE = "where";
+
     /**
      * 生成查询条件sql
      *
@@ -157,16 +163,22 @@ public class MakerUtil {
         }
         return  "INSERT INTO `" + dbName + "` (" + StringUtils.join(",", fieldsPart) + ") VALUES (" + StringUtils.join(",", placeHolder) + ")";
     }
-    public static Object[] buildInsertParams(Object object, List<Field> fields) {
+
+    public static Object[] buildInsertParams(String dbName,Object object, List<Field> fields) {
         List<Object> params = new ArrayList<>();
         for (Field field : fields) {
             String dbClumnName = BeanInfoHolder.getColumnName(field);
             if (!dbClumnName.equals("")) {
-                params.add(FieldReflections.getValue(object, field));
+                Object value = FieldReflections.getValue(object, field);
+                if(value==null){
+                    value = MakerUtil.getIdValue(field, dbName);
+                }
+                params.add(value);
             }
         }
         return params.toArray();
     }
+
     public static String buildUpdateSql(String dbName, List<Field> fields) {
         List<String> fieldsPart = new ArrayList<String>();
         for (Field field : fields) {
@@ -187,5 +199,27 @@ public class MakerUtil {
         }
         params.add(FieldReflections.getValue(object, "id",true));
         return params.toArray();
+    }
+
+    public static Object getIdValue(Field field, String tableName) {
+        final TableId annotation = field.getAnnotation(TableId.class);
+        if (annotation == null) {
+            return null;
+        }
+        final IdType type = annotation.type();
+        if (type == IdType.AUTO) {
+            return null;
+        } else {
+            final String columnName = BeanInfoHolder.getColumnName(field);
+            if (type == IdType.ASSIGN_ID) {
+                return SnowFlake.id();
+            } else if (type == IdType.ASSIGN_UUID) {
+                return UUID.randomUUID().toString().replace("-", "");
+            } else if (type == IdType.NONE) {
+                return DBHolder.sequence(tableName, 1l);
+            } else {
+                throw new SystemException(columnName + " idType is " + type + " but null");
+            }
+        }
     }
 }

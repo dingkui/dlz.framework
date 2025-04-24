@@ -148,12 +148,11 @@ public abstract class SqlHelper {
                     throw new SystemException("添加数据时ID重复！"+ BeanInfoHolder.getTableName(beanClass) +" id="+id);
                 }
             }
-
-            TableId tableId = idField.getAnnotation(TableId.class);
-            if (tableId != null && tableId.type() == IdType.AUTO) {
+            final Object idValue = MakerUtil.getIdValue(idField, BeanInfoHolder.getTableName(beanClass));
+            if (idValue == null) {
                 autoId = true;
             }else{
-                FieldReflections.setValue(object, "id", SnowFlake.id());
+                FieldReflections.setValue(object, idField, idValue);
             }
         }
 

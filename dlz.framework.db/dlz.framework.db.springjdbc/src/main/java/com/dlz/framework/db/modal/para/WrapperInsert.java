@@ -36,25 +36,9 @@ public class WrapperInsert<T> extends AWrapper<T, MakerInsert> implements IOpera
             if (value != null) {
                 getPm().value(BeanInfoHolder.getColumnName(field), value);
             } else {
-                final TableId annotation = field.getAnnotation(TableId.class);
-                if (annotation == null) {
-                    return;
-                }
-                final IdType type = annotation.type();
-                if (type == IdType.AUTO) {
-                    return;
-                } else {
-                    final String columnName = BeanInfoHolder.getColumnName(field);
-                    if (type == IdType.ASSIGN_ID) {
-                        value = SnowFlake.id();
-                    } else if (type == IdType.ASSIGN_UUID) {
-                        value = UUID.randomUUID().toString().replace("-", "");
-                    } else if (type == IdType.NONE) {
-                        value = DBHolder.sequence(getTableName(), 1l);
-                    } else {
-                        throw new SystemException(columnName + " idType is " + type + " but null");
-                    }
-                    getPm().value(columnName, value);
+                value = MakerUtil.getIdValue(field, getTableName());
+                if (value != null) {
+                    getPm().value(BeanInfoHolder.getColumnName(field), value);
                 }
             }
         });
@@ -75,7 +59,7 @@ public class WrapperInsert<T> extends AWrapper<T, MakerInsert> implements IOpera
             final List<T> ts = valueBeans.subList(0, batchSize);
 
             List<Object[]> paramValues = ts.stream()
-                    .map(v -> MakerUtil.buildInsertParams(v, fields))
+                    .map(v -> MakerUtil.buildInsertParams(dbName,v, fields))
                     .collect(Collectors.toList());
             DBHolder.getService().getDao().batchUpdate(sql, paramValues);
             valueBeans = valueBeans.subList(batchSize, valueBeans.size());
