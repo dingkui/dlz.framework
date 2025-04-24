@@ -1,6 +1,7 @@
 package com.dlz.framework.db.convertor.rowMapper;
 
 
+import com.dlz.framework.db.convertor.clumnname.IColumnNameConvertor;
 import com.dlz.framework.db.modal.result.ResultMap;
 import org.springframework.jdbc.support.JdbcUtils;
 
@@ -9,6 +10,10 @@ import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 
 public class MySqlColumnMapRowMapper extends ResultMapRowMapper{
+
+	public MySqlColumnMapRowMapper(IColumnNameConvertor columnMapper) {
+		super(columnMapper);
+	}
 
 	@Override
 	public ResultMap  mapRow(ResultSet rs, int rowNum) throws SQLException {

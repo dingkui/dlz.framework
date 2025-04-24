@@ -1,4 +1,4 @@
-package com.dlz.framework.db.convertor;
+package com.dlz.framework.db.util;
 
 import com.dlz.framework.db.modal.result.ResultMap;
 

@@ -3,10 +3,11 @@ package com.dlz.framework.db.enums;
 import com.dlz.comm.exception.SystemException;
 import com.dlz.comm.fn.DlzFn;
 import com.dlz.comm.util.ValUtil;
-import com.dlz.framework.db.SqlUtil;
-import com.dlz.framework.db.convertor.DbConvertUtil;
+import com.dlz.framework.db.util.SqlUtil;
+import com.dlz.framework.db.util.DbConvertUtil;
 import com.dlz.framework.db.holder.BeanInfoHolder;
 import com.dlz.framework.db.modal.condition.Condition;
+import com.dlz.framework.db.util.KeyUtil;
 import lombok.AllArgsConstructor;
 
 import java.util.regex.Pattern;

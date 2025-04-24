@@ -1,9 +1,9 @@
-package com.dlz.framework.db.convertor;
+package com.dlz.framework.db.util;
 
 import com.dlz.comm.util.ValUtil;
-import com.dlz.framework.db.convertor.clumnname.AColumnNameConvertor;
-import com.dlz.framework.db.convertor.clumnname.ColumnNameCamel;
+import com.dlz.framework.db.convertor.clumnname.IColumnNameConvertor;
 import com.dlz.framework.db.convertor.dbtype.ITableColumnMapper;
+import com.dlz.framework.db.holder.DBHolder;
 import com.dlz.framework.db.modal.result.ResultMap;
 
 import java.util.List;
@@ -17,15 +17,14 @@ import java.util.stream.Collectors;
  */
 public class DbConvertUtil {
 	/**
-	 * 数据库字段名转换器
-	 */
-	public static AColumnNameConvertor columnMapper = new ColumnNameCamel();
-	/**
 	 * 数据库字段信息及内容转换
 	 */
 	public static ITableColumnMapper tableCloumnMapper = null;
 
-
+	/**
+	 * 数据库字段名转换器
+	 */
+	public static IColumnNameConvertor columnMapper = null;
 	/**
 	 * 将值转换成数据库字段对应的数据类型
 	 * @param tableName

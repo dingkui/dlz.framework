@@ -1,9 +1,9 @@
-package com.dlz.framework.db.dao;
+package com.dlz.framework.db.util;
 
 import com.dlz.comm.fn.DlzFn2;
 import com.dlz.comm.util.ExceptionUtils;
 import com.dlz.comm.util.StringUtils;
-import com.dlz.framework.db.SqlUtil;
+import com.dlz.framework.db.config.DlzDbProperties;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.MDC;
 
@@ -12,9 +12,15 @@ import java.util.List;
 @Slf4j
 public class DbLogUtil {
     private final static String KEY_CALLER = "caller";
-    protected static boolean showCaller = false;
-    protected static boolean showRunSql = false;
-    protected static boolean showResult = false;
+    private static boolean showCaller = false;
+    private static boolean showRunSql = false;
+    private static boolean showResult = false;
+
+    public static void init(DlzDbProperties properties) {
+        showCaller = properties.getLog().isShowCaller();
+        showRunSql = properties.getLog().isShowRunSql();
+        showResult = properties.getLog().isShowResult();
+    }
 
     private DbLogUtil() {
     }
@@ -72,7 +78,7 @@ public class DbLogUtil {
         return traceInfo.replaceAll(".*\\((.*)\\)", " caller:($1)");
     }
 
-    protected static <T> String generateSqlMessage(Long t, T reulst, String methodName, String sql, Object[] args) {
+    public static <T> String generateSqlMessage(Long t, T reulst, String methodName, String sql, Object[] args) {
         final long l = System.currentTimeMillis() - t;
         String sqlMessage = showRunSql ?
                 StringUtils.formatMsg("{} {}ms sql:{}", methodName, l, SqlUtil.getRunSqlByJdbc(sql, args)) :
@@ -83,12 +89,12 @@ public class DbLogUtil {
         return sqlMessage;
     }
 
-    protected static String generateSqlMessage(Long t, String methodName, String sql, List<Object[]> batchArgs) {
+    public static String generateSqlMessage(Long t, String methodName, String sql, List<Object[]> batchArgs) {
         final long l = System.currentTimeMillis() - t;
         return StringUtils.formatMsg("{} {}ms sql:{} size:{}", methodName, l, sql, batchArgs.size());
     }
 
-    protected static <T> void logInfo(DlzFn2<Long, T, String> msg, Long t, T result, Exception error) {
+    public static <T> void logInfo(DlzFn2<Long, T, String> msg, Long t, T result, Exception error) {
         if (log.isInfoEnabled()||error != null) {
             if (showCaller) {
                 DbLogUtil.setCaller(1);

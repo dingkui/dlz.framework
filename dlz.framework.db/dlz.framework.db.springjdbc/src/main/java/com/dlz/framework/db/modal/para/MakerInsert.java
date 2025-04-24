@@ -2,7 +2,7 @@ package com.dlz.framework.db.modal.para;
 
 import com.dlz.comm.fn.DlzFn;
 import com.dlz.comm.util.system.FieldReflections;
-import com.dlz.framework.db.convertor.DbConvertUtil;
+import com.dlz.framework.db.util.DbConvertUtil;
 import com.dlz.framework.db.holder.BeanInfoHolder;
 import com.dlz.framework.db.inf.IOperatorInsert;
 import lombok.extern.slf4j.Slf4j;

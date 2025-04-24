@@ -1,10 +1,10 @@
 package com.dlz.framework.db.modal.para;
 
-import com.dlz.framework.db.SqlUtil;
 import com.dlz.framework.db.inf.ISqlPara;
 import com.dlz.framework.db.modal.items.JdbcItem;
 import com.dlz.framework.db.modal.items.SqlItem;
 import com.dlz.framework.db.modal.result.Page;
+import com.dlz.framework.db.util.SqlUtil;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -16,7 +16,7 @@ public class ParaJdbc implements Serializable , ISqlPara{
     private SqlItem sqlItem = new SqlItem();
     @Getter
     @Setter
-    private Page page;
+    private Page<?> page;
     @Getter
     private Object[] paras;
     public ParaJdbc(String sql,Object[] paras) {

@@ -1,11 +1,15 @@
 package com.dlz.framework.db.convertor.dbtype;
 
 import com.dlz.comm.util.ValUtil;
+import com.dlz.framework.db.convertor.clumnname.ColumnNameCamel;
+import com.dlz.framework.db.convertor.rowMapper.ResultMapRowMapper;
 import com.dlz.framework.db.dao.IDlzDao;
 import com.dlz.framework.db.holder.BeanInfoHolder;
+import com.dlz.framework.db.modal.result.ResultMap;
 import lombok.AllArgsConstructor;
 
 import java.sql.Types;
+import java.util.List;
 import java.util.Map;
 
 @AllArgsConstructor
@@ -21,6 +25,7 @@ public class TableColumnMapper implements ITableColumnMapper {
 			}
 			return cover(dbClass, value);
 		}
+		final List<ResultMap> list = dao.getList("select * from information_schema.columns where table_name = '" + tableName + "'", new ResultMapRowMapper(new ColumnNameCamel()));
 		return value;
 	}
 

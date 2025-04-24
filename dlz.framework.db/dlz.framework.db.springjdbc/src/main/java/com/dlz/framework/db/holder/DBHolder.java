@@ -1,5 +1,6 @@
 package com.dlz.framework.db.holder;
 
+import com.dlz.framework.db.convertor.rowMapper.ResultMapRowMapper;
 import com.dlz.framework.db.dao.IDlzDao;
 import com.dlz.framework.db.service.ICommService;
 import com.dlz.framework.holder.SpringHolder;
@@ -13,9 +14,16 @@ import java.util.function.Function;
  */
 @Slf4j
 public class DBHolder {
+    private static ResultMapRowMapper rowMapper;
     private static ICommService service;
     private static JedisExecutor jedis;
 
+    public static ResultMapRowMapper getRowMapper() {
+        if (rowMapper == null) {
+            rowMapper = SpringHolder.getBean(ResultMapRowMapper.class);
+        }
+        return rowMapper;
+    }
     public static ICommService getService() {
         if (service == null) {
             service = SpringHolder.getBean(ICommService.class);

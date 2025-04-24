@@ -2,11 +2,10 @@ package com.dlz.test.framework.db.config;
 
 import com.dlz.comm.util.ValUtil;
 import com.dlz.comm.util.system.FieldReflections;
-import com.dlz.framework.db.SqlUtil;
+import com.dlz.framework.db.util.SqlUtil;
 import com.dlz.framework.db.helper.support.SqlHelper;
 import com.dlz.framework.db.modal.items.SqlItem;
 import com.dlz.framework.db.modal.items.JdbcItem;
-import com.dlz.framework.db.modal.para.AMaker;
 import com.dlz.framework.db.modal.para.ParaJdbc;
 import com.dlz.framework.db.modal.para.ParaMap;
 import com.dlz.framework.db.modal.para.AWrapper;

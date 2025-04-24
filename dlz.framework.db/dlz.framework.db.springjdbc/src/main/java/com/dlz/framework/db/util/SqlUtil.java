@@ -1,4 +1,4 @@
-package com.dlz.framework.db;
+package com.dlz.framework.db.util;
 
 import com.dlz.comm.exception.DbException;
 import com.dlz.comm.exception.SystemException;

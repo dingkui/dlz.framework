@@ -8,9 +8,10 @@ import com.dlz.comm.fn.DlzFn;
 import com.dlz.comm.util.StringUtils;
 import com.dlz.comm.util.VAL;
 import com.dlz.comm.util.system.FieldReflections;
-import com.dlz.framework.db.convertor.DbConvertUtil;
+import com.dlz.framework.db.util.DbConvertUtil;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import lombok.extern.slf4j.Slf4j;
 
 import java.lang.reflect.Field;
 import java.util.HashMap;
@@ -22,6 +23,7 @@ import java.util.stream.Collectors;
  * bean与数据库表信息保持器
  * @author dk
  */
+@Slf4j
 public class BeanInfoHolder {
     private static final CacheMap<Class<?>, String> tableNameCache = new CacheMap<>();
     private static final CacheMap<String, List<Field>> tableFieldCache = new CacheMap<>();
@@ -47,7 +49,11 @@ public class BeanInfoHolder {
                     return name.value();
                 }
             }
-            return getColumnName(field.getName());
+            final String columnName = getColumnName(field.getName());
+            if(log.isDebugEnabled()){
+                log.debug("字段：{} 对应数据库字段：{}", field.getDeclaringClass().getName() + "." +field.getName(), columnName);
+            }
+            return columnName;
         });
     }
     /**

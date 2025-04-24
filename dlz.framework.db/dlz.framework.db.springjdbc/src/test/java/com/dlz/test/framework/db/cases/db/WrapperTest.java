@@ -45,7 +45,7 @@ public class WrapperTest extends SpingDbBaseTest {
         SysSql dict = new SysSql();
         dict.setId(123L);
         WrapperDelete<SysSql> delete = DB.delete(SysSql.class).eq(SysSql::getId, 123);
-        showSql(delete,"deleteWrapperTest1","delete from SYS_SQL t where ID = 123");
+        showSql(delete,"deleteWrapperTest1","delete from SYS_SQL where ID = 123");
     }
     //未输入条件删除条件为false
     @Test
@@ -53,7 +53,7 @@ public class WrapperTest extends SpingDbBaseTest {
         SysSql dict = new SysSql();
         dict.setId(123L);
         WrapperDelete<SysSql> delete = DB.delete(SysSql.class);
-        showSql(delete,"deleteWrapperTest2","delete from SYS_SQL t where false");
+        showSql(delete,"deleteWrapperTest2","delete from SYS_SQL where false");
     }
     @Test
     public void searchWrapperTest1() {

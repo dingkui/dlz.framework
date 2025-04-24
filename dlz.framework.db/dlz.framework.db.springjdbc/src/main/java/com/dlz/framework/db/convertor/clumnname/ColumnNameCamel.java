@@ -3,7 +3,7 @@ package com.dlz.framework.db.convertor.clumnname;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class ColumnNameCamel extends AColumnNameConvertor {
+public class ColumnNameCamel implements IColumnNameConvertor {
 
 	@Override
 	public String clumn2Str(String dbKey) {

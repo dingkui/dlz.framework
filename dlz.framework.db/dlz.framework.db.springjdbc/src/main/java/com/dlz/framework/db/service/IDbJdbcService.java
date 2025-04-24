@@ -2,9 +2,11 @@ package com.dlz.framework.db.service;
 
 import com.dlz.comm.exception.DbException;
 import com.dlz.comm.util.system.ConvertUtil;
-import com.dlz.framework.db.convertor.DbConvertUtil;
+import com.dlz.framework.db.convertor.clumnname.IColumnNameConvertor;
+import com.dlz.framework.db.util.DbConvertUtil;
 import com.dlz.framework.db.dao.IDlzDao;
 import com.dlz.framework.db.modal.result.ResultMap;
+import org.springframework.jdbc.core.RowMapper;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -24,6 +26,9 @@ public interface IDbJdbcService {
 
     default List<ResultMap> getMapList(String sql, Object... para) {
 		return doJdbc(() -> getDao().getList(sql, para));
+    }
+    default <T> List<T> getList(String sql, RowMapper<T> rowMapper, Object... para) {
+		return doJdbc(() -> getDao().getList(sql,rowMapper, para));
     }
 
 	default <T> T doJdbc(Callable<T> executor) {

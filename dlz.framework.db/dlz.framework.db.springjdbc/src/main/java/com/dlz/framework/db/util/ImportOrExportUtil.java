@@ -1,4 +1,4 @@
-package com.dlz.framework.db.helper.util;//package com.dlz.framework.db.helper;
+package com.dlz.framework.db.util;//package com.dlz.framework.db.helper;
 //
 //import cn.craccd.sqlHelper.bean.Page;
 //import cn.craccd.sqlHelper.config.Table;

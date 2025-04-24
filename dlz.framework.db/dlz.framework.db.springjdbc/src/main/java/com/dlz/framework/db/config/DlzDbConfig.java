@@ -4,8 +4,12 @@ import com.dlz.comm.exception.SystemException;
 import com.dlz.comm.util.StringUtils;
 import com.dlz.comm.util.system.Reflections;
 import com.dlz.framework.config.DlzFwConfig;
-import com.dlz.framework.db.convertor.DbConvertUtil;
+import com.dlz.framework.db.convertor.clumnname.ColumnNameCamel;
+import com.dlz.framework.db.convertor.clumnname.IColumnNameConvertor;
 import com.dlz.framework.db.convertor.dbtype.TableColumnMapper;
+import com.dlz.framework.db.convertor.rowMapper.MySqlColumnMapRowMapper;
+import com.dlz.framework.db.convertor.rowMapper.OracleColumnMapRowMapper;
+import com.dlz.framework.db.convertor.rowMapper.ResultMapRowMapper;
 import com.dlz.framework.db.dao.DlzDao;
 import com.dlz.framework.db.dao.IDlzDao;
 import com.dlz.framework.db.enums.DbTypeEnum;
@@ -18,6 +22,8 @@ import com.dlz.framework.db.helper.support.dbs.DbOpSqlite;
 import com.dlz.framework.db.holder.SqlHolder;
 import com.dlz.framework.db.service.ICommService;
 import com.dlz.framework.db.service.impl.CommServiceImpl;
+import com.dlz.framework.db.util.DbConvertUtil;
+import com.dlz.framework.db.util.DbLogUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
@@ -34,24 +40,45 @@ import javax.sql.DataSource;
 @Slf4j
 @EnableConfigurationProperties({DlzDbProperties.class})
 public class DlzDbConfig extends DlzFwConfig {
+    @Bean(name = "resultRowMapper")
+    @Lazy
+    @ConditionalOnMissingBean(name = "resultRowMapper")
+    public ResultMapRowMapper resultRowMapper(DlzDbProperties properties) {
+        final IColumnNameConvertor columnMapper = new ColumnNameCamel();
+        DbConvertUtil.columnMapper= columnMapper;
+        DbTypeEnum dbtype = properties.getDbtype();
+        if (dbtype == DbTypeEnum.ORACLE) {
+            return new OracleColumnMapRowMapper(columnMapper);
+        } else if (dbtype == DbTypeEnum.MYSQL || dbtype == DbTypeEnum.POSTGRESQL) {
+            return new MySqlColumnMapRowMapper(columnMapper);
+        }
+        return new ResultMapRowMapper(columnMapper);
+    }
     @Bean(name = "dlzDao")
     @Lazy
     @ConditionalOnMissingBean(name = "dlzDao")
-    public IDlzDao dlzDao(JdbcTemplate jdbc,DlzDbProperties properties) {
-        log.info("default dlzDao init ...");
+    public IDlzDao dlzDao(JdbcTemplate jdbc,DlzDbProperties properties,ResultMapRowMapper resultRowMapper) {
         SqlHolder.init(properties);
-        return new DlzDao(jdbc);
+        DbLogUtil.init(properties);
+        final DlzDao dlzDao = new DlzDao(jdbc, resultRowMapper);
+        DbConvertUtil.tableCloumnMapper= new TableColumnMapper(dlzDao);
+        if(log.isInfoEnabled()){
+            log.info("default dlzDao init:"+DlzDao.class.getName());
+            log.info("default resultRowMapper init:"+resultRowMapper.getClass().getName());
+            log.info("default tableCloumnMapper init:"+TableColumnMapper.class.getName());
+        }
+        return dlzDao;
     }
 
     @Bean(name = "commService")
     @Lazy
     @ConditionalOnMissingBean(name = "commService")
     public ICommService commService(IDlzDao dao) {
-        log.info("default commService init ...");
         CommServiceImpl commService = new CommServiceImpl(dao);
+        if(log.isInfoEnabled()){
+            log.info("default commService init:"+CommServiceImpl.class.getName());
+        }
         SqlHolder.loadDbSql(commService);
-        TableColumnMapper tableCloumnMapper = new TableColumnMapper(dao);
-        DbConvertUtil.tableCloumnMapper=tableCloumnMapper;
         return commService;
     }
 
@@ -59,7 +86,9 @@ public class DlzDbConfig extends DlzFwConfig {
     @Lazy
     @ConditionalOnMissingBean(name = "JdbcTemplate")
     public JdbcTemplate JdbcTemplate(DataSource dataSource) {
-        log.info("default JdbcTemplate init ...");
+        if(log.isInfoEnabled()){
+            log.info("default JdbcTemplate init:"+JdbcTemplate.class.getName());
+        }
         return new JdbcTemplate(dataSource);
     }
 

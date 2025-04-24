@@ -80,6 +80,9 @@ public class Page<T> extends Sort<Page> implements Serializable {
 
 
     public Page<T> doPage(Supplier<Integer> total, Supplier<List<T>> record) {
+        if(getCurrent()<=0){
+            setCurrent(1);
+        }
         setTotal(total.get());
         //是否需要查询列表（需要统计条数并且条数是0的情况不查询，直接返回空列表）
         if (this.total > 0) {

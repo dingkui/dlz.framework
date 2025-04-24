@@ -1,6 +1,6 @@
 package com.dlz.framework.db.convertor.clumnname;
 
-public class ColumnNameToUper extends AColumnNameConvertor {
+public class ColumnNameToUper implements IColumnNameConvertor {
 
 
 	@Override

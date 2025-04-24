@@ -1,6 +1,6 @@
 package com.dlz.framework.db.convertor.clumnname;
 
-public class ColumnNameToLower extends AColumnNameConvertor{
+public class ColumnNameToLower implements IColumnNameConvertor {
 
 	@Override
 	public String clumn2Str(String dbKey) {

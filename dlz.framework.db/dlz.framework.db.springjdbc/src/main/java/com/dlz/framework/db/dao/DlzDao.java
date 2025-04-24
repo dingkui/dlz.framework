@@ -2,12 +2,10 @@ package com.dlz.framework.db.dao;
 
 import com.dlz.comm.cache.CacheUtil;
 import com.dlz.comm.util.VAL;
-import com.dlz.framework.db.convertor.rowMapper.MySqlColumnMapRowMapper;
-import com.dlz.framework.db.convertor.rowMapper.OracleColumnMapRowMapper;
 import com.dlz.framework.db.convertor.rowMapper.ResultMapRowMapper;
-import com.dlz.framework.db.enums.DbTypeEnum;
 import com.dlz.framework.db.holder.SqlHolder;
 import com.dlz.framework.db.modal.result.ResultMap;
+import com.dlz.framework.db.util.DbLogUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -26,32 +24,28 @@ import java.util.List;
 @Slf4j
 public class DlzDao implements IDlzDao {
     private final JdbcTemplate dao;
-    private final RowMapper<ResultMap> rowMapper;
+    private final ResultMapRowMapper rowMapper;
 
-    public DlzDao(JdbcTemplate jdbcTemplate) {
+    public DlzDao(JdbcTemplate jdbcTemplate, ResultMapRowMapper rowMapper) {
         this.dao = jdbcTemplate;
-        DbTypeEnum dbtype = SqlHolder.properties.getDbtype();
-        if (dbtype == DbTypeEnum.ORACLE) {
-            rowMapper = new OracleColumnMapRowMapper();
-        } else if (dbtype == DbTypeEnum.MYSQL || dbtype == DbTypeEnum.POSTGRESQL) {
-            rowMapper = new MySqlColumnMapRowMapper();
-        } else {
-            rowMapper = new ResultMapRowMapper();
-        }
-        DbLogUtil.showCaller = SqlHolder.properties.getLog().isShowCaller();
-        DbLogUtil.showRunSql = SqlHolder.properties.getLog().isShowRunSql();
-        DbLogUtil.showResult = SqlHolder.properties.getLog().isShowResult();
+        this.rowMapper = rowMapper;
     }
 
     @Override
-    public List<ResultMap> query(String sql, Object... args) throws DataAccessException {
-        return args.length > 0 ? dao.query(sql, rowMapper, args) : dao.query(sql, rowMapper);
+    public List<ResultMap> getList(String sql, Object... args) throws DataAccessException {
+        return getList(sql, rowMapper, args);
+    }
+
+    @Override
+    public <T> List<T> getList(String sql, RowMapper<T> mapper, Object... args) throws DataAccessException {
+        return doDb(() -> args.length > 0 ? dao.query(sql, mapper, args) : dao.query(sql, mapper),
+                (t, r) -> DbLogUtil.generateSqlMessage(t, r, "getList", sql, args));
     }
 
     @Override
     public int update(String sql, Object... args) {
         return doDb(() -> args.length > 0 ? dao.update(sql, args) : dao.update(sql),
-                (t,r) -> DbLogUtil.generateSqlMessage(t,r, "update", sql, args));
+                (t, r) -> DbLogUtil.generateSqlMessage(t, r, "update", sql, args));
     }
 
     @Override
@@ -71,7 +65,7 @@ public class DlzDao implements IDlzDao {
                 return null;
             }
             return keyHolder.getKey().longValue();
-        }, (t,r) -> DbLogUtil.generateSqlMessage(t,r, "updateForId", sql, args));
+        }, (t, r) -> DbLogUtil.generateSqlMessage(t, r, "updateForId", sql, args));
     }
 
     @Override
@@ -89,13 +83,13 @@ public class DlzDao implements IDlzDao {
                 dao.execute(sql);
             }
             return 0;
-        }, (t,r) -> DbLogUtil.generateSqlMessage(t,r, "execute", sql, args));
+        }, (t, r) -> DbLogUtil.generateSqlMessage(t, r, "execute", sql, args));
     }
 
     @Override
     public int[] batchUpdate(String sql, List<Object[]> batchArgs) {
         return doDb(() -> dao.batchUpdate(sql, batchArgs),
-                (t,r) -> DbLogUtil.generateSqlMessage(t, "batchUpdate", sql, batchArgs));
+                (t, r) -> DbLogUtil.generateSqlMessage(t, "batchUpdate", sql, batchArgs));
     }
 
     @Override

@@ -3,8 +3,9 @@ package com.dlz.framework.db.enums;
 import com.dlz.comm.exception.SystemException;
 import com.dlz.comm.json.JSONMap;
 import com.dlz.comm.util.StringUtils;
-import com.dlz.framework.db.SqlUtil;
+import com.dlz.framework.db.util.SqlUtil;
 import com.dlz.framework.db.modal.condition.Condition;
+import com.dlz.framework.db.util.KeyUtil;
 import lombok.AllArgsConstructor;
 
 import java.util.regex.Matcher;

@@ -35,6 +35,6 @@ public class UpdateParaTest  extends SpingDbBaseTest {
 		MakerDelete dh_room = DB
 				.delete("dh_room")
 				.where(where);
-		showSql(dh_room,"DeleteParaMapTest","delete from dh_room t where equipment_id = 1 and equipment_id2 = 2 and (XX_ID2 = 3 and XX_ID1 = 4) and (XX_ID2 = 3 or XX_ID1 = 4) and XX_ID3 = 5");
+		showSql(dh_room,"DeleteParaMapTest","delete from dh_room where equipment_id = 1 and equipment_id2 = 2 and (XX_ID2 = 3 and XX_ID1 = 4) and (XX_ID2 = 3 or XX_ID1 = 4) and XX_ID3 = 5");
 	}
 }

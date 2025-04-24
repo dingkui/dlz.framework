@@ -55,9 +55,6 @@ public interface IDbListService extends IDbBaseService{
             page = Page.build();
             paraMap.setPage(page);
         }
-        if(page.getCurrent()<=0){
-            page.setCurrent(1);
-        }
         return page.doPage(() -> getCnt(paraMap), () -> getMapList(paraMap));
     }
 
@@ -66,9 +63,6 @@ public interface IDbListService extends IDbBaseService{
         if (page == null) {
             page = Page.build();
             paraMap.setPage(page);
-        }
-        if(page.getCurrent()<=0){
-            page.setCurrent(1);
         }
         return page.doPage(() -> getCnt(paraMap), () -> getBeanList(paraMap, t));
     }

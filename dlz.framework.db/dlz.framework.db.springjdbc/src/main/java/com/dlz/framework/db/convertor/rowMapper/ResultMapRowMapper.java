@@ -1,8 +1,9 @@
 package com.dlz.framework.db.convertor.rowMapper;
 
 
-import com.dlz.framework.db.convertor.DbConvertUtil;
+import com.dlz.framework.db.convertor.clumnname.IColumnNameConvertor;
 import com.dlz.framework.db.modal.result.ResultMap;
+import lombok.AllArgsConstructor;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.support.JdbcUtils;
 
@@ -14,7 +15,10 @@ import java.sql.SQLException;
  * 本类覆写了spring 的RowMapper
  * @author dingkui
  */
+@AllArgsConstructor
 public class ResultMapRowMapper implements RowMapper<ResultMap> {
+
+	public final IColumnNameConvertor columnMapper;
 
 	@Override
 	public ResultMap  mapRow(ResultSet rs, int rowNum) throws SQLException {
@@ -36,9 +40,11 @@ public class ResultMapRowMapper implements RowMapper<ResultMap> {
 	 * @return the column key to use
 	 * @see java.sql.ResultSetMetaData#getColumnName
 	 */
-	protected String getColumnKey(String columnName) {
-		return DbConvertUtil.clumn2Str(columnName);
+	public String getColumnKey(String columnName) {
+		return columnMapper.clumn2Str(columnName);
 	}
+
+
 
 	/**
 	 * Retrieve a JDBC object value for the specified column.

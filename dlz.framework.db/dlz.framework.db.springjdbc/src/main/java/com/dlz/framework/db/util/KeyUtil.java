@@ -1,4 +1,4 @@
-package com.dlz.framework.db.enums;
+package com.dlz.framework.db.util;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -11,7 +11,7 @@ public class KeyUtil {
      *
      * @return 增加后的值
      */
-    protected static String getKeyName(String prefix) {
+    public static String getKeyName(String prefix) {
         return prefix+paraNameIndex.get().addAndGet(1);
     }
 }

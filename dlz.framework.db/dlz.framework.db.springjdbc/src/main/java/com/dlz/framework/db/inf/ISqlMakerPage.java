@@ -1,5 +1,6 @@
 package com.dlz.framework.db.inf;
 
+import com.dlz.comm.inf.IChained;
 import com.dlz.framework.db.modal.result.Order;
 import com.dlz.framework.db.modal.result.Page;
 
@@ -23,7 +24,6 @@ public interface ISqlMakerPage<T extends ISqlMakerPage>{
     default T orderByDesc(String... column) {
         return sort(Order.descs(column));
     }
-
 
     default T page(int pageIndex, int size, Order... orders) {
         return page(pageIndex, size, Arrays.asList(orders));

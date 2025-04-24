@@ -1,6 +1,7 @@
 package com.dlz.framework.db.convertor.rowMapper;
 
 
+import com.dlz.framework.db.convertor.clumnname.IColumnNameConvertor;
 import com.dlz.framework.db.modal.result.ResultMap;
 import org.springframework.jdbc.support.JdbcUtils;
 
@@ -10,6 +11,10 @@ import java.sql.SQLException;
 
 public class OracleColumnMapRowMapper  extends ResultMapRowMapper{
 
+
+	public OracleColumnMapRowMapper(IColumnNameConvertor columnMapper) {
+		super(columnMapper);
+	}
 
 	@Override
 	public ResultMap  mapRow(ResultSet rs, int rowNum) throws SQLException {

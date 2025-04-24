@@ -2,9 +2,12 @@ package com.dlz.framework.db.dao;
 
 import com.dlz.comm.exception.DbException;
 import com.dlz.comm.fn.DlzFn2;
-import com.dlz.framework.db.convertor.DbConvertUtil;
 import com.dlz.framework.db.modal.result.ResultMap;
+import com.dlz.framework.db.util.DbConvertUtil;
+import com.dlz.framework.db.util.DbLogUtil;
 import org.springframework.context.annotation.Lazy;
+import org.springframework.dao.DataAccessException;
+import org.springframework.jdbc.core.RowMapper;
 
 import java.util.HashMap;
 import java.util.List;
@@ -21,24 +24,18 @@ import java.util.function.Supplier;
  */
 @Lazy
 public interface IDlzDao {
-    List<ResultMap> query(String sql, Object... args);
-
-    default List<ResultMap> getList(String sql, Object... args) {
-        return doDb(() -> query(sql, args),
-                (t,r) -> DbLogUtil.generateSqlMessage(t,r,"getList", sql, args));
-    }
+    List<ResultMap> getList(String sql, Object... args);
+    <T> List<T> getList(String sql, RowMapper<T> rowMapper, Object... args) throws DataAccessException;
 
     default ResultMap getOne(String sql, boolean checkOne, Object... args) {
-        return doDb(() -> {
-            List<ResultMap> list = query(sql, args);
-            if (list.size() == 0) {
-                return null;
-            }
-            if (checkOne && list.size() > 1) {
-                throw new DbException("查询结果为多条", 1004);
-            }
-            return list.get(0);
-        }, (t,r) -> DbLogUtil.generateSqlMessage(t,r,"getOne", sql, args));
+        List<ResultMap> list = getList(sql, args);
+        if (list.size() == 0) {
+            return null;
+        }
+        if (checkOne && list.size() > 1) {
+            throw new DbException("查询结果为多条", 1004);
+        }
+        return list.get(0);
     }
 
     default <T> T getFistColumn(String sql, Class<T> requiredType, Object... args) {
