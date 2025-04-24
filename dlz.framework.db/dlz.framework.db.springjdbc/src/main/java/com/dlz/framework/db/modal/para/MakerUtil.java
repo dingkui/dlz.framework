@@ -26,8 +26,8 @@ import java.util.UUID;
 @Slf4j
 public class MakerUtil {
     public static final String MAKER_SQL_INSERT = "insert into ${tableName}(${colums}) values(${values})";
-    public static final String MAKER_SQL_DELETE = "delete from ${tableName} t ${where} ${otherwhere}";
-    public static final String MAKER_SQL_UPDATE = "update ${tableName} t set ${sets} ${where} ${otherwhere}";
+    public static final String MAKER_SQL_DELETE = "delete from ${tableName} ${where}";
+    public static final String MAKER_SQL_UPDATE = "update ${tableName} t set ${sets} ${where}";
     public static final String MAKER_SQL_SEARCHE = "select ${colums} from ${tableName} t ${where} ${otherwhere}";
 
     private static final String MAKER_TABLENAME = "tableName";
@@ -157,11 +157,11 @@ public class MakerUtil {
         for (Field field : fields) {
             String dbClumnName = BeanInfoHolder.getColumnName(field);
             if (!dbClumnName.equals("")) {
-                fieldsPart.add("`" + dbClumnName + "`");
+                fieldsPart.add(dbClumnName);
                 placeHolder.add("?");
             }
         }
-        return  "INSERT INTO `" + dbName + "` (" + StringUtils.join(",", fieldsPart) + ") VALUES (" + StringUtils.join(",", placeHolder) + ")";
+        return "INSERT INTO " + dbName + " (" + StringUtils.join(",", fieldsPart) + ") VALUES (" + StringUtils.join(",", placeHolder) + ")";
     }
 
     public static Object[] buildInsertParams(String dbName,Object object, List<Field> fields) {
@@ -184,10 +184,10 @@ public class MakerUtil {
         for (Field field : fields) {
             String dbClumnName = BeanInfoHolder.getColumnName(field);
             if (!dbClumnName.equals("id") && !dbClumnName.equals("")) {
-                fieldsPart.add("`" + dbClumnName + "`=?");
+                fieldsPart.add(dbClumnName + "=?");
             }
         }
-        return  "UPDATE `" + dbName + "` SET " + StringUtils.join(",", fieldsPart) + " WHERE id = ?";
+        return "UPDATE " + dbName + " SET " + StringUtils.join(",", fieldsPart) + " WHERE id = ?";
     }
     public static Object[] buildUpdateParams(Object object, List<Field> fields) {
         List<Object> params = new ArrayList<Object>();
