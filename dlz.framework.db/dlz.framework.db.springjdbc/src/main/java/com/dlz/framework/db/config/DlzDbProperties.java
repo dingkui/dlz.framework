@@ -54,18 +54,18 @@ public class DlzDbProperties {
      */
     @Data
     public static class Log {
-        /**
-         * 是否启动jdbcSql
-         */
-        private boolean jdbcSql=true;
-        /**
-         * 是否显示结果日志
-         */
-        private boolean showResult = false;
-        /**
-         * 是否显示配置的sql
-         */
-        private boolean showKeySql = true;
+//        /**
+//         * 是否启动jdbcSql
+//         */
+//        private boolean jdbcSql=true;
+//        /**
+//         * 是否显示结果日志
+//         */
+//        private boolean showResult = false;
+//        /**
+//         * 是否显示配置的sql
+//         */
+//        private boolean showKeySql = true;
         /**
          * 是否显示运行sql
          */

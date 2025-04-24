@@ -2,6 +2,7 @@ package com.dlz.framework.db.dao;
 
 import com.dlz.comm.cache.CacheUtil;
 import com.dlz.comm.util.ExceptionUtils;
+import com.dlz.comm.util.StringUtils;
 import com.dlz.comm.util.VAL;
 import com.dlz.framework.db.SqlUtil;
 import com.dlz.framework.db.convertor.rowMapper.MySqlColumnMapRowMapper;
@@ -27,8 +28,10 @@ import java.util.List;
 
 @Slf4j
 public class DlzDao implements IDlzDao {
-    private JdbcTemplate dao;
-    private RowMapper<ResultMap> rowMapper;
+    private final JdbcTemplate dao;
+    private final RowMapper<ResultMap> rowMapper;
+    private final boolean isShowRunSql;
+    private final boolean isShowCaller;
 
     public DlzDao(JdbcTemplate jdbcTemplate) {
         this.dao = jdbcTemplate;
@@ -40,25 +43,30 @@ public class DlzDao implements IDlzDao {
         } else {
             rowMapper = new ResultMapRowMapper();
         }
+        this.isShowCaller = SqlHolder.properties.getLog().isShowCaller();
+        this.isShowRunSql = SqlHolder.properties.getLog().isShowRunSql();
     }
 
     @Override
     public void logInfo(String sql, String methodName, long startTime, Object[] args,Exception error) {
         if (log.isInfoEnabled()) {
-            long useTime = System.currentTimeMillis() - startTime;
-            if (SqlHolder.properties.getLog().isShowRunSql()) {
+            if(isShowCaller){
+                CallerUtil.setCaller(1);
+            }
+            try {
+                long useTime = System.currentTimeMillis() - startTime;
+                String sqlMsg = isShowRunSql?
+                        StringUtils.formatMsg("{} {}ms sql:{}", methodName, useTime, SqlUtil.getRunSqlByJdbc(sql, args)):
+                        StringUtils.formatMsg("{} {}ms sql:{} {}", methodName, useTime, sql, args);
                 if(error!=null){
-                    log.error(ExceptionUtils.getStackTrace(error));
-                    log.error("{} {}ms sql:{}", methodName, useTime, SqlUtil.getRunSqlByJdbc(sql, args));
+                    DlzDao.log.error(ExceptionUtils.getStackTrace(error));
+                    DlzDao.log.error(sqlMsg);
                 }else{
-                    log.info("{} {}ms sql:{}", methodName, useTime, SqlUtil.getRunSqlByJdbc(sql, args));
+                    DlzDao.log.info(sqlMsg);
                 }
-            } else {
-                if(error!=null){
-                    log.error(ExceptionUtils.getStackTrace(error));
-                    log.error("{} {}ms sql:{} {}", methodName, useTime, sql, args);
-                }else{
-                    log.info("{} {}ms sql:{} {}", methodName, useTime, sql, args);
+            } finally {
+                if(isShowCaller){
+                    CallerUtil.clearCaller();
                 }
             }
         }

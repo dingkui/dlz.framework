@@ -65,18 +65,6 @@ public class DlzDbConfig extends DlzFwConfig {
     }
 
     /**
-     * 数据库日志输出调用代码位置
-     * dlz.db.log.show-caller=true时生效
-     * @return
-     */
-    @Bean
-    @ConditionalOnProperty(value = "dlz.db.log.show-caller", havingValue = "true")
-    public LoggingAspect loggingAspect() {
-        log.info("dlz.db.log.show-caller:LoggingAspect init ...");
-        return new LoggingAspect();
-    }
-
-    /**
      * sqlHelper
      */
     @Lazy
