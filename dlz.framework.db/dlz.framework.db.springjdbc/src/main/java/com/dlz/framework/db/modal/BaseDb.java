@@ -1,12 +1,10 @@
 package com.dlz.framework.db.modal;
 
 import com.dlz.comm.exception.SystemException;
-import com.dlz.comm.inf.IChained;
 import com.dlz.comm.util.system.Reflections;
 import com.dlz.framework.db.modal.para.WrapperQuery;
 
 import java.io.Serializable;
-import java.util.Date;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 

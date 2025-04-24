@@ -1,9 +1,8 @@
 package com.dlz.framework.db.modal.para;
 
 import com.dlz.comm.exception.DbException;
-import com.dlz.comm.util.system.FieldReflections;
-import com.dlz.framework.db.inf.ISqlPara;
 import com.dlz.framework.db.holder.BeanInfoHolder;
+import com.dlz.framework.db.inf.ISqlPara;
 import com.dlz.framework.db.modal.items.JdbcItem;
 import com.dlz.framework.db.modal.items.SqlItem;
 import lombok.Getter;

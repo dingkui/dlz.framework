@@ -1,17 +1,12 @@
 package com.dlz.framework.db.modal.para;
 
-import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableId;
-import com.dlz.comm.exception.SystemException;
 import com.dlz.comm.util.system.FieldReflections;
-import com.dlz.framework.db.helper.support.SnowFlake;
 import com.dlz.framework.db.holder.BeanInfoHolder;
 import com.dlz.framework.db.holder.DBHolder;
 import com.dlz.framework.db.inf.IOperatorInsert;
 
 import java.lang.reflect.Field;
 import java.util.List;
-import java.util.UUID;
 import java.util.stream.Collectors;
 
 /**

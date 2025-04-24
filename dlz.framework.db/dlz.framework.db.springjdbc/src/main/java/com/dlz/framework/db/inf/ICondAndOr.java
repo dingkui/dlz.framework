@@ -1,12 +1,10 @@
 package com.dlz.framework.db.inf;
 
 import com.dlz.comm.json.JSONMap;
-import com.dlz.framework.db.SqlUtil;
 import com.dlz.framework.db.enums.DbBuildEnum;
 import com.dlz.framework.db.modal.condition.Condition;
 
 import java.util.function.Consumer;
-import java.util.function.Function;
 
 /**
  * 添加and or条件

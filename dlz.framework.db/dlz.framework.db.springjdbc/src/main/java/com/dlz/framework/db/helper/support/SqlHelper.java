@@ -1,7 +1,5 @@
 package com.dlz.framework.db.helper.support;
 
-import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableId;
 import com.dlz.comm.exception.SystemException;
 import com.dlz.comm.fn.DlzFn;
 import com.dlz.comm.util.StringUtils;

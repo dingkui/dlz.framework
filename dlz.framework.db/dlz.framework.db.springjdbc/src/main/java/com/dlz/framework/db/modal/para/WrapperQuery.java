@@ -1,20 +1,17 @@
 package com.dlz.framework.db.modal.para;
 
 import com.dlz.comm.fn.DlzFn;
-import com.dlz.comm.util.StringUtils;
+import com.dlz.framework.db.holder.BeanInfoHolder;
 import com.dlz.framework.db.holder.DBHolder;
 import com.dlz.framework.db.inf.IOperatorQuery;
 import com.dlz.framework.db.inf.ISqlMakerPage;
 import com.dlz.framework.db.inf.ISqlWrapperSearch;
-import com.dlz.framework.db.holder.BeanInfoHolder;
 import com.dlz.framework.db.modal.items.JdbcItem;
 import com.dlz.framework.db.modal.result.Order;
 import com.dlz.framework.db.modal.result.Page;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 /**
  * 查询语句生成器
