@@ -44,17 +44,17 @@ public class MakerUtil {
     public static void buildSql(AMaker maker) {
         maker.getSqlItem().setSqlKey(maker.getSql());
         maker.addPara(MAKER_TABLENAME, maker.getTableName());
-        if(maker instanceof AMakerSearch){
-            buildWhere((AMakerSearch)maker);
+        if (maker instanceof AMakerSearch) {
+            buildWhere((AMakerSearch) maker);
         }
-        if(maker instanceof MakerQuery){
-            buildWhereColums((MakerQuery)maker);
+        if (maker instanceof MakerQuery) {
+            buildWhereColums((MakerQuery) maker);
         }
-        if(maker instanceof MakerUpdate){
-            buildUpdateSql((MakerUpdate)maker);
+        if (maker instanceof MakerUpdate) {
+            buildUpdateSql((MakerUpdate) maker);
         }
-        if(maker instanceof MakerInsert){
-            buildInsertSql((MakerInsert)maker);
+        if (maker instanceof MakerInsert) {
+            buildInsertSql((MakerInsert) maker);
         }
     }
 
@@ -66,6 +66,7 @@ public class MakerUtil {
     public static void buildWhereColums(MakerQuery maker) {
         maker.addPara(MAKER_COLUMS, maker.colums);
     }
+
     /**
      * 生成查询条件sql
      *
@@ -73,8 +74,8 @@ public class MakerUtil {
      */
     public static void buildWhere(AMakerSearch maker) {
         final String logicDeleteField = SqlHolder.properties.getLogicDeleteField();
-        if(BeanInfoHolder.isColumnExists(maker.getTableName(), logicDeleteField)){
-            if(!maker.where().isContainCondition(logicDeleteField)){
+        if (BeanInfoHolder.isColumnExists(maker.getTableName(), logicDeleteField)) {
+            if (!maker.where().isContainCondition(logicDeleteField)) {
                 maker.where().eq(logicDeleteField, 0);
             }
         }
@@ -189,6 +190,7 @@ public class MakerUtil {
         }
         return "UPDATE " + dbName + " SET " + StringUtils.join(",", fieldsPart) + " WHERE id = ?";
     }
+
     public static Object[] buildUpdateParams(Object object, List<Field> fields) {
         List<Object> params = new ArrayList<Object>();
         for (Field field : fields) {
@@ -197,7 +199,7 @@ public class MakerUtil {
                 params.add(FieldReflections.getValue(object, field));
             }
         }
-        params.add(FieldReflections.getValue(object, "id",true));
+        params.add(FieldReflections.getValue(object, "id", true));
         return params.toArray();
     }
 

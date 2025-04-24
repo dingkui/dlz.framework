@@ -40,7 +40,9 @@ public class DlzFwConfig {
             SpringHolder.init(beanFactory);
             String apiScanPath = env.getProperty("dlz.fw.api-scan-path");
             if (StringUtils.isNotEmpty(apiScanPath)) {
-                log.info("dlz spring apiScan init ...,resoucePath={}", apiScanPath);
+                if(log.isInfoEnabled()) {
+                    log.info("dlz spring apiScan init,resoucePath:{}", apiScanPath);
+                }
                 new DlzSpringScaner().doComponents(new ApiScaner(apiScanPath));
             }
         };
@@ -56,7 +58,9 @@ public class DlzFwConfig {
     @Lazy
     public ICache dlzCache(DlzProperties properties) throws InstantiationException, IllegalAccessException {
         Class<? extends ICache> cacheClass = properties.getCache().getCacheClass();
-        log.info("dlzCache init ..." + cacheClass.getName());
+        if(log.isInfoEnabled()){
+            log.info("dlzCache init:" + cacheClass.getName());
+        }
         ICache iCache = cacheClass.newInstance();
         CacheUtil.init(iCache);
         return iCache;
@@ -71,7 +75,9 @@ public class DlzFwConfig {
     @ConditionalOnMissingBean(name = "redisKeyMaker")
     @Lazy
     public IKeyMaker redisKeyMaker() {
-        log.info("default redisKeyMaker init ...");
+        if(log.isInfoEnabled()){
+            log.info("default redisKeyMaker init:"+RedisKeyMaker.class.getName());
+        }
         return new RedisKeyMaker();
     }
 
@@ -79,9 +85,12 @@ public class DlzFwConfig {
     @ConditionalOnMissingBean(name = "redisPool")
     @Lazy
     public JedisPool redisPool() {
-        log.info("default redisPool init ...");
         JedisConfig jedisConfig = SpringHolder.registerBean(JedisConfig.class);
-        return jedisConfig.redisPoolFactory();
+        final JedisPool jedisPool = jedisConfig.redisPoolFactory();
+        if(log.isInfoEnabled()){
+            log.info("default redisPool init:"+jedisPool.getClass().getName());
+        }
+        return jedisPool;
     }
 
     /**
@@ -93,7 +102,9 @@ public class DlzFwConfig {
     @Bean
     @ConditionalOnProperty(value = "dlz.cache.anno", havingValue = "true")
     public CacheAspect cacheAspect(ICache cache) {
-        log.info("dlz.cache.anno:CacheAspect init ...");
+        if(log.isInfoEnabled()){
+            log.info("dlz.cache.anno:CacheAspect init ...");
+        }
         return new CacheAspect(cache);
     }
 
@@ -105,7 +116,9 @@ public class DlzFwConfig {
     @Lazy
     @ConditionalOnMissingBean(name = "redisQueueProviderApiHandler")
     public ApiProxyHandler redisQueueProviderApiHandler() {
-        log.info("default redisQueueProviderApiHandler init ...");
+        if(log.isInfoEnabled()){
+            log.info("default redisQueueProviderApiHandler init:"+RedisQueueProviderApiHandler.class.getName());
+        }
         return new RedisQueueProviderApiHandler();
     }
 
@@ -113,7 +126,9 @@ public class DlzFwConfig {
     @Lazy
     @ConditionalOnMissingBean(name = "jedisExecutor")
     public JedisExecutor jedisExecutor(JedisPool jedisPool,IKeyMaker keyMaker) {
-        log.info("default jedisExecutor init ...");
+        if(log.isInfoEnabled()){
+            log.info("default jedisExecutor init:"+JedisExecutor.class.getName());
+        }
         return new JedisExecutor(jedisPool,keyMaker);
     }
 
@@ -125,7 +140,9 @@ public class DlzFwConfig {
     @Bean
     @Lazy
     public BootConfig bootConfig() {
-        log.info("default bootConfig init ...");
+        if(log.isInfoEnabled()){
+            log.info("default BootConfig init:"+BootConfig.class.getName());
+        }
         return new BootConfig();
     }
 
@@ -133,7 +150,9 @@ public class DlzFwConfig {
     @Lazy
     @ConditionalOnMissingBean(name = "customConfig")
     public ICustomConfig customConfig() {
-        log.info("default customConfig init ...");
+        if(log.isInfoEnabled()){
+            log.info("default customConfig init :"+ICustomConfig.class.getName());
+        }
         return new ICustomConfig() {
             @Override
             public String get(String key) {
