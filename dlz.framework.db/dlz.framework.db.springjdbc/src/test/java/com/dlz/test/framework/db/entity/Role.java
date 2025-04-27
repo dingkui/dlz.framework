@@ -19,7 +19,7 @@ import java.io.Serializable;
 @Data
 @TableName("sys_role")
 @ApiModel(value = "Role对象", description = "Role对象")
-public class Role implements Serializable {
+public class Role extends BaseEntity {
 
 	private static final long serialVersionUID = 1L;
 

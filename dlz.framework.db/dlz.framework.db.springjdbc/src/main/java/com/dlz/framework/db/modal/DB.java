@@ -56,9 +56,9 @@ public class DB {
         return new MakerQuery(tableName);
     }
 
-    public static <T> MakerQuery select(DlzFn<T, ?> column) {
+    public static <T> WrapperQuery<T> select(DlzFn<T, ?> column) {
         VAL<Class<?>, Field> infos = FieldReflections.getFn(column);
-        return new MakerQuery(BeanInfoHolder.getTableName(infos.v1)).select(BeanInfoHolder.getColumnName(infos.v2));
+        return WrapperQuery.wrapper((Class<T>)infos.v1).select(BeanInfoHolder.getColumnName(infos.v2));
     }
 
     public static <T> WrapperQuery<T> query(Class<T> re, Map<String, Object> query, Set<String> exclude, Page page) {
