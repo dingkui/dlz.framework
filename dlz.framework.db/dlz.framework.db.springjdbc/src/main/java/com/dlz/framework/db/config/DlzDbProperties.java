@@ -24,7 +24,7 @@ public class DlzDbProperties {
     /**
      * sql路径配置
      **/
-    private List<String> sqllist= Arrays.asList("jar.sys.*","jar.app.*");
+    private List<String> sqllist= Arrays.asList("app/*");
     /**
      * 从数据库中取得sql配置的sql
      **/

@@ -1,13 +1,10 @@
 package com.dlz.comm.util.system.convert;
 
 import com.dlz.comm.exception.SystemException;
-import com.dlz.comm.util.ValUtil;
 import com.dlz.comm.util.system.FieldReflections;
 import com.dlz.comm.util.system.Reflections;
 
 import java.lang.reflect.Field;
-import java.lang.reflect.Type;
-import java.lang.reflect.TypeVariable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;

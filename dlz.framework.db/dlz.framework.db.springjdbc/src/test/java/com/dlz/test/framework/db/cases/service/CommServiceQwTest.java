@@ -1,8 +1,8 @@
 package com.dlz.test.framework.db.cases.service;
 
 import com.dlz.framework.db.modal.DB;
-import com.dlz.framework.db.modal.result.Page;
 import com.dlz.framework.db.modal.para.WrapperQuery;
+import com.dlz.framework.db.modal.result.Page;
 import com.dlz.test.framework.db.config.SpingDbBaseTest;
 import com.dlz.test.framework.db.entity.Dict;
 import com.dlz.test.framework.db.entity.SysSql;

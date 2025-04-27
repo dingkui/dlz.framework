@@ -17,10 +17,8 @@ import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 import org.springframework.core.io.support.ResourcePatternResolver;
 
 import java.io.*;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.regex.Pattern;
 
@@ -33,9 +31,7 @@ import java.util.regex.Pattern;
  */
 @Slf4j
 public class SqlHolder {
-    private final static String STR_SQL_JAR = "sqllist.sql.jar.";
-    private final static String STR_SQL_FILE = "sqllist.sql.file.";
-    private final static String STR_SQL_FOLDER = "sqllist.sql.folder.";
+    private final static String STR_SQL_FILE = "file:";
     static final Map<String, String> m_sqlList = new ConcurrentHashMap<>();
     private static boolean initIng = false;
     public static DlzDbProperties properties;
@@ -120,33 +116,23 @@ public class SqlHolder {
         }
         initIng = true;
 
-        Map<String, String> conf=new HashMap<>();
         try {
             loadRsources("framework/*");
-            loadRsources("common/*");
-            loadRsources("service/*/*");
+            loadRsources("sys/*");
         }catch (Exception e){
             log.error(ExceptionUtils.getStackTrace(e));
         }
-        properties.getSqllist().stream().forEach(item->{
-            conf.put("sqllist.sql."+item,"1");
-        });
-        conf.forEach((name,str)->{
-            if ("1".equals(str)) {
-                ClassLoader classLoader = SqlHolder.class.getClassLoader();
-                if (name.startsWith(STR_SQL_FILE)) {
-                    String path = name.substring(STR_SQL_FILE.length() - 1).replaceAll("\\.", "/") + ".sql";
-                    readSqlPath(new File(Objects.requireNonNull(classLoader.getResource("sql/")).getPath() + path));
-                } else if (name.startsWith(STR_SQL_JAR)) {
-                    try {
-                        loadRsources(name.substring(STR_SQL_JAR.length()).replaceAll("\\.", "/"));
-                    } catch (IOException e) {
-                        log.error(ExceptionUtils.getStackTrace(e));
-                    }
-                } else if (name.startsWith(STR_SQL_FOLDER)) {
-                    String path = name.substring(STR_SQL_FOLDER.length() - 1).replaceAll("\\.", "/");
-                    readSqlPath(new File(classLoader.getResource("sql/").getPath() + path));
-                }
+        properties.getSqllist().forEach(name->{
+            if (name.startsWith(STR_SQL_FILE)) {
+                final String sqlRoot = SqlHolder.class.getClassLoader().getResource("sql/").getPath();
+                String path = name.substring(STR_SQL_FILE.length());
+                readSqlPath(new File(sqlRoot + path));
+                return;
+            }
+            try {
+                loadRsources(name);
+            } catch (IOException e) {
+                log.error(ExceptionUtils.getStackTrace(e));
             }
         });
         initIng = false;
