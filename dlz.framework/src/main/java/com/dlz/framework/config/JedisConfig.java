@@ -32,8 +32,8 @@ public class JedisConfig {
         if (password.length()==0) {
             password=null;
         }
-        JedisPool jedisPool = new JedisPool(jedisPoolConfig, host, port, timeout, password,database);
-        log.info("JedisPool初始化成功：{}:{}", host, port);
-        return jedisPool;
+//        JedisPool jedisPool = ;
+//        log.info("JedisPool初始化成功：{}:{}", host, port);
+        return new JedisPool(jedisPoolConfig, host, port, timeout, password,database);
     }
 }

@@ -63,9 +63,9 @@ public class DlzDbConfig extends DlzFwConfig {
         final DlzDao dlzDao = new DlzDao(jdbc, resultRowMapper);
         DbConvertUtil.tableCloumnMapper= new TableColumnMapper(dlzDao);
         if(log.isInfoEnabled()){
-            log.info("default dlzDao init:"+DlzDao.class.getName());
-            log.info("default resultRowMapper init:"+resultRowMapper.getClass().getName());
-            log.info("default tableCloumnMapper init:"+TableColumnMapper.class.getName());
+            log.info("init dlzDao:"+DlzDao.class.getName());
+            log.info("init resultRowMapper:"+resultRowMapper.getClass().getName());
+            log.info("init tableCloumnMapper:"+TableColumnMapper.class.getName());
         }
         return dlzDao;
     }
@@ -76,7 +76,7 @@ public class DlzDbConfig extends DlzFwConfig {
     public ICommService commService(IDlzDao dao) {
         CommServiceImpl commService = new CommServiceImpl(dao);
         if(log.isInfoEnabled()){
-            log.info("default commService init:"+CommServiceImpl.class.getName());
+            log.info("init commService:"+CommServiceImpl.class.getName());
         }
         SqlHolder.loadDbSql(commService);
         return commService;
@@ -87,7 +87,7 @@ public class DlzDbConfig extends DlzFwConfig {
     @ConditionalOnMissingBean(name = "JdbcTemplate")
     public JdbcTemplate JdbcTemplate(DataSource dataSource) {
         if(log.isInfoEnabled()){
-            log.info("default JdbcTemplate init:"+JdbcTemplate.class.getName());
+            log.info("init JdbcTemplate:"+JdbcTemplate.class.getName());
         }
         return new JdbcTemplate(dataSource);
     }
@@ -99,7 +99,9 @@ public class DlzDbConfig extends DlzFwConfig {
     @Bean(name = "dlzHelperDbOp")
     @ConditionalOnMissingBean(name = "dlzHelperDbOp")
     public SqlHelper dlzHelperDbOp(IDlzDao dao,DlzDbProperties properties) {
-        log.info("dlzHelper init dbType is:" + properties.getDbtype());
+        if(log.isInfoEnabled()) {
+            log.info("init dlzHelper:dbType is " + properties.getDbtype());
+        }
         SqlHelper helpler;
         if(StringUtils.isNotEmpty(properties.getDbSupport())){
             final Class<?> aClass;

@@ -59,7 +59,7 @@ public class DlzFwConfig {
     public ICache dlzCache(DlzProperties properties) throws InstantiationException, IllegalAccessException {
         Class<? extends ICache> cacheClass = properties.getCache().getCacheClass();
         if(log.isInfoEnabled()){
-            log.info("dlzCache init:" + cacheClass.getName());
+            log.info("init dlzCache:" + cacheClass.getName());
         }
         ICache iCache = cacheClass.newInstance();
         CacheUtil.init(iCache);
@@ -76,7 +76,7 @@ public class DlzFwConfig {
     @Lazy
     public IKeyMaker redisKeyMaker() {
         if(log.isInfoEnabled()){
-            log.info("default redisKeyMaker init:"+RedisKeyMaker.class.getName());
+            log.info("init redisKeyMaker:"+RedisKeyMaker.class.getName());
         }
         return new RedisKeyMaker();
     }
@@ -88,7 +88,7 @@ public class DlzFwConfig {
         JedisConfig jedisConfig = SpringHolder.registerBean(JedisConfig.class);
         final JedisPool jedisPool = jedisConfig.redisPoolFactory();
         if(log.isInfoEnabled()){
-            log.info("default redisPool init:"+jedisPool.getClass().getName());
+            log.info("init default redisPool:"+jedisPool.getClass().getName());
         }
         return jedisPool;
     }
@@ -103,7 +103,7 @@ public class DlzFwConfig {
     @ConditionalOnProperty(value = "dlz.cache.anno", havingValue = "true")
     public CacheAspect cacheAspect(ICache cache) {
         if(log.isInfoEnabled()){
-            log.info("dlz.cache.anno:CacheAspect init ...");
+            log.info("init cacheAspect：dlz.cache.anno=true");
         }
         return new CacheAspect(cache);
     }
@@ -117,7 +117,7 @@ public class DlzFwConfig {
     @ConditionalOnMissingBean(name = "redisQueueProviderApiHandler")
     public ApiProxyHandler redisQueueProviderApiHandler() {
         if(log.isInfoEnabled()){
-            log.info("default redisQueueProviderApiHandler init:"+RedisQueueProviderApiHandler.class.getName());
+            log.info("init redisQueueProviderApiHandler:"+RedisQueueProviderApiHandler.class.getName());
         }
         return new RedisQueueProviderApiHandler();
     }
@@ -127,7 +127,7 @@ public class DlzFwConfig {
     @ConditionalOnMissingBean(name = "jedisExecutor")
     public JedisExecutor jedisExecutor(JedisPool jedisPool,IKeyMaker keyMaker) {
         if(log.isInfoEnabled()){
-            log.info("default jedisExecutor init:"+JedisExecutor.class.getName());
+            log.info("init jedisExecutor:"+JedisExecutor.class.getName());
         }
         return new JedisExecutor(jedisPool,keyMaker);
     }
@@ -141,7 +141,7 @@ public class DlzFwConfig {
     @Lazy
     public BootConfig bootConfig() {
         if(log.isInfoEnabled()){
-            log.info("default BootConfig init:"+BootConfig.class.getName());
+            log.info("init BootConfig:"+BootConfig.class.getName());
         }
         return new BootConfig();
     }
@@ -151,7 +151,7 @@ public class DlzFwConfig {
     @ConditionalOnMissingBean(name = "customConfig")
     public ICustomConfig customConfig() {
         if(log.isInfoEnabled()){
-            log.info("default customConfig init :"+ICustomConfig.class.getName());
+            log.info("init customConfig  :"+ICustomConfig.class.getName());
         }
         return new ICustomConfig() {
             @Override

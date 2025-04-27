@@ -157,7 +157,7 @@ public class SqlHolder {
             String sql = clearSql(properties.getSql());
             try {
                 List<ResultMap> mapList = service.getMapList(sql);
-                mapList.forEach(item->addSqlSetting("key."+item.getStr("key"),item.getStr("sql"),true));
+                mapList.forEach(item->addSqlSetting("key."+item.getStr("k"),item.getStr("s"),true));
             }catch (Exception e){
                 log.error(ExceptionUtils.getStackTrace(e));
                 log.warn("取得数据库配置无效：sql="+sql);

@@ -1,9 +1,8 @@
 package com.dlz.comm.util.tree;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import com.dlz.comm.json.JSONMap;
+
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -38,6 +37,59 @@ public class TreeUtil {
 		return items.stream()
 				.filter(item -> item.isRoot() || parentIds.contains(item.getId()))
 				.collect(Collectors.toList());
+	}
+
+
+	/**
+	 * 将节点数组归并为一个森林（多棵树）（填充节点的children域）
+	 * 时间复杂度为O(n^2)
+	 *
+	 * @param items 节点域
+	 * @return 多棵树的根节点集合
+	 */
+	public static List<JSONMap> toTree(List<?> items, String keyId, String keyPid) {
+		return toTree(items, keyId, keyPid,false);
+	}
+
+	/**
+	 * 将节点数组归并为一个森林（多棵树）（填充节点的children域）
+	 * 时间复杂度为O(n^2)
+	 *
+	 * @param items 节点域
+	 * @return 多棵树的根节点集合
+	 */
+	public static List<JSONMap> toTree(List<?> items, String keyId, String keyPid,boolean mkParent) {
+		List<JSONMap> jsonMapStream = items.stream().map(item -> new JSONMap(item)).collect(Collectors.toList());
+		Map<String, JSONMap> nodeMap = jsonMapStream.stream().collect(Collectors.toMap(item->item.getStr(keyId), item->item));
+
+		List<JSONMap> re = new ArrayList<>();
+		if(mkParent){
+			jsonMapStream.forEach(forest -> {
+				String pid = forest.getStr(keyPid,"");
+				if ("".equals(pid)||"0".equals(pid)) {
+					re.add(forest);
+				}else{
+					JSONMap pnode = nodeMap.get(pid);
+					if(pnode == null){
+						pnode = new JSONMap(keyId,pid);
+						nodeMap.put(pid,pnode);
+						re.add(pnode);
+					}
+					pnode.add2List("children",forest);
+				}
+			});
+		}else{
+			jsonMapStream.forEach(forest -> {
+				String pid = forest.getStr(keyPid);
+				JSONMap pnode = nodeMap.get(pid);
+				if (pnode != null) {
+					pnode.add2List("children",forest);
+				} else {
+					re.add(forest);
+				}
+			});
+		}
+		return re;
 	}
 }
 

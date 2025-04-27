@@ -24,11 +24,11 @@ public class DlzDbProperties {
     /**
      * sql路径配置
      **/
-    private List<String> sqllist= Arrays.asList("jar.app.*");
+    private List<String> sqllist= Arrays.asList("jar.sys.*","jar.app.*");
     /**
      * 从数据库中取得sql配置的sql
      **/
-    private String sql= "select sql_key as `key` ,sql_value as `sql`,sql_role as `role` from sys_sql";
+    private String sql= "select sql_key as k ,sql_value as s from sys_sql";
     /**
      * 从数据库中取得sql配置是否开启,默认关闭
      **/
