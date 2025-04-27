@@ -18,7 +18,7 @@ public class FieldReflectionsTest<T> {
 	}
 
 	private  void t(DlzFn<T,?> property){
-		Field field = FieldReflections.getField(property);
+		Field field = FieldReflections.getFn(property).v2;
 		String fieldName = field.getName();
 		System.out.println(fieldName);
 	}

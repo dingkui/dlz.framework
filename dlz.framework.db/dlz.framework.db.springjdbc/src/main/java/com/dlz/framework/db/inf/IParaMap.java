@@ -3,8 +3,8 @@ package com.dlz.framework.db.inf;
 import com.dlz.comm.fn.DlzFn;
 import com.dlz.comm.inf.IChained;
 import com.dlz.comm.json.JSONMap;
-import com.dlz.comm.util.system.FieldReflections;
 import com.dlz.framework.db.enums.ParaTypeEnum;
+import com.dlz.framework.db.holder.BeanInfoHolder;
 import com.dlz.framework.db.util.SqlUtil;
 
 import java.util.Map;
@@ -49,7 +49,7 @@ public interface IParaMap<ME extends IParaMap> extends IChained<ME> {
     }
 
     default <T> ME addPara(DlzFn<T, ?> column, Object value) {
-        return addPara(FieldReflections.getFieldName(column), value);
+        return addPara(BeanInfoHolder.fnName(column), value);
     }
 
     /**

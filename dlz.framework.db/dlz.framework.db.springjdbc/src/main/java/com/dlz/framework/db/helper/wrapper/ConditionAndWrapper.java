@@ -1,7 +1,7 @@
 package com.dlz.framework.db.helper.wrapper;
 
 import com.dlz.comm.fn.DlzFn;
-import com.dlz.comm.util.system.FieldReflections;
+import com.dlz.framework.db.holder.BeanInfoHolder;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -41,7 +41,7 @@ public class ConditionAndWrapper extends ConditionWrapper {
 	 * @return ConditionWrapper
 	 */
 	public <T, R> ConditionAndWrapper eq(DlzFn<T, R> column, Object params) {
-		super.eq(FieldReflections.getFieldName(column), params);
+		super.eq(BeanInfoHolder.fnName(column), params);
 		return this;
 	}
 
@@ -65,7 +65,7 @@ public class ConditionAndWrapper extends ConditionWrapper {
 	 * @return ConditionAndWrapper
 	 */
 	public <T, R> ConditionAndWrapper ne(DlzFn<T, R> column, Object params) {
-		super.ne(FieldReflections.getFieldName(column), params);
+		super.ne(BeanInfoHolder.fnName(column), params);
 		return this;
 	}
 
@@ -89,7 +89,7 @@ public class ConditionAndWrapper extends ConditionWrapper {
 	 * @return ConditionAndWrapper
 	 */
 	public <T, R> ConditionAndWrapper lt(DlzFn<T, R> column, Object params) {
-		super.lt(FieldReflections.getFieldName(column), params);
+		super.lt(BeanInfoHolder.fnName(column), params);
 		return this;
 	}
 
@@ -113,7 +113,7 @@ public class ConditionAndWrapper extends ConditionWrapper {
 	 * @return ConditionAndWrapper
 	 */
 	public <T, R> ConditionAndWrapper lte(DlzFn<T, R> column, Object params) {
-		super.lte(FieldReflections.getFieldName(column), params);
+		super.lte(BeanInfoHolder.fnName(column), params);
 		return this;
 	}
 
@@ -137,7 +137,7 @@ public class ConditionAndWrapper extends ConditionWrapper {
 	 * @return ConditionAndWrapper
 	 */
 	public <T, R> ConditionAndWrapper gt(DlzFn<T, R> column, Object params) {
-		super.gt(FieldReflections.getFieldName(column), params);
+		super.gt(BeanInfoHolder.fnName(column), params);
 		return this;
 	}
 
@@ -161,7 +161,7 @@ public class ConditionAndWrapper extends ConditionWrapper {
 	 * @return ConditionAndWrapper
 	 */
 	public <T, R> ConditionAndWrapper gte(DlzFn<T, R> column, Object params) {
-		super.gte(FieldReflections.getFieldName(column), params);
+		super.gte(BeanInfoHolder.fnName(column), params);
 		return this;
 	}
 
@@ -185,7 +185,7 @@ public class ConditionAndWrapper extends ConditionWrapper {
 	 * @return ConditionAndWrapper
 	 */
 	public <T, R> ConditionAndWrapper like(DlzFn<T, R> column, String params) {
-		super.like(FieldReflections.getFieldName(column), params);
+		super.like(BeanInfoHolder.fnName(column), params);
 		return this;
 	}
 
@@ -209,7 +209,7 @@ public class ConditionAndWrapper extends ConditionWrapper {
 	 * @return ConditionAndWrapper
 	 */
 	public <T, R> ConditionAndWrapper in(DlzFn<T, R> column, Collection<?> params) {
-		super.in(FieldReflections.getFieldName(column), params);
+		super.in(BeanInfoHolder.fnName(column), params);
 		return this;
 	}
 
@@ -233,7 +233,7 @@ public class ConditionAndWrapper extends ConditionWrapper {
 	 * @return ConditionAndWrapper
 	 */
 	public <T, R> ConditionAndWrapper in(DlzFn<T, R> column, Object[] params) {
-		super.in(FieldReflections.getFieldName(column), Arrays.asList(params));
+		super.in(BeanInfoHolder.fnName(column), Arrays.asList(params));
 		return this;
 	}
 
@@ -257,7 +257,7 @@ public class ConditionAndWrapper extends ConditionWrapper {
 	 * @return ConditionAndWrapper
 	 */
 	public <T, R> ConditionAndWrapper nin(DlzFn<T, R> column, Collection<?> params) {
-		super.nin(FieldReflections.getFieldName(column), params);
+		super.nin(BeanInfoHolder.fnName(column), params);
 		return this;
 	}
 
@@ -281,7 +281,7 @@ public class ConditionAndWrapper extends ConditionWrapper {
 	 * @return ConditionAndWrapper
 	 */
 	public <T, R> ConditionAndWrapper nin(DlzFn<T, R> column, Object[] params) {
-		super.nin(FieldReflections.getFieldName(column), Arrays.asList(params));
+		super.nin(BeanInfoHolder.fnName(column), Arrays.asList(params));
 		return this;
 	}
 
@@ -305,7 +305,7 @@ public class ConditionAndWrapper extends ConditionWrapper {
 	 * @return ConditionAndWrapper
 	 */
 	public <T, R> ConditionAndWrapper isNull(DlzFn<T, R> column) {
-		super.isNull(FieldReflections.getFieldName(column));
+		super.isNull(BeanInfoHolder.fnName(column));
 		return this;
 	}
 
@@ -329,7 +329,7 @@ public class ConditionAndWrapper extends ConditionWrapper {
 	 * @return ConditionAndWrapper
 	 */
 	public <T, R> ConditionAndWrapper isNotNull(DlzFn<T, R> column) {
-		super.isNotNull(FieldReflections.getFieldName(column));
+		super.isNotNull(BeanInfoHolder.fnName(column));
 		return this;
 	}
 }

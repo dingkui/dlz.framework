@@ -4,6 +4,7 @@ import com.dlz.comm.cache.CacheMap;
 import com.dlz.comm.exception.SystemException;
 import com.dlz.comm.fn.DlzFn;
 import com.dlz.comm.util.ExceptionUtils;
+import com.dlz.comm.util.VAL;
 import com.dlz.comm.util.ValUtil;
 import lombok.extern.slf4j.Slf4j;
 
@@ -19,7 +20,7 @@ import java.util.stream.Collectors;
 @Slf4j
 public class FieldReflections {
     private static CacheMap<Class<?>, Map<String, Field>> classFieldCache =new CacheMap<>();
-    private static CacheMap<DlzFn,Field> fnFieldCache = new CacheMap<>();
+    private static CacheMap<DlzFn,VAL<Class<?>,Field>> fnFieldCache = new CacheMap<>();
     /**
      * 直接读取对象属性值, 无视private/protected修饰符, 不经过getter函数.
      */
@@ -144,8 +145,8 @@ public class FieldReflections {
         return getFieldsMap(beanClass).values().stream().collect(Collectors.toList());
     }
 
-    public static Field getField(DlzFn<?, ?> function) {
-        return fnFieldCache.getAndSet(function, ()->{
+    public static <T> VAL<Class<?>,Field> getFn(DlzFn<T, ?> function) {
+        return fnFieldCache.getAndSet(function, () -> {
             String fieldName = null;
             try {
                 // 第1步 获取SerializedLambda
@@ -164,21 +165,18 @@ public class FieldReflections {
                     throw new IllegalArgumentException(implMethodName + "不是Getter方法引用");
                 }
                 // 第3步 获取的Class是字符串，并且包名是“/”分割，需要替换成“.”，才能获取到对应的Class对象
-                String declaredClass = serializedLambda.getImplClass().replace("/", ".");
+//            String declaredClass = serializedLambda.getImplClass().replace("/", ".");
 //                Class<?> aClass = Class.forName(declaredClass, false, ClassUtils.getDefaultClassLoader());
+                String declaredClass = serializedLambda.getInstantiatedMethodType().replaceAll("\\(L(.*);\\).*", "$1").replace("/", ".");
                 Class<?> aClass = Class.forName(declaredClass);
 
                 // 第4步 Spring 中的反射工具类获取Class中定义的Field
-                return getField(aClass, fieldName,false);
+                return VAL.of(aClass, getField(aClass, fieldName, false));
             } catch (Exception e) {
                 log.error(ExceptionUtils.getStackTrace(e));
             }
             throw new NoSuchFieldError(fieldName);
         });
-    }
-
-    public static <T> String getFieldName(DlzFn<T,?> property) {
-        return getField(property).getName();
     }
     /**
      * 改变private/protected的成员变量为public，尽量不调用实际改动的语句，避免JDK的SecurityManager抱怨。

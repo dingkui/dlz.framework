@@ -295,7 +295,7 @@ public abstract class SqlHelper {
      *
      */
     public <T, R> void addCountById(String id, DlzFn<T, R> property, Long count, Class<?> clazz) {
-        addCountById(id, FieldReflections.getFieldName(property), count, clazz);
+        addCountById(id, BeanInfoHolder.fnName(property), count, clazz);
     }
 
     /**
@@ -477,7 +477,7 @@ public abstract class SqlHelper {
      * 根据条件查找某个属性
      */
     public <T, R> List<T> findPropertiesByQuery(ConditionWrapper conditionWrapper, Class<?> documentClass, DlzFn<T, R> property, Class<T> propertyClass) {
-        return findPropertiesByQuery(conditionWrapper, documentClass, FieldReflections.getFieldName(property), propertyClass);
+        return findPropertiesByQuery(conditionWrapper, documentClass, BeanInfoHolder.fnName(property), propertyClass);
     }
 
     /**
@@ -491,7 +491,7 @@ public abstract class SqlHelper {
      * 根据条件查找某个属性
      */
     public <T, R> List<String> findPropertiesByQuery(ConditionWrapper conditionWrapper, Class<?> documentClass, DlzFn<T, R> property) {
-        return findPropertiesByQuery(conditionWrapper, documentClass, FieldReflections.getFieldName(property), String.class);
+        return findPropertiesByQuery(conditionWrapper, documentClass, BeanInfoHolder.fnName(property), String.class);
     }
 
     /**
@@ -510,7 +510,7 @@ public abstract class SqlHelper {
      * 根据id查找某个属性
      */
     public <T, R> List<String> findPropertiesByIds(Collection<String> ids, Class<?> documentClass, DlzFn<T, R> property) {
-        return findPropertiesByIds(ids, documentClass, FieldReflections.getFieldName(property));
+        return findPropertiesByIds(ids, documentClass, BeanInfoHolder.fnName(property));
     }
 
     /**
@@ -524,7 +524,7 @@ public abstract class SqlHelper {
      * 根据id查找某个属性
      */
     public <T, R> List<String> findPropertiesByIds(String[] ids, Class<?> documentClass, DlzFn<T, R> property) {
-        return findPropertiesByIds(Arrays.asList(ids), documentClass, FieldReflections.getFieldName(property));
+        return findPropertiesByIds(Arrays.asList(ids), documentClass, BeanInfoHolder.fnName(property));
     }
 
     /**

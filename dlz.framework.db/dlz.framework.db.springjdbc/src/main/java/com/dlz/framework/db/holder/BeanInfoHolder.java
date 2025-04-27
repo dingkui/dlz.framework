@@ -3,7 +3,6 @@ package com.dlz.framework.db.holder;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.dlz.comm.cache.CacheMap;
-import com.dlz.comm.exception.SystemException;
 import com.dlz.comm.fn.DlzFn;
 import com.dlz.comm.util.StringUtils;
 import com.dlz.comm.util.VAL;
@@ -21,20 +20,23 @@ import java.util.stream.Collectors;
 
 /**
  * bean与数据库表信息保持器
+ *
  * @author dk
  */
 @Slf4j
 public class BeanInfoHolder {
     private static final CacheMap<Class<?>, String> tableNameCache = new CacheMap<>();
-    private static final CacheMap<String, List<Field>> tableFieldCache = new CacheMap<>();
-    private static final CacheMap<DlzFn, VAL<String, String>> fnCache = new CacheMap<>();
     private static final CacheMap<Field, String> columnNameCache = new CacheMap<>();
+    private static final CacheMap<String, List<Field>> tableFieldCache = new CacheMap<>();
     private static final CacheMap<String, HashMap<String, Integer>> tableColumnsInfoCahe = new CacheMap<>();
+
     public static void clearAll() {
         tableColumnsInfoCahe.clear();
     }
+
     /**
      * （带缓存）取得字段对应的数据库字段名
+     *
      * @param field
      * @return
      */
@@ -50,18 +52,20 @@ public class BeanInfoHolder {
                 }
             }
             final String columnName = getColumnName(field.getName());
-            if(log.isDebugEnabled()){
-                log.debug("字段：{} 对应数据库字段：{}", field.getDeclaringClass().getName() + "." +field.getName(), columnName);
+            if (log.isDebugEnabled()) {
+                log.debug("字段：{} 对应数据库字段：{}", field.getDeclaringClass().getName() + "." + field.getName(), columnName);
             }
             return columnName;
         });
     }
+
     /**
      * 判断字段是否存在
-     * @param tableName 表名
+     *
+     * @param tableName  表名
      * @param columnName 字段名：支持bean字段名，数据库字段名
-     * @author dk 2018-09-28
      * @return
+     * @author dk 2018-09-28
      */
     public static boolean isColumnExists(String tableName, String columnName) {
         Map<String, Integer> map = getTableColumnsInfo(tableName);
@@ -70,8 +74,10 @@ public class BeanInfoHolder {
         }
         return map.containsKey(DbConvertUtil.str2DbClumn(columnName.replaceAll("`", "")).toUpperCase());
     }
+
     /**
      * bean字段名转换成数据库字段名
+     *
      * @param field
      * @return
      */
@@ -81,6 +87,7 @@ public class BeanInfoHolder {
 
     /**
      * 根据bean取得表注释
+     *
      * @param clazz
      * @return
      */
@@ -94,6 +101,7 @@ public class BeanInfoHolder {
 
     /**
      * 根据bean字段取得字段注释
+     *
      * @param field
      * @return
      */
@@ -107,6 +115,7 @@ public class BeanInfoHolder {
 
     /**
      * （带缓存）根据bean取得表名
+     *
      * @param clazz
      * @return
      */
@@ -121,7 +130,7 @@ public class BeanInfoHolder {
                 }
             }
             if (tName == null) {
-                tName = getColumnName(clazz.getSimpleName()).replaceAll("^_","");
+                tName = getColumnName(clazz.getSimpleName()).replaceAll("^_", "");
             }
             return tName;
         });
@@ -129,17 +138,19 @@ public class BeanInfoHolder {
 
     /**
      * （带缓存）取得数据库表字段信息
+     *
      * @param tableName
      * @return
      */
     public static HashMap<String, Integer> getTableColumnsInfo(String tableName) {
         return tableColumnsInfoCahe.getAndSet(tableName, () ->
-            DBHolder.getService().getDao().getTableColumnsInfo(tableName)
+                DBHolder.getService().getDao().getTableColumnsInfo(tableName)
         );
     }
 
     /**
      * （带缓存）根据bean取得数据库对应的字段信息，如果字段在表中不存在，则不返回
+     *
      * @param beanClass
      * @return
      */
@@ -153,40 +164,14 @@ public class BeanInfoHolder {
         });
     }
 
-
-    /**
-     * （带缓存）根据lamda 表达式取得数据库字段名和表名
-     * @param column
-     * @param <T>
-     * @return val v1:数据库字段名 v2:表名
-     */
-    public static <T> VAL<String, String> fnInfo(DlzFn<T, ?> column) {
-        return fnCache.getAndSet(column, () -> {
-            Field field = FieldReflections.getField(column);
-            if (column == null) {
-                throw new SystemException("字段无效");
-            }
-            return VAL.of(getColumnName(field), getTableName(field.getDeclaringClass()));
-        });
-    }
-
     /**
      * 根据lamda 表达式取得数据库字段名
+     *
      * @param column
      * @param <T>
      * @return
      */
     public static <T> String fnName(DlzFn<T, ?> column) {
-        return fnInfo(column).v1;
-    }
-
-    /**
-     * （带缓存）根据lamda 表达式取得数据库表名
-     * @param column
-     * @param <T>
-     * @return
-     */
-    public static <T> String fnTableName(DlzFn<T, ?> column) {
-        return fnInfo(column).v2;
+        return getColumnName(FieldReflections.getFn(column).v2);
     }
 }

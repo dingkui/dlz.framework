@@ -57,12 +57,8 @@ public class DB {
     }
 
     public static <T> MakerQuery select(DlzFn<T, ?> column) {
-        Field field = FieldReflections.getField(column);
-        if (field == null) {
-            throw new SystemException("字段无效");
-        }
-        final VAL<String, String> val = BeanInfoHolder.fnInfo(column);
-        return new MakerQuery(val.v2).select(val.v1);
+        VAL<Class<?>, Field> infos = FieldReflections.getFn(column);
+        return new MakerQuery(BeanInfoHolder.getTableName(infos.v1)).select(BeanInfoHolder.getColumnName(infos.v2));
     }
 
     public static <T> WrapperQuery<T> query(Class<T> re, Map<String, Object> query, Set<String> exclude, Page page) {

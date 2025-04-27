@@ -1,7 +1,6 @@
 package com.dlz.framework.db.modal.para;
 
 import com.dlz.comm.fn.DlzFn;
-import com.dlz.comm.util.system.FieldReflections;
 import com.dlz.framework.db.holder.BeanInfoHolder;
 import com.dlz.framework.db.inf.IOperatorInsert;
 import com.dlz.framework.db.util.DbConvertUtil;
@@ -30,7 +29,7 @@ public class MakerInsert extends AMaker implements IOperatorInsert {
     }
 
     public <T> void value(DlzFn<T, ?> column, Object value) {
-        value(FieldReflections.getFieldName(column), value);
+        value(BeanInfoHolder.fnName(column), value);
     }
 
     public MakerInsert value(String key, Object value) {
