@@ -17,19 +17,12 @@ import java.io.Serializable;
  * @author dk
  */
 @Data
-@TableName("sys_role")
 @ApiModel(value = "Role对象", description = "Role对象")
 public class Role extends BaseEntity {
 
 	private static final long serialVersionUID = 1L;
 
-	/**
-	 * 主键
-	 */
-	@JsonSerialize(using = ToStringSerializer.class)
-	@ApiModelProperty(value = "主键")
-	@TableId(value = "id")
-	private Long id;
+
 
 	/**
 	 * 父主键

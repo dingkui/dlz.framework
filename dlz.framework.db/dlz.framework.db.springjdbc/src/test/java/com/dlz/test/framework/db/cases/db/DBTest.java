@@ -30,7 +30,7 @@ public class DBTest extends SpingDbBaseTest{
     }
     @Test
     public void dbSqlTest21() {
-        final MakerQuery eq = DB.select1(Role::getId)
+        final WrapperQuery eq = DB.select(Role::getId)
                 .in(Role::getId, "a11,x22")
                 .eq(Role::getIsDeleted, 0);
         showSql(eq,"dbSqlTest2","select ROLE_ALIAS from sys_role t where ID in ('a11','x22') and IS_DELETED = 0");
