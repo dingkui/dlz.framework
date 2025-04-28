@@ -3,16 +3,11 @@ package com.dlz.framework.db.modal;
 import com.dlz.comm.exception.SystemException;
 import com.dlz.comm.fn.DlzFn;
 import com.dlz.comm.util.StringUtils;
-import com.dlz.comm.util.VAL;
 import com.dlz.comm.util.system.FieldReflections;
-import com.dlz.framework.db.holder.BeanInfoHolder;
 import com.dlz.framework.db.modal.para.*;
-import com.dlz.framework.db.modal.result.Page;
 
 import java.lang.reflect.Field;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
 import java.util.function.Function;
 
 public class DB {
@@ -56,24 +51,16 @@ public class DB {
         return new MakerQuery(tableName);
     }
 
-    public static <T> WrapperQuery<T> select(DlzFn<T, ?> column) {
-        VAL<Class<?>, Field> infos = FieldReflections.getFn(column);
-        return WrapperQuery.wrapper((Class<T>)infos.v1).select(BeanInfoHolder.getColumnName(infos.v2));
+//    public static <T> WrapperQuery<T> select(DlzFn<T, ?> column) {
+//        VAL<Class<?>, Field> infos = FieldReflections.getFn(column);
+//        return WrapperQuery.wrapper((Class<T>)infos.v1).select(BeanInfoHolder.getColumnName(infos.v2));
+//    }
+    public static <T> WrapperQuery<T> select(Class<T> re, DlzFn<T, ?>... column) {
+        return WrapperQuery.wrapper(re).select(column);
     }
-
-    public static <T> WrapperQuery<T> query(Class<T> re, Map<String, Object> query, Set<String> exclude, Page page) {
-        WrapperQuery<T> qw = WrapperQuery.wrapper(re).auto(query, exclude);
-        return page == null ? qw : qw.page(page);
-    }
-
     public static <T> WrapperQuery<T> query(Class<T> re) {
         return WrapperQuery.wrapper(re);
     }
-
-    public static <T> WrapperQuery<T> query(Map<String, Object> query, Class<T> re) {
-        return WrapperQuery.wrapper(re).auto(query);
-    }
-
     public static <T> WrapperQuery<T> query(T contion) {
         return WrapperQuery.wrapper(contion);
     }
@@ -89,11 +76,11 @@ public class DB {
     public static <T> WrapperInsert<T> insert(T bean) {
         return WrapperInsert.wrapper(bean);
     }
+    public static <T> int save(T bean) {
+        return insert(bean).excute();
+    }
     public static <T> boolean saveBatch(List<T> bean) {
-        if(bean.size()>0){
-            return  WrapperInsert.wrapper(bean.get(0)).batch(bean);
-        }
-        return false;
+        return saveBatch(bean,1000);
     }
     public static <T> boolean saveBatch(List<T> bean, int batchSize) {
         if(bean.size()>0){
@@ -123,10 +110,10 @@ public class DB {
         return DB.update(obj, name->name.equalsIgnoreCase(idName)).eq(idName,id).excute();
     }
     public static <T> int insertOrUpdate(T obj){
-        return insertOrUpdate(obj,"id");
+        return insertOrUpdate(obj,"ID");
     }
     public static <T> int updateById(T obj){
-        return updateById(obj,"id");
+        return updateById(obj,"ID");
     }
     public static <T> int updateById(T obj,String idName){
         final Object id = FieldReflections.getValue(obj, idName, true);
@@ -142,10 +129,10 @@ public class DB {
         return DB.query(c).eq(idName,id).queryBean();
     }
     public static <T> T getById(Class<T> c,Object id){
-        return getById(c,id,"id");
+        return getById(c,id,"ID");
     }
     public static <T> int removeByIds(Class<T> c,String ids){
-        return removeByIds(c,ids,"id");
+        return removeByIds(c,ids,"ID");
     }
     public static <T> int removeByIds(Class<T> c,String ids,String idName){
         if(StringUtils.isEmpty(ids)){

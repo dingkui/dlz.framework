@@ -58,8 +58,8 @@ public class CommServiceQwTest  extends SpingDbBaseTest {
 
     @Test
     public void getBeanList2() {
-        DB.select(Dict::getA2).eq("xx",1).queryStr();
-        DB.select(Dict::getA2).eq(Dict::getA7,1).queryStrList();
+        DB.select(Dict.class,Dict::getA2).eq("xx",1).queryStr();
+        DB.select(Dict.class,Dict::getA2).eq(Dict::getA7,1).queryStrList();
         DB.query(Dict.class).eq(Dict::getA2,1).queryBean();
 
         DB.insert(new Dict()).excute();

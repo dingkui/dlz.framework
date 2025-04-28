@@ -1,6 +1,5 @@
 package com.dlz.test.framework.db.entity;
 
-import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableLogic;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
@@ -9,21 +8,17 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
-import java.io.Serializable;
-
 /**
  * 实体类
  *
  * @author dk
  */
 @Data
+@TableName("sys_role")
 @ApiModel(value = "Role对象", description = "Role对象")
 public class Role extends BaseEntity {
 
 	private static final long serialVersionUID = 1L;
-
-
-
 	/**
 	 * 父主键
 	 */

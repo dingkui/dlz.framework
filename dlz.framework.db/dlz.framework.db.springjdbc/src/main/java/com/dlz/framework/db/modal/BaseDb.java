@@ -33,7 +33,7 @@ public abstract class BaseDb<ME extends BaseDb> implements Serializable {
         if(id==null){
             throw new SystemException("id不能为空");
         }
-        return DB.update(this).eq("id", id).excute()>0;
+        return DB.updateById(this)>0;
     }
     public boolean insertOrUpdate(){
         Long id = getId();
@@ -44,7 +44,7 @@ public abstract class BaseDb<ME extends BaseDb> implements Serializable {
             }
             return aLong >0;
         }
-        return DB.update(this).eq("id", id).excute()>0;
+        return DB.updateById(this)>0;
     }
     public boolean insertOrUpdate(Supplier<Long> idMaker, Consumer<ME> update){
         Long id = getId();
@@ -54,9 +54,9 @@ public abstract class BaseDb<ME extends BaseDb> implements Serializable {
                 if(update!=null){
                     update.accept((ME)this);
                 }
-                return DB.update(this).eq("id", id).excute()>0;
+                return DB.updateById(this)>0;
             } else {
-                return DB.insert(getClass()).excute()>0;
+                return DB.insert(this).excute()>0;
             }
         } else {
             if(idMaker!=null){

@@ -1,7 +1,6 @@
 package com.dlz.test.framework.db.cases.helper;
 
 import com.dlz.comm.fn.DlzFn;
-import com.dlz.comm.util.VAL;
 import com.dlz.framework.db.holder.BeanInfoHolder;
 import com.dlz.test.framework.db.entity.Dict;
 import org.junit.Test;

@@ -1,7 +1,10 @@
 package com.dlz.test.framework.db.cases.db;
 
 import com.dlz.framework.db.modal.DB;
-import com.dlz.framework.db.modal.para.*;
+import com.dlz.framework.db.modal.para.WrapperDelete;
+import com.dlz.framework.db.modal.para.WrapperInsert;
+import com.dlz.framework.db.modal.para.WrapperQuery;
+import com.dlz.framework.db.modal.para.WrapperUpdate;
 import com.dlz.test.framework.db.config.SpingDbBaseTest;
 import com.dlz.test.framework.db.entity.SysSql;
 import org.junit.Test;
@@ -30,7 +33,7 @@ public class WrapperTest extends SpingDbBaseTest {
         dict.setId(123L);
         dict.setName("123L");
         WrapperUpdate<SysSql> eq = DB.update(dict).eq(SysSql::getId, 123);
-        showSql(eq,"updateWrapperTest1","update SYS_SQL t set NAME='123L' where ID = 123");
+        showSql(eq,"updateWrapperTest1","update SYS_SQL t set NAME='123L' where ID = 123 and IS_DELETED = 0");
     }
     @Test
     public void updateWrapperTest2() {
@@ -38,14 +41,14 @@ public class WrapperTest extends SpingDbBaseTest {
         dict.setId(123L);
         dict.setName("123L");
         WrapperUpdate<SysSql> eq = DB.update(dict);
-        showSql(eq,"updateWrapperTest2","update SYS_SQL t set NAME='123L' where false");
+        showSql(eq,"updateWrapperTest2","update SYS_SQL t set NAME='123L' where IS_DELETED = 0");
     }
     @Test
     public void deleteWrapperTest1() {
         SysSql dict = new SysSql();
         dict.setId(123L);
         WrapperDelete<SysSql> delete = DB.delete(SysSql.class).eq(SysSql::getId, 123);
-        showSql(delete,"deleteWrapperTest1","delete from SYS_SQL where ID = 123");
+        showSql(delete,"deleteWrapperTest1","delete from SYS_SQL where ID = 123 and IS_DELETED = 0");
     }
     //未输入条件删除条件为false
     @Test
@@ -53,27 +56,27 @@ public class WrapperTest extends SpingDbBaseTest {
         SysSql dict = new SysSql();
         dict.setId(123L);
         WrapperDelete<SysSql> delete = DB.delete(SysSql.class);
-        showSql(delete,"deleteWrapperTest2","delete from SYS_SQL where false");
+        showSql(delete,"deleteWrapperTest2","delete from SYS_SQL where IS_DELETED = 0");
     }
     @Test
     public void searchWrapperTest1() {
         SysSql dict = new SysSql();
         dict.setId(123L);
-        WrapperQuery select = DB.select(SysSql::getId);
-        showSql(select,"searchWrapperTest1","select ID from SYS_SQL t");
+        WrapperQuery select = DB.select(SysSql.class,SysSql::getId);
+        showSql(select,"searchWrapperTest1","select ID from SYS_SQL t where IS_DELETED = 0");
     }
     @Test
     public void searchWrapperTest2() {
         SysSql dict = new SysSql();
         dict.setId(123L);
         WrapperQuery<SysSql> query = DB.query(SysSql.class);
-        showSql(query,"searchWrapperTest2","select * from SYS_SQL t");
+        showSql(query,"searchWrapperTest2","select * from SYS_SQL t where IS_DELETED = 0");
     }
     @Test
     public void searchWrapperTest3() {
         SysSql dict = new SysSql();
         dict.setId(123L);
         WrapperQuery<SysSql> query = DB.query(SysSql.class).eq(SysSql::getId, 123);
-        showSql(query,"searchWrapperTest3","select * from SYS_SQL t where ID = 123");
+        showSql(query,"searchWrapperTest3","select * from SYS_SQL t where ID = 123 and IS_DELETED = 0");
     }
 }

@@ -20,7 +20,7 @@ public class SearchParaMapTest  extends SpingDbBaseTest{
         paraMap.addPara(Dict::getA2, "1");
         JSONMap param = new JSONMap("id","sql:id");
         paraMap.where(Condition.where().sql("[id=#{id}]",param));
-        showSql(paraMap,"conditionSqlTest1","select * from t_b_dict t where (id='sql:id')");
+        showSql(paraMap,"conditionSqlTest1","select * from t_b_dict t where (id='sql:id') and IS_DELETED = 0");
     }
     @Test
     public void conditionSqlTest2_1() {
@@ -28,7 +28,7 @@ public class SearchParaMapTest  extends SpingDbBaseTest{
         paraMap.addPara(Dict::getA2, "1");
         JSONMap param = new JSONMap("id","sql:id");
         paraMap.where(Condition.where().sql("[id=#{id2}]",param));
-        showSql(paraMap,"conditionSqlTest2_1","select * from t_b_dict t where false");
+        showSql(paraMap,"conditionSqlTest2_1","select * from t_b_dict t where IS_DELETED = 0");
     }
     @Test
     public void conditionSqlTest2_2() {
@@ -37,7 +37,7 @@ public class SearchParaMapTest  extends SpingDbBaseTest{
         paraMap.setAllowFullQuery(true);
         JSONMap param = new JSONMap("id","sql:id");
         paraMap.where(Condition.where().sql("[id=#{id2}]",param));
-        showSql(paraMap,"conditionSqlTest2_2","select * from t_b_dict t");
+        showSql(paraMap,"conditionSqlTest2_2","select * from t_b_dict t where IS_DELETED = 0");
     }
     @Test
     public void conditionSqlTest3() {
@@ -45,16 +45,16 @@ public class SearchParaMapTest  extends SpingDbBaseTest{
         paraMap.addPara(Dict::getA2, "1");
         JSONMap param = new JSONMap("id","sql:id");
         paraMap.where(Condition.where().sql("[id=#{id2}]",param));
-        showSql(paraMap,"conditionSqlTest3","select xx from t_b_dict t where false");
+        showSql(paraMap,"conditionSqlTest3","select xx from t_b_dict t where IS_DELETED = 0");
     }
     @Test
     public void conditionTest1() {
         final MakerQuery paraMap = DB.select("t_b_dict")
                 .addPara(Dict::getA2, "1")
                 .setAllowFullQuery(true);
-        showSql(paraMap,"conditionTest1","select * from t_b_dict t");
+        showSql(paraMap,"conditionTest1","select * from t_b_dict t where IS_DELETED = 0");
     }
-    final String reult_1 = "select * from t_b_dict t where XXSS <> '3' and A4 = '2' and A6 <= '10' and (A6 = '10' or A6 = '10') and (A6 = '10' and A6 = '10') and (exists (select 1 from dual where t_b_dict where 1=999) )";
+    final String reult_1 = "select * from t_b_dict t where XXSS <> '3' and A4 = '2' and A6 <= '10' and (A6 = '10' or A6 = '10') and (A6 = '10' and A6 = '10') and (exists (select 1 from dual where t_b_dict where 1=999) ) and IS_DELETED = 0";
     @Test
     public void conditionWhereTest1_1() {
         MakerQuery paraMap = new MakerQuery("t_b_dict");
@@ -84,7 +84,7 @@ public class SearchParaMapTest  extends SpingDbBaseTest{
         showSql(paraMap,"conditionWhereTest1_2", reult_1);
 
     }
-    String reult_2="select * from t_b_dict t where (XXSS in (3,4,5,6) or XXSS in ('31','111','5','6') or XXSS in (1) or XXSS in (SELECT 2 FROM DUAL))";
+    String reult_2="select * from t_b_dict t where (XXSS in (3,4,5,6) or XXSS in ('31','111','5','6') or XXSS in (1) or XXSS in (SELECT 2 FROM DUAL)) and IS_DELETED = 0";
     @Test
     public void conditionWhereTest2_1() {
         MakerQuery paraMap = DB.select("t_b_dict");
