@@ -1,8 +1,7 @@
 package com.dlz.test.framework.db.entity;
 
-import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.TableLogic;
-import com.baomidou.mybatisplus.annotation.TableName;
+import com.dlz.framework.db.annotation.TableId;
+import com.dlz.framework.db.annotation.TableName;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 import io.swagger.annotations.ApiModel;
@@ -102,7 +101,6 @@ public class Menu implements Serializable {
 	/**
 	 * 是否已删除
 	 */
-	@TableLogic
 	@ApiModelProperty(value = "是否已删除")
 	private Integer isDeleted;
 

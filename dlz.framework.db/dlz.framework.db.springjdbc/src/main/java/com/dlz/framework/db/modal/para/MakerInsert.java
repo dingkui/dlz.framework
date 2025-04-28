@@ -33,7 +33,7 @@ public class MakerInsert extends AMaker implements IOperatorInsert {
     }
 
     public MakerInsert value(String key, Object value) {
-        String paraName = DbConvertUtil.str2DbClumn(key);
+        String paraName = DbConvertUtil.toDbColumnNames(key);
         if (!BeanInfoHolder.isColumnExists(getTableName(),paraName)) {
             log.warn("column is not exists:" + getTableName() + "." + paraName);
             return this;

@@ -1,6 +1,6 @@
 package com.dlz.framework.db.page;
 
-import com.baomidou.mybatisplus.annotation.TableName;
+import com.dlz.framework.db.annotation.TableName;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.dlz.comm.util.ValUtil;
 

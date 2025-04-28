@@ -1,11 +1,12 @@
 package com.dlz.framework.db.holder;
 
-import com.baomidou.mybatisplus.annotation.TableField;
-import com.baomidou.mybatisplus.annotation.TableName;
 import com.dlz.comm.cache.CacheMap;
 import com.dlz.comm.fn.DlzFn;
 import com.dlz.comm.util.StringUtils;
 import com.dlz.comm.util.system.FieldReflections;
+import com.dlz.framework.db.annotation.TableField;
+import com.dlz.framework.db.annotation.TableId;
+import com.dlz.framework.db.annotation.TableName;
 import com.dlz.framework.db.util.DbConvertUtil;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -41,6 +42,14 @@ public class BeanInfoHolder {
      */
     public static String getColumnName(Field field) {
         return columnNameCache.getAndSet(field, () -> {
+            final TableId annotation = field.getAnnotation(TableId.class);
+            if (annotation != null ) {
+                if(!annotation.value().isEmpty()){
+                    return annotation.value();
+                }
+                return getColumnName(field.getName());
+            }
+
             TableField name = field.getAnnotation(TableField.class);
             if (name != null) {
                 if (!name.exist()) {
@@ -71,7 +80,7 @@ public class BeanInfoHolder {
         if (map == null) {
             return false;
         }
-        return map.containsKey(DbConvertUtil.str2DbClumn(columnName.replaceAll("`", "")).toUpperCase());
+        return map.containsKey(DbConvertUtil.toDbColumnNames(columnName.replaceAll("`", "")).toUpperCase());
     }
 
     /**
@@ -81,7 +90,7 @@ public class BeanInfoHolder {
      * @return
      */
     public static String getColumnName(String field) {
-        return DbConvertUtil.str2Clumn(field);
+        return DbConvertUtil.toDbColumnName(field);
     }
 
     /**
@@ -122,7 +131,6 @@ public class BeanInfoHolder {
         return tableNameCache.getAndSet(clazz, () -> {
             TableName name = clazz.getAnnotation(TableName.class);
             String tName = null;
-            String schema = null;
             if (name != null) {
                 if (name.value().length() > 0) {
                     tName = name.value();

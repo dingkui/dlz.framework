@@ -9,7 +9,6 @@ import com.dlz.comm.util.system.ConvertUtil;
 import com.dlz.comm.util.system.FieldReflections;
 import com.dlz.framework.db.dao.IDlzDao;
 import com.dlz.framework.db.helper.bean.TableInfo;
-import com.dlz.framework.db.helper.bean.Update;
 import com.dlz.framework.db.helper.wrapper.ConditionAndWrapper;
 import com.dlz.framework.db.helper.wrapper.ConditionWrapper;
 import com.dlz.framework.db.holder.BeanInfoHolder;
@@ -256,29 +255,6 @@ public abstract class SqlHelper {
         DBHolder.doDao(w->w.batchUpdate(sql, paramValues));
     }
 
-
-    /**
-     * 批量更新
-     */
-    public void updateMulti(ConditionWrapper conditionWrapper, Update update, Class<?> clazz) {
-        if (update == null || update.getSets().size() == 0) {
-            return;
-        }
-        List<String> fieldsPart = new ArrayList<String>();
-        List<String> paramValues = new ArrayList<String>();
-        for (Map.Entry<String, Object> entry : update.getSets().entrySet()) {
-            if (entry.getKey() != null && entry.getValue() != null) {
-                fieldsPart.add("`" + BeanInfoHolder.getColumnName(entry.getKey()) + "`=?");
-                paramValues.add(entry.getValue().toString());
-            }
-        }
-
-        String sql = "UPDATE `" + BeanInfoHolder.getTableName(clazz) + "` SET " + StringUtils.join(",", fieldsPart);
-        if (conditionWrapper != null && conditionWrapper.notEmpty()) {
-            sql += " WHERE " + conditionWrapper.build(paramValues);
-        }
-        dao.update(sql, paramValues.toArray());
-    }
 
     /**
      * 累加某一个字段的数量,原子操作

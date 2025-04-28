@@ -1,6 +1,6 @@
 package com.dlz.test.framework.db.entity;
 
-import com.baomidou.mybatisplus.annotation.TableId;
+import com.dlz.framework.db.annotation.TableId;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 import io.swagger.annotations.ApiModel;

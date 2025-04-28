@@ -35,7 +35,7 @@ public enum DbOprateEnum {
     private final static Pattern patternColumnName = Pattern.compile("#n");
 
     private String mkSql(String dbn, String key) {
-        final String dbnSql = patternColumnName.matcher(this._sql).replaceAll(DbConvertUtil.str2DbClumn(dbn));
+        final String dbnSql = patternColumnName.matcher(this._sql).replaceAll(DbConvertUtil.toDbColumnNames(dbn));
         return key==null?dbnSql: patternKey.matcher(dbnSql).replaceAll(key);
     }
 
@@ -75,7 +75,7 @@ public enum DbOprateEnum {
         if (value instanceof String) {
             String v = ((String) value);
             if (v.startsWith("sql:")) {
-                condition.addPara(key, DbConvertUtil.str2Clumn(v.substring(4)));
+                condition.addPara(key, DbConvertUtil.toDbColumnName(v.substring(4)));
                 return condition;
             }
         }

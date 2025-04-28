@@ -36,7 +36,7 @@ public class Sort<T extends Sort> implements Serializable, IChained<T> {
             return null;
         }
         return " order by "+orders.stream()
-                .map(o-> DbConvertUtil.str2DbClumn(o.getColumn())+(o.isAsc()?" asc":" desc"))
+                .map(o-> DbConvertUtil.toDbColumnNames(o.getColumn())+(o.isAsc()?" asc":" desc"))
                 .collect(Collectors.joining(","));
     }
 

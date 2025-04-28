@@ -25,7 +25,7 @@ public class DlzDbConfigs extends DlzDbConfig {
 
 #### bean
 ```java
-import com.baomidou.mybatisplus.annotation.TableName;
+import com.dlz.framework.db.annotation.TableName;
 import lombok.Data;
 
 @Data

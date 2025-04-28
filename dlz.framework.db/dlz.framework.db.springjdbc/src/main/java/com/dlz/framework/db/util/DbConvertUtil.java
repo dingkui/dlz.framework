@@ -72,11 +72,11 @@ public class DbConvertUtil {
 	 * @param dbKey
 	 * @return
 	 */
-	public static String clumn2Str(String dbKey) {
-		return columnMapper.clumn2Str(dbKey);
+	public static String toFieldName(String dbKey) {
+		return columnMapper.toFieldName(dbKey);
 	}
-	public static String str2Clumn(String beanKey) {
-		return columnMapper.str2Clumn(beanKey);
+	public static String toDbColumnName(String beanKey) {
+		return columnMapper.toDbColumnName(beanKey);
 	}
 
 	/**
@@ -84,8 +84,8 @@ public class DbConvertUtil {
 	 * @param beanKey
 	 * @return
 	 */
-	public static String str2DbClumn(String beanKey) {
-		return columnMapper.str2Clumn(beanKey.replaceAll("\\s+", " "));
+	public static String toDbColumnNames(String beanKey) {
+		return columnMapper.toDbColumnName(beanKey.replaceAll("\\s+", " "));
 	}
 
 }

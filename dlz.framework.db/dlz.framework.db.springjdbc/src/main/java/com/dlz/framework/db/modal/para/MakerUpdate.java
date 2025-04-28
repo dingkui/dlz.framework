@@ -25,7 +25,7 @@ public class MakerUpdate extends AMakerSearch<MakerUpdate> implements IOperatorE
     }
 
     public MakerUpdate set(String paraName, Object value) {
-        paraName = DbConvertUtil.str2DbClumn(paraName);
+        paraName = DbConvertUtil.toDbColumnNames(paraName);
         if (!BeanInfoHolder.isColumnExists(getTableName(),paraName)) {
             log.warn("column is not exists:" + getTableName() + "." + paraName);
             return this;

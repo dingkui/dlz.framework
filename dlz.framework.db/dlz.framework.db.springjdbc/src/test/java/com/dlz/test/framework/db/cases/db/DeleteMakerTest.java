@@ -8,14 +8,16 @@ import com.dlz.test.framework.db.config.SpingDbBaseTest;
 import com.dlz.test.framework.db.entity.Dict;
 import org.junit.Test;
 
-public class DelteParaMapTest  extends SpingDbBaseTest {
+import java.util.Date;
+
+public class DeleteMakerTest extends SpingDbBaseTest {
     @Test
     public void conditionSqlTest1() {
         MakerDelete paraMap = DB.delete("t_b_dict");
         paraMap.addPara(Dict::getA2, "1");
-        JSONMap param = new JSONMap("id","123");
-        paraMap.sql("[id=#{id}]",param);
-        showSql(paraMap,"conditionSqlTest1","delete from t_b_dict where (id='123') and IS_DELETED = 0");
+        JSONMap param = new JSONMap("id",123);
+        paraMap.sql("[id<#{id}]",param);
+        showSql(paraMap,"conditionSqlTest1","delete from t_b_dict where (id<123) and IS_DELETED = 0");
     }
     @Test
     public void conditionSqlTest1_2() {
@@ -77,4 +79,18 @@ public class DelteParaMapTest  extends SpingDbBaseTest {
         showSql(paraMap,"conditionTest3","delete from t_b_dict where (XXSS in (3,4,5,6) or XXSS in ('31','111','5','6') or XXSS in (1) or XXSS in (SELECT 2 FROM DUAL)) and IS_DELETED = 0");
     }
 
+    @Test
+    public void DeleteParaMapTest(){
+        Condition where = Condition.where()
+                .eq("equipment_id", 1)
+                .eq("equipment_id2", 2)
+                .and(w->w.eq("xxId2", 3).eq("xxId1", 4))
+                .or(w->w.eq("xxId2", 3).eq("xxId1", 4))
+                .eq("xxId3", 5);
+
+        MakerDelete dh_room = DB
+                .delete("dh_room")
+                .where(where);
+        showSql(dh_room,"DeleteParaMapTest","delete from dh_room where equipment_id = 1 and equipment_id2 = 2 and (XX_ID2 = 3 and XX_ID1 = 4) and (XX_ID2 = 3 or XX_ID1 = 4) and XX_ID3 = 5 and IS_DELETED = 0");
+    }
 }

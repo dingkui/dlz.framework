@@ -1,5 +1,7 @@
 package com.dlz.framework.db.holder;
 
+import com.dlz.comm.util.StringUtils;
+import com.dlz.comm.util.ValUtil;
 import com.dlz.framework.db.convertor.rowMapper.ResultMapRowMapper;
 import com.dlz.framework.db.dao.IDlzDao;
 import com.dlz.framework.db.service.ICommService;
@@ -43,7 +45,11 @@ public class DBHolder {
         Long seq = getJedis().incrBy(key, initSeq);
         if (seq == initSeq) {
             try {
-                seq = getService().getDao().getFistColumn("select max(id) from " + tableName, Long.class) + initSeq;
+                final String fistColumn = getService().getDao().getFistColumn("select max(id) from " + tableName, String.class);
+                if(fistColumn==null || !StringUtils.isNumber(fistColumn)){
+                    return seq;
+                }
+                seq = ValUtil.toBigDecimalZero(fistColumn).longValue() + initSeq;
                 if (seq > initSeq) {
                     jedis.set(key, seq.toString());
                 }

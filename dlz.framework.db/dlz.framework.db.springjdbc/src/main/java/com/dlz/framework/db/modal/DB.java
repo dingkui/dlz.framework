@@ -5,6 +5,7 @@ import com.dlz.comm.fn.DlzFn;
 import com.dlz.comm.util.StringUtils;
 import com.dlz.comm.util.system.FieldReflections;
 import com.dlz.framework.db.modal.para.*;
+import com.dlz.framework.db.util.DbConvertUtil;
 
 import java.lang.reflect.Field;
 import java.util.List;
@@ -110,13 +111,13 @@ public class DB {
         return DB.update(obj, name->name.equalsIgnoreCase(idName)).eq(idName,id).excute();
     }
     public static <T> int insertOrUpdate(T obj){
-        return insertOrUpdate(obj,"ID");
+        return insertOrUpdate(obj,"id");
     }
     public static <T> int updateById(T obj){
-        return updateById(obj,"ID");
+        return updateById(obj,"id");
     }
     public static <T> int updateById(T obj,String idName){
-        final Object id = FieldReflections.getValue(obj, idName, true);
+        final Object id = FieldReflections.getValue(obj, DbConvertUtil.toFieldName(idName), true);
         if(StringUtils.isEmpty(id)){
             throw new SystemException(idName+"不能为空");
         }
@@ -129,10 +130,10 @@ public class DB {
         return DB.query(c).eq(idName,id).queryBean();
     }
     public static <T> T getById(Class<T> c,Object id){
-        return getById(c,id,"ID");
+        return getById(c,id,"id");
     }
     public static <T> int removeByIds(Class<T> c,String ids){
-        return removeByIds(c,ids,"ID");
+        return removeByIds(c,ids,"id");
     }
     public static <T> int removeByIds(Class<T> c,String ids,String idName){
         if(StringUtils.isEmpty(ids)){

@@ -1,6 +1,6 @@
 package com.dlz.framework.db.helper.support;
 
-import com.baomidou.mybatisplus.annotation.TableName;
+import com.dlz.framework.db.annotation.TableName;
 import com.dlz.comm.util.StringUtils;
 import com.dlz.comm.util.system.FieldReflections;
 import com.dlz.framework.db.enums.DbTypeEnum;

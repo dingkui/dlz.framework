@@ -1,7 +1,7 @@
 package com.dlz.framework.db.modal.para;
 
-import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableId;
+import com.dlz.framework.db.annotation.IdType;
+import com.dlz.framework.db.annotation.TableId;
 import com.dlz.comm.exception.SystemException;
 import com.dlz.comm.util.StringUtils;
 import com.dlz.comm.util.system.FieldReflections;
@@ -94,6 +94,9 @@ public class MakerUtil {
     public static void buildInsertSql(MakerInsert maker) {
         StringBuilder sbColums = new StringBuilder();
         StringBuilder sbValues = new StringBuilder();
+        if(maker.insertValues.isEmpty()){
+            throw new SystemException("插入字段信息未设置");
+        }
         maker.insertValues.entrySet().forEach(e -> {
             String paraName = e.getKey();
             Object value = e.getValue();
@@ -107,7 +110,7 @@ public class MakerUtil {
             if (value instanceof String) {
                 String v = ((String) value);
                 if (v.startsWith("sql:")) {
-                    sbValues.append(DbConvertUtil.str2Clumn(v.substring(4)));
+                    sbValues.append(DbConvertUtil.toDbColumnName(v.substring(4)));
                     return;
                 }
             }
@@ -128,6 +131,9 @@ public class MakerUtil {
      */
     public static void buildUpdateSql(MakerUpdate maker) {
         StringBuilder sbSets = new StringBuilder();
+        if(maker.updateSets.isEmpty()){
+            throw new SystemException("更新字段信息未设置");
+        }
         maker.updateSets.entrySet().forEach(e -> {
             String paraName = e.getKey();
             Object value = e.getValue();
@@ -141,7 +147,7 @@ public class MakerUtil {
             if (value instanceof String) {
                 String v = ((String) value);
                 if (v.startsWith("sql:")) {
-                    sbSets.append(DbConvertUtil.str2Clumn(v.substring(4)));
+                    sbSets.append(DbConvertUtil.toDbColumnName(v.substring(4)));
                     return;
                 }
             }
@@ -209,7 +215,7 @@ public class MakerUtil {
             return null;
         }
         final IdType type = annotation.type();
-        if (type == IdType.AUTO) {
+        if (type == IdType.AUTO||type == IdType.INPUT) {
             return null;
         } else {
             final String columnName = BeanInfoHolder.getColumnName(field);
@@ -217,11 +223,12 @@ public class MakerUtil {
                 return SnowFlake.id();
             } else if (type == IdType.ASSIGN_UUID) {
                 return UUID.randomUUID().toString().replace("-", "");
-            } else if (type == IdType.NONE) {
+            } else if (type == IdType.SEQ) {
                 return DBHolder.sequence(tableName, 1l);
             } else {
                 throw new SystemException(columnName + " idType is " + type + " but null");
             }
         }
     }
+
 }

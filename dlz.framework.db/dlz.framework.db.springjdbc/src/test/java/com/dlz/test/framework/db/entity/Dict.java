@@ -1,7 +1,7 @@
 package com.dlz.test.framework.db.entity;
 
-import com.baomidou.mybatisplus.annotation.TableField;
-import com.baomidou.mybatisplus.annotation.TableName;
+import com.dlz.framework.db.annotation.TableField;
+import com.dlz.framework.db.annotation.TableName;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;

@@ -22,7 +22,7 @@ public class OracleColumnMapRowMapper  extends ResultMapRowMapper{
 		int columnCount = rsmd.getColumnCount();
 		ResultMap mapOfColValues = new ResultMap();
 		for (int i = 1; i <= columnCount; i++) {
-			String key = getColumnKey(JdbcUtils.lookupColumnName(rsmd, i));
+			String key = toFieldName(JdbcUtils.lookupColumnName(rsmd, i));
 			Object obj = null;
 			String typename= rsmd.getColumnTypeName(i);
 			if("NUMBER".equals(typename)){

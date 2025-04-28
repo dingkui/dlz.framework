@@ -9,7 +9,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.junit.Test;
 
 @Slf4j
-public class JdbcParaTest extends SpingDbBaseTest{
+public class QueryJdbcTest extends SpingDbBaseTest{
 
     @Test
     public void sqlTest1() {

@@ -58,7 +58,7 @@ public class WrapperUpdate<T> extends AWrapperSearch<WrapperUpdate<T>,T, MakerUp
 		return this;
 	}
 	public WrapperUpdate<T> set(T bean) {
-		return set(bean, name->name.equals("ID"));
+		return set(bean, name->name.equalsIgnoreCase("ID"));
 	}
 	@Override
 	public WrapperUpdate<T> me() {

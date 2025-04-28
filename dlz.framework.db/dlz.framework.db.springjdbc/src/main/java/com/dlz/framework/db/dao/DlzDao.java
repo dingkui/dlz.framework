@@ -1,9 +1,6 @@
 package com.dlz.framework.db.dao;
 
-import com.dlz.comm.cache.CacheUtil;
-import com.dlz.comm.util.VAL;
 import com.dlz.framework.db.convertor.rowMapper.ResultMapRowMapper;
-import com.dlz.framework.db.holder.SqlHolder;
 import com.dlz.framework.db.modal.result.ResultMap;
 import com.dlz.framework.db.util.DbLogUtil;
 import lombok.extern.slf4j.Slf4j;
@@ -94,20 +91,18 @@ public class DlzDao implements IDlzDao {
 
     @Override
     public HashMap<String, Integer> getTableColumnsInfo(String tableName) {
-        return CacheUtil.getMemoCache().getAndSet("tableColumnsInfo", tableName, () -> {
-            // 查询表结构定义；返回表定义Map
-            String sql = "select * from " + tableName + " limit 0";
-            ResultSetExtractor<HashMap<String, Integer>> extractor = rs -> {
-                HashMap<String, Integer> infos = new HashMap<>();
-                ResultSetMetaData rsmd = rs.getMetaData();
-                int columnCount = rsmd.getColumnCount();
-                for (int i = 1; i < columnCount + 1; i++) {
-                    String columnLabel = rsmd.getColumnLabel(i).toUpperCase();
-                    infos.put(columnLabel, rsmd.getColumnType(i));
-                }
-                return infos;
-            };
-            return VAL.of(dao.query(sql, extractor), SqlHolder.properties.getTableCacheTime());
-        });
+        // 查询表结构定义；返回表定义Map
+        String sql = "select * from " + tableName + " limit 0";
+        ResultSetExtractor<HashMap<String, Integer>> extractor = rs -> {
+            HashMap<String, Integer> infos = new HashMap<>();
+            ResultSetMetaData rsmd = rs.getMetaData();
+            int columnCount = rsmd.getColumnCount();
+            for (int i = 1; i < columnCount + 1; i++) {
+                String columnLabel = rsmd.getColumnLabel(i).toUpperCase();
+                infos.put(columnLabel, rsmd.getColumnType(i));
+            }
+            return infos;
+        };
+        return dao.query(sql, extractor);
     }
 }

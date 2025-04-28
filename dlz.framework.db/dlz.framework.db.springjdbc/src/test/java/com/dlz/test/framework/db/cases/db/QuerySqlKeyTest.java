@@ -9,7 +9,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.junit.Test;
 
 @Slf4j
-public class SqlSearchParaMapTest extends SpingDbBaseTest {
+public class QuerySqlKeyTest extends SpingDbBaseTest {
     @Test
     public void SqlSearchParaTest1() {
         String sql = "key.sqlTest.sqlUtil";

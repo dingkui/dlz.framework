@@ -26,7 +26,7 @@ public class ResultMapRowMapper implements RowMapper<ResultMap> {
 		int columnCount = rsmd.getColumnCount();
 		ResultMap mapOfColValues = new ResultMap();
 		for (int i = 1; i <= columnCount; i++) {
-			String key = getColumnKey(JdbcUtils.lookupColumnName(rsmd, i).toLowerCase());
+			String key = toFieldName(JdbcUtils.lookupColumnName(rsmd, i).toLowerCase());
 			Object obj = getColumnValue(rs, i);
 			mapOfColValues.put(key, obj);
 		}
@@ -40,8 +40,8 @@ public class ResultMapRowMapper implements RowMapper<ResultMap> {
 	 * @return the column key to use
 	 * @see java.sql.ResultSetMetaData#getColumnName
 	 */
-	public String getColumnKey(String columnName) {
-		return columnMapper.clumn2Str(columnName);
+	public String toFieldName(String columnName) {
+		return columnMapper.toFieldName(columnName);
 	}
 
 

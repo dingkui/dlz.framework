@@ -6,11 +6,11 @@ public interface IColumnNameConvertor {
 	 * @param dbKey
 	 * @return
 	 */
-	String clumn2Str(String dbKey);
+	String toFieldName(String dbKey);
 	/**
 	 * bean字段名转为数据库字段名
 	 * @param beanKey
 	 * @return
 	 */
-	String str2Clumn(String beanKey);
+	String toDbColumnName(String beanKey);
 }
