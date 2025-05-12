@@ -4,6 +4,7 @@ import com.dlz.comm.exception.SystemException;
 import com.dlz.comm.fn.DlzFn;
 import com.dlz.comm.util.StringUtils;
 import com.dlz.comm.util.system.FieldReflections;
+import com.dlz.framework.db.holder.DBHolder;
 import com.dlz.framework.db.modal.para.*;
 import com.dlz.framework.db.util.DbConvertUtil;
 
@@ -140,6 +141,20 @@ public class DB {
             throw new SystemException(idName+"不能为空");
         }
         return DB.delete(c).in(idName,ids).excute();
+    }
+
+    public static boolean batchUpdate(String sql, List<Object[]> valueBeans) {
+        return batchUpdate(sql, valueBeans, 1000);
+    }
+    public static boolean batchUpdate(String sql, List<Object[]> valueBeans, int batchSize) {
+        for (; valueBeans.size() > 0 && batchSize > 0; valueBeans = valueBeans.subList(batchSize, valueBeans.size())) {
+            if (batchSize > valueBeans.size()) {
+                batchSize = valueBeans.size();
+            }
+            List<Object[]> paramValues = valueBeans.subList(0, batchSize);
+            DBHolder.getService().getDao().batchUpdate(sql, paramValues);
+        }
+        return true;
     }
 
 }
