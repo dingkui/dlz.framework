@@ -33,6 +33,7 @@ public class WrapperInsert<T> extends AWrapper<T, MakerInsert> implements IOpera
             } else {
                 value = MakerUtil.getIdValue(field, getTableName());
                 if (value != null) {
+                    FieldReflections.setValue(bean, field, value);
                     getPm().value(BeanInfoHolder.getColumnName(field), value);
                 }
             }
