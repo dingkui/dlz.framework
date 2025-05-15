@@ -375,6 +375,7 @@ public class ValUtil {
         natveConverts.put(Float.class, ValUtil::toFloat);
         natveConverts.put(Double.class, ValUtil::toDouble);
         natveConverts.put(Boolean.class, ValUtil::toBoolean);
+        natveConverts.put(LocalDateTime.class, ValUtil::toLocalDateTime);
         natveConverts.put(null, input -> input);
     }
 
@@ -396,7 +397,7 @@ public class ValUtil {
         if (input == null || classs == null) {
             return (T) input;
         }
-        T re = (T) toNativeObj(input, classs);
+        T re = toNativeObj(input, classs);
         return re != null ? re : JacksonUtil.coverObj(input, classs);
     }
 
