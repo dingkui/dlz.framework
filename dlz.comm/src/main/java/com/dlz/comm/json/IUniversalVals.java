@@ -4,6 +4,7 @@ import com.dlz.comm.util.JacksonUtil;
 import com.dlz.comm.util.ValUtil;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
 
@@ -83,6 +84,14 @@ public interface IUniversalVals {
 	default Date getDate(String key,String format){
 		return ValUtil.toDate(getKeyVal(key),format);
 	}
+
+	default LocalDateTime getLocalDateTime(String key){
+		return ValUtil.toLocalDateTime(getKeyVal(key));
+	}
+	default LocalDateTime getLocalDateTime(String key,String format){
+		return ValUtil.toLocalDateTime(getKeyVal(key),format);
+	}
+
 	default String getDateStr(String key){
 		return ValUtil.toDateStr(getKeyVal(key));
 	}

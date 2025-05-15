@@ -16,6 +16,7 @@ import java.math.BigDecimal;
 import java.nio.charset.Charset;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.*;
 import java.util.function.Function;
 
@@ -286,6 +287,28 @@ public class ValUtil {
         return null;
     }
 
+    public static LocalDateTime toLocalDateTime(Object input, String format, LocalDateTime defaultV) {
+        if (input == null) {
+            return defaultV;
+        }
+        if (LocalDateTime.class.isAssignableFrom(input.getClass())) {
+            return (LocalDateTime) input;
+        }
+        if (Date.class.isAssignableFrom(input.getClass())) {
+            return DateUtil.getLocalDateTime((Date) input);
+        }
+        if (Number.class.isAssignableFrom(input.getClass())) {
+            return DateUtil.getLocalDateTime(new Date(((Number) input).longValue()));
+        }
+        return DateUtil.getLocalDateTime(toStr(input), format);
+    }
+    public static LocalDateTime toLocalDateTime(Object input) {
+        return toLocalDateTime(input, null, null);
+    }
+
+    public static LocalDateTime toLocalDateTime(Object input, String format) {
+        return toLocalDateTime(input, format, null);
+    }
 
     public static Date toDate(Object input) {
         return toDate(input, null, null);
@@ -332,7 +355,7 @@ public class ValUtil {
             return "";
         }
         if (format == null) {
-            return DateUtil.getDateTimeStr(date);
+            return DateUtil.DATETIME.format(date);
         }
         return DateUtil.format(date, format);
     }
