@@ -3,6 +3,8 @@ package com.dlz.comm.util;
 import com.dlz.comm.exception.SystemException;
 import com.dlz.comm.json.JSONList;
 import com.dlz.comm.json.JSONMap;
+import com.dlz.comm.util.jackson.DlzJavaTimeModule;
+import com.dlz.comm.util.jackson.JacksonObjectDeserializer;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -82,7 +84,7 @@ public class JacksonUtil {
 //        //反序列化时，属性不存在的兼容处理s
 //        objectMapper.getDeserializationConfig().withoutFeatures(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
 //        //日期格式化
-//        objectMapper.registerModule(new DlzJavaTimeModule());
+          objectMapper.registerModule(DlzJavaTimeModule.INSTANCE);
     }
 
     public static ObjectMapper getInstance() {
