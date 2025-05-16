@@ -59,6 +59,7 @@ public class EncryptDlzTest {
         System.out.println("无密1：" + encry1);
         System.out.println("解无密1：" + EncryptDlz.decryAsStr(encry1, null));
     }
+
     @Test
     public void testNopass2() throws InterruptedException {
         String encry1 = EncryptDlz.encry(str, null, 5);
@@ -75,6 +76,26 @@ public class EncryptDlzTest {
         System.out.println("有密：" + encry1);
         System.out.println("解密：" + EncryptDlz.decryAsStr(encry1, pass));
         System.out.println("解密-错误密码：" + EncryptDlz.decryAsStr(encry1, "xx"));
+    }
+    @Test
+    public void testWithpass1_1(){
+        String encry1 = "oLurDLM3-WKt8hF4orBbWbc4vFa1-mL,hOwAEOwLqTXgasWh3LyD6r-83db5879Ogb2EfuH-6OPlau5_1nhysrWO5.nt2_2jOL";
+        System.out.println("有密：" + encry1);
+        System.out.println("解密：" + EncryptDlz.decryAsStr(encry1, pass));
+        final long l = System.currentTimeMillis();
+        for (int i = 0; i < 100000; i++) {
+            EncryptDlz.decryAsStr(encry1, pass);
+        }
+        System.out.println("解密：" + (System.currentTimeMillis() - l));
+    }
+    @Test
+    public void testWithpass1_2(){
+        String encry1 = "oLurDLM3-WKt8hF4orBbWbc4vFa1-mL,hOwAEOwLqTXgasWh3LyD6r-83db5879Ogb2EfuH-6OPlau5_1nhysrWO5.nt2_2jOL";
+//        encry1+=encry1+encry1+encry1+encry1+encry1+encry1+encry1+encry1+encry1+encry1+encry1+encry1+encry1;
+//        encry1+=encry1+encry1+encry1+encry1+encry1+encry1+encry1+encry1+encry1+encry1+encry1+encry1+encry1;
+        final EncryptDlz.MixEncryption fserver = new EncryptDlz.MixEncryption(0, 0);
+        System.out.println("有密：" + encry1.length());
+        System.out.println("解密：" + EncryptDlz.decryAsStr(encry1, pass));
     }
     @Test
     public void testWithpass2() throws InterruptedException {

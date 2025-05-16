@@ -169,18 +169,16 @@ public class EncryptDlz {
             int len = input.length();
             int e = getE(len);
             char[] output = new char[len];
-            int i = 0;
             int ind = 1;
-            while (i++ < len) {
-                ind += e;
-                int index = ind;
-                while (index >= len) {
-                    index -= len;
+            for (int i = 0; i < len; i++) {
+                ind = ind + e;
+                while (ind >= len) {
+                    ind -= len;
                 }
                 if (isEncode) {
-                    output[i - 1] = input.charAt(index);
+                    output[i] = input.charAt(ind);
                 } else {
-                    output[index] = input.charAt(i - 1);
+                    output[ind] = input.charAt(i);
                 }
             }
             return new String(output);
