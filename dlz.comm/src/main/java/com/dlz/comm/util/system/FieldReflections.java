@@ -8,13 +8,9 @@ import com.dlz.comm.util.VAL;
 import com.dlz.comm.util.ValUtil;
 import lombok.extern.slf4j.Slf4j;
 
-import java.beans.Introspector;
 import java.lang.invoke.SerializedLambda;
 import java.lang.reflect.*;
-import java.util.Arrays;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -145,6 +141,32 @@ public class FieldReflections {
         return getFieldsMap(beanClass).values().stream().collect(Collectors.toList());
     }
 
+    /**
+     * uncapitalize a String, changing the first letter to lowercase
+     *
+     * <p>For a blank string, returns an empty string.
+     *
+     * <pre>
+     * uncapitalize(null)  = null
+     * uncapitalize("")    = ""
+     * uncapitalize("Cat") = "cat"
+     * uncapitalize("cat") = "cat"
+     * </pre>
+     *
+     * @param name the String to uncapitalize, may be null
+     */
+    public static String decapitalize(String name) {
+        if (name == null || name.length() == 0) {
+            return name;
+        }
+        if (name.equals(name.toUpperCase(Locale.ROOT))){
+            return name;
+        }
+        char chars[] = name.toCharArray();
+        chars[0] = Character.toLowerCase(chars[0]);
+        return new String(chars);
+    }
+
     public static <T> VAL<Class<?>,Field> getFn(DlzFn<T, ?> function) {
         return fnFieldCache.getAndSet(function, () -> {
             String fieldName = null;
@@ -156,9 +178,9 @@ public class FieldReflections {
                 // 第2步 implMethodName 即为Field对应的Getter方法名
                 String implMethodName = serializedLambda.getImplMethodName();
                 if (implMethodName.startsWith("get") && implMethodName.length() > 3) {
-                    fieldName = Introspector.decapitalize(implMethodName.substring(3));
+                    fieldName = decapitalize(implMethodName.substring(3));
                 } else if (implMethodName.startsWith("is") && implMethodName.length() > 2) {
-                    fieldName = Introspector.decapitalize(implMethodName.substring(2));
+                    fieldName = decapitalize(implMethodName.substring(2));
                 } else if (implMethodName.startsWith("lambda$")) {
                     throw new IllegalArgumentException("SerializableFunction不能传递lambda表达式,只能使用方法引用");
                 } else {
