@@ -24,30 +24,30 @@ import java.util.concurrent.ConcurrentLinkedQueue;
  */
 @Slf4j
 public class DateFormat {
-	private final String format;
+	public final String pattern;
 	private final Locale locale;
 	private final TimeZone timezone;
 	private final Queue<SimpleDateFormat> queue = new ConcurrentLinkedQueue<>();
 	public final DateTimeFormatter formatter;
-	private DateFormat(String format, Locale locale, TimeZone timezone) {
-		this.format = format;
+	private DateFormat(String pattern, Locale locale, TimeZone timezone) {
+		this.pattern = pattern;
 		this.locale = locale;
 		this.timezone = timezone;
-		this.formatter = DateTimeFormatter.ofPattern(format);
+		this.formatter = DateTimeFormatter.ofPattern(pattern);
 		SimpleDateFormat initial = createInstance();
 		queue.add(initial);
 	}
 
-	public static DateFormat of(String format) {
-		return new DateFormat(format, Locale.getDefault(), TimeZone.getDefault());
+	public static DateFormat of(String pattern) {
+		return new DateFormat(pattern, Locale.getDefault(), TimeZone.getDefault());
 	}
 
-	public static DateFormat of(String format, TimeZone timezone) {
-		return new DateFormat(format, Locale.getDefault(), timezone);
+	public static DateFormat of(String pattern, TimeZone timezone) {
+		return new DateFormat(pattern, Locale.getDefault(), timezone);
 	}
 
-	public static DateFormat of(String format, Locale locale, TimeZone timezone) {
-		return new DateFormat(format, locale, timezone);
+	public static DateFormat of(String pattern, Locale locale, TimeZone timezone) {
+		return new DateFormat(pattern, locale, timezone);
 	}
 
 	public String format(Date date) {
@@ -97,7 +97,7 @@ public class DateFormat {
 	}
 
 	private SimpleDateFormat createInstance() {
-		SimpleDateFormat sdf = new SimpleDateFormat(format, locale);
+		SimpleDateFormat sdf = new SimpleDateFormat(pattern, locale);
 		sdf.setTimeZone(timezone);
 		return sdf;
 	}
@@ -111,6 +111,6 @@ public class DateFormat {
 	 * @return
 	 */
 	public String toString() {
-		return format;
+		return pattern;
 	}
 }
