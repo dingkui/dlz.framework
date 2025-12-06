@@ -5,9 +5,10 @@
 		<artifactId>dlz.framework.db</artifactId>
 		<version>6.3.2</version>
 	</parent>
+    <name>dlz.framework.db.springjdbc</name>
 	<artifactId>dlz.framework.db.springjdbc</artifactId>
 	<packaging>jar</packaging>
-	<version>${dlz.framework.version}</version>
+	<version>6.3.2</version>
 
 	<dependencies>
 <!--		<dependency>-->

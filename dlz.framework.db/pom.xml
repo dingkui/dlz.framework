@@ -7,6 +7,7 @@
         <version>6.3.2</version>
     </parent>
     <artifactId>dlz.framework.db</artifactId>
+    <name>dlz.framework.db</name>
     <packaging>pom</packaging>
     <modules>
         <module>dlz.framework.db.springjdbc</module>
@@ -17,7 +18,7 @@
         <dependency>
             <groupId>com.chan3d</groupId>
             <artifactId>dlz.framework</artifactId>
-            <version>${dlz.framework.version}</version>
+            <version>6.3.2</version>
         </dependency>
 <!--        <dependency>-->
 <!--            <groupId>comlib.jdbc</groupId>-->
@@ -61,7 +62,7 @@
             <dependency>
                 <groupId>com.chan3d</groupId>
                 <artifactId>dlz.framework.db.springjdbc</artifactId>
-                <version>${dlz.framework.version}</version>
+                <version>6.3.2</version>
             </dependency>
             <!-- util/qrcode-1.0.jar -->
             <!--            <dependency>-->

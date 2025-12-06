@@ -7,6 +7,9 @@
     <artifactId>dlz-dependencies</artifactId>
     <version>6.3.2</version><!--RootVer-->
     <packaging>pom</packaging>
+    <name>dlz-dependencies</name>
+    <description>dlz-dependencies</description>
+    <url>https://github.com/dingkui/dlz.framwork</url>
     <modules>
         <module>dlz.comm</module>
         <module>dlz.framework</module>
@@ -92,7 +95,24 @@
 <!--            </dependency>-->
         </dependencies>
     </dependencyManagement>
-
+    <licenses>
+        <license>
+            <name>Apache License 2.0</name>
+            <url>http://www.apache.org/licenses/LICENSE-2.0</url>
+        </license>
+    </licenses>
+    <scm>
+        <url>https://github.com/dingkui/dlz.framwork</url>
+        <connection>scm:git:https://github.com/dingkui/dlz.framwork.git</connection>
+        <developerConnection>scm:git:https://github.com/dingkui/dlz.framwork.git</developerConnection>
+    </scm>
+    <developers>
+        <developer>
+            <id>dk1983</id>
+            <name>dingkui</name>
+            <email>59461202@qq.com</email>
+        </developer>
+    </developers>
     <build>
         <plugins>
             <!-- 打包时跳过测试 -->
@@ -131,10 +151,6 @@
             <name>aliyun-maven</name>
             <url>https://maven.aliyun.com/nexus/content/groups/public/</url>
         </repository>
-<!--        <repository>-->
-<!--            <id>sl</id>-->
-<!--            <url>http://219.138.246.50:28805/repository/sl/</url>-->
-<!--        </repository>-->
     </repositories>
     <pluginRepositories>
         <pluginRepository>
@@ -149,4 +165,71 @@
             </snapshots>
         </pluginRepository>
     </pluginRepositories>
+    <profiles>
+        <profile>
+            <id>central-publish</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.sonatype.central</groupId>
+                        <artifactId>central-publishing-maven-plugin</artifactId>
+                        <version>0.9.0</version>
+                        <extensions>true</extensions>
+                        <configuration>
+                            <publishingServerId>central</publishingServerId>
+                            <autoPublish>true</autoPublish>
+                            <waitUntil>published</waitUntil>
+                        </configuration>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-source-plugin</artifactId>
+                        <version>3.3.0</version>
+                        <executions>
+                            <execution>
+                                <id>attach-sources</id>
+                                <goals>
+                                    <goal>jar-no-fork</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <!-- 必须：生成 javadoc 包 -->
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-javadoc-plugin</artifactId>
+                        <version>3.6.0</version>
+                        <configuration>
+                            <source>8</source>
+                            <additionalJOptions>
+                                <additionalJOption>-Xdoclint:none</additionalJOption>
+                            </additionalJOptions>
+                        </configuration>
+                        <executions>
+                            <execution>
+                                <id>attach-javadocs</id>
+                                <goals>
+                                    <goal>jar</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-gpg-plugin</artifactId>
+                        <version>3.2.4</version>
+                        <executions>
+                            <execution>
+                                <id>sign-artifacts</id>
+                                <phase>verify</phase>
+                                <goals>
+                                    <goal>sign</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
 </project>

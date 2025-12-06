@@ -5,8 +5,9 @@
 		<artifactId>dlz.plugin</artifactId>
 		<version>6.3.2</version>
 	</parent>
-	<version>${dlz.framework.version}</version>
+	<version>6.3.2</version>
 	<artifactId>dlz.plugin.jsons</artifactId>
+    <name>dlz.plugin.jsons</name>
 	<packaging>jar</packaging>
 	<dependencies>
 		<dependency>

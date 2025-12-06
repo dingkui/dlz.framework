@@ -5,14 +5,15 @@
 		<artifactId>dlz-dependencies</artifactId>
 		<version>6.3.2</version>
 	</parent>
-	<version>${dlz.framework.version}</version>
+	<version>6.3.2</version>
 	<artifactId>dlz.framework</artifactId>
+	<name>dlz.framework</name>
 	<packaging>jar</packaging>
 	<dependencies>
 		<dependency>
 			<groupId>com.chan3d</groupId>
 			<artifactId>dlz.comm</artifactId>
-			<version>${dlz.framework.version}</version>
+			<version>6.3.2</version>
 		</dependency>
 		<dependency>
 			<groupId>net.sf.ehcache</groupId>

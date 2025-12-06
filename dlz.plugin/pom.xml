@@ -6,6 +6,7 @@
 		<version>6.3.2</version>
 	</parent>
 	<artifactId>dlz.plugin</artifactId>
+	<name>dlz.plugin</name>
 	<packaging>pom</packaging>
 	<modules>
 <!--		<module>dlz.plugin.weixin</module>-->
@@ -32,7 +33,7 @@
 		<dependency>
 			<groupId>com.chan3d</groupId>
 			<artifactId>dlz.comm</artifactId>
-			<version>${dlz.framework.version}</version>
+			<version>6.3.2</version>
 		</dependency>
 <!--		<dependency>-->
 <!--			<groupId>org.slf4j</groupId>-->
