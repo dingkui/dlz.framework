@@ -11,7 +11,7 @@ import com.baomidou.mybatisplus.core.metadata.TableInfoHelper;
 import com.baomidou.mybatisplus.core.toolkit.ReflectionKit;
 import com.dlz.comm.exception.SystemException;
 import com.dlz.comm.util.StringUtils;
-import com.dlz.framework.util.system.Reflections;
+import com.dlz.comm.util.system.Reflections;
 
 import java.util.List;
 

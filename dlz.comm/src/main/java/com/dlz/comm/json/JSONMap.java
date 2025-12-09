@@ -6,14 +6,12 @@ import com.dlz.comm.util.StringUtils;
 import com.dlz.comm.util.ValUtil;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 /**
  * JSONMap
  * @author dk 2017-06-15
  *
  */
-@SuppressWarnings({ "rawtypes", "unchecked" })
 public class JSONMap extends HashMap<String,Object> implements IUniversalVals{
 	/**
 	 * 
@@ -31,35 +29,42 @@ public class JSONMap extends HashMap<String,Object> implements IUniversalVals{
 		if(obj instanceof Map){
 			putAll((Map)obj);
 		}else {
-			String string;
-			if(obj instanceof CharSequence){
-				string=obj.toString().trim();
-			}else{
-				string=JacksonUtil.getJson(obj);
-			}
+			String string=JacksonUtil.getJson(obj);
 			if(string==null){
 				return;
 			}
-			if(JacksonUtil.isJsonObj(string)){
-				putAll(JacksonUtil.readValue(string, JSONMap.class));
-			}else{
-				throw new RuntimeException("参数不能转换成JSONMap:"+string);
-			}
+			putAll(JacksonUtil.readValue(string));
 		}
 	}
-	public JSONMap(String key,Object... value){
+	public JSONMap(CharSequence obj){
 		super();
-		final int length = value.length;
-		if(length%2==0){
-			throw new RuntimeException("参数个数只能是偶数");
+		if(obj==null){
+			return;
 		}
-		put(key, value[0]);
-		int keys = length/2-1;
-		for(;keys>=0;keys--){
-			if(!(value[keys*2+1] instanceof String)){
-				throw new RuntimeException("键名必须为String");
+//		String str= Arrays.stream(obj.toString()
+//						.trim()
+//						.split("\\n"))
+//				.map(s -> s.trim().replaceAll("//.*$",""))
+//				.collect(Collectors.joining(""));
+		String str= obj.toString().trim().replaceAll("//.*","");
+		if(JacksonUtil.isJsonObj(str)){
+			putAll(JacksonUtil.readValue(str));
+		}else{
+			throw new SystemException("参数不能转换成JSONMap:"+str);
+		}
+	}
+	public JSONMap(String key,Object val,Object... value){
+		super();
+		int length = value.length;
+		if(length%2==1){
+			throw new SystemException("参数个数只能是偶数");
+		}
+		put(key, val);
+		for(int index=0;index<length-1;index+=2){
+			if(!(value[index] instanceof String)){
+				throw new SystemException("键名必须为String");
 			}
-			put((String)value[keys*2+1], value[keys*2+2]);
+			put((String)value[index], value[index+1]);
 		}
 	}
 	public static JSONMap createJsonMap(Object json){
@@ -67,7 +72,7 @@ public class JSONMap extends HashMap<String,Object> implements IUniversalVals{
 	}
 	
 	public <T> Map<String,T> asMap(Class<T> objectClass){
-		 this.forEach((key,value)-> this.put(key,ValUtil.getObj(value,objectClass)));
+		 this.forEach((key,value)-> this.put(key,ValUtil.toObj(value,objectClass)));
 		 return (Map<String,T>)this;
 	}
 	public Map<String,JSONMap> asMap(){
@@ -167,7 +172,7 @@ public class JSONMap extends HashMap<String,Object> implements IUniversalVals{
 				break;
 			case 1:
 				if(o instanceof Collection||o instanceof Object[]){
-					List list = ValUtil.getList(o);
+					List list = ValUtil.toList(o);
 					list.add(obj);
 					put(key, list);
 				}
@@ -175,13 +180,13 @@ public class JSONMap extends HashMap<String,Object> implements IUniversalVals{
 			case 2:
 				List list;
 				if(o instanceof Collection||o instanceof Object[]){
-					list = ValUtil.getList(o);
+					list = ValUtil.toList(o);
 				}else{
 					list = new ArrayList();
 					list.add(o);
 				}
 				if(obj instanceof Collection||obj instanceof Object[]){
-					list.addAll(ValUtil.getList(obj));
+					list.addAll(ValUtil.toList(obj));
 				}else{
 					list.add(obj);
 				}
@@ -199,7 +204,7 @@ public class JSONMap extends HashMap<String,Object> implements IUniversalVals{
 			list=new ArrayList();
 		}
 		if(obj instanceof Collection||obj instanceof Object[]){
-			list = ValUtil.getList(obj);
+			list = ValUtil.toList(obj);
 		}else{
 			list.add(obj);
 		}

@@ -1,8 +1,7 @@
 package com.dlz.framework.redis.service.impl;
 
-import com.dlz.framework.cache.ICache;
+import com.dlz.comm.cache.ICache;
 import com.dlz.framework.redis.excutor.JedisExecutor;
-import com.dlz.framework.redis.util.JedisKeyUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.io.Serializable;
@@ -16,33 +15,39 @@ import java.util.Set;
  * @author dk
  */
 public class CacheRedisJsonKey implements ICache {
-//    @Autowired
-//    RedisKeyMaker keyMaker;
     @Autowired
     JedisExecutor jedisExecutor;
+    private String getRedisKey(String key, Serializable... other){
+        return jedisExecutor.getRedisKey(key, other);
+    }
     @Override
     public <T extends Serializable> T get(String name, Serializable key, Type type) {
-        return jedisExecutor.getSo(JedisKeyUtils.getKey(name,key), type);
+        return jedisExecutor.getSo(getRedisKey(name,key), type);
     }
 
     @Override
     public void put(String name, Serializable key, Serializable value, int seconds) {
-        jedisExecutor.setSo(JedisKeyUtils.getKey(name,key), value, seconds);
+        jedisExecutor.setSo(getRedisKey(name,key), value, seconds);
     }
 
     @Override
     public void remove(String name, Serializable key) {
-        jedisExecutor.del(JedisKeyUtils.getRedisKey(name,key));
+        jedisExecutor.del(getRedisKey(name,key));
     }
 
     @Override
     public void removeAll(String name) {
-        jedisExecutor.excuteByJedis(j -> {
-            Set<String> keys = j.keys(JedisKeyUtils.getRedisKey(name +"*"));
+        jedisExecutor.excute(j -> {
+            Set<String> keys = j.keys(getRedisKey(name +"*"));
             if(keys.size()>0){
                 j.del(keys.toArray(new String[keys.size()]));
             }
             return true;
         });
+    }
+
+    @Override
+    public Set<String> keys(String name,String keyPrefix) {
+        return jedisExecutor.keys(name ,keyPrefix);
     }
 }

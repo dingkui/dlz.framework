@@ -4,9 +4,10 @@
     <parent>
         <groupId>com.chan3d</groupId>
         <artifactId>dlz-dependencies</artifactId>
-        <version>1.0.1-RELEASE</version>
+        <version>6.3.2</version>
     </parent>
     <artifactId>dlz.framework.db</artifactId>
+    <name>dlz.framework.db</name>
     <packaging>pom</packaging>
     <modules>
         <module>dlz.framework.db.springjdbc</module>
@@ -17,7 +18,13 @@
         <dependency>
             <groupId>com.chan3d</groupId>
             <artifactId>dlz.framework</artifactId>
+            <version>6.3.2</version>
         </dependency>
+<!--        <dependency>-->
+<!--            <groupId>comlib.jdbc</groupId>-->
+<!--            <artifactId>ojdbc14</artifactId>-->
+<!--            <scope>test</scope>-->
+<!--        </dependency>-->
         <dependency>
             <groupId>c3p0</groupId>
             <artifactId>c3p0</artifactId>
@@ -36,6 +43,7 @@
         <dependency>
             <groupId>mysql</groupId>
             <artifactId>mysql-connector-java</artifactId>
+            <scope>test</scope>
         </dependency>
     </dependencies>
     <dependencyManagement>
@@ -45,6 +53,23 @@
                 <artifactId>c3p0</artifactId>
                 <version>0.9.1.2</version>
             </dependency>
+            <!-- jdbc/ojdbc14-1.0.jar -->
+<!--            <dependency>-->
+<!--                <groupId>comlib.jdbc</groupId>-->
+<!--                <artifactId>ojdbc14</artifactId>-->
+<!--                <version>1.0</version>-->
+<!--            </dependency>-->
+            <dependency>
+                <groupId>com.chan3d</groupId>
+                <artifactId>dlz.framework.db.springjdbc</artifactId>
+                <version>6.3.2</version>
+            </dependency>
+            <!-- util/qrcode-1.0.jar -->
+            <!--            <dependency>-->
+            <!--                <groupId>comlib.util</groupId>-->
+            <!--                <artifactId>qrcode</artifactId>-->
+            <!--                <version>1.0</version>-->
+            <!--            </dependency>-->
         </dependencies>
     </dependencyManagement>
 </project>

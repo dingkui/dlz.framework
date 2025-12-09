@@ -29,6 +29,13 @@ public enum RSASignEnum {
         }
         return null;
     }
+    public String sign(String content, String privateKey) {
+        return sign(content.getBytes(), Base64.decode(privateKey));
+    }
+
+    public String sign(String content, byte[] privateKey) {
+        return sign(content.getBytes(), privateKey);
+    }
 
     public boolean check(byte[] data, byte[] publicKey, String sign) {
         try {
@@ -43,13 +50,7 @@ public enum RSASignEnum {
         return false;
     }
 
-    public String sign(String content, String privateKey) {
-        return sign(content.getBytes(), Base64.decode(privateKey));
-    }
 
-    public String sign(String content, byte[] privateKey) {
-        return sign(content.getBytes(), privateKey);
-    }
 
     public boolean check(String content, byte[] publicKey, String sign) {
         return check(content.getBytes(), publicKey, sign);

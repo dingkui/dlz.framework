@@ -2,7 +2,6 @@ package com.dlz.framework.config;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.Bean;
 import redis.clients.jedis.JedisPool;
 import redis.clients.jedis.JedisPoolConfig;
 
@@ -25,7 +24,6 @@ public class JedisConfig {
     @Value("${spring.redis.database:0}")
     private int database;
 
-    @Bean
     public JedisPool redisPoolFactory() {
         JedisPoolConfig jedisPoolConfig = new JedisPoolConfig();
         jedisPoolConfig.setMaxTotal(maxTotal);
@@ -34,8 +32,8 @@ public class JedisConfig {
         if (password.length()==0) {
             password=null;
         }
-        JedisPool jedisPool = new JedisPool(jedisPoolConfig, host, port, timeout, password,database);
-        log.info("JedisPool初始化成功：{}:{}", host, port);
-        return jedisPool;
+//        JedisPool jedisPool = ;
+//        log.info("JedisPool初始化成功：{}:{}", host, port);
+        return new JedisPool(jedisPoolConfig, host, port, timeout, password,database);
     }
 }

@@ -1,0 +1,184 @@
+package com.dlz.comm.cache;
+
+import com.dlz.comm.util.JacksonUtil;
+import com.dlz.comm.util.ValUtil;
+import lombok.extern.slf4j.Slf4j;
+
+import java.io.Serializable;
+import java.lang.reflect.Type;
+import java.util.Map;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.regex.Pattern;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
+/**
+ * 使用内存实现缓存
+ *
+ * @author dk
+ */
+@Slf4j
+public class MemoryCache implements ICache {
+    private final static Map<String, Map<Serializable, Element>> CACHE = new ConcurrentHashMap<>();
+    private static ExpiredRunnable Expired = null;
+    private static Long BEGIN = System.currentTimeMillis() / 1000;
+
+    public MemoryCache() {
+        if (Expired == null) {
+            synchronized (MemoryCache.class) {
+                if (Expired == null) {
+                    Expired = new ExpiredRunnable();
+                    new Thread(Expired).start();
+                }
+            }
+        }
+    }
+
+    protected static Map<Serializable, Element> getCache(String name) {
+        return CACHE.computeIfAbsent(name, key -> new ConcurrentHashMap<>());
+    }
+
+    @Override
+    public <T extends Serializable> T get(String name, Serializable key, Type tClass) {
+        Element obj = getCache(name).get(key);
+        if (obj == null) {
+            return null;
+        }
+        if (tClass != null) {
+            return ValUtil.toObj(obj.item, JacksonUtil.mkJavaType(tClass));
+        }
+        return (T) obj.item;
+    }
+
+    @Override
+    public void put(String name, Serializable key, Serializable value, int seconds) {
+        Element element = new Element(value);
+        if (seconds > 0) {
+            element.expired = System.currentTimeMillis() / 1000 + seconds - BEGIN;
+            Expired.setExpiredRange(element.expired);
+        }
+        getCache(name).put(ValUtil.toStr(key), element);
+    }
+
+    @Override
+    public void remove(String name, Serializable key) {
+        getCache(name).remove(ValUtil.toStr(key));
+    }
+
+    @Override
+    public void removeAll(String name) {
+        getCache(name).clear();
+    }
+
+    @Override
+    public Set<String> keys(String name, String keyPrefix) {
+        // 获取缓存中的键流
+        Stream<String> stringStream = getCache(name).keySet().stream()
+                .map(key -> ValUtil.toStr(key));
+
+        // 如果 keyPrefix 是 "*" 或 ".*"，直接返回所有键
+        if ("*".equals(keyPrefix) || ".*".equals(keyPrefix)) {
+            return stringStream.collect(Collectors.toSet());
+        }
+
+        // 将 keyPrefix 转换为正则表达式
+        String regex = keyPrefix.replaceAll("\\.\\*", ".*").replaceAll("\\*", ".*");
+        Pattern pattern = Pattern.compile(regex);
+
+        // 过滤并返回匹配的键
+        return stringStream
+                .filter(pattern.asPredicate())
+                .collect(Collectors.toSet());
+
+    }
+
+    @Override
+    public Map<String,Serializable> all(String name,String keyPrefix){
+        Map<Serializable, Element> cache = getCache(name);
+        Map<String,Serializable> map=new ConcurrentHashMap<>();
+        if("*".equals(keyPrefix)||".*".equals(keyPrefix)){
+            cache.forEach((key, value) -> map.put(ValUtil.toStr(key), value.item));
+        }else{
+            Pattern p = Pattern.compile(keyPrefix.replaceAll("\\.\\*","*").replaceAll("\\*",".*"));
+            cache.forEach((key, value) -> {
+                String keyStr = ValUtil.toStr(key);
+                if (p.matcher(keyStr).matches()) {
+                    map.put(keyStr, value.item);
+                }
+            });
+        }
+        return map;
+    }
+
+    class Element {
+        Long expired;
+        Serializable item;
+
+        Element(Serializable item) {
+            this.item = item;
+        }
+    }
+
+    class ExpiredRunnable implements Runnable {
+        private volatile Long begin;
+        private volatile Long end;
+
+        public void setExpiredRange(Long expired) {//设置过期区间
+            if (begin == null || expired < begin) {
+                begin = expired;
+            }
+            if (end == null || expired > end) {
+                end = expired;
+            }
+        }
+
+        public void run() {//重写run方法
+            while (true) {
+                try {
+                    Thread.sleep(1000);//实现定时去删除过期
+                    expired(System.currentTimeMillis() / 1000 - MemoryCache.BEGIN);
+                } catch (InterruptedException e) {
+                    Thread.currentThread().interrupt();
+                    log.error("ExpiredRunnable interrupted", e);
+                }
+            }
+        }
+
+        private boolean expired(long curr) {
+            if (begin == null || end == null || begin > curr || end < curr) {
+                return false;
+            }
+            begin = null;
+            end = null;
+            MemoryCache.CACHE.entrySet().stream().parallel().forEach(item -> {
+                Map<Serializable, Element> cache = item.getValue();
+                cache.forEach((key, value) -> {
+                    if (value.expired != null) {
+                        if (value.expired < curr) {
+                            cache.remove(key);
+                        } else {
+                            setExpiredRange(value.expired);
+                        }
+                    }
+                });
+            });
+            return true;
+        }
+
+        private void expiredWithLog(long curr) {
+            long startTime = System.currentTimeMillis();
+            long totalSize = MemoryCache.CACHE.entrySet().stream().mapToLong(item -> item.getValue().size()).sum();
+
+            if (!expired(curr)) {
+                log.debug("skip: {}", totalSize);
+            }
+
+            long newSize = MemoryCache.CACHE.entrySet().stream().mapToLong(item -> item.getValue().size()).sum();
+            long memoryUsage = Runtime.getRuntime().totalMemory();
+
+            log.debug("sum: {} {} memory: {} time: {} {} {} {}", totalSize, newSize, memoryUsage, System.currentTimeMillis() - startTime, begin, curr, end);
+        }
+    }
+}
+

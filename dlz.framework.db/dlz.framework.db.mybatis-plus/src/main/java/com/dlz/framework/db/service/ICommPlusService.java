@@ -1,6 +1,5 @@
 package com.dlz.framework.db.service;
 
-import com.baomidou.mybatisplus.core.conditions.AbstractWrapper;
 import com.baomidou.mybatisplus.core.conditions.Wrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.TableInfo;
@@ -8,7 +7,6 @@ import com.baomidou.mybatisplus.core.metadata.TableInfoHelper;
 import com.baomidou.mybatisplus.core.toolkit.Assert;
 import com.baomidou.mybatisplus.core.toolkit.ReflectionKit;
 import com.baomidou.mybatisplus.core.toolkit.StringUtils;
-import com.dlz.comm.exception.SystemException;
 import com.dlz.comm.json.JSONMap;
 import com.dlz.framework.db.util.DbUtil;
 

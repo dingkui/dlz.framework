@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration scan="false" scanPeriod="60 seconds" debug="false">
+    <property name="CONSOLE_LOG_PATTERN_COLOR"
+              value="%d{HH:mm:ss.SSS} %highlight(%-5level) %cyan([%-8X{traceId:-traceId}]) %logger{32}:%line %yellow(%m) %cyan([%thread]) %n" />
+    <property name="CONSOLE_LOG_PATTERN_NO_COLOR"
+              value="%d{yyyy-MM-dd HH:mm:ss.SSS} %level [%X{traceId}-%thread] %logger:%line %m%n" />
+    <!-- 控制台日志 -->
+    <appender name="StdoutAppender" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+<!--            <pattern>%d{HH:mm:ss.SSS} [%X{traceId:-trace-Id}-%thread] %-5level %logger{80} - %msg%n</pattern>-->
+<!--            <pattern>%clr(%d{HH:mm:ss.SSS}){faint} %highlight(%-5level) %clr([%X{traceId:-trace-Id}-%thread]){yellow}%clr(%logger{32}){cyan}[%line] %m%n${LOG_EXCEPTION_CONVERSION_WORD:-%wEx}</pattern>-->
+            <pattern>${CONSOLE_LOG_PATTERN_COLOR}</pattern>
+            <charset>UTF-8</charset>
+        </encoder>
+    </appender>
+    <logger name="com.dlz" level="trace" addtivity="false"/>
+    <root level="warn">
+        <appender-ref ref="StdoutAppender"/>
+    </root>
+</configuration>

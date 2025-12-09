@@ -34,7 +34,7 @@ public enum HttpEnum {
         }
     }
 
-    private HttpRequestBase getRequest(String url) {
+    public HttpRequestBase getRequest(String url) {
         try {
             return (HttpRequestBase) c1.newInstance(url);
         } catch (InstantiationException e) {
@@ -44,7 +44,7 @@ public enum HttpEnum {
         } catch (InvocationTargetException e) {
             e.printStackTrace();
         }
-        throw new SystemException("不支持的http类型：" + this.toString());
+        throw new SystemException("不支持的http类型：" + this);
     }
 
     public <T> T send(HttpRequestParam<T> param) {
@@ -53,6 +53,9 @@ public enum HttpEnum {
 
     public String send(String url, Map<String, Object> para) {
         return send(HttpRequestParam.createFormReq(url, para));
+    }
+    public String send(String url, Map<String, String> header,Map<String, Object> para) {
+        return send(HttpRequestParam.createFormReq(url, para).addHeader(header));
     }
 
     public String send(String url) {

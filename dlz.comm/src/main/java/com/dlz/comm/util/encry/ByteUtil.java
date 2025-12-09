@@ -1,5 +1,6 @@
 package com.dlz.comm.util.encry;
 
+import com.dlz.comm.consts.Charsets;
 import com.dlz.comm.util.ExceptionUtils;
 import lombok.extern.slf4j.Slf4j;
 
@@ -64,8 +65,6 @@ public class ByteUtil {
         return baos.toByteArray();
     }
 
-    final static String CHARSET_UTF8 = "UTF-8";
-
     public static byte[] getBytes(String str, String charset) {
         try {
             return str.getBytes(charset);
@@ -79,7 +78,7 @@ public class ByteUtil {
     }
 
     public static byte[] getBytes(String str) {
-        return getBytes(str, CHARSET_UTF8);
+        return getBytes(str, Charsets.UTF_8_NAME);
     }
 
     public static String getStr(byte[] bytes, String charset) {
@@ -91,7 +90,7 @@ public class ByteUtil {
     }
 
     public static String getStr(byte[] bytes) {
-        return getStr(bytes, CHARSET_UTF8);
+        return getStr(bytes, Charsets.UTF_8_NAME);
     }
 
     // 写字节数组内容到二进制文件

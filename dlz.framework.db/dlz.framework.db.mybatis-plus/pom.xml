@@ -3,8 +3,9 @@
 	<parent>
 		<groupId>com.chan3d</groupId>
 		<artifactId>dlz.framework.db</artifactId>
-		<version>1.0.1-RELEASE</version>
+		<version>6.3.2</version>
 	</parent>
+    <name>dlz.framework.db.mybatis-plus</name>
 	<artifactId>dlz.framework.db.mybatis-plus</artifactId>
 	<packaging>jar</packaging>
 	<dependencies>
@@ -23,6 +24,13 @@
 		<dependency>
 			<groupId>com.chan3d</groupId>
 			<artifactId>dlz.framework.db.springjdbc</artifactId>
+			<version>6.3.2</version>
+			<exclusions>
+				<exclusion>
+					<artifactId>mybatis-plus-annotation</artifactId>
+					<groupId>com.baomidou</groupId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 		<!-- PostgreSql -->
 		<dependency>

@@ -3,23 +3,23 @@ server:
   ssl:
     key-password:
 
-appname: dlz-framwork
+appname: dlz.framework.db.mybatis-plus
 
 spring:
   datasource:
-#    driver-class-name: com.mysql.cj.jdbc.Driver
-#    url: jdbc:mysql://192.168.1.2:3306/test?useSSL=false&useUnicode=true&characterEncoding=utf-8&zeroDateTimeBehavior=CONVERT_TO_NULL&transformedBitIsBoolean=true&serverTimezone=GMT%2B8&nullCatalogMeansCurrent=true&allowPublicKeyRetrieval=true
-#    username: root
-#    password: 1234qwer
-    #    driver-class-name: com.mysql.cj.jdbc.Driver
-    driver-class-name: org.postgresql.Driver
-    url: jdbc:postgresql://192.168.1.2:5432/ntgl3
-    username: postgres
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://192.168.1.2:3306/test?useSSL=false&useUnicode=true&characterEncoding=utf-8&zeroDateTimeBehavior=CONVERT_TO_NULL&transformedBitIsBoolean=true&serverTimezone=GMT%2B8&nullCatalogMeansCurrent=true&allowPublicKeyRetrieval=true
+    username: root
     password: 1234qwer
+    #    driver-class-name: com.mysql.cj.jdbc.Driver
+#    driver-class-name: org.postgresql.Driver
+#    url: jdbc:postgresql://192.168.1.2:5432/ntgl3
+#    username: postgres
+#    password: 1234qwer
   profiles:
     active: test
   application:
-    name: ${appname}-test11
+    name: ${appname}-test
   redis:
     #数据库索引
     database: 13
@@ -37,5 +37,4 @@ mybatis-plus:
 dlz:
   db:
     helper:
-      type: postgresql
-      auto-update: true
+      auto-update: false

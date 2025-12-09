@@ -1,10 +1,10 @@
 package com.dlz.framework.cache.aspect;
 
+import com.dlz.comm.cache.ICache;
 import com.dlz.comm.exception.SystemException;
 import com.dlz.comm.json.JSONMap;
 import com.dlz.comm.util.StringUtils;
 import com.dlz.comm.util.ValUtil;
-import com.dlz.framework.cache.ICache;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.ProceedingJoinPoint;
@@ -109,7 +109,7 @@ public class CacheAspect {
         }
         SystemException.isTrue(!Serializable.class.isAssignableFrom(result.getClass()) , () -> "类型：" + result.getClass() + "无法缓存！");
         //数据保存进缓存
-        cache.put(cacheName, key, (Serializable) result, ValUtil.getInt(cacheAnno.cacheTime()));
+        cache.put(cacheName, key, (Serializable) result, ValUtil.toInt(cacheAnno.cacheTime()));
         return result;
     }
 

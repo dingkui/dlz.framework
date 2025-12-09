@@ -23,7 +23,7 @@ import java.util.Map;
  * @author dk
  */
 @Slf4j
-public class ResponseHandler {
+public class ResponseHandler<T> {
     protected static final Map<Class, IResponseReader> CLASS_READERS = new HashMap<>();
     protected static final IResponseReader<String> DEFAULT_READER=ResponseStringReader.getInstance();
     static {
@@ -31,14 +31,14 @@ public class ResponseHandler {
         CLASS_READERS.put(Document.class,ResponseXmlReader.getInstance());
     }
 
-    protected <T> T getOkResult(InputStream content,HttpRequestParam<T> param){
+    protected T getOkResult(InputStream content,HttpRequestParam<T> param){
         Class<T> tClass = param.getTClass();
         IResponseReader iResponseReader = CLASS_READERS.get(tClass);
         if(iResponseReader==null){
             iResponseReader = DEFAULT_READER;
         }
         Object result = iResponseReader.read(content, param.getCharsetNameResponse());
-        return ValUtil.getObj(result,tClass);
+        return ValUtil.toObj(result,tClass);
     }
 
     protected String getNgResult(InputStream content,HttpRequestParam param){
@@ -47,7 +47,7 @@ public class ResponseHandler {
     /**
      * @return
      */
-    public <T> T handle(HttpRequestParam<T> param,
+    public T handle(HttpRequestParam<T> param,
                         int statusCode,
                         HttpResponse response) {
         Object result = null;
@@ -64,15 +64,15 @@ public class ResponseHandler {
                 case HttpStatus.SC_FORBIDDEN:
                     throw new HttpException("无访问权限:" + param.getUrl(), statusCode);
                 case HttpStatus.SC_MOVED_TEMPORARILY:
-                    result = getNgResult(response.getEntity().getContent(),param);
-                    throw new BussinessException("访问错误:" + result);
+                    String msg = getNgResult(response.getEntity().getContent(),param);
+                    throw new BussinessException("访问错误:" + msg);
                 default:
-                    result = getNgResult(response.getEntity().getContent(),param);
+                    msg = getNgResult(response.getEntity().getContent(),param);
                     if (statusCode > 3000 && statusCode < 3100) {
-                        throw new BussinessException(statusCode, (String) result, null);
+                        throw new BussinessException(statusCode, msg, null);
                     } else {
-                        log.error("访问异常:" + param.getUrl() + " 返回码:" + statusCode + " msg:" + result);
-                        throw new HttpException((String) result, statusCode);
+                        log.error("访问异常:" + param.getUrl() + " 返回码:" + statusCode + " msg:" + msg);
+                        throw new HttpException(msg, statusCode);
                     }
             }
         } catch (BussinessException | HttpException e) {

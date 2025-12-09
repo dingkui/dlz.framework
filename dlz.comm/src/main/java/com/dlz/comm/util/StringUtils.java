@@ -1,7 +1,9 @@
 package com.dlz.comm.util;
 
+import com.dlz.comm.json.JSONMap;
 import lombok.extern.slf4j.Slf4j;
 
+import java.lang.reflect.Array;
 import java.util.*;
 import java.util.function.Function;
 import java.util.regex.Matcher;
@@ -68,7 +70,6 @@ public class StringUtils {
         return cs == null ? defaultStr : cs;
     }
 
-    private static Pattern myMsgPattern = Pattern.compile("\\{([^\\{\\}]*)\\}");
 
     public static String getBeanId(String className) {
         int lastIndexOf = className.lastIndexOf(".");
@@ -79,30 +80,41 @@ public class StringUtils {
         return getBeanId(clazz.getName());
     }
 
+    private static Pattern myMsgPattern = Pattern.compile("\\{([\\w]*)\\}");
+    private static Pattern myMsgPatternSub = Pattern.compile(".*([\\d]+)$");
+    /**
+     * 格式化文本, {} 表示占位符<br>
+     *  {xxx0},{0}表示用参数下标,支持用字符说明，结尾的数字是下标<br>
+     *  无下标时，默认采用当前所在的序号<br>
+     *  下标无效时，此处不做替换<br>
+     * 例：<br>
+     * 通常使用：formatMsg("this is {} for {}", "a", "b") -> this is a for b<br>
+     * 指定下标： formatMsg("this is {1} for {}", "a", "b") -> this is b for b<br>
+     * 说明+明确下标： formatMsg("this is {b1} for {}", "a", "b") -> this is b for b<br>
+     * 说明+明确下标： formatMsg("this is {xx1x_1} for {}", "a", "b") -> this is b for b<br>
+     * 下标无效： formatMsg("this is {9} for {}", "a", "b") -> this is {9} for b<br>
+     * 下标无效： formatMsg("this is {} for {} and {}", "a", "b") -> this is a for b and {}<br>
+     *
+     * @return 格式化后的文本
+     */
     public static String formatMsg(Object message, Object... paras) {
-        String msg = ValUtil.getStr(message, "");
-        if (paras == null) {
-            paras = new Object[]{null};
-        }
+        String msg = ValUtil.toStr(message, "");
         Matcher mat = myMsgPattern.matcher(msg);
         StringBuffer sb = new StringBuffer();
         int end = 0;
         int i = 0;
         while (mat.find()) {
-            String indexStr = mat.group(1).replaceAll("[^\\d]*", "");
-            int index = 0;
-            if (!"".equals(indexStr)) {
-                if (indexStr.length() > 2) {
-                    index = -1;
-                } else {
-                    index = Integer.parseInt(indexStr);
+            int index=i;
+            String indexStr = mat.group(1);
+            if(indexStr.length()>0){
+                indexStr = myMsgPatternSub.matcher(indexStr).replaceAll("$1");
+                if (indexStr.length()>0) {
+                     index = Integer.parseInt(indexStr);
                 }
-            } else {
-                index = i;
             }
             sb.append(msg, end, mat.start());
-            if (index > -1 && paras.length > index) {
-                sb.append(ValUtil.getStr(paras[index], null));
+            if (paras.length > index) {
+                sb.append(ValUtil.toStr(paras[index]));
             } else {
                 sb.append(mat.group(0));
             }
@@ -110,6 +122,38 @@ public class StringUtils {
             i++;
         }
         return sb.append(msg, end, msg.length()).toString();
+    }
+
+    /**
+     * 替换内容匹配符：如  ${bb}
+     */
+    private static Pattern PATTERN_REPLACE = Pattern.compile("\\$\\{(\\w[\\.\\w]*)\\}");
+    /**
+     * msg 语句中 ${aa} 的内容进行文本替换
+     * @param input
+     * @param m
+     * @return
+     */
+    public static String formatMsg(Object input, JSONMap m) {
+        String msg = ValUtil.toStr(input, "");
+        int length = msg.length();
+        Matcher mat = PATTERN_REPLACE.matcher(msg);
+        int start = 0;
+        StringBuffer sb = new StringBuffer();
+        while (mat.find()) {
+            String key = mat.group(1);
+            String o = m.getStr(key);
+            sb.append(msg, start, mat.start());
+            if(o != null){
+                sb.append(o);
+            }
+            start = mat.end();
+        }
+        if (start == 0) {
+            return msg;
+        }
+        sb.append(msg, start, length);
+        return formatMsg(sb.toString(), m);
     }
 
     /**
@@ -133,26 +177,26 @@ public class StringUtils {
      * </pre>
      */
     @SuppressWarnings({"rawtypes"})
-    public static boolean isEmpty(Object cs) {
-        if (cs == null) {
+    public static boolean isEmpty(Object obj) {
+        if (obj == null) {
             return true;
         }
-        if (cs instanceof Collection) {
-            return ((Collection) cs).isEmpty();
-        } else if (cs instanceof Map) {
-            return ((Map) cs).isEmpty();
-        } else if (cs.getClass().isArray()) {
-            return ((Object[]) cs).length == 0;
-        } else if (cs instanceof CharSequence) {
-            return ((CharSequence) cs).length() == 0;
-//        } else if (cs instanceof Date) {
-//            return false;
-//        } else if (cs instanceof Number) {
-//            return false;
-        } else {
-            return false;
-            // throw new IllegalArgumentException("检验空参数有误：" + cs.getClass());
+        if (obj instanceof Optional) {
+            return !((Optional<?>) obj).isPresent();
         }
+        if (obj instanceof CharSequence) {
+            return ((CharSequence) obj).length() == 0;
+        }
+        if (obj.getClass().isArray()) {
+            return Array.getLength(obj) == 0;
+        }
+        if (obj instanceof Collection) {
+            return ((Collection<?>) obj).isEmpty();
+        }
+        if (obj instanceof Map) {
+            return ((Map<?, ?>) obj).isEmpty();
+        }
+        return false;
     }
 
     public static boolean isAnyEmpty(Object... cs) {
@@ -163,8 +207,17 @@ public class StringUtils {
         }
         return false;
     }
-
-    public static boolean isBlank(CharSequence cs) {
+    /**
+     * 判断输入的字符是否为空或纯空格
+     * <pre class="code">
+     * StringUtils.isBlank(null) = true
+     * StringUtils.isBlank("") = true
+     * StringUtils.isBlank(" ") = true
+     * StringUtils.isBlank("12345") = false
+     * StringUtils.isBlank(" 12345 ") = false
+     * </pre>
+     */
+    public static boolean isBlank(final CharSequence cs) {
         int strLen;
         if (cs == null || (strLen = cs.length()) == 0) {
             return true;
@@ -220,22 +273,16 @@ public class StringUtils {
         return true;
     }
 
-
-
     public static boolean isNumber(CharSequence o) {
-        return o.length() > 0 && o.toString().replaceAll("[\\d.+-]", "").length() > 0;
+        return o.length() > 0 && o.toString().replaceAll("[\\d\\.+-]", "").length() == 0;
     }
 
     public static boolean isLongOrInt(CharSequence o) {
-        return o.length() > 0 && o.toString().replaceAll("[\\d+-]", "").length() > 0;
+        return o.length() > 0 && o.toString().replaceAll("[\\d+-]", "").length() == 0;
     }
 
     public static boolean isNotEmpty(Object cs) {
         return !isEmpty(cs);
-    }
-
-    public static String joinObject(Object cs, Object b) {
-        return String.valueOf(cs) + String.valueOf(b);
     }
 
     /**
@@ -308,36 +355,6 @@ public class StringUtils {
     }
 
     /**
-     * 转换数据库键名 aa_bb_cc→aaBbCc
-     *
-     * @param clumn
-     * @return
-     * @author dk 2015-04-09
-     */
-    public static String converClumnStr2Str(String clumn) {
-        if (clumn == null) {
-            return "";
-        }
-        clumn = clumn.toLowerCase();
-        Matcher mat = Pattern.compile("_([a-z])").matcher(clumn);
-        while (mat.find()) {
-            clumn = clumn.replace("_" + mat.group(1), mat.group(1).toUpperCase());
-        }
-        return clumn.replaceAll("_", "");
-    }
-     public static void main(String[] args) {
-         log.debug(repeat('2',3));
-         log.debug(converClumnStr2Str("aa_bb_cc"));
-         log.debug(converClumnStr2Str("A_CC_VV_c"));
-         log.debug("{}",isLongOrInt("-111"));
-         log.debug("{}",isLongOrInt("1111"));
-         log.debug("{}",isLongOrInt("+111.11"));
-         log.debug("{}",ValUtil.getFloat("-111.11"));
-
-         System.out.println(startsWith(new StringBuilder("123"),new StringBuilder("12")));
-     }
-
-    /**
      * <p>
      * 试用指定字符构造字符串
      * </p>
@@ -354,17 +371,12 @@ public class StringUtils {
         if (array == null) {
             return null;
         }
-        separator = NVL(separator);
-        final int noOfItems = array.length;
-        if (noOfItems <= 0) {
+        if (array.length == 0) {
             return "";
         }
-        final StringBuilder buf = new StringBuilder(noOfItems * 16);
-        for (int i = 0; i < noOfItems; i++) {
-            if (i > 0) {
-                buf.append(separator);
-            }
-            buf.append(array[i]);
+        final StringJoiner buf = new StringJoiner(NVL(separator));
+        for (T element : array){
+            buf.add(ValUtil.toStr(element,""));
         }
         return buf.toString();
     }

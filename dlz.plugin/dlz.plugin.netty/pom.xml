@@ -3,8 +3,10 @@
 	<parent>
 		<groupId>com.chan3d</groupId>
 		<artifactId>dlz.plugin</artifactId>
-		<version>1.0.1-RELEASE</version>
+		<version>6.3.2</version>
 	</parent>
+	<version>6.3.2</version>
+    <name>dlz.plugin.netty</name>
 	<artifactId>dlz.plugin.netty</artifactId>
 	<packaging>jar</packaging>
 	<dependencies>

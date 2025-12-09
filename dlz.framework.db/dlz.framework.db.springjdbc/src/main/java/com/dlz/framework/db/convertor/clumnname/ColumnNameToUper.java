@@ -1,15 +1,15 @@
 package com.dlz.framework.db.convertor.clumnname;
 
-public class ColumnNameToUper extends AColumnNameConvertor {
+public class ColumnNameToUper implements IColumnNameConvertor {
 
 
 	@Override
-	public String clumn2Str(String dbKey) {
+	public String toFieldName(String dbKey) {
 		return dbKey.toUpperCase();
 	}
 
 	@Override
-	public String str2Clumn(String beanKey) {
+	public String toDbColumnName(String beanKey) {
 		return beanKey;
 	}
 }

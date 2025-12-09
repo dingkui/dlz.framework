@@ -21,18 +21,18 @@ public class ClientHandler extends BaseHandler {
     // 连接成功后，向server发送消息
     @Override
     public void channelActive(ChannelHandlerContext ctx) throws Exception {
-//        Object hellor = coder.mkOut("hellor");
-//        if(hellor!=null){
-//            ctx.writeAndFlush(hellor);
-//        }
+        Object hellor = coder.mkOut("hellor");
+        if(hellor!=null){
+            ctx.writeAndFlush(hellor);
+        }
     }
 
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
-//    	if(cause!=null) {
-//    		logger.error(cause.getMessage());
-//    		logger.error(ctx.channel().remoteAddress().toString());
-//    	}
+    	if(cause!=null) {
+    		log.error(cause.getMessage());
+    		log.error(ctx.channel().remoteAddress().toString());
+    	}
         if(null != ctx) ctx.close();
         if(null != client){
             if(cause!=null) {

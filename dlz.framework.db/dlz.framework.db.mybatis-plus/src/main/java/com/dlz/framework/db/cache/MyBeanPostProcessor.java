@@ -5,14 +5,12 @@ import com.dlz.framework.holder.SpringHolder;
 import org.mybatis.spring.mapper.MapperFactoryBean;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.config.BeanPostProcessor;
-import org.springframework.stereotype.Component;
 
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.Hashtable;
 import java.util.Map;
 
-@Component
 public class MyBeanPostProcessor implements BeanPostProcessor {
     private Map<Class<?>, Object[]> hashtable = new Hashtable<>();
     @Override
@@ -29,7 +27,6 @@ public class MyBeanPostProcessor implements BeanPostProcessor {
                 hashtable.put(aClass, new Object[]{mapperInterface, null});
             }
         }
-//        System.out.println(bean.getClass());
         return bean;
     }
 

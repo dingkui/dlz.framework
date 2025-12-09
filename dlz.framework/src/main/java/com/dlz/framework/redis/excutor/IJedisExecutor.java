@@ -1,7 +1,9 @@
 package com.dlz.framework.redis.excutor;
 
-import com.dlz.framework.executor.Executor;
 import redis.clients.jedis.Jedis;
+
+import java.io.Serializable;
+import java.util.function.Function;
 
 /**
  * Redis key构建器
@@ -15,5 +17,22 @@ interface IJedisExecutor {
      * @param j 处理逻辑，通过 lambda行为参数化
      * @return 处理结果
      */
-    <T> T excuteByJedis(Executor<Jedis, T> j);
+    <T> T excute(Function<Jedis, T> j);
+
+    /**
+     * 将业务keu构建成带项目前缀的key
+     * @param key
+     * @param other
+     * @return
+     */
+    String getRedisKey(String key, Serializable... other);
+
+    /**
+     * 将redis中的key转为客户端使用的key
+     * @param key
+     * @return
+     */
+    String getClientKey(String key);
+
+    String[] getKeyArray(String... other);
 }

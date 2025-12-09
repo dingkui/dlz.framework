@@ -9,7 +9,6 @@ import com.dlz.comm.util.ValUtil;
 import com.dlz.comm.util.web.handler.ResponseHandler;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.http.HttpResponse;
-import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpEntityEnclosingRequestBase;
 import org.apache.http.client.methods.HttpRequestBase;
 import org.apache.http.client.utils.URIBuilder;
@@ -44,6 +43,9 @@ public class HttpUtil {
 //        HttpClient httpClient = HttpConnUtil.wrapClient(param.getUrl(),param.getRequestConfig());
         CloseableHttpClient httpClient = HttpClients.createDefault();
         Map<String, String> headers = param.getHeaders();
+        if(param.getRequestConfig()!=null){
+            request.setConfig(param.getRequestConfig());
+        }
         headers.forEach(request::addHeader);
         try {
             if (request instanceof HttpEntityEnclosingRequestBase) {
@@ -128,10 +130,10 @@ public class HttpUtil {
 
     public static URI buildUrI(String host, String path, Map<String, Object> querys) throws URISyntaxException {
         // 创建uri
-        URIBuilder builder = new URIBuilder(StringUtils.isEmpty(path)?host:(host+path));;
+        URIBuilder builder = new URIBuilder(StringUtils.isEmpty(path)?host:(host+path));
         if (querys != null) {
             for (String key : querys.keySet()) {
-                builder.addParameter(key, ValUtil.getStr(querys.get(key)));
+                builder.addParameter(key, ValUtil.toStr(querys.get(key)));
             }
         }
         return builder.build();
@@ -166,7 +168,7 @@ public class HttpUtil {
                     sbQuery.append(query.getKey());
                     if (!StringUtils.isEmpty(query.getValue())) {
                         sbQuery.append("=");
-                        sbQuery.append(URLEncoder.encode(ValUtil.getStr(query.getValue()), enc));
+                        sbQuery.append(URLEncoder.encode(ValUtil.toStr(query.getValue()), enc));
                     }
                 }
             }

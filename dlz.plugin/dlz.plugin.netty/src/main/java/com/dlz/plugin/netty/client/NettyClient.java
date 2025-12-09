@@ -1,15 +1,15 @@
 package com.dlz.plugin.netty.client;
 
 import com.dlz.plugin.netty.base.codec.ICoder;
-import com.dlz.plugin.netty.base.codec.MessageDecoder;
 import com.dlz.plugin.netty.base.codec.MessageEncoder;
 import com.dlz.plugin.netty.base.listener.ISocketListener;
-import com.dlz.plugin.netty.client.handler.ClientHandler;
+import com.dlz.plugin.netty.client.handler.SmsClientHandler;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.*;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
+import io.netty.handler.codec.LineBasedFrameDecoder;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.Timer;
@@ -75,13 +75,12 @@ public class NettyClient {
                         // 增加任务处理
                         // 初始化编码器，解码器，处理器
                         ChannelPipeline p = socketChannel.pipeline();
-//						p.addLast(new LineBasedFrameDecoder(1024));
+						p.addLast(new LineBasedFrameDecoder(1024));
 //						p.addLast(new StringDecoder());
 //						p.addLast(new TimeClientHandler());
-                        p.addLast(new MessageDecoder(coder));
-                        p.addLast(new MessageEncoder(coder) {
-                        });
-                        p.addLast(new ClientHandler(listener, coder, instance));
+//                        p.addLast(new MessageDecoder(coder));
+                        p.addLast(new MessageEncoder(coder) {});
+                        p.addLast(new SmsClientHandler(listener, coder, instance));
                     }
                 });
                 // 进行连接

@@ -3,10 +3,13 @@
 	<parent>
 		<groupId>com.chan3d</groupId>
 		<artifactId>dlz.framework.db</artifactId>
-		<version>1.0.1-RELEASE</version>
+		<version>6.3.2</version>
 	</parent>
+    <name>dlz.framework.db.springjdbc</name>
 	<artifactId>dlz.framework.db.springjdbc</artifactId>
 	<packaging>jar</packaging>
+	<version>6.3.2</version>
+
 	<dependencies>
 <!--		<dependency>-->
 <!--			<groupId>org.springframework</groupId>-->
@@ -28,5 +31,16 @@
 				</exclusion>
 			</exclusions>
 		</dependency>
+<!--		<dependency>-->
+<!--			<groupId>com.baomidou</groupId>-->
+<!--			<artifactId>mybatis-plus-annotation</artifactId>-->
+<!--			<version>3.5.9</version>-->
+<!--		</dependency>-->
+<!--		<dependency>-->
+<!--			<groupId>org.mybatis</groupId>-->
+<!--			<artifactId>mybatis</artifactId>-->
+<!--			<version>3.5.16</version>-->
+<!--			<scope>test</scope>-->
+<!--		</dependency>-->
 	</dependencies>
 </project>

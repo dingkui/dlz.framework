@@ -1,14 +1,14 @@
 package com.dlz.framework.db.convertor.clumnname;
 
-public class ColumnNameToLower extends AColumnNameConvertor{
+public class ColumnNameToLower implements IColumnNameConvertor {
 
 	@Override
-	public String clumn2Str(String dbKey) {
+	public String toFieldName(String dbKey) {
 		return dbKey.toLowerCase();
 	}
 
 	@Override
-	public String str2Clumn(String beanKey) {
+	public String toDbColumnName(String beanKey) {
 		return beanKey;
 	}
 }

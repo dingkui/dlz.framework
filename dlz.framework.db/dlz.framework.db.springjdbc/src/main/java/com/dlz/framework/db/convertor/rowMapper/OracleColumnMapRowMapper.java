@@ -1,16 +1,20 @@
 package com.dlz.framework.db.convertor.rowMapper;
 
 
+import com.dlz.framework.db.convertor.clumnname.IColumnNameConvertor;
+import com.dlz.framework.db.modal.result.ResultMap;
+import org.springframework.jdbc.support.JdbcUtils;
+
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 
-import org.springframework.jdbc.support.JdbcUtils;
-
-import com.dlz.framework.db.modal.ResultMap;
-
 public class OracleColumnMapRowMapper  extends ResultMapRowMapper{
 
+
+	public OracleColumnMapRowMapper(IColumnNameConvertor columnMapper) {
+		super(columnMapper);
+	}
 
 	@Override
 	public ResultMap  mapRow(ResultSet rs, int rowNum) throws SQLException {
@@ -18,7 +22,7 @@ public class OracleColumnMapRowMapper  extends ResultMapRowMapper{
 		int columnCount = rsmd.getColumnCount();
 		ResultMap mapOfColValues = new ResultMap();
 		for (int i = 1; i <= columnCount; i++) {
-			String key = getColumnKey(JdbcUtils.lookupColumnName(rsmd, i));
+			String key = toFieldName(JdbcUtils.lookupColumnName(rsmd, i));
 			Object obj = null;
 			String typename= rsmd.getColumnTypeName(i);
 			if("NUMBER".equals(typename)){

@@ -1,5 +1,6 @@
 package com.dlz.comm.util.config;
 
+import com.dlz.comm.consts.Charsets;
 import com.dlz.comm.json.JSONList;
 import com.dlz.comm.json.JSONMap;
 import com.dlz.comm.util.ExceptionUtils;
@@ -65,7 +66,7 @@ public class ConfUtil{
 					stream.close();
 					final Set<Entry<Object, Object>> entrySet = properties.entrySet();
 					for(Entry<Object, Object> e:entrySet){
-						props.put((String)e.getKey(),isProperties?e.getValue():new String(e.getValue().toString().getBytes("ISO-8859-1"),"UTF-8"));
+						props.put((String)e.getKey(),isProperties?e.getValue():Charsets.iso2Utf8(e.getValue().toString()));
 					}
 				}
 				if(fileR!=null){
@@ -75,7 +76,7 @@ public class ConfUtil{
 					file.close();
 					final Set<Entry<Object, Object>> entrySet = properties.entrySet();
 					for(Entry<Object, Object> e:entrySet){
-						props.put((String)e.getKey(),isProperties?e.getValue():new String(e.getValue().toString().getBytes("ISO-8859-1"),"UTF-8"));
+						props.put((String)e.getKey(),isProperties?e.getValue():Charsets.iso2Utf8(e.getValue().toString()));
 					}
 				}
 			}

@@ -1,11 +1,11 @@
 server:
   port: 80021
 
-appname: dlz-framwork-db
+appname: dlz.framework.db.springjdbc
 spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://192.168.1.2:3306/test?useSSL=false&useUnicode=true&characterEncoding=utf-8&zeroDateTimeBehavior=CONVERT_TO_NULL&transformedBitIsBoolean=true&serverTimezone=GMT%2B8&nullCatalogMeansCurrent=true&allowPublicKeyRetrieval=true
+    url: jdbc:mysql://192.168.1.126:3306/test?useSSL=false&useUnicode=true&characterEncoding=utf-8&zeroDateTimeBehavior=CONVERT_TO_NULL&transformedBitIsBoolean=true&serverTimezone=GMT%2B8&nullCatalogMeansCurrent=true&allowPublicKeyRetrieval=true
     username: root
     password: 1234qwer
   profiles:
@@ -15,18 +15,28 @@ spring:
   redis:
     #数据库索引
     database: 0
-    host: 192.168.1.89
+    host: 192.168.1.126
     port: 6379
-    password:
+    password: 1234qwer
     #连接超时时间
     timeout: 5000
 
 dlz:
+  redis:
+    prefix: dlzDbTest
+  cache:
+    anno: true
   db:
+    use-db-sql: true
     log:
-      showResult: true
-      showRunSql: false
-      showKeySql: true
-    jdbcSql: true
-    use-db-sql: false
+      show-result: true
+      show-run-sql: true
+      show-key-sql: true
+      jdbc-sql: true
+      show-caller: true
+    helper:
+      auto-update: false
+      package-name: com.dlz.test.db.entity
+  fw:
+    api-scan-path:
 

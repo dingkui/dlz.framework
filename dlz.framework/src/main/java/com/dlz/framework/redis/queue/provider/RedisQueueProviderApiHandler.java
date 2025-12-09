@@ -4,8 +4,8 @@ import com.dlz.comm.exception.SystemException;
 import com.dlz.comm.util.ExceptionUtils;
 import com.dlz.comm.util.ValUtil;
 import com.dlz.framework.redis.excutor.JedisExecutor;
-import com.dlz.framework.redis.RedisKeyMaker;
 import com.dlz.framework.redis.queue.annotation.AnnoRedisQueueProvider;
+import com.dlz.framework.redis.util.IKeyMaker;
 import com.dlz.framework.spring.iproxy.ApiProxyHandler;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,7 +20,7 @@ import java.lang.reflect.Method;
 @Slf4j
 public class RedisQueueProviderApiHandler extends ApiProxyHandler {
     @Autowired
-    private RedisKeyMaker keyMaker;
+    private IKeyMaker keyMaker;
     @Autowired
     JedisExecutor jedisExecutor;
 
@@ -34,10 +34,10 @@ public class RedisQueueProviderApiHandler extends ApiProxyHandler {
             AnnoRedisQueueProvider redisQueueProvider = method.getDeclaredAnnotation(AnnoRedisQueueProvider.class);
             String queueName = redisQueueProvider.value();
             SystemException.notEmpty(queueName, () -> "生产者未配置队列名字:" + clas + "." + method.getName());
-            String redisQueueName = keyMaker.getRedisKey(queueName);
-            String json = ValUtil.getStr(args[0]);
+            String redisQueueName = keyMaker.getKeyWithPrefix(queueName);
+            String json = ValUtil.toStr(args[0]);
             try {
-                rId = jedisExecutor.excuteByJedis(j -> j.rpush(redisQueueName, json));
+                rId = jedisExecutor.excute(j -> j.rpush(redisQueueName, json));
                 log.debug("同步发消息成功!{} -> {}", redisQueueName, json);
             } catch (Exception e) {
                 log.error("同步发消息失败!{} -> {}", redisQueueName, json);
@@ -47,7 +47,7 @@ public class RedisQueueProviderApiHandler extends ApiProxyHandler {
 //            try (Jedis jedis = jedisPool.getResource()) {
 //                switch (redisQueueProvider.strategy()) {
 //                    case SYNC:
-//                        String json = ValUtil.getStr(args[0]);
+//                        String json = ValUtil.toStr(args[0]);
 //                        try {
 //                            rId = jedis.rpush(redisQueueName, json);
 //                            log.debug("同步发消息成功!{} -> {}", redisQueueName, json);
@@ -59,7 +59,7 @@ public class RedisQueueProviderApiHandler extends ApiProxyHandler {
             //异步发送并发时有问题，取消该配置
 //                    case ASYNC:
 //                        Executors.newSingleThreadExecutor().submit(() -> {
-//                            String json2 = ValUtil.getStr(args[0]);
+//                            String json2 = ValUtil.toStr(args[0]);
 //                            try {
 //                                jedis.rpush(redisQueueName, json2);
 //                                log.debug("异步发消息成功!{} -> {}", redisQueueName, json2);

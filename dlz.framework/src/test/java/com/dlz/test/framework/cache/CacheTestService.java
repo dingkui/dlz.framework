@@ -1,11 +1,7 @@
 package com.dlz.test.framework.cache;
 
 import com.dlz.framework.cache.aspect.CacheAnno;
-import com.dlz.framework.redis.queue.annotation.AnnoRedisQueueConsumer;
-import com.dlz.framework.redis.queue.consumer.ARedisQueueConsumer;
 import org.springframework.stereotype.Component;
-
-import java.util.List;
 
 //继承AbstractRedisQueueConsumer并通过RedisQueueConsumer注解标明队列名称即可
 @Component

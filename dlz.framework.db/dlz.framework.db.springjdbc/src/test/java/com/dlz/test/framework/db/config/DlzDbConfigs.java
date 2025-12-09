@@ -1,18 +1,20 @@
 package com.dlz.test.framework.db.config;
 
+import com.dlz.framework.config.DlzProperties;
+import com.dlz.framework.db.DlzTestDao;
 import com.dlz.framework.db.config.DlzDbConfig;
+import com.dlz.framework.db.config.DlzDbProperties;
+import com.dlz.framework.db.convertor.dbtype.TableColumnMapper;
+import com.dlz.framework.db.convertor.rowMapper.ResultMapRowMapper;
 import com.dlz.framework.db.dao.IDlzDao;
-import com.dlz.framework.db.modal.BaseParaMap;
-import com.dlz.framework.db.modal.ResultMap;
+import com.dlz.framework.db.holder.SqlHolder;
+import com.dlz.framework.db.util.DbConvertUtil;
+import com.dlz.framework.db.util.DbLogUtil;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Lazy;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
 
 /**
  * @author: dk
@@ -20,40 +22,22 @@ import java.util.List;
  */
 @Slf4j
 @Configuration
+@EnableConfigurationProperties({DlzDbProperties.class, DlzProperties.class})
 public class DlzDbConfigs extends DlzDbConfig {
 
-//    @Bean
-//    @DependsOn({"dbInfo"})
-//    public ICommService commService() {
-//        return new CommServiceImpl();
-//    }
-
     @Bean(name = "dlzDao")
-    public IDlzDao dlzDao() {
-        return new IDlzDao(){
-            @Override
-            public List<ResultMap> getList(BaseParaMap paraMap) {
-                ResultMap resultMap = new ResultMap();
-                resultMap.put("cnt",0);
-                List<ResultMap> resultMaps = new ArrayList<>();
-                resultMaps.add(resultMap);
-                return resultMaps;
-            }
-
-            @Override
-            public int getCnt(BaseParaMap paraMap) {
-                return 0;
-            }
-
-            @Override
-            public int updateSql(BaseParaMap paraMap) {
-                return 0;
-            }
-
-            @Override
-            public HashMap<String, Integer> getTableColumsInfo(String tableName) {
-                return new HashMap<>();
-            }
-        };
+    @Lazy
+    public IDlzDao dlzDao2(DlzDbProperties properties, ResultMapRowMapper resultRowMapper) {
+        SqlHolder.init(properties);
+        DbLogUtil.init(properties);
+        final IDlzDao dlzDao = new DlzTestDao();
+        DbConvertUtil.tableCloumnMapper= new TableColumnMapper(dlzDao);
+        if(log.isInfoEnabled()){
+            log.info("init test dlzDao:"+DlzTestDao.class.getName());
+            log.info("init resultRowMapper:"+resultRowMapper.getClass().getName());
+            log.info("init tableCloumnMapper:"+TableColumnMapper.class.getName());
+        }
+        return dlzDao;
     }
+
 }

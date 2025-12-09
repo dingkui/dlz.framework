@@ -3,6 +3,7 @@ package com.dlz.framework.holder;
 import com.dlz.comm.exception.SystemException;
 import com.dlz.comm.util.StringUtils;
 import com.dlz.comm.util.encry.TraceUtil;
+import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.NoSuchBeanDefinitionException;
@@ -11,7 +12,10 @@ import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
 import org.springframework.beans.factory.support.AbstractBeanDefinition;
 import org.springframework.beans.factory.support.BeanDefinitionBuilder;
 import org.springframework.beans.factory.support.BeanDefinitionRegistry;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationEvent;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
+import org.springframework.core.io.Resource;
 
 import java.util.Map;
 
@@ -20,6 +24,7 @@ import java.util.Map;
  *
  * @author dk
  */
+@Slf4j
 public class SpringHolder {
     private static Logger logger = LoggerFactory.getLogger(SpringHolder.class);
     private static ConfigurableListableBeanFactory beanFactory;
@@ -84,7 +89,24 @@ public class SpringHolder {
     public static <T> T getBean(Class<T> clazz) {
         checkApplicationContext();
         try {
-            return (T) beanFactory.getBean(clazz);
+            return beanFactory.getBean(clazz);
+        } catch (NoSuchBeanDefinitionException e) {
+            logger.warn("NoSuchBeanDefinition" + clazz.getName());
+            return null;
+        }
+    }
+
+
+    /**
+     * 从静态变量ApplicationContext中取得Bean, 如果取不到则注册一个单例bean.
+     */
+    public static <T> T getBeanWithRegister(Class<T> clazz) {
+        checkApplicationContext();
+        try {
+            if (!beanFactory.getBeansOfType(clazz).isEmpty()) {
+                return beanFactory.getBean(clazz);
+            }
+            return registerBean(clazz);
         } catch (NoSuchBeanDefinitionException e) {
             logger.warn("NoSuchBeanDefinition" + clazz.getName());
             return null;
@@ -114,11 +136,11 @@ public class SpringHolder {
     @SuppressWarnings("unchecked")
     public static <T> T registerBean(String beanId, boolean singleton, Class<T> clazz) {
         String toRegeistBeanId = beanId;
-        if (singleton ) {
-            if ( !beanFactory.getBeansOfType(clazz).isEmpty()) {
+        if (singleton) {
+            if (!beanFactory.getBeansOfType(clazz).isEmpty()) {
                 return beanFactory.getBean(clazz);
             }
-        }else{
+        } else {
             while (beanFactory.containsBean(toRegeistBeanId)) {
                 toRegeistBeanId = beanId + "_" + TraceUtil.generateShortUuid();
             }
@@ -135,10 +157,11 @@ public class SpringHolder {
         getBeanDefinitionRegistry().registerBeanDefinition(toRegeistBeanId, definition);
         return (T) beanFactory.getBean(toRegeistBeanId);
     }
+
     /**
      * 创建一个bean并执行autowired
      *
-     * @param clazz     clazz
+     * @param clazz clazz
      */
     public static <T> T createBean(Class<T> clazz) {
         try {
@@ -148,7 +171,7 @@ public class SpringHolder {
             autowiredProcessor.processInjection(bean);
             return bean;
         } catch (Exception e) {
-            throw new SystemException(e.getMessage(),e);
+            throw new SystemException(e.getMessage(), e);
         }
     }
 
@@ -193,5 +216,37 @@ public class SpringHolder {
 //    	ConfigurableApplicationContext configurableContext = (ConfigurableApplicationContext) application;
 //		BeanDefinitionRegistry beanDefinitionRegistry = (BeanDefinitionRegistry) configurableContext.getBeanFactory();
         getBeanDefinitionRegistry().removeBeanDefinition(beanId);
+    }
+
+
+
+    public static ApplicationContext getApplicationContext() {
+        if (beanFactory != null && beanFactory instanceof ApplicationContext) {
+            return (ApplicationContext) beanFactory;
+        }
+        return null;
+    }
+    /**
+     * 发布事件
+     *
+     * @param event 事件
+     */
+    public static void publishEvent(ApplicationEvent event) {
+        ApplicationContext applicationContext = getApplicationContext();
+        if (applicationContext == null) {
+            return;
+        }
+        try {
+            applicationContext.publishEvent(event);
+        } catch (Exception ex) {
+            log.error(ex.getMessage());
+        }
+    }
+    public static Resource getResource(String resourceLocation) {
+        ApplicationContext applicationContext = getApplicationContext();
+        if (applicationContext == null) {
+            return null;
+        }
+        return applicationContext.getResource(resourceLocation);
     }
 }

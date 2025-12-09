@@ -1,9 +1,9 @@
 package com.dlz.comm.util.web;
 
+import com.dlz.comm.consts.Charsets;
 import com.dlz.comm.json.JSONMap;
 import com.dlz.comm.util.ValUtil;
 import com.dlz.comm.util.web.handler.ResponseHandler;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 import org.apache.http.client.config.RequestConfig;
@@ -25,7 +25,7 @@ public class HttpRequestParam<T> {
     private final Class<T> tClass;
     private final Map<String, String> headers = new HashMap<>();
 
-    private ResponseHandler responseHandler = DEFAULT_RESPONSE_HANDLER;
+    private ResponseHandler<T> responseHandler = DEFAULT_RESPONSE_HANDLER;
     /**
      * 参数
      */
@@ -47,13 +47,13 @@ public class HttpRequestParam<T> {
     /**
      * 请求参数
      */
-    private String charsetNameRequest = HttpConstans.CHARSET_UTF8;
+    private String charsetNameRequest = Charsets.UTF_8_NAME;
 
     private String mimeType = HttpConstans.MIMETYPE_FORM;
     /**
      * 返回参数
      */
-    private String charsetNameResponse = HttpConstans.CHARSET_UTF8;
+    private String charsetNameResponse = Charsets.UTF_8_NAME;
     /**
      * 是否显示日志
      */
@@ -77,7 +77,7 @@ public class HttpRequestParam<T> {
         HttpRequestParam httpRequestParam = new HttpRequestParam(url, tClass);
         httpRequestParam.mimeType = HttpConstans.MIMETYPE_JSON;
         if (para != null) {
-            httpRequestParam.payload = ValUtil.getStr(para);
+            httpRequestParam.payload = ValUtil.toStr(para);
         }
         return httpRequestParam;
     }
@@ -86,7 +86,7 @@ public class HttpRequestParam<T> {
         HttpRequestParam httpRequestParam = new HttpRequestParam(url, tClass);
         httpRequestParam.mimeType = HttpConstans.MIMETYPE_TEXT;
         if (para != null) {
-            httpRequestParam.payload = ValUtil.getStr(para);
+            httpRequestParam.payload = ValUtil.toStr(para);
         }
         return httpRequestParam;
     }
@@ -107,6 +107,10 @@ public class HttpRequestParam<T> {
 
     public HttpRequestParam<T> addHeader(String key, String value) {
         headers.put(key, value);
+        return this;
+    }
+    public HttpRequestParam<T> addHeader(Map<String, String> headers) {
+        this.headers.putAll(headers);
         return this;
     }
 }

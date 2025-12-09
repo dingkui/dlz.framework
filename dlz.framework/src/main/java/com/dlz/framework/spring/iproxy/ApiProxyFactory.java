@@ -1,16 +1,15 @@
 package com.dlz.framework.spring.iproxy;
 
+import com.dlz.comm.exception.SystemException;
+import com.dlz.framework.holder.SpringHolder;
+import com.dlz.framework.spring.iproxy.anno.AnnoApi;
+import org.springframework.beans.factory.FactoryBean;
+
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.util.HashMap;
 import java.util.Map;
-
-import com.dlz.comm.exception.SystemException;
-import org.springframework.beans.factory.FactoryBean;
-
-import com.dlz.framework.holder.SpringHolder;
-import com.dlz.framework.spring.iproxy.anno.AnnoApi;
 
 /**
  * 接口代理创建工厂

@@ -3,11 +3,12 @@
     <!-- 控制台日志 -->
     <appender name="StdoutAppender" class="ch.qos.logback.core.ConsoleAppender">
         <encoder>
-            <pattern>%d{HH:mm:ss.SSS} %-5level[%thread] %logger{24}:%line %cyan(%m) %n</pattern>
+            <pattern>%d{HH:mm:ss.SSS} %-5level[%thread] %logger{24}:%line%X{caller} %cyan(%m) %n</pattern>
             <charset>UTF-8</charset>
         </encoder>
     </appender>
     <logger name="com.dlz" level="trace" addtivity="false"/>
+    <logger name="ExceptionUtilTest" level="trace" addtivity="false"/>
     <root level="warn">
         <appender-ref ref="StdoutAppender"/>
     </root>

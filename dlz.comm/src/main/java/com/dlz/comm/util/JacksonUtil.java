@@ -1,10 +1,14 @@
 package com.dlz.comm.util;
 
+import com.dlz.comm.exception.SystemException;
 import com.dlz.comm.json.JSONList;
 import com.dlz.comm.json.JSONMap;
+import com.dlz.comm.util.jackson.DlzJavaTimeModule;
+import com.dlz.comm.util.jackson.JacksonObjectDeserializer;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.TreeNode;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.*;
 import com.fasterxml.jackson.databind.cfg.DeserializerFactoryConfig;
@@ -12,15 +16,15 @@ import com.fasterxml.jackson.databind.deser.BeanDeserializerFactory;
 import com.fasterxml.jackson.databind.deser.DefaultDeserializationContext;
 import com.fasterxml.jackson.databind.deser.DefaultDeserializationContext.Impl;
 import com.fasterxml.jackson.databind.deser.Deserializers;
-import com.fasterxml.jackson.databind.jsontype.TypeDeserializer;
-import com.fasterxml.jackson.databind.type.*;
 import lombok.extern.slf4j.Slf4j;
 
-import java.lang.reflect.*;
+import java.io.*;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
+import java.net.URL;
 import java.text.SimpleDateFormat;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
+import java.time.ZoneId;
+import java.util.*;
 import java.util.regex.Pattern;
 
 /**
@@ -34,47 +38,7 @@ public class JacksonUtil {
 
     static {
         //添加自定义解析器，将默认的linckedHashMap 和List对应修改为 JSONMap和JSONList
-        Deserializers deserializers = new Deserializers() {
-            @Override
-            public JsonDeserializer<?> findTreeNodeDeserializer(Class<? extends JsonNode> nodeType, DeserializationConfig config, BeanDescription beanDesc) {
-                return null;
-            }
-
-            @Override
-            public JsonDeserializer<?> findReferenceDeserializer(ReferenceType refType, DeserializationConfig config, BeanDescription beanDesc,
-                                                                 TypeDeserializer contentTypeDeserializer, JsonDeserializer<?> contentDeserializer) {
-                return null;
-            }
-
-            @Override
-            public JsonDeserializer<?> findMapLikeDeserializer(MapLikeType type, DeserializationConfig config, BeanDescription beanDesc,
-                                                               KeyDeserializer keyDeserializer, TypeDeserializer elementTypeDeserializer, JsonDeserializer<?> elementDeserializer) throws JsonMappingException {
-                return null;
-            }
-
-            @Override
-            public JsonDeserializer<?> findMapDeserializer(MapType type, DeserializationConfig config, BeanDescription beanDesc, KeyDeserializer keyDeserializer,
-                                                           TypeDeserializer elementTypeDeserializer, JsonDeserializer<?> elementDeserializer) {
-                return null;
-            }
-
-            @Override
-            public JsonDeserializer<?> findEnumDeserializer(Class<?> type, DeserializationConfig config, BeanDescription beanDesc) {
-                return null;
-            }
-
-            @Override
-            public JsonDeserializer<?> findCollectionLikeDeserializer(CollectionLikeType type, DeserializationConfig config, BeanDescription beanDesc,
-                                                                      TypeDeserializer elementTypeDeserializer, JsonDeserializer<?> elementDeserializer) {
-                return null;
-            }
-
-            @Override
-            public JsonDeserializer<?> findCollectionDeserializer(CollectionType type, DeserializationConfig config, BeanDescription beanDesc,
-                                                                  TypeDeserializer elementTypeDeserializer, JsonDeserializer<?> elementDeserializer) {
-                return null;
-            }
-
+        Deserializers deserializers = new Deserializers.Base() {
             @Override
             public JsonDeserializer<?> findBeanDeserializer(JavaType type, DeserializationConfig config, BeanDescription beanDesc) {
                 Class<?> rawType = type.getRawClass();
@@ -84,26 +48,47 @@ public class JacksonUtil {
                 }
                 return null;
             }
-
-            @Override
-            public JsonDeserializer<?> findArrayDeserializer(ArrayType type, DeserializationConfig config, BeanDescription beanDesc,
-                                                             TypeDeserializer elementTypeDeserializer, JsonDeserializer<?> elementDeserializer) throws JsonMappingException {
-                return null;
-            }
         };
         final DeserializerFactoryConfig config = new DeserializerFactoryConfig().withAdditionalDeserializers(deserializers);
         final DefaultDeserializationContext dc = new Impl(new BeanDeserializerFactory(config));
         objectMapper = new ObjectMapper(null, null, dc);
         // https://github.com/FasterXML/jackson-databind
         objectMapper.configure(JsonParser.Feature.ALLOW_UNQUOTED_FIELD_NAMES, true);
+        // 单引号
         objectMapper.configure(JsonParser.Feature.ALLOW_SINGLE_QUOTES, true);
         objectMapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
         objectMapper.setSerializationInclusion(Include.NON_NULL);
 
         /**
          * 配置默认的日期转换格式 ，参考http://wiki.fasterxml.com/JacksonFAQDateHandling
+         * 序列化时，日期的统一格式
          */
         objectMapper.setDateFormat(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss"));
+
+        //设置地点为中国
+        objectMapper.setLocale(Locale.CHINA);
+        //设置为中国上海时区
+        objectMapper.setTimeZone(TimeZone.getTimeZone(ZoneId.systemDefault()));
+
+
+//        //去掉默认的时间戳格式
+//        objectMapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
+//        // 允许JSON字符串包含非引号控制字符（值小于32的ASCII字符，包含制表符和换行符）
+//        objectMapper.configure(JsonReadFeature.ALLOW_UNESCAPED_CONTROL_CHARS.mappedFeature(), true);
+//        objectMapper.configure(JsonReadFeature.ALLOW_BACKSLASH_ESCAPING_ANY_CHARACTER.mappedFeature(), true);
+//        objectMapper.findAndRegisterModules();
+//        //失败处理
+//        objectMapper.configure(SerializationFeature.FAIL_ON_EMPTY_BEANS, false);
+//        //单引号处理
+//        objectMapper.configure(JsonReadFeature.ALLOW_SINGLE_QUOTES.mappedFeature(), true);
+//        //反序列化时，属性不存在的兼容处理s
+//        objectMapper.getDeserializationConfig().withoutFeatures(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
+//        //日期格式化
+          objectMapper.registerModule(DlzJavaTimeModule.INSTANCE);
+    }
+
+    public static ObjectMapper getInstance() {
+        return objectMapper;
     }
 
     public static String getJson(Object o) {
@@ -114,8 +99,46 @@ public class JacksonUtil {
         }
     }
 
+    /**
+     * 将对象序列化成 json byte 数组
+     *
+     * @param object javaBean
+     * @return jsonString json字符串
+     */
+    public static byte[] toJsonAsBytes(Object object) {
+        try {
+            return objectMapper.writeValueAsBytes(object);
+        } catch (JsonProcessingException e) {
+            throw SystemException.build(e);
+        }
+    }
+
+    public static JSONMap readValue(String content) {
+        return readValue(content, mkJavaType(JSONMap.class));
+    }
+
+    public static JSONMap readValue(Object content) {
+        return readValue(content, mkJavaType(JSONMap.class));
+    }
+
     public static <T> T readValue(String content, Class<T> valueType) {
-        return readValue(content, constructType(valueType));
+        return readValue(content, mkJavaType(valueType));
+    }
+
+    public static <T> T readValue(Object content, Class<T> valueType) {
+        return readValue(content, mkJavaType(valueType));
+    }
+
+    public static <T> List<T> readList(Object content, Class<T> elementClass) {
+        return readValue(content, mkJavaType(ArrayList.class, elementClass));
+    }
+
+    public static JSONList readList(String content) {
+        return readValue(content, mkJavaType(JSONList.class));
+    }
+
+    public static JSONList readList(Object content) {
+        return readValue(content, mkJavaType(JSONList.class));
     }
 
     public static <T> T readValue(String content, JavaType valueType) {
@@ -128,17 +151,171 @@ public class JacksonUtil {
         }
     }
 
+
+    /**
+     * tree 转对象
+     *
+     * @param treeNode  TreeNode
+     * @param valueType valueType
+     * @param <T>       泛型标记
+     * @return 转换结果
+     */
+    public static <T> T treeToValue(TreeNode treeNode, Class<T> valueType) {
+        try {
+            return objectMapper.treeToValue(treeNode, valueType);
+        } catch (JsonProcessingException e) {
+            throw SystemException.build(e);
+        }
+    }
+
+    /**
+     * 对象转为 json node
+     *
+     * @param value 对象
+     * @return JsonNode
+     */
+    public static JsonNode valueToTree(Object value) {
+        return objectMapper.valueToTree(value);
+    }
+
+    /**
+     * 将json字符串转成 JsonNode
+     *
+     * @return jsonString json字符串
+     */
+    public static JsonNode readTree(Object content) {
+        try {
+            if (content instanceof CharSequence) {
+                return objectMapper.readTree(content.toString());
+            } else if (content instanceof byte[]) {
+                return objectMapper.readTree((byte[]) content);
+            } else if (content instanceof InputStream) {
+                return objectMapper.readTree((InputStream) content);
+            } else if (content instanceof File) {
+                return objectMapper.readTree((File) content);
+            } else if (content instanceof URL) {
+                return objectMapper.readTree((URL) content);
+            } else if (content instanceof Reader) {
+                return objectMapper.readTree((Reader) content);
+            } else if (content instanceof JsonParser) {
+                return objectMapper.readTree((JsonParser) content);
+            }
+            return objectMapper.readTree(getJson(content));
+        } catch (IOException e) {
+            throw SystemException.build(e);
+        }
+    }
+
+    public static <T> T readValue(Object content, JavaType valueType) {
+        try {
+            if (content instanceof CharSequence) {
+                return objectMapper.readValue(content.toString(), valueType);
+            } else if (content instanceof byte[]) {
+                return objectMapper.readValue((byte[]) content, valueType);
+            } else if (content instanceof InputStream) {
+                return objectMapper.readValue((InputStream) content, valueType);
+            } else if (content instanceof File) {
+                return objectMapper.readValue((File) content, valueType);
+            } else if (content instanceof URL) {
+                return objectMapper.readValue((URL) content, valueType);
+            } else if (content instanceof Reader) {
+                return objectMapper.readValue((Reader) content, valueType);
+            } else if (content instanceof DataInput) {
+                return objectMapper.readValue((DataInput) content, valueType);
+            } else if (content instanceof JsonParser) {
+                return objectMapper.readValue((JsonParser) content, valueType);
+            }
+            return objectMapper.readValue(getJson(content), valueType);
+        } catch (Exception e) {
+            log.error(ExceptionUtils.getStackTrace("JacksonUtil.readValue error,content:" + content + " valueType:" + valueType, e));
+            return null;
+        }
+    }
+
+    public static <T> T readValue(Object content, TypeReference<T> valueType) {
+        try {
+            if (content instanceof CharSequence) {
+                return objectMapper.readValue(content.toString(), valueType);
+            } else if (content instanceof byte[]) {
+                return objectMapper.readValue((byte[]) content, valueType);
+            } else if (content instanceof InputStream) {
+                return objectMapper.readValue((InputStream) content, valueType);
+            } else if (content instanceof File) {
+                return objectMapper.readValue((File) content, valueType);
+            } else if (content instanceof URL) {
+                return objectMapper.readValue((URL) content, valueType);
+            } else if (content instanceof Reader) {
+                return objectMapper.readValue((Reader) content, valueType);
+            } else if (content instanceof JsonParser) {
+                return objectMapper.readValue((JsonParser) content, valueType);
+            }
+            return objectMapper.readValue(getJson(content), valueType);
+        } catch (Exception e) {
+            log.error(ExceptionUtils.getStackTrace("JacksonUtil.readValue error,content:" + content + " valueType:" + valueType, e));
+            return null;
+        }
+    }
+
     public static <T> T readValue(String content, TypeReference<T> valueType) {
         try {
             return objectMapper.readValue(content, valueType);
         } catch (Exception e) {
-            log.error(ExceptionUtils.getStackTrace("JacksonUtil.readValue error,content:" + content+" valueType:" + valueType,e));
+            log.error(ExceptionUtils.getStackTrace("JacksonUtil.readValue error,content:" + content + " valueType:" + valueType, e));
             return null;
         }
     }
 
     public static <T> List<T> readListValue(String content, Class<T> valueType) {
-        return readValue(content, constructType(List.class, valueType));
+        return readValue(content, mkJavaType(List.class, valueType));
+    }
+
+    /**
+     * jackson 的类型转换
+     *
+     * @param fromValue   来源对象
+     * @param toValueType 转换的类型
+     * @param <T>         泛型标记
+     * @return 转换结果
+     */
+    public static <T> T convertValue(Object fromValue, Class<T> toValueType) {
+        return objectMapper.convertValue(fromValue, toValueType);
+    }
+
+    /**
+     * jackson 的类型转换
+     *
+     * @param fromValue   来源对象
+     * @param toValueType 转换的类型
+     * @param <T>         泛型标记
+     * @return 转换结果
+     */
+    public static <T> T convertValue(Object fromValue, JavaType toValueType) {
+        return objectMapper.convertValue(fromValue, toValueType);
+    }
+
+    /**
+     * jackson 的类型转换
+     *
+     * @param fromValue      来源对象
+     * @param toValueTypeRef 泛型类型
+     * @param <T>            泛型标记
+     * @return 转换结果
+     */
+    public static <T> T convertValue(Object fromValue, TypeReference<T> toValueTypeRef) {
+        return objectMapper.convertValue(fromValue, toValueTypeRef);
+    }
+
+    /**
+     * 判断是否可以序列化
+     *
+     * @param value 对象
+     * @return 是否可以序列化
+     */
+    public static boolean canSerialize(Object value) {
+        if (value == null) {
+            return true;
+        }
+        return objectMapper.canSerialize(value.getClass());
     }
 
     /**
@@ -149,38 +326,9 @@ public class JacksonUtil {
      * @return
      */
     public static <T> T coverObj(Object o, Class<T> valueType) {
-        return coverObj(o, constructType(valueType));
+        return coverObj(o, mkJavaType(valueType));
     }
 
-    /**
-     * 类型转换
-     *
-     * @param valueType
-     * @param parameterClasses
-     * @return
-     */
-    public static JavaType constructType(Class<?> valueType, Class<?>... parameterClasses) {
-        int len = parameterClasses.length;
-        if (len == 0) {
-            return objectMapper.getTypeFactory().constructType(valueType);
-        }
-        return objectMapper.getTypeFactory().constructParametricType(valueType, parameterClasses);
-    }
-
-    /**
-     * 类型转换
-     *
-     * @param valueType
-     * @param parameterTypes
-     * @return
-     */
-    public static JavaType constructTypeByTypes(Class<?> valueType, JavaType... parameterTypes) {
-        int len = parameterTypes.length;
-        if (len == 0) {
-            return objectMapper.getTypeFactory().constructType(valueType);
-        }
-        return objectMapper.getTypeFactory().constructParametricType(valueType, parameterTypes);
-    }
 
     /**
      * 类型转换
@@ -195,7 +343,7 @@ public class JacksonUtil {
                 return null;
             }
             Class valueType = javaType.getRawClass();
-            if(javaType.getBindings().size()==0){
+            if (javaType.getBindings().size() == 0) {
                 if (valueType.isAssignableFrom(o.getClass())) {
                     return (T) o;
                 }
@@ -207,7 +355,7 @@ public class JacksonUtil {
                 }
             }
 
-            String str = null;
+            String str;
             if (o instanceof CharSequence) {
                 str = o.toString().trim();
             } else {
@@ -282,7 +430,7 @@ public class JacksonUtil {
         }
         if (data instanceof Object[] || data instanceof Collection) {
             if (key.startsWith("[")) {
-                return getObjFromList(ValUtil.getList(data), key);
+                return getObjFromList(ValUtil.toList(data), key);
             }
             return null;
         }
@@ -290,7 +438,7 @@ public class JacksonUtil {
         if (key.startsWith(".")) {
             key = key.substring(1);
         }
-        return getObjFromMap(ValUtil.getObj(data, JSONMap.class), key);
+        return getObjFromMap(ValUtil.toObj(data, JSONMap.class), key);
     }
 
     private static Object getObjFromList(List list, String key) {
@@ -328,7 +476,37 @@ public class JacksonUtil {
         return null;
     }
 
-    public static JavaType getJavaType(Type type) {
+    /**
+     * 类型转换
+     *
+     * @param valueType
+     * @param parameterTypes
+     * @return
+     */
+    public static JavaType mkJavaTypeByJavaTypes(Class<?> valueType, JavaType... parameterTypes) {
+        int len = parameterTypes.length;
+        if (len == 0) {
+            return objectMapper.getTypeFactory().constructType(valueType);
+        }
+        return objectMapper.getTypeFactory().constructParametricType(valueType, parameterTypes);
+    }
+
+    /**
+     * 类型转换
+     *
+     * @param valueType
+     * @param parameterClasses
+     * @return
+     */
+    public static JavaType mkJavaType(Class<?> valueType, Class<?>... parameterClasses) {
+        int len = parameterClasses.length;
+        if (len == 0) {
+            return objectMapper.getTypeFactory().constructType(valueType);
+        }
+        return objectMapper.getTypeFactory().constructParametricType(valueType, parameterClasses);
+    }
+
+    public static JavaType mkJavaType(Type type) {
         if (type == null) {
             return null;
         }
@@ -337,61 +515,38 @@ public class JacksonUtil {
             Type[] typesto = parameterizedType.getActualTypeArguments();// 强制转型为带参数的泛型类型，
             JavaType[] subclass = new JavaType[typesto.length];
             for (int j = 0; j < typesto.length; j++) {
-                subclass[j] = getJavaType(typesto[j]);
+                subclass[j] = mkJavaType(typesto[j]);
             }
             return objectMapper.getTypeFactory().constructParametricType((Class) parameterizedType.getRawType(), subclass);
 //        } else if(type instanceof GenericArrayType){
 //        } else if(type instanceof TypeVariable){
 //        } else if(type instanceof WildcardType) {
-        }else{
-//            return objectMapper.getTypeFactory().constructParametricType((Class) type, new JavaType[0]);
-            Class cla = (Class) type;
-            return TypeFactory.defaultInstance().constructParametricType(cla, new JavaType[0]);
-        }
-    }
-
-    public static JavaType getJavaType2(Type type) {
-        if (type == null) {
-            return null;
-        }
-        //判断是否带有泛型
-        if (type instanceof ParameterizedType) {
-            Type[] actualTypeArguments = ((ParameterizedType) type).getActualTypeArguments();
-            //获取泛型类型
-            Class rowClass = (Class) ((ParameterizedType) type).getRawType();
-
-            JavaType[] javaTypes = new JavaType[actualTypeArguments.length];
-
-            for (int i = 0; i < actualTypeArguments.length; i++) {
-                //泛型也可能带有泛型，递归获取
-                javaTypes[i] = getJavaType2(actualTypeArguments[i]);
-            }
-            return TypeFactory.defaultInstance().constructParametricType(rowClass, javaTypes);
         } else {
-            //简单类型直接用该类构建JavaType
-            Class cla = (Class) type;
-            return TypeFactory.defaultInstance().constructParametricType(cla, new JavaType[0]);
+//            return TypeFactory.defaultInstance().constructParametricType((Class) type, new JavaType[0]);
+            return objectMapper.getTypeFactory().constructType(type);
         }
     }
 
-    private static Pattern JsonObjPattern = Pattern.compile("^\\{((\"[^\"]+\":.+)||)\\}$");
+    private static Pattern JsonObjPattern = Pattern.compile("^\\{(([\"\\w]+:.+)||)\\}$");
     private static Pattern JsonArrayPattern = Pattern.compile("^\\[[^\\[^\\]]*\\]$");
+
     public static boolean isJsonObj(String str) {
-        return JsonObjPattern.matcher(str.replaceAll("\\s","")).matches();
+        return JsonObjPattern.matcher(str.replaceAll("\\s", "")).matches();
     }
+
     public static boolean isJsonArray(String str) {
-        return JsonArrayPattern.matcher(str.replaceAll("\\s","")).find();
+        return JsonArrayPattern.matcher(str.replaceAll("\\s", "")).find();
     }
-    public static void main(String[] args) {
-        System.out.println(isJsonObj(" { } "));
-//        System.out.println(isJsonObj("{ \"xx\" : 123 } "));
-//        System.out.println(isJsonObj("{ \"xx\"}"));
-//        System.out.println(isJsonObj(" { \"xx\"}"));
-//        System.out.println(isJsonArray("[]"));
-//        System.out.println(isJsonArray(" [ ]"));
-//        System.out.println(isJsonArray(" [ xxx ]"));
-//        System.out.println(isJsonArray(" [ xxx ] "));
-//        System.out.println(isJsonArray(" [ xxx "));
-//        System.out.println(new JSONList("[]"));
-    }
+//    public static void main(String[] args) {
+//        System.out.println(isJsonObj(" { } "));
+////        System.out.println(isJsonObj("{ \"xx\" : 123 } "));
+////        System.out.println(isJsonObj("{ \"xx\"}"));
+////        System.out.println(isJsonObj(" { \"xx\"}"));
+////        System.out.println(isJsonArray("[]"));
+////        System.out.println(isJsonArray(" [ ]"));
+////        System.out.println(isJsonArray(" [ xxx ]"));
+////        System.out.println(isJsonArray(" [ xxx ] "));
+////        System.out.println(isJsonArray(" [ xxx "));
+////        System.out.println(new JSONList("[]"));
+//    }
 }

@@ -1,10 +1,16 @@
 package com.dlz.comm.util.encry;
 
+import com.dlz.comm.util.ExceptionUtils;
+import lombok.extern.slf4j.Slf4j;
+
+import java.util.Arrays;
+
 /**
  * 多进制转换
  * @author dingkui
  *
  */
+@Slf4j
 public class ParseUtil {
 	public enum ParserEnum{
 		D627("ZmXgakWAwbFnvPMsNiDrGYpdTRVCy3jzL7H2ulh45BKOQ0IxS1t9efJqo6Uc8E",7,3),
@@ -13,37 +19,67 @@ public class ParseUtil {
 		D367("VYCT9ODEJQR5XILKGWH3PASZ06M12U47FB8N",7,4),
 		D3675("VYCT9ODEJQR5XILKGWH3PASZ06M12U47FB8N",7,5),
 		D1014("5930468271",1,4);
-		private char[] rDigits;
-		private int jm=7;//跳跃因子防止篡改
-		private long tl=0; //补齐到多少位
+		private NumParser parser;
 		ParserEnum(String dict,int jm,int tl){
-			this.rDigits=dict.toCharArray();
-			this.jm=jm;
-			String a="";
-			for(int i=0;i<tl;i++){
-				if(i==0){
-					a+=rDigits[1];
-				}else{
-					a+=rDigits[0];
+			parser=new NumParser(dict,jm,tl);
+		}
+		public String encode(long value){
+			return parser.encode(value);
+		}
+		public Long decode(String value){
+			return parser.decode(value);
+		}
+	}
+	public static class NumParser{
+		private final char[] rDigits;
+		private final int jm;//跳跃因子防止篡改
+		private final long tl; //补齐到多少位
+		public NumParser(String dict,int jm,int tl){
+			char[] rDigits = dict.toCharArray();
+			Arrays.sort(rDigits);
+			for (int i = 0; i < rDigits.length - 1; i++) {
+				if (rDigits[i] == rDigits[i + 1]) {
+					throw new RuntimeException("字典不允许重复字符");
 				}
 			}
-			try {
-				this.tl=ParseUtil.decode(a, rDigits);
-			} catch (Exception e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+			rDigits = dict.toCharArray();
+			this.rDigits= rDigits;
+			if(jm>0){
+				this.jm=jm;
+			}else{
+				this.jm=7;
+			}
+			if(tl>0){
+				String a="";
+				for(int i=0;i<tl;i++){
+					if(i==0){
+						a+= this.rDigits[1];
+					}else{
+						a+= this.rDigits[0];
+					}
+				}
+				try {
+					this.tl=ParseUtil.decode(a, this.rDigits);
+				} catch (Exception e) {
+					throw new RuntimeException("初始化错误："+e.getMessage());
+				}
+			}else{
+				this.tl=0;
 			}
 		}
 		public String encode(long value){
-			return ParseUtil.encode(value*jm+tl,rDigits);
+			try {
+				return ParseUtil.encode(value*jm+tl,rDigits);
+			} catch (Exception e) {
+				throw new RuntimeException("编码错误："+e.getMessage());
+			}
 		}
 		public Long decode(String value){
 			long r=-1;
 			try {
 				r = ParseUtil.decode(value,rDigits)-tl;
 			} catch (Exception e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				log.error(ExceptionUtils.getStackTrace("编码错误：",e));
 			}
 			return r%jm==0?r/jm:-1l;
 		}

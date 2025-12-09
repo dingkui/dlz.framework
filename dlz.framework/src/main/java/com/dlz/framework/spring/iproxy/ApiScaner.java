@@ -1,12 +1,11 @@
 package com.dlz.framework.spring.iproxy;
 
-import org.springframework.beans.factory.annotation.AnnotatedBeanDefinition;
-import org.springframework.beans.factory.support.BeanDefinitionRegistry;
-
+import com.dlz.comm.util.StringUtils;
 import com.dlz.framework.holder.SpringHolder;
 import com.dlz.framework.spring.iproxy.anno.AnnoApi;
 import com.dlz.framework.spring.scaner.IScaner;
-import com.dlz.comm.util.StringUtils;
+import org.springframework.beans.factory.annotation.AnnotatedBeanDefinition;
+import org.springframework.beans.factory.support.BeanDefinitionRegistry;
 
 /**
  * 自定义扫描 只扫描接口和抽象类，并且注解了AnnoApi的类 命名为： I*Api.java
@@ -14,7 +13,7 @@ import com.dlz.comm.util.StringUtils;
  * @author dk
  */
 public class ApiScaner implements IScaner {
-    private String resoucePath = "classpath*:**/I*Api.class";
+    private String resoucePath;
 
     @Override
     public String getResoucePath() {

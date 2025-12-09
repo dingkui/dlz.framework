@@ -1,92 +1,129 @@
 package com.dlz.framework.db.enums;
 
 import com.dlz.comm.exception.SystemException;
+import com.dlz.comm.fn.DlzFn;
 import com.dlz.comm.util.ValUtil;
-import com.dlz.framework.db.convertor.ConvertUtil;
-import com.dlz.framework.db.modal.BaseParaMap;
+import com.dlz.framework.db.holder.BeanInfoHolder;
+import com.dlz.framework.db.modal.condition.Condition;
+import com.dlz.framework.db.util.DbConvertUtil;
+import com.dlz.framework.db.util.KeyUtil;
+import com.dlz.framework.db.util.SqlUtil;
+import lombok.AllArgsConstructor;
 
+import java.util.regex.Pattern;
+
+@AllArgsConstructor
 public enum DbOprateEnum {
-	eq("dbn = #{key}"),
-	lt("dbn < #{key}"),//小于
-	le("dbn <= #{key}"),//小于等于
-	gt("dbn < #{key}"),//大于
-	ge("dbn >= #{key}"),//大于等于
-	ne("dbn <> #{key}"),//不等于
-	in("dbn in (${key})"),
-	like("dbn like #{key}"),
-	lk("dbn like #{key}"),
-	notLike("dbn not like #{key}"),
-	nl("dbn not like #{key}"),
-	likeLeft("dbn like #{key}"),
-	ll("dbn like #{key}"),
-	likeRight("dbn like #{key}"),
-	lr("dbn like #{key}"),
-	between("dbn between #{key1} and #{key2}"),//BETWEEN 值1 AND 值2
-	bt("dbn between #{key1} and #{key2}"),//BETWEEN 值1 AND 值2
-	notbetween("dbn not between #{key1} and #{key2}"),//BETWEEN 值1 AND 值2,
-	nb("dbn not between #{key1} and #{key2}");//BETWEEN 值1 AND 值2,
-	private String condition;
-	
-	DbOprateEnum(String condition) {
-		this.condition = condition;
-	}
+    isn("#n is null"),//为空
+    isnn("#n is not null"),//不为空
+    eq("#n = #{#k}"),
+    lt("#n < #{#k}"),//小于
+    le("#n <= #{#k}"),//小于等于
+    gt("#n > #{#k}"),//大于
+    ge("#n >= #{#k}"),//大于等于
+    ne("#n <> #{#k}"),//不等于
+    in("#n in (${#k})"),
+    ni("#n not in (${#k})"),
+    lk("#n like #{#k}"),//like:%xxx%
+    ll("#n like #{#k}"),//左like:xxx%
+    lr("#n like #{#k}"),//右like：%xxx
+    nl("#n not like #{#k}"),//不like
+    bt("#n between #{#k1} and #{#k2}"),//BETWEEN 值1 AND 值2
+    nb("#n not between #{#k1} and #{#k2}");//BETWEEN 值1 AND 值2
+    public final String _sql;
+    private final static Pattern patternKey = Pattern.compile("#k");
+    private final static Pattern patternColumnName = Pattern.compile("#n");
 
-	public static String getConditionByKey(String key,Object value, BaseParaMap para){
-		String op="eq";
-		String dbn=key;
-		if(key.startsWith("$")){
-			int i = key.indexOf("_");
-			SystemException.isTrue(i==-1,"参数名有误："+key);
-			op=key.substring(1,i);
-			dbn=key.substring(i);
-		}
-		try{
-			DbOprateEnum oprateEnum = DbOprateEnum.valueOf(op);
-			return oprateEnum.getCondition(dbn,value,para);
-		}catch (Exception e){
-			SystemException.isTrue(true,"匹配符有误："+op);
-		}
-		return null;
-	}
+    private String mkSql(String dbn, String key) {
+        final String dbnSql = patternColumnName.matcher(this._sql).replaceAll(DbConvertUtil.toDbColumnNames(dbn));
+        return key==null?dbnSql: patternKey.matcher(dbnSql).replaceAll(key);
+    }
+
+    private Condition paraZero(String dbn) {
+        Condition condition = new Condition();
+        condition.setRunsql(mkSql(dbn, null));
+        return condition;
+    }
+
+    private Condition paraOne(String dbn, Object value) {
+        String key = KeyUtil.getKeyName(this + "_" );
+        Condition condition = new Condition();
+        condition.addPara(key, value);
+        condition.setRunsql(mkSql(dbn, key));
+        return condition;
+    }
+
+    private Condition paraTwo(String dbn, Object value) {
+        String key =  KeyUtil.getKeyName(this + "_" );
+        Object[] array = ValUtil.toArray(value);
+        if (array.length < 2) {
+            throw new SystemException("参数有误，需要有2个值：" + this);
+        }
+        Condition condition = new Condition();
+        String key1 = key + "1";
+        String key2 = key + "2";
+        condition.addPara(key1, array[0]);
+        condition.addPara(key2, array[1]);
+        condition.setRunsql(mkSql(dbn, key));
+        return condition;
+    }
+
+    private Condition paraIn(String dbn, Object value) {
+        String key =  KeyUtil.getKeyName(this + "_" );
+        Condition condition = new Condition();
+        condition.setRunsql(mkSql(dbn, key));
+        if (value instanceof String) {
+            String v = ((String) value);
+            if (v.startsWith("sql:")) {
+                condition.addPara(key, DbConvertUtil.toDbColumnName(v.substring(4)));
+                return condition;
+            }
+        }
+        condition.addPara(key, SqlUtil.getSqlInStr(value));
+        return condition;
+    }
 
 
-	public String getCondition(String dbn,Object value, BaseParaMap para){
-		try{
-			String result = condition;
-			switch (this) {
-				case between:
-				case bt:
-				case notbetween:
-				case nb:
-					Object[] array = ValUtil.getArray(value);
-					para.addPara(this.toString()+"1_"+dbn,array[0]);
-					para.addPara(this.toString()+"2_"+dbn,array[1]);
-					result = result.replace("key1", this.toString()+"1_"+dbn);
-					result = result.replace("key2", this.toString()+"2_"+dbn);
-					result = result.replaceAll("^dbn", ConvertUtil.str2Clumn(dbn));
-					return result;
-				case like:
-				case lk:
-				case nl:
-				case notLike:
-					value = "%"+value+"%";
-					break;
-				case likeLeft:
-				case ll:
-					value = value+"%";
-					break;
-				case likeRight:
-				case lr:
-					value = "%"+value;
-					break;
-			}
-			para.addPara(this.toString()+"_"+dbn,value);
-			result = result.replace("key", this.toString()+"_"+dbn);
-			result = result.replaceAll("^dbn", ConvertUtil.str2Clumn(dbn));
-			return result;
-		}catch (Exception e){
-			SystemException.isTrue(true,"匹配符有误："+this.toString());
-		}
-		return null;
-	}
+    public <T> Condition mk(DlzFn<T,?> dbn, Object value) {
+        return mk(BeanInfoHolder.fnName(dbn), value);
+    }
+
+    public Condition mk(String dbn, Object value) {
+        switch (this) {
+            case lk:
+            case nl:
+                return paraOne(dbn, "%" + value + "%");
+            case ll:
+                return paraOne(dbn, value + "%");
+            case lr:
+                return paraOne(dbn, "%" + value);
+            case eq:
+            case ne:
+            case gt:
+            case ge:
+            case lt:
+            case le:
+                return paraOne(dbn, value);
+            case bt:
+            case nb:
+                return paraTwo(dbn, value);
+            case isn:
+            case isnn:
+                return paraZero(dbn);
+            case in:
+            case ni:
+                return paraIn(dbn, value);
+            default:
+                throw new SystemException("匹配符有误：" + this);
+        }
+    }
+
+    public static DbOprateEnum getDbOprateEnum(String oprate) {
+        for (DbOprateEnum dbOprateEnum : DbOprateEnum.values()) {
+            if (dbOprateEnum.toString().equals(oprate)) {
+                return dbOprateEnum;
+            }
+        }
+        return null;
+    }
 }

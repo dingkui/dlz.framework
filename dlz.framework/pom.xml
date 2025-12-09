@@ -3,14 +3,17 @@
 	<parent>
 		<groupId>com.chan3d</groupId>
 		<artifactId>dlz-dependencies</artifactId>
-		<version>1.0.1-RELEASE</version>
+		<version>6.3.2</version>
 	</parent>
+	<version>6.3.2</version>
 	<artifactId>dlz.framework</artifactId>
+	<name>dlz.framework</name>
 	<packaging>jar</packaging>
 	<dependencies>
 		<dependency>
 			<groupId>com.chan3d</groupId>
 			<artifactId>dlz.comm</artifactId>
+			<version>6.3.2</version>
 		</dependency>
 		<dependency>
 			<groupId>net.sf.ehcache</groupId>
@@ -33,6 +36,12 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-test</artifactId>
 			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-configuration-processor</artifactId>
+			<optional>true</optional>
+			<scope>provided</scope>
 		</dependency>
 <!--		<dependency>-->
 <!--			<groupId>org.springframework</groupId>-->

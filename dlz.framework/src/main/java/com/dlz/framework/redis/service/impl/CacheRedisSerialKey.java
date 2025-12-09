@@ -1,8 +1,7 @@
 package com.dlz.framework.redis.service.impl;
 
-import com.dlz.framework.cache.ICache;
+import com.dlz.comm.cache.ICache;
 import com.dlz.framework.redis.excutor.JedisExecutor;
-import com.dlz.framework.redis.util.JedisKeyUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.io.Serializable;
@@ -15,54 +14,40 @@ import java.util.Set;
  * @author dk
  */
 public class CacheRedisSerialKey implements ICache {
-//    @Autowired
-//    RedisKeyMaker keyMaker;
     @Autowired
     JedisExecutor jedisExecutor;
 
+    private String getRedisKey(String key, Serializable... other){
+        return jedisExecutor.getRedisKey(key, other);
+    }
+
     @Override
     public <T extends Serializable> T get(String name, Serializable key, Type type) {
-        return jedisExecutor.getSe(JedisKeyUtils.getKey(name,key),type);
-//        return jedisExecutor.excuteByJedis(j -> {
-//            final byte[] result = j.get(getRedisByteKey(name, key));
-//            if (result==null){
-//                return null;
-//            }
-//            Object obj = SerializeUtil.deserialize(result);
-//            if (type==null){
-//                return (T)obj;
-//            }
-//            return ValUtil.getObj(obj, JacksonUtil.getJavaType(type));
-//        });
+        return jedisExecutor.getSe(getRedisKey(name,key),type);
     }
 
     @Override
     public void put(String name, Serializable key, Serializable value, int seconds) {
-        jedisExecutor.setSe(JedisKeyUtils.getKey(name, key),value,seconds);
-//        jedisExecutor.excuteByJedis(j -> {
-//            byte[] key1 = getRedisByteKey(name, key);
-//            String set = j.set(key1, SerializeUtil.serialize(value));
-//            if (seconds > -1) {
-//                j.expire(key1, seconds);
-//            }
-//            return set;
-//        });
+        jedisExecutor.setSe(getRedisKey(name, key),value,seconds);
     }
 
     @Override
     public void remove(String name, Serializable key) {
-        jedisExecutor.del(JedisKeyUtils.getRedisKey(name, key));
-//        jedisExecutor.excuteByJedis(j -> j.del(JedisKeyUtils.getRedisByteKey(name, key)));
+        jedisExecutor.del(getRedisKey(name, key));
     }
 
     @Override
     public void removeAll(String name) {
-        jedisExecutor.excuteByJedis(j -> {
-            Set<String> keys = j.keys(JedisKeyUtils.getRedisKey(name+"*"));
+        jedisExecutor.excute(j -> {
+            Set<String> keys = j.keys(getRedisKey(name+"*"));
             if(keys.size()>0){
                 j.del(keys.toArray(new String[keys.size()]));
             }
             return true;
         });
+    }
+    @Override
+    public Set<String> keys(String name,String keyPrefix) {
+        return jedisExecutor.keys(name ,keyPrefix);
     }
 }

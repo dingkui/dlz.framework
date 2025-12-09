@@ -1,12 +1,14 @@
 package com.dlz.plugin.netty.test.server;
 
 import com.dlz.plugin.netty.base.listener.ISocketListener;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * 客户端同步请求回调处理监听
  * @author dingkui
  *
  */
+@Slf4j
 public class NettyServerListener implements ISocketListener {
 
 	/**
@@ -16,10 +18,11 @@ public class NettyServerListener implements ISocketListener {
 	 * @return
 	 */
 	public String deal(String reciveStr,String channelId){
-		System.out.println("NettyServerListener deal:msg="+reciveStr.substring(reciveStr.length()-10));
+		log.info("服务器接收到客户端消息:channelId={},msg={}",channelId,reciveStr);
 		if(reciveStr.indexOf("answer")>-1){
 			return null;
 		}
-		return reciveStr+" Server answer";
+//		return reciveStr+" Server answer";
+		return null;
 	};
 }
