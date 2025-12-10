@@ -3,10 +3,12 @@ package com.dlz.framework.db.holder;
 import com.dlz.comm.cache.CacheMap;
 import com.dlz.comm.fn.DlzFn;
 import com.dlz.comm.util.StringUtils;
+import com.dlz.comm.util.ValUtil;
 import com.dlz.comm.util.system.FieldReflections;
 import com.dlz.framework.db.annotation.TableField;
 import com.dlz.framework.db.annotation.TableId;
 import com.dlz.framework.db.annotation.TableName;
+import com.dlz.framework.db.annotation.proxy.AnnoProxys;
 import com.dlz.framework.db.util.DbConvertUtil;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -42,26 +44,42 @@ public class BeanInfoHolder {
      */
     public static String getColumnName(Field field) {
         return columnNameCache.getAndSet(field, () -> {
+            String columnName = null;
+            String fieldName = field.getName();
+            // 检查我们自己的 @TableId 注解
             final TableId annotation = field.getAnnotation(TableId.class);
             if (annotation != null ) {
-                if(!annotation.value().isEmpty()){
-                    return annotation.value();
-                }
-                return getColumnName(field.getName());
+                columnName =  annotation.value();
+            }else{
+                columnName = AnnoProxys.MybatisPlusIdType.value(field);
             }
 
-            TableField name = field.getAnnotation(TableField.class);
-            if (name != null) {
-                if (!name.exist()) {
-                    return "";
-                }
-                if (StringUtils.isNotEmpty(name.value())) {
-                    return name.value();
+            if(StringUtils.isEmpty(columnName)){
+                TableField name = field.getAnnotation(TableField.class);
+                if (name != null) {
+                    if (name.exist()) {
+                        columnName =  name.value();
+                    }
                 }
             }
-            final String columnName = getColumnName(field.getName());
+            if(StringUtils.isEmpty(columnName)){
+                TableField name = field.getAnnotation(TableField.class);
+                if (name != null) {
+                    if (name.exist() && StringUtils.isNotEmpty(name.value())) {
+                        columnName =  name.value();
+                    }
+                }else{
+                    if (ValUtil.toBoolean(AnnoProxys.MybatisPlusTableField.exist(field),true)) {
+                        columnName = AnnoProxys.MybatisPlusTableField.value(field);
+                    }
+                }
+            }
+            if(StringUtils.isEmpty(columnName)){
+                columnName = fieldName;
+            }
+            columnName = getColumnName(columnName);
             if (log.isDebugEnabled()) {
-                log.debug("字段：{} 对应数据库字段：{}", field.getDeclaringClass().getName() + "." + field.getName(), columnName);
+                log.debug("字段：{} 对应数据库字段：{}", field.getDeclaringClass().getName() + "." + fieldName, columnName);
             }
             return columnName;
         });
@@ -130,15 +148,18 @@ public class BeanInfoHolder {
     public static String getTableName(Class<?> clazz) {
         return tableNameCache.getAndSet(clazz, () -> {
             TableName name = clazz.getAnnotation(TableName.class);
-            String tName = null;
+            String tName;
             if (name != null) {
-                if (name.value().length() > 0) {
-                    tName = name.value();
-                }
+                tName = name.value();
+            }else{
+                tName = AnnoProxys.MybatisPlusTableName.value(clazz);
             }
-            if (tName == null) {
-                tName = getColumnName(clazz.getSimpleName()).replaceAll("^_", "");
+
+            if (StringUtils.isEmpty(tName)) {
+                tName = clazz.getSimpleName();
             }
+
+            tName = getColumnName(tName).replaceAll("^_", "");
             return tName;
         });
     }

@@ -5,6 +5,7 @@ import com.dlz.framework.db.annotation.TableId;
 import com.dlz.comm.exception.SystemException;
 import com.dlz.comm.util.StringUtils;
 import com.dlz.comm.util.system.FieldReflections;
+import com.dlz.framework.db.annotation.proxy.AnnoProxys;
 import com.dlz.framework.db.helper.support.SnowFlake;
 import com.dlz.framework.db.holder.BeanInfoHolder;
 import com.dlz.framework.db.holder.DBHolder;
@@ -211,11 +212,14 @@ public class MakerUtil {
 
     public static Object getIdValue(Field field, String tableName) {
         final TableId annotation = field.getAnnotation(TableId.class);
+        IdType type = null;
         if (annotation == null) {
-            return null;
+            type = annotation.type();
         }
-        final IdType type = annotation.type();
-        if (type == IdType.AUTO||type == IdType.INPUT) {
+        if (type == null){
+            type = AnnoProxys.MybatisPlusIdType.type(field);
+        }
+        if (type==null || type == IdType.AUTO||type == IdType.INPUT) {
             return null;
         } else {
             final String columnName = BeanInfoHolder.getColumnName(field);
