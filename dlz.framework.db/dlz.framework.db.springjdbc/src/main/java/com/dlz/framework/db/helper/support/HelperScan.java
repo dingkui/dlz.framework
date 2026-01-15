@@ -3,6 +3,7 @@ package com.dlz.framework.db.helper.support;
 import com.dlz.framework.db.annotation.TableName;
 import com.dlz.comm.util.StringUtils;
 import com.dlz.comm.util.system.FieldReflections;
+import com.dlz.framework.db.ds.DBDynamic;
 import com.dlz.framework.db.enums.DbTypeEnum;
 import com.dlz.framework.db.holder.BeanInfoHolder;
 import com.dlz.framework.db.holder.SqlHolder;
@@ -40,7 +41,7 @@ public class HelperScan {
             return;
         }
         Set<Class<?>> set = scanPackage(packageName, TableName.class);
-        boolean initSync = SqlHolder.properties.getDbtype() == DbTypeEnum.SQLITE;
+        boolean initSync = DBDynamic.getDbType() == DbTypeEnum.SQLITE;
         if (initSync) {
             set.stream().forEach(clazz -> initTable(clazz,helper));
         } else {

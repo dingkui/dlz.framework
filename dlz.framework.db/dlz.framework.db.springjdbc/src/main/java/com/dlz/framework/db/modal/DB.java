@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.function.Function;
 
 public class DB {
+
     public static JdbcQuery jdbcSelect(String sql, Object... para) {
         return new JdbcQuery(sql,para);
     }

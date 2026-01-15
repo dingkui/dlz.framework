@@ -22,11 +22,6 @@ import java.lang.reflect.Field;
 import java.util.*;
 
 public abstract class SqlHelper {
-    protected final IDlzDao dao;
-    public SqlHelper(IDlzDao dao) {
-        this.dao = dao;
-    }
-
     /**
      * 创建表
      * @param tableName
@@ -100,7 +95,7 @@ public abstract class SqlHelper {
 //        return dao.getList(sql, args);
 //    }
     public <T> List<T> queryForList(String sql, Class<T> requiredType, Object... args){
-        return ConvertUtil.convertList(dao.getList(sql, args),requiredType);
+        return ConvertUtil.convertList(DBHolder.doDao(w->w.getList(sql, args)),requiredType);
     }
 //    public <T> T queryForObject(String sql, Class<T> requiredType, Object... args){
 //        return dao.getObj(sql,requiredType, args);
@@ -263,7 +258,7 @@ public abstract class SqlHelper {
     public void addCountById(String id, String property, Long count, Class<?> clazz) {
         String sql = "UPDATE `" + BeanInfoHolder.getTableName(clazz) + "` SET `" + property + "` = CAST(`" + property + "` AS DECIMAL(30,10)) + ? WHERE `id` =  ?";
         Object[] params = new Object[] { count, id };
-        dao.update(sql, params);
+        DBHolder.doDao(w->w.update(sql, params));
     }
 
     /**
@@ -285,7 +280,7 @@ public abstract class SqlHelper {
         }
         List<Field> fields = FieldReflections.getFields(object.getClass());
         String sql = MakerUtil.buildUpdateSql(BeanInfoHolder.getTableName(object.getClass()),fields);
-        dao.update(sql, MakerUtil.buildUpdateParams(object, fields));
+        DBHolder.doDao(w->w.update(sql, MakerUtil.buildUpdateParams(object, fields)));
     }
 
     /**
@@ -327,11 +322,11 @@ public abstract class SqlHelper {
      */
     public void deleteByQuery(ConditionWrapper conditionWrapper, Class<?> clazz) {
         List<String> values = new ArrayList<>();
-        String sql = "DELETE FROM `" + BeanInfoHolder.getTableName(clazz) + "`";
+        StringBuffer sql = new StringBuffer("DELETE FROM `" + BeanInfoHolder.getTableName(clazz) + "`");
         if (conditionWrapper != null && conditionWrapper.notEmpty()) {
-            sql += " WHERE " + conditionWrapper.build(values);
+            sql.append(" WHERE " + conditionWrapper.build(values));
         }
-        dao.update(sql, values.toArray());
+        DBHolder.doDao(w->w.update(sql.toString(), values.toArray()));
     }
 
 
@@ -583,12 +578,11 @@ public abstract class SqlHelper {
      */
     public Integer findCountByQuery(ConditionWrapper conditionWrapper, Class<?> clazz) {
         List<String> values = new ArrayList<>();
-        String sql = "SELECT COUNT(*) FROM `" + BeanInfoHolder.getTableName(clazz) + "`";
+        StringBuffer sql = new StringBuffer("SELECT COUNT(*) FROM `" + BeanInfoHolder.getTableName(clazz) + "`");
         if (conditionWrapper != null && conditionWrapper.notEmpty()) {
-            sql += " WHERE " + conditionWrapper.build(values);
+            sql.append(" WHERE " + conditionWrapper.build(values));
         }
-
-        return dao.getFistColumn(sql, Integer.class, values.toArray());
+        return DBHolder.doDao(w->w.getFistColumn(sql.toString(), Integer.class, values.toArray()));
     }
 
     /**

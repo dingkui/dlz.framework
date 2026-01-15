@@ -5,20 +5,19 @@ import com.dlz.framework.db.dao.IDlzDao;
 import com.dlz.framework.db.helper.bean.ColumnInfo;
 import com.dlz.framework.db.helper.bean.TableInfo;
 import com.dlz.framework.db.helper.support.SqlHelper;
+import com.dlz.framework.db.holder.DBHolder;
 import com.dlz.framework.db.modal.result.ResultMap;
 
 import java.lang.reflect.Field;
 import java.util.*;
 
 public class DbOpSqlite extends SqlHelper {
-    public DbOpSqlite(IDlzDao jdbcTemplate) {
-        super(jdbcTemplate);
-    }
+
 
     @Override
     public void createTable(String tableName, Class<?> clazz) {
         String sql = "CREATE TABLE IF NOT EXISTS `" + tableName + "` (id VARCHAR(32) NOT NULL PRIMARY KEY)";
-        dao.execute(sql);
+        DBHolder.getService().getDao().execute(sql);
     }
 
     @Override
@@ -30,7 +29,7 @@ public class DbOpSqlite extends SqlHelper {
     public Set<String> getTableColumnNames(String tableName) {
         // 获取表所有字段
         String sql = "PRAGMA TABLE_INFO(`" + tableName + "`)";
-        List<ResultMap> maps = dao.getList(sql);
+        List<ResultMap> maps = DBHolder.doDao(w->w.getList(sql));
         Set<String> re = new HashSet();
         maps.forEach(item -> {
             re.add(ValUtil.toStr(item.get("name"), "").toUpperCase());
@@ -42,12 +41,12 @@ public class DbOpSqlite extends SqlHelper {
     public TableInfo getTableInfo(String tableName) {
         // 获取表注释
         String sql = "SELECT table_comment FROM table_comments WHERE table_name = ?";
-        String tableComment = dao.getFistColumn(sql, String.class, tableName);
+        String tableComment = DBHolder.getService().getDao().getFistColumn(sql, String.class, tableName);
 
         // 构建查询主键的SQL语句
         sql = "PRAGMA table_info(`" + tableName + "`)";
         // 执行查询并获取结果
-        List<ResultMap> maps = dao.getList(sql);
+        List<ResultMap> maps = DBHolder.getService().getDao().getList(sql);
         List<String> primaryKeys = new ArrayList<>();
 
         for (ResultMap map : maps) {
@@ -59,7 +58,7 @@ public class DbOpSqlite extends SqlHelper {
 
         // 获取字段信息
         sql = "PRAGMA TABLE_INFO(`" + tableName + "`)";
-        maps = dao.getList(sql);
+        maps = DBHolder.getService().getDao().getList(sql);
         List<ColumnInfo> columnInfos = new ArrayList<>();
 
         for (ResultMap map : maps) {
@@ -86,22 +85,22 @@ public class DbOpSqlite extends SqlHelper {
     public List<ResultMap> getTableIndexs(String tableName) {
         // 获取表所有索引
         String sql = "PRAGMA INDEX_LIST(`" + tableName + "`)";
-        return dao.getList(sql);
+        return DBHolder.getService().getDao().getList(sql);
     }
 
     @Override
     public void createColumn(String tableName, String name, Field field) {
         String sql = "ALTER TABLE `" + tableName + "` ADD COLUMN `" + name + "` " + getDbClumnType(field);
-        dao.execute(sql);
+        DBHolder.getService().getDao().execute(sql);
     }
 
     @Override
     public void updateDefaultValue(String tableName, String columnName, String value) {
         String sql = "SELECT COUNT(*) FROM " + tableName + " WHERE `" + columnName + "` IS NULL";
-        Long count = dao.getFistColumn(sql, Long.class);
+        Long count = DBHolder.getService().getDao().getFistColumn(sql, Long.class);
         if (count > 0) {
             sql = "UPDATE " + tableName + " SET `" + columnName + "` = ? WHERE `" + columnName + "` IS NULL";
-            dao.update(sql, value);
+            DBHolder.getService().getDao().update(sql, value);
         }
     }
 

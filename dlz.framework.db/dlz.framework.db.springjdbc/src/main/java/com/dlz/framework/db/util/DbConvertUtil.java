@@ -1,6 +1,7 @@
 package com.dlz.framework.db.util;
 
 import com.dlz.comm.util.ValUtil;
+import com.dlz.framework.db.convertor.clumnname.ColumnNameCamel;
 import com.dlz.framework.db.convertor.clumnname.IColumnNameConvertor;
 import com.dlz.framework.db.convertor.dbtype.ITableColumnMapper;
 import com.dlz.framework.db.modal.result.ResultMap;
@@ -23,7 +24,7 @@ public class DbConvertUtil {
 	/**
 	 * 数据库字段名转换器
 	 */
-	public static IColumnNameConvertor columnMapper = null;
+	public static IColumnNameConvertor columnMapper = new ColumnNameCamel();
 	/**
 	 * 将值转换成数据库字段对应的数据类型
 	 * @param tableName

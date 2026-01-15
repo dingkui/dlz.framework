@@ -8,6 +8,7 @@ import com.dlz.framework.db.service.ICommService;
 import com.dlz.framework.holder.SpringHolder;
 import com.dlz.framework.redis.excutor.JedisExecutor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.jdbc.core.JdbcTemplate;
 
 import java.util.function.Function;
 
@@ -16,6 +17,7 @@ import java.util.function.Function;
  */
 @Slf4j
 public class DBHolder {
+    private static IDlzDao dao;
     private static ResultMapRowMapper rowMapper;
     private static ICommService service;
     private static JedisExecutor jedis;
@@ -25,6 +27,12 @@ public class DBHolder {
             rowMapper = SpringHolder.getBean(ResultMapRowMapper.class);
         }
         return rowMapper;
+    }
+    public static IDlzDao getDao() {
+        if (dao == null) {
+            dao = SpringHolder.getBean(IDlzDao.class);
+        }
+        return dao;
     }
     public static ICommService getService() {
         if (service == null) {

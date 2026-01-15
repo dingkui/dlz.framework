@@ -6,6 +6,7 @@ import com.dlz.framework.db.helper.bean.ColumnInfo;
 import com.dlz.framework.db.helper.bean.TableInfo;
 import com.dlz.framework.db.helper.support.SqlHelper;
 import com.dlz.framework.db.holder.BeanInfoHolder;
+import com.dlz.framework.db.holder.DBHolder;
 import com.dlz.framework.db.modal.result.ResultMap;
 
 import java.lang.reflect.Field;
@@ -17,10 +18,6 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 public class DbOpDm8 extends SqlHelper {
-    public DbOpDm8(IDlzDao jdbcTemplate) {
-        super(jdbcTemplate);
-    }
-
     @Override
     public void createTable(String tableName, Class<?> clazz) {
         // 达梦数据库表名需大写
@@ -29,7 +26,7 @@ public class DbOpDm8 extends SqlHelper {
         if (StringUtils.isNotEmpty(tableComment)) {
             sql += " COMMENT ON TABLE \"" + tableName.toUpperCase() + "\" IS '" + tableComment + "'";
         }
-        dao.execute(sql);
+        DBHolder.getService().getDao().execute(sql);
     }
 
     /**
@@ -44,7 +41,7 @@ public class DbOpDm8 extends SqlHelper {
     public Set<String> getTableColumnNames(String tableName) {
         // 达梦系统表查询字段信息
         String sql = "SELECT COLUMN_NAME FROM ALL_TAB_COLUMNS WHERE OWNER = USER AND TABLE_NAME = ?";
-        return dao.getList(sql, tableName.toUpperCase())
+        return DBHolder.getService().getDao().getList(sql, tableName.toUpperCase())
                 .stream()
                 .map(item -> item.getStr("columnName"))
                 .collect(Collectors.toSet());
@@ -57,7 +54,7 @@ public class DbOpDm8 extends SqlHelper {
 
         // 查询表注释
         String sql = "SELECT COMMENTS FROM ALL_TAB_COMMENTS WHERE OWNER = USER AND TABLE_NAME = ?";
-        tableInfo.setTableComment(dao.getFistColumn(sql, String.class, tableName.toUpperCase()));
+        tableInfo.setTableComment(DBHolder.getService().getDao().getFistColumn(sql, String.class, tableName.toUpperCase()));
 
         // 查询主键信息
         sql = "SELECT COLUMN_NAME" +
@@ -67,7 +64,7 @@ public class DbOpDm8 extends SqlHelper {
                 " WHERE C.OWNER = USER" +
                 "   AND C.TABLE_NAME = ?" +
                 "   AND C.CONSTRAINT_TYPE = 'P'";
-        List<String> primaryKeys = dao.getList(sql, tableName.toUpperCase())
+        List<String> primaryKeys = DBHolder.getService().getDao().getList(sql, tableName.toUpperCase())
                 .stream()
                 .map(map -> map.getStr("columnName", ""))
                 .collect(Collectors.toList());
@@ -84,7 +81,7 @@ public class DbOpDm8 extends SqlHelper {
                 "      AND a.TABLE_NAME = C.TABLE_NAME " +
                 "      AND a.COLUMN_NAME = C.COLUMN_NAME" +
                 "    WHERE A.TABLE_NAME = ?";
-        List<ColumnInfo> columnInfos = dao.getList(sql, tableName.toUpperCase())
+        List<ColumnInfo> columnInfos = DBHolder.getService().getDao().getList(sql, tableName.toUpperCase())
                 .stream()
                 .map(map -> {
                     ColumnInfo columnInfo = new ColumnInfo();
@@ -103,7 +100,7 @@ public class DbOpDm8 extends SqlHelper {
     public List<ResultMap> getTableIndexs(String tableName) {
         // 查询索引信息
         String sql = "SELECT INDEX_NAME, COLUMN_NAME FROM ALL_IND_COLUMNS WHERE TABLE_OWNER = USER AND TABLE_NAME = ?";
-        return dao.getList(sql, tableName.toUpperCase());
+        return DBHolder.getService().getDao().getList(sql, tableName.toUpperCase());
     }
 
     @Override
@@ -113,13 +110,13 @@ public class DbOpDm8 extends SqlHelper {
         if (StringUtils.isNotEmpty(columnComment)) {
             sql += "; COMMENT ON COLUMN \"" + tableName.toUpperCase() + "\".\"" + name.toUpperCase() + "\" IS '" + columnComment + "'";
         }
-        dao.execute(sql);
+        DBHolder.getService().getDao().execute(sql);
     }
 
     @Override
     public void updateDefaultValue(String tableName, String columnName, String value) {
         String sql = "UPDATE \"" + tableName.toUpperCase() + "\" SET \"" + columnName.toUpperCase() + "\" = ? WHERE \"" + columnName.toUpperCase() + "\" IS NULL";
-        dao.update(sql, value);
+        DBHolder.getService().getDao().update(sql, value);
     }
 
     @Override

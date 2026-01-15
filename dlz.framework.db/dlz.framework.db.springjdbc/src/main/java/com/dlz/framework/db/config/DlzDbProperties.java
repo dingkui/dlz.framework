@@ -1,6 +1,5 @@
 package com.dlz.framework.db.config;
 
-import com.dlz.framework.db.enums.DbTypeEnum;
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
@@ -9,10 +8,6 @@ import java.util.List;
 @Data
 @ConfigurationProperties(prefix = "dlz.db")
 public class DlzDbProperties {
-    /**
-     * 数据库类型
-     */
-    private DbTypeEnum dbtype = DbTypeEnum.MYSQL;
     /**
      * 数据库支持类
      */

@@ -7,6 +7,7 @@ import com.dlz.framework.db.helper.bean.ColumnInfo;
 import com.dlz.framework.db.helper.bean.TableInfo;
 import com.dlz.framework.db.helper.support.SqlHelper;
 import com.dlz.framework.db.holder.BeanInfoHolder;
+import com.dlz.framework.db.holder.DBHolder;
 import com.dlz.framework.db.modal.result.ResultMap;
 import lombok.extern.slf4j.Slf4j;
 
@@ -17,18 +18,14 @@ import java.util.*;
 
 @Slf4j
 public class DbOpPostgresql extends SqlHelper {
-    public DbOpPostgresql(IDlzDao jdbcTemplate) {
-        super(jdbcTemplate);
-    }
-
     @Override
     public void createTable(String tableName, Class<?> clazz) {
         String sql = "CREATE TABLE IF NOT EXISTS public.\"" + tableName + "\" (id VARCHAR(32) NOT NULL PRIMARY KEY)";
-        dao.execute(sql);
+        DBHolder.getService().getDao().execute(sql);
         String clumnCommont = BeanInfoHolder.getTableComment(clazz);
         if (StringUtils.isNotEmpty(clumnCommont)) {
             sql = "COMMENT ON TABLE \"public\".\"" + tableName + "\" IS '" + clumnCommont + "'";
-            dao.execute(sql);
+            DBHolder.getService().getDao().execute(sql);
         }
     }
 
@@ -46,7 +43,7 @@ public class DbOpPostgresql extends SqlHelper {
     public Set<String> getTableColumnNames(String tableName) {
         // 获取表所有字段
         String sql = "SELECT column_name as name FROM information_schema.columns WHERE table_schema='public' AND table_name='" + tableName.toLowerCase() + "'";
-        List<ResultMap> maps = dao.getList(sql);
+        List<ResultMap> maps = DBHolder.getService().getDao().getList(sql);
         Set<String> re = new HashSet();
         maps.forEach(item -> {
             re.add(ValUtil.toStr(item.get("name"), "").toUpperCase());
@@ -62,7 +59,7 @@ public class DbOpPostgresql extends SqlHelper {
         // 执行查询并获取结果
         TableInfo tableInfo = new TableInfo();
         tableInfo.setTableName(tableName);
-        tableInfo.setTableComment(dao.getFistColumn(sql, String.class));
+        tableInfo.setTableComment(DBHolder.getService().getDao().getFistColumn(sql, String.class));
 
         // 构建查询主键的SQL语句
         sql = "SELECT kcu.column_name " +
@@ -74,7 +71,7 @@ public class DbOpPostgresql extends SqlHelper {
                 "AND tc.table_name = ? " +
                 "AND tc.constraint_type = 'PRIMARY KEY'";
         // 执行查询并获取结果
-        List<ResultMap> maps = dao.getList(sql, tableName);
+        List<ResultMap> maps = DBHolder.getService().getDao().getList(sql, tableName);
         List<String> primaryKeys = new ArrayList<>();
         for (ResultMap map : maps) {
             primaryKeys.add(ValUtil.toStr(map.get("column_name"), ""));
@@ -89,7 +86,7 @@ public class DbOpPostgresql extends SqlHelper {
                 "JOIN pg_catalog.pg_namespace n ON c.relnamespace = n.oid " +
                 "WHERE c.relname = ? AND n.nspname = 'public' AND a.attnum > 0 AND NOT a.attisdropped";
         // 执行查询并获取结果
-        maps = dao.getList(sql, tableName);
+        maps = DBHolder.getService().getDao().getList(sql, tableName);
         List<ColumnInfo> columnInfos = new ArrayList<>();
 
         for (ResultMap map : maps) {
@@ -119,27 +116,27 @@ public class DbOpPostgresql extends SqlHelper {
                 "WHERE " + //
                 "A.SCHEMANAME = E.SCHEMANAME AND A.TABLENAME = E.RELNAME AND A.INDEXNAME = E.INDEXRELNAME " + //
                 "AND E.SCHEMANAME = 'public' AND E.RELNAME = '" + tableName + "' ";//
-        return dao.getList(sql);
+        return DBHolder.getService().getDao().getList(sql);
     }
 
     @Override
     public void createColumn(String tableName, String name, Field field) {
         String sql = "ALTER TABLE public." + tableName + " ADD COLUMN " + name + " " + getDbClumnType(field);
-        dao.execute(sql);
+        DBHolder.getService().getDao().execute(sql);
         String clumnCommont = BeanInfoHolder.getColumnComment(field);
         if (StringUtils.isNotEmpty(clumnCommont)) {
             sql = "COMMENT ON COLUMN " + tableName + "." + name + " IS '" + clumnCommont + "'";
-            dao.execute(sql);
+            DBHolder.getService().getDao().execute(sql);
         }
     }
 
     @Override
     public void updateDefaultValue(String tableName, String columnName, String value) {
         String sql = "SELECT COUNT(*) FROM " + tableName + " WHERE `" + columnName + "` IS NULL";
-        Long count = dao.getFistColumn(sql, Long.class);
+        Long count = DBHolder.getService().getDao().getFistColumn(sql, Long.class);
         if (count > 0) {
             sql = "UPDATE " + tableName + " SET `" + columnName + "` = ? WHERE `" + columnName + "` IS NULL";
-            dao.update(sql, value);
+            DBHolder.getService().getDao().update(sql, value);
         }
     }
 

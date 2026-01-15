@@ -12,6 +12,8 @@ import com.dlz.framework.db.convertor.rowMapper.OracleColumnMapRowMapper;
 import com.dlz.framework.db.convertor.rowMapper.ResultMapRowMapper;
 import com.dlz.framework.db.dao.DlzDao;
 import com.dlz.framework.db.dao.IDlzDao;
+import com.dlz.framework.db.ds.DBDynamic;
+import com.dlz.framework.db.ds.DynamicJdbcTemplate;
 import com.dlz.framework.db.enums.DbTypeEnum;
 import com.dlz.framework.db.helper.support.HelperScan;
 import com.dlz.framework.db.helper.support.SqlHelper;
@@ -30,6 +32,7 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.lang.NonNull;
 
 import javax.sql.DataSource;
 
@@ -40,32 +43,17 @@ import javax.sql.DataSource;
 @Slf4j
 @EnableConfigurationProperties({DlzDbProperties.class})
 public class DlzDbConfig extends DlzFwConfig {
-    @Bean(name = "resultRowMapper")
-    @Lazy
-    @ConditionalOnMissingBean(name = "resultRowMapper")
-    public ResultMapRowMapper resultRowMapper(DlzDbProperties properties) {
-        final IColumnNameConvertor columnMapper = new ColumnNameCamel();
-        DbConvertUtil.columnMapper= columnMapper;
-        DbTypeEnum dbtype = properties.getDbtype();
-        if (dbtype == DbTypeEnum.ORACLE) {
-            return new OracleColumnMapRowMapper(columnMapper);
-        } else if (dbtype == DbTypeEnum.MYSQL || dbtype == DbTypeEnum.POSTGRESQL) {
-            return new MySqlColumnMapRowMapper(columnMapper);
-        }
-        return new ResultMapRowMapper(columnMapper);
-    }
     @Bean(name = "dlzDao")
     @Lazy
     @ConditionalOnMissingBean(name = "dlzDao")
-    public IDlzDao dlzDao(JdbcTemplate jdbc,DlzDbProperties properties,ResultMapRowMapper resultRowMapper) {
+    public IDlzDao dlzDao(JdbcTemplate jdbc, DlzDbProperties properties) {
         SqlHolder.init(properties);
         DbLogUtil.init(properties);
-        final DlzDao dlzDao = new DlzDao(jdbc, resultRowMapper);
-        DbConvertUtil.tableCloumnMapper= new TableColumnMapper(dlzDao);
-        if(log.isInfoEnabled()){
-            log.info("init dlzDao:"+DlzDao.class.getName());
-            log.info("init resultRowMapper:"+resultRowMapper.getClass().getName());
-            log.info("init tableCloumnMapper:"+TableColumnMapper.class.getName());
+        final DlzDao dlzDao = new DlzDao(jdbc);
+        DbConvertUtil.tableCloumnMapper = new TableColumnMapper(dlzDao);
+        if (log.isInfoEnabled()) {
+            log.info("init dlzDao:" + DlzDao.class.getName());
+            log.info("init tableCloumnMapper:" + TableColumnMapper.class.getName());
         }
         return dlzDao;
     }
@@ -75,8 +63,8 @@ public class DlzDbConfig extends DlzFwConfig {
     @ConditionalOnMissingBean(name = "commService")
     public ICommService commService(IDlzDao dao) {
         CommServiceImpl commService = new CommServiceImpl(dao);
-        if(log.isInfoEnabled()){
-            log.info("init commService:"+CommServiceImpl.class.getName());
+        if (log.isInfoEnabled()) {
+            log.info("init commService:" + CommServiceImpl.class.getName());
         }
         SqlHolder.loadDbSql(commService);
         return commService;
@@ -86,10 +74,10 @@ public class DlzDbConfig extends DlzFwConfig {
     @Lazy
     @ConditionalOnMissingBean(name = "JdbcTemplate")
     public JdbcTemplate JdbcTemplate(DataSource dataSource) {
-        if(log.isInfoEnabled()){
-            log.info("init JdbcTemplate:"+JdbcTemplate.class.getName());
+        if (log.isInfoEnabled()) {
+            log.info("init JdbcTemplate:" + DynamicJdbcTemplate.class.getName());
         }
-        return new JdbcTemplate(dataSource);
+        return new DynamicJdbcTemplate(dataSource);
     }
 
     /**
@@ -98,35 +86,12 @@ public class DlzDbConfig extends DlzFwConfig {
     @Lazy
     @Bean(name = "dlzHelperDbOp")
     @ConditionalOnMissingBean(name = "dlzHelperDbOp")
-    public SqlHelper dlzHelperDbOp(IDlzDao dao,DlzDbProperties properties) {
-        if(log.isInfoEnabled()) {
-            log.info("init dlzHelper:dbType is " + properties.getDbtype());
-        }
-        SqlHelper helpler;
-        if(StringUtils.isNotEmpty(properties.getDbSupport())){
-            final Class<?> aClass;
-            try {
-                aClass = Class.forName(properties.getDbSupport());
-                helpler = (SqlHelper)Reflections.newInstance(aClass, dao);
-            } catch (ClassNotFoundException e) {
-                throw new SystemException("dbSupport:"+properties.getDbSupport()+" not found");
-            }
-        }else{
-            if (properties.getDbtype() == DbTypeEnum.SQLITE) {
-                helpler = new DbOpSqlite(dao);
-            }else if (properties.getDbtype() == DbTypeEnum.POSTGRESQL) {
-                helpler = new DbOpPostgresql(dao);
-            }else if (properties.getDbtype() == DbTypeEnum.ORACLE||properties.getDbtype() == DbTypeEnum.DM8) {
-                helpler = new DbOpDm8(dao);
-            }else{
-                helpler = new DbOpMysql(dao);
-            }
-        }
-
+    public SqlHelper dlzHelperDbOp(DlzDbProperties properties) {
+        SqlHelper helpler = DBDynamic.getSqlHelper();
         //自动扫描
-        if(properties.getHelper().autoUpdate){
+        if (properties.getHelper().autoUpdate) {
             log.info("dlzHelper autoUpdate ...");
-            new Thread(()-> HelperScan.scan(properties.getHelper().packageName, helpler)).start();
+            new Thread(() -> HelperScan.scan(properties.getHelper().packageName, helpler)).start();
         }
         return helpler;
     }

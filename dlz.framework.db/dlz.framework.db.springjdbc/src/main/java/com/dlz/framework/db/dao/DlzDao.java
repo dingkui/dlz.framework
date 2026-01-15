@@ -1,6 +1,6 @@
 package com.dlz.framework.db.dao;
 
-import com.dlz.framework.db.convertor.rowMapper.ResultMapRowMapper;
+import com.dlz.framework.db.ds.DBDynamic;
 import com.dlz.framework.db.modal.result.ResultMap;
 import com.dlz.framework.db.util.DbLogUtil;
 import lombok.extern.slf4j.Slf4j;
@@ -21,16 +21,15 @@ import java.util.List;
 @Slf4j
 public class DlzDao implements IDlzDao {
     private final JdbcTemplate dao;
-    private final ResultMapRowMapper rowMapper;
 
-    public DlzDao(JdbcTemplate jdbcTemplate, ResultMapRowMapper rowMapper) {
+
+    public DlzDao(JdbcTemplate jdbcTemplate) {
         this.dao = jdbcTemplate;
-        this.rowMapper = rowMapper;
     }
 
     @Override
     public List<ResultMap> getList(String sql, Object... args) throws DataAccessException {
-        return getList(sql, rowMapper, args);
+        return getList(sql, DBDynamic.getRowMapper(), args);
     }
 
     @Override

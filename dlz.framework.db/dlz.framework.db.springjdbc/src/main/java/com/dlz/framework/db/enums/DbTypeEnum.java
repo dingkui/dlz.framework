@@ -1,5 +1,6 @@
 package com.dlz.framework.db.enums;
 
+import com.dlz.framework.db.ds.DBDynamic;
 import com.dlz.framework.db.holder.SqlHolder;
 
 public enum DbTypeEnum {
@@ -24,7 +25,7 @@ public enum DbTypeEnum {
         for (int i = 0; i < values.length; i++) {
             DbTypeEnum item = values[i];
             if(key.endsWith(item.getEnd())){
-                if(SqlHolder.properties.getDbtype()== item){
+                if(DBDynamic.getDbType()== item){
                     return key.substring(0, key.length()- item.getEnd().length());
                 }
                 return null;
