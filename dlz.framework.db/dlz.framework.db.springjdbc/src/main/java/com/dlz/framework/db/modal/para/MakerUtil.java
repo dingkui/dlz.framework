@@ -212,11 +212,10 @@ public class MakerUtil {
 
     public static Object getIdValue(Field field, String tableName) {
         final TableId annotation = field.getAnnotation(TableId.class);
-        IdType type = null;
-        if (annotation == null) {
+        IdType type;
+        if (annotation != null) {
             type = annotation.type();
-        }
-        if (type == null){
+        }else{
             type = AnnoProxys.MybatisPlusIdType.type(field);
         }
         if (type==null || type == IdType.AUTO||type == IdType.INPUT) {
