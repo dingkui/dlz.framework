@@ -8,7 +8,6 @@
     <name>dlz.framework.db.springjdbc</name>
 	<artifactId>dlz.framework.db.springjdbc</artifactId>
 	<packaging>jar</packaging>
-	<version>6.3.2</version>
 
 	<dependencies>
 <!--		<dependency>-->

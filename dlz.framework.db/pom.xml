@@ -18,7 +18,7 @@
         <dependency>
             <groupId>com.chan3d</groupId>
             <artifactId>dlz.framework</artifactId>
-            <version>6.3.2</version>
+            <version>${dlz.fw.version}</version>
         </dependency>
 <!--        <dependency>-->
 <!--            <groupId>comlib.jdbc</groupId>-->
@@ -62,7 +62,7 @@
             <dependency>
                 <groupId>com.chan3d</groupId>
                 <artifactId>dlz.framework.db.springjdbc</artifactId>
-                <version>6.3.2</version>
+                <version>${dlz.fw.version}</version>
             </dependency>
             <!-- util/qrcode-1.0.jar -->
             <!--            <dependency>-->

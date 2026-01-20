@@ -24,7 +24,7 @@
 		<dependency>
 			<groupId>com.chan3d</groupId>
 			<artifactId>dlz.framework.db.springjdbc</artifactId>
-			<version>6.3.2</version>
+			<version>${dlz.fw.version}</version>
 			<exclusions>
 				<exclusion>
 					<artifactId>mybatis-plus-annotation</artifactId>

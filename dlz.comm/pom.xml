@@ -6,7 +6,6 @@
         <artifactId>dlz-dependencies</artifactId>
         <version>6.3.3</version>
     </parent>
-    <version>6.3.2</version>
     <artifactId>dlz.comm</artifactId>
     <name>dlz.comm</name>
     <packaging>jar</packaging>

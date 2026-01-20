@@ -5,7 +5,6 @@
 		<artifactId>dlz.plugin</artifactId>
 		<version>6.3.3</version>
 	</parent>
-	<version>6.3.2</version>
     <name>dlz.plugin.netty</name>
 	<artifactId>dlz.plugin.netty</artifactId>
 	<packaging>jar</packaging>

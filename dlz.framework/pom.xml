@@ -5,7 +5,6 @@
 		<artifactId>dlz-dependencies</artifactId>
 		<version>6.3.3</version>
 	</parent>
-	<version>6.3.2</version>
 	<artifactId>dlz.framework</artifactId>
 	<name>dlz.framework</name>
 	<packaging>jar</packaging>
@@ -13,7 +12,7 @@
 		<dependency>
 			<groupId>com.chan3d</groupId>
 			<artifactId>dlz.comm</artifactId>
-			<version>6.3.2</version>
+			<version>${dlz.fw.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>net.sf.ehcache</groupId>

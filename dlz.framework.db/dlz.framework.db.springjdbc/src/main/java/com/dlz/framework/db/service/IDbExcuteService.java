@@ -48,7 +48,11 @@ public interface IDbExcuteService extends IDbBaseService{
     }
 
     default <T> long insertWithAutoKey(T bean){
-        return insertWithAutoKey(WrapperInsert.wrapper(bean));
+        final Long newid = insertWithAutoKey(WrapperInsert.wrapper(bean));
+        if(newid != null){
+            FieldReflections.setValue(bean, "id", newid);
+        }
+        return newid;
     }
 
     default <T> long delete(T bean){
