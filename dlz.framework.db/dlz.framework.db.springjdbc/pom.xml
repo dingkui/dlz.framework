@@ -3,7 +3,7 @@
 	<parent>
 		<groupId>com.chan3d</groupId>
 		<artifactId>dlz.framework.db</artifactId>
-		<version>6.3.2</version>
+		<version>6.3.3</version>
 	</parent>
     <name>dlz.framework.db.springjdbc</name>
 	<artifactId>dlz.framework.db.springjdbc</artifactId>
