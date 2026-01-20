@@ -13,116 +13,120 @@ import java.util.Calendar;
 import java.util.Date;
 
 /**
- * 日期工具类
+ * 日期计算工具类
  *
+ * 提供便捷的日期时间计算功能，包括加减年月日时分秒等操作
+ * 同时提供日期差值计算、时间戳获取等功能
+ * 
  * @author dk
+ * @since 2023
  */
 public class DateCalcUtil {
 	/**
-	 * 添加年
+	 * 为指定日期添加年数
 	 *
-	 * @param date       时间
-	 * @param yearsToAdd 添加的年数
-	 * @return 设置后的时间
+	 * @param date       原始日期
+	 * @param yearsToAdd 要添加的年数，负数表示减少
+	 * @return 新的日期
 	 */
 	public static Date plusYears(Date date, int yearsToAdd) {
 		return set(date, Calendar.YEAR, yearsToAdd);
 	}
 
 	/**
-	 * 添加月
+	 * 为指定日期添加月数
 	 *
-	 * @param date        时间
-	 * @param monthsToAdd 添加的月数
-	 * @return 设置后的时间
+	 * @param date        原始日期
+	 * @param monthsToAdd 要添加的月数，负数表示减少
+	 * @return 新的日期
 	 */
 	public static Date plusMonths(Date date, int monthsToAdd) {
 		return set(date, Calendar.MONTH, monthsToAdd);
 	}
 
 	/**
-	 * 添加周
+	 * 为指定日期添加周数
 	 *
-	 * @param date       时间
-	 * @param weeksToAdd 添加的周数
-	 * @return 设置后的时间
+	 * @param date       原始日期
+	 * @param weeksToAdd 要添加的周数，负数表示减少
+	 * @return 新的日期
 	 */
 	public static Date plusWeeks(Date date, int weeksToAdd) {
 		return plus(date, Period.ofWeeks(weeksToAdd));
 	}
 
 	/**
-	 * 添加天
+	 * 为指定日期添加天数
 	 *
-	 * @param date      时间
-	 * @param daysToAdd 添加的天数
-	 * @return 设置后的时间
+	 * @param date      原始日期
+	 * @param daysToAdd 要添加的天数，负数表示减少
+	 * @return 新的日期
 	 */
 	public static Date plusDays(Date date, long daysToAdd) {
 		return plus(date, Duration.ofDays(daysToAdd));
 	}
 
 	/**
-	 * 添加小时
+	 * 为指定日期添加小时数
 	 *
-	 * @param date       时间
-	 * @param hoursToAdd 添加的小时数
-	 * @return 设置后的时间
+	 * @param date       原始日期
+	 * @param hoursToAdd 要添加的小时数，负数表示减少
+	 * @return 新的日期
 	 */
 	public static Date plusHours(Date date, long hoursToAdd) {
 		return plus(date, Duration.ofHours(hoursToAdd));
 	}
 
 	/**
-	 * 添加分钟
+	 * 为指定日期添加分钟数
 	 *
-	 * @param date         时间
-	 * @param minutesToAdd 添加的分钟数
-	 * @return 设置后的时间
+	 * @param date         原始日期
+	 * @param minutesToAdd 要添加的分钟数，负数表示减少
+	 * @return 新的日期
 	 */
 	public static Date plusMinutes(Date date, long minutesToAdd) {
 		return plus(date, Duration.ofMinutes(minutesToAdd));
 	}
 
 	/**
-	 * 添加秒
+	 * 为指定日期添加秒数
 	 *
-	 * @param date         时间
-	 * @param secondsToAdd 添加的秒数
-	 * @return 设置后的时间
+	 * @param date         原始日期
+	 * @param secondsToAdd 要添加的秒数，负数表示减少
+	 * @return 新的日期
 	 */
 	public static Date plusSeconds(Date date, long secondsToAdd) {
 		return plus(date, Duration.ofSeconds(secondsToAdd));
 	}
 
 	/**
-	 * 添加毫秒
+	 * 为指定日期添加毫秒数
 	 *
-	 * @param date        时间
-	 * @param millisToAdd 添加的毫秒数
-	 * @return 设置后的时间
+	 * @param date        原始日期
+	 * @param millisToAdd 要添加的毫秒数，负数表示减少
+	 * @return 新的日期
 	 */
 	public static Date plusMillis(Date date, long millisToAdd) {
 		return plus(date, Duration.ofMillis(millisToAdd));
 	}
 
 	/**
-	 * 添加纳秒
+	 * 为指定日期添加纳秒数
 	 *
-	 * @param date       时间
-	 * @param nanosToAdd 添加的纳秒数
-	 * @return 设置后的时间
+	 * @param date       原始日期
+	 * @param nanosToAdd 要添加的纳秒数，负数表示减少
+	 * @return 新的日期
 	 */
 	public static Date plusNanos(Date date, long nanosToAdd) {
 		return plus(date, Duration.ofNanos(nanosToAdd));
 	}
 
 	/**
-	 * 日期添加时间量
+	 * 为指定日期添加时间量
 	 *
-	 * @param date   时间
-	 * @param amount 时间量
-	 * @return 设置后的时间
+	 * @param date   原始日期
+	 * @param amount 要添加的时间量
+	 * @return 新的日期
 	 */
 	public static Date plus(Date date, TemporalAmount amount) {
 		Instant instant = date.toInstant();
@@ -130,110 +134,110 @@ public class DateCalcUtil {
 	}
 
 	/**
-	 * 减少年
+	 * 从指定日期减少年数
 	 *
-	 * @param date  时间
-	 * @param years 减少的年数
-	 * @return 设置后的时间
+	 * @param date  原始日期
+	 * @param years 要减少的年数，负数表示增加
+	 * @return 新的日期
 	 */
 	public static Date minusYears(Date date, int years) {
 		return set(date, Calendar.YEAR, -years);
 	}
 
 	/**
-	 * 减少月
+	 * 从指定日期减少月数
 	 *
-	 * @param date   时间
-	 * @param months 减少的月数
-	 * @return 设置后的时间
+	 * @param date   原始日期
+	 * @param months 要减少的月数，负数表示增加
+	 * @return 新的日期
 	 */
 	public static Date minusMonths(Date date, int months) {
 		return set(date, Calendar.MONTH, -months);
 	}
 
 	/**
-	 * 减少周
+	 * 从指定日期减少周数
 	 *
-	 * @param date  时间
-	 * @param weeks 减少的周数
-	 * @return 设置后的时间
+	 * @param date  原始日期
+	 * @param weeks 要减少的周数，负数表示增加
+	 * @return 新的日期
 	 */
 	public static Date minusWeeks(Date date, int weeks) {
 		return minus(date, Period.ofWeeks(weeks));
 	}
 
 	/**
-	 * 减少天
+	 * 从指定日期减少天数
 	 *
-	 * @param date 时间
-	 * @param days 减少的天数
-	 * @return 设置后的时间
+	 * @param date 原始日期
+	 * @param days 要减少的天数，负数表示增加
+	 * @return 新的日期
 	 */
 	public static Date minusDays(Date date, long days) {
 		return minus(date, Duration.ofDays(days));
 	}
 
 	/**
-	 * 减少小时
+	 * 从指定日期减少小时数
 	 *
-	 * @param date  时间
-	 * @param hours 减少的小时数
-	 * @return 设置后的时间
+	 * @param date  原始日期
+	 * @param hours 要减少的小时数，负数表示增加
+	 * @return 新的日期
 	 */
 	public static Date minusHours(Date date, long hours) {
 		return minus(date, Duration.ofHours(hours));
 	}
 
 	/**
-	 * 减少分钟
+	 * 从指定日期减少分钟数
 	 *
-	 * @param date    时间
-	 * @param minutes 减少的分钟数
-	 * @return 设置后的时间
+	 * @param date    原始日期
+	 * @param minutes 要减少的分钟数，负数表示增加
+	 * @return 新的日期
 	 */
 	public static Date minusMinutes(Date date, long minutes) {
 		return minus(date, Duration.ofMinutes(minutes));
 	}
 
 	/**
-	 * 减少秒
+	 * 从指定日期减少秒数
 	 *
-	 * @param date    时间
-	 * @param seconds 减少的秒数
-	 * @return 设置后的时间
+	 * @param date    原始日期
+	 * @param seconds 要减少的秒数，负数表示增加
+	 * @return 新的日期
 	 */
 	public static Date minusSeconds(Date date, long seconds) {
 		return minus(date, Duration.ofSeconds(seconds));
 	}
 
 	/**
-	 * 减少毫秒
+	 * 从指定日期减少毫秒数
 	 *
-	 * @param date   时间
-	 * @param millis 减少的毫秒数
-	 * @return 设置后的时间
+	 * @param date   原始日期
+	 * @param millis 要减少的毫秒数，负数表示增加
+	 * @return 新的日期
 	 */
 	public static Date minusMillis(Date date, long millis) {
 		return minus(date, Duration.ofMillis(millis));
 	}
 
 	/**
-	 * 减少纳秒
+	 * 从指定日期减少纳秒数
 	 *
-	 * @param date  时间
-	 * @param nanos 减少的纳秒数
-	 * @return 设置后的时间
+	 * @param date  原始日期
+	 * @param nanos 要减少的纳秒数，负数表示增加
+	 * @return 新的日期
 	 */
 	public static Date minusNanos(Date date, long nanos) {
 		return minus(date, Duration.ofNanos(nanos));
 	}
 
 	/**
-	 * 日期减少时间量
+	 * 从指定日期减少时间量
 	 *
-	 * @param date   时间
-	 * @param amount 时间量
-	 * @return 设置后的时间
+	 * @param date   原始日期
+	 * @param amount 要减少的时间量
+	 * @return 新的日期
 	 */
 	public static Date minus(Date date, TemporalAmount amount) {
 		Instant instant = date.toInstant();
@@ -243,10 +247,10 @@ public class DateCalcUtil {
 	/**
 	 * 设置日期属性
 	 *
-	 * @param date          时间
-	 * @param calendarField 更改的属性
-	 * @param amount        更改数，-1表示减少
-	 * @return 设置后的时间
+	 * @param date          原始日期
+	 * @param calendarField 要修改的日历字段
+	 * @param amount        修改的数量，负数表示减少
+	 * @return 新的日期
 	 */
 	private static Date set(Date date, int calendarField, int amount) {
 		Calendar c = Calendar.getInstance();
@@ -259,33 +263,33 @@ public class DateCalcUtil {
 
 
 	/**
-	 * 比较2个时间差，跨度比较小
+	 * 计算两个时间点之间的时间差（适用于较小时间跨度）
 	 *
-	 * @param startInclusive 开始时间
-	 * @param endExclusive   结束时间
-	 * @return 时间间隔
+	 * @param startInclusive 开始时间（包含）
+	 * @param endExclusive   结束时间（排除）
+	 * @return 时间差
 	 */
 	public static Duration between(Temporal startInclusive, Temporal endExclusive) {
 		return Duration.between(startInclusive, endExclusive);
 	}
 
 	/**
-	 * 比较2个时间差，跨度比较大，年月日为单位
+	 * 计算两个日期之间的时间差（适用于较大时间跨度，以年月日为单位）
 	 *
-	 * @param startDate 开始时间
-	 * @param endDate   结束时间
-	 * @return 时间间隔
+	 * @param startDate 开始日期
+	 * @param endDate   结束日期
+	 * @return 时间差
 	 */
 	public static Period between(LocalDate startDate, LocalDate endDate) {
 		return Period.between(startDate, endDate);
 	}
 
 	/**
-	 * 比较2个 时间差
+	 * 计算两个日期之间的时间差
 	 *
-	 * @param startDate 开始时间
-	 * @param endDate   结束时间
-	 * @return 时间间隔
+	 * @param startDate 开始日期
+	 * @param endDate   结束日期
+	 * @return 时间差
 	 */
 	public static Duration between(Date startDate, Date endDate) {
 		Duration between = Duration.between(startDate.toInstant(), endDate.toInstant());
@@ -293,10 +297,10 @@ public class DateCalcUtil {
 	}
 
 	/**
-	 * 将秒数转换为日时分秒
+	 * 将秒数转换为天时分秒格式
 	 *
 	 * @param second 秒数
-	 * @return 时间
+	 * @return 格式化的天时分秒字符串
 	 */
 	public static String secondToTime(Long second) {
 		// 判断是否为空
@@ -323,9 +327,9 @@ public class DateCalcUtil {
 	}
 
 	/**
-	 * 获取当前时间戳(秒)
+	 * 获取当前时间戳（秒）
 	 *
-	 * @return 时间戳
+	 * @return 当前时间戳（秒）
 	 */
 	public static long dateline() {
 		return System.currentTimeMillis() / 1000;
@@ -334,6 +338,8 @@ public class DateCalcUtil {
 
 	/**
 	 * 获取服务器启动时间
+	 * 
+	 * @return 服务器启动时间
 	 */
 	public static Date getServerStartDate() {
 		long time = ManagementFactory.getRuntimeMXBean().getStartTime();
@@ -341,14 +347,22 @@ public class DateCalcUtil {
 	}
 
 	/**
-	 * 计算相差天数
+	 * 计算两个日期相差的天数（绝对值）
+	 * 
+	 * @param date1 第一个日期
+	 * @param date2 第二个日期
+	 * @return 相差的天数
 	 */
 	public static int differentDaysByMillisecond(Date date1, Date date2) {
 		return Math.abs((int) ((date2.getTime() - date1.getTime()) / (1000 * 3600 * 24)));
 	}
 
 	/**
-	 * 计算两个时间差
+	 * 计算两个日期之间的时间差，并格式化为天时分字符串
+	 * 
+	 * @param endDate 结束日期
+	 * @param nowDate 起始日期
+	 * @return 格式化的时间差字符串
 	 */
 	public static String getDatePoor(Date endDate, Date nowDate) {
 		long nd = 1000 * 24 * 60 * 60;

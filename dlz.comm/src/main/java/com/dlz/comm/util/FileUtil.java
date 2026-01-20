@@ -20,19 +20,23 @@ import java.util.List;
 /**
  * 文件工具类
  *
+ * 提供便捷的文件操作功能，包括文件遍历、读取、写入、移动、删除等操作
+ * 
  * @author dk
+ * @since 2023
  */
 @Slf4j
 public class FileUtil {
 	/**
 	 * 扫描目录下的文件
 	 *
-	 * @param file 文件
+	 * @param file 文件或目录
 	 * @return 文件集合
 	 */
 	public static List<File> list(File file) {
 		return list(file, new ArrayList<>(), null);
 	}
+	
 	/**
 	 * 扫描目录下的文件
 	 *
@@ -46,48 +50,53 @@ public class FileUtil {
 	/**
 	 * 扫描目录下的文件
 	 *
-	 * @param file   文件
-	 * @param filter 文件过滤
+	 * @param file   文件或目录
+	 * @param filter 文件过滤器
 	 * @return 文件集合
 	 */
 	public static List<File> list(File file, FileFilter filter) {
 		return list(file, new ArrayList<>(), filter);
 	}
+	
 	/**
 	 * 扫描目录下的文件
 	 *
 	 * @param path   路径
-	 * @param filter 文件过滤
+	 * @param filter 文件过滤器
 	 * @return 文件集合
 	 */
 	public static List<File> list(String path, FileFilter filter) {
 		return list(new File(path), filter);
 	}
+	
 	/**
 	 * 扫描目录下的文件
 	 *
-	 * @param file   文件
+	 * @param file   文件或目录
 	 * @param fileNamePattern Spring AntPathMatcher 规则
 	 * @return 文件集合
 	 */
 	public static List<File> list(File file, final String fileNamePattern) {
-		return list(file, pathname -> fileNamePattern==null || MatchUtils.simpleMatch(fileNamePattern, pathname.getName()));
+		return list(file, pathname -> fileNamePattern == null || MatchUtils.simpleMatch(fileNamePattern, pathname.getName()));
 	}
+	
 	/**
 	 * 扫描目录下的文件
 	 *
 	 * @param path   路径
-	 * @param fileNamePattern 文件名 * 号
+	 * @param fileNamePattern 文件名匹配模式（支持通配符）
 	 * @return 文件集合
 	 */
 	public static List<File> list(String path, final String fileNamePattern) {
 		return list(new File(path), fileNamePattern);
 	}
+	
 	/**
 	 * 扫描目录下的文件
 	 *
-	 * @param file   文件
-	 * @param filter 文件过滤
+	 * @param file   文件或目录
+	 * @param fileList 文件列表（用于收集结果）
+	 * @param filter 文件过滤器，可为null
 	 * @return 文件集合
 	 */
 	private static List<File> list(File file, List<File> fileList, FileFilter filter) {
@@ -100,7 +109,7 @@ public class FileUtil {
 			}
 		} else {
 			// 过滤文件
-			if (file.exists() && (filter==null || filter.accept(file))) {
+			if (file.exists() && (filter == null || filter.accept(file))) {
 				fileList.add(file);
 			}
 		}
@@ -109,8 +118,9 @@ public class FileUtil {
 
 	/**
 	 * 获取文件后缀名
+	 * 
 	 * @param fullName 文件全名
-	 * @return {String}
+	 * @return 文件扩展名，如果没有扩展名则返回空字符串
 	 */
 	public static String getFileExtension(String fullName) {
 		if (StringUtils.isBlank(fullName)) return  Str.EMPTY;
@@ -121,8 +131,9 @@ public class FileUtil {
 
 	/**
 	 * 获取文件名，去除后缀名
+	 * 
 	 * @param fullName 文件全名
-	 * @return {String}
+	 * @return 不包含扩展名的文件名
 	 */
 	public static String getNameWithoutExtension(String fullName) {
 		if (StringUtils.isBlank(fullName)) return  Str.EMPTY;
@@ -132,41 +143,43 @@ public class FileUtil {
 	}
 
 	/**
-	 * Returns the path to the system temporary directory.
+	 * 获取系统临时目录路径
 	 *
-	 * @return the path to the system temporary directory.
+	 * @return 系统临时目录路径
 	 */
 	public static String getTempDirPath() {
 		return System.getProperty("java.io.tmpdir");
 	}
 
 	/**
-	 * Returns a {@link File} representing the system temporary directory.
+	 * 获取系统临时目录文件对象
 	 *
-	 * @return the system temporary directory.
+	 * @return 系统临时目录文件对象
 	 */
 	public static File getTempDir() {
 		return new File(getTempDirPath());
 	}
 
 	/**
-	 * Reads the contents of a file into a String.
-	 * The file is always closed.
+	 * 将文件内容读取为字符串
+	 * 
+	 * 文件总是会被关闭
 	 *
-	 * @param file the file to read, must not be {@code null}
-	 * @return the file contents, never {@code null}
+	 * @param file 要读取的文件，不能为 {@code null}
+	 * @return 文件内容，永远不会为 {@code null}
 	 */
 	public static String readToString(final File file) {
 		return readToString(file, Charsets.UTF_8);
 	}
 
 	/**
-	 * Reads the contents of a file into a String.
-	 * The file is always closed.
+	 * 将文件内容读取为字符串
+	 * 
+	 * 文件总是会被关闭
 	 *
-	 * @param file     the file to read, must not be {@code null}
-	 * @param encoding the encoding to use, {@code null} means platform default
-	 * @return the file contents, never {@code null}
+	 * @param file     要读取的文件，不能为 {@code null}
+	 * @param encoding 编码格式，{@code null} 表示使用平台默认编码
+	 * @return 文件内容，永远不会为 {@code null}
 	 */
 	public static String readToString(final File file, final Charset encoding) {
 		try (InputStream in = Files.newInputStream(file.toPath())) {
@@ -177,11 +190,12 @@ public class FileUtil {
 	}
 
 	/**
-	 * Reads the contents of a file into a String.
-	 * The file is always closed.
+	 * 将文件内容读取为字节数组
+	 * 
+	 * 文件总是会被关闭
 	 *
-	 * @param file     the file to read, must not be {@code null}
-	 * @return the file contents, never {@code null}
+	 * @param file     要读取的文件，不能为 {@code null}
+	 * @return 文件内容的字节数组，永远不会为 {@code null}
 	 */
 	public static byte[] readToByteArray(final File file) {
 		try (InputStream in = Files.newInputStream(file.toPath())) {
@@ -192,46 +206,44 @@ public class FileUtil {
 	}
 
 	/**
-	 * Writes a String to a file creating the file if it does not exist.
+	 * 将字符串写入文件，如果文件不存在则创建
 	 *
-	 * @param file the file to write
-	 * @param data the content to write to the file
+	 * @param file 文件对象
+	 * @param data 要写入文件的内容
 	 */
 	public static void writeToFile(final File file, final String data) {
 		writeToFile(file, data, Charsets.UTF_8, false);
 	}
 
 	/**
-	 * Writes a String to a file creating the file if it does not exist.
+	 * 将字符串写入文件，如果文件不存在则创建
 	 *
-	 * @param file   the file to write
-	 * @param data   the content to write to the file
-	 * @param append if {@code true}, then the String will be added to the
-	 *               end of the file rather than overwriting
+	 * @param file   文件对象
+	 * @param data   要写入文件的内容
+	 * @param append 如果为 {@code true}，则字符串将追加到文件末尾而不是覆盖
 	 */
 	public static void writeToFile(final File file, final String data, final boolean append){
 		writeToFile(file, data, Charsets.UTF_8, append);
 	}
 
 	/**
-	 * Writes a String to a file creating the file if it does not exist.
+	 * 将字符串写入文件，如果文件不存在则创建
 	 *
-	 * @param file     the file to write
-	 * @param data     the content to write to the file
-	 * @param encoding the encoding to use, {@code null} means platform default
+	 * @param file     文件对象
+	 * @param data     要写入文件的内容
+	 * @param encoding 编码格式，{@code null} 表示使用平台默认编码
 	 */
 	public static void writeToFile(final File file, final String data, final Charset encoding) {
 		writeToFile(file, data, encoding, false);
 	}
 
 	/**
-	 * Writes a String to a file creating the file if it does not exist.
+	 * 将字符串写入文件，如果文件不存在则创建
 	 *
-	 * @param file     the file to write
-	 * @param data     the content to write to the file
-	 * @param encoding the encoding to use, {@code null} means platform default
-	 * @param append   if {@code true}, then the String will be added to the
-	 *                 end of the file rather than overwriting
+	 * @param file     文件对象
+	 * @param data     要写入文件的内容
+	 * @param encoding 编码格式，{@code null} 表示使用平台默认编码
+	 * @param append   如果为 {@code true}，则字符串将追加到文件末尾而不是覆盖
 	 */
 	public static void writeToFile(final File file, final String data, final Charset encoding, final boolean append) {
 		try (OutputStream out = new FileOutputStream(file, append)) {
@@ -241,23 +253,24 @@ public class FileUtil {
 		}
 	}
 
-//	/**
-//	 * 转成file
-//	 * @param multipartFile MultipartFile
-//	 * @param file File
-//	 */
-//	public static void toFile(MultipartFile multipartFile, final File file) {
-//		try {
-//			FileUtil.toFile(multipartFile.getInputStream(), file);
-//		} catch (IOException e) {
-//			throw SystemException.build(e);
-//		}
-//	}
+	//	/**
+	//	 * 转成file
+	//	 * @param multipartFile MultipartFile
+	//	 * @param file File
+	//	 */
+	//	public static void toFile(MultipartFile multipartFile, final File file) {
+	//		try {
+	//			FileUtil.toFile(multipartFile.getInputStream(), file);
+	//		} catch (IOException e) {
+	//			throw SystemException.build(e);
+	//		}
+	//	}
 
 	/**
-	 * 转成file
-	 * @param in InputStream
-	 * @param file File
+	 * 将输入流保存为文件
+	 * 
+	 * @param in 输入流
+	 * @param file 目标文件
 	 */
 	public static void toFile(InputStream in, final File file) {
 		try (OutputStream out = new FileOutputStream(file)) {
@@ -268,15 +281,15 @@ public class FileUtil {
 	}
 
 	/**
-	 * Moves a file.
-	 * <p>
-	 * When the destination file is on another file system, do a "copy and delete".
+	 * 移动文件
+	 * 
+	 * 当目标文件在另一个文件系统上时，执行"复制并删除"操作
 	 *
-	 * @param srcFile  the file to be moved
-	 * @param destFile the destination file
-	 * @throws NullPointerException if source or destination is {@code null}
-	 * @throws IOException          if source or destination is invalid
-	 * @throws IOException          if an IO error occurs moving the file
+	 * @param srcFile  源文件
+	 * @param destFile 目标文件
+	 * @throws NullPointerException 如果源文件或目标文件为 {@code null}
+	 * @throws IOException          如果源文件或目标文件无效
+	 * @throws IOException          如果移动文件时发生IO错误
 	 */
 	public static void moveFile(final File srcFile, final File destFile) throws IOException {
 		if (!srcFile.exists()) {
@@ -301,8 +314,16 @@ public class FileUtil {
 		}
 	}
 
+	/**
+	 * 复制文件
+	 * 
+	 * @param in 源文件
+	 * @param out 目标文件
+	 * @return 复制的字节数
+	 * @throws IOException IO异常
+	 */
 	public static int copy(File in, File out) throws IOException {
-		try (InputStream inputStream = Files.newInputStream(in.toPath());OutputStream outputStream = Files.newOutputStream(out.toPath())){
+		try (InputStream inputStream = Files.newInputStream(in.toPath()); OutputStream outputStream = Files.newOutputStream(out.toPath())){
 			return IoUtil.copy(inputStream, outputStream);
 		}catch (IOException e){
 			throw e;
@@ -310,17 +331,18 @@ public class FileUtil {
 	}
 
 	/**
-	 * Deletes a file, never throwing an exception. If file is a directory, delete it and all sub-directories.
-	 * <p>
-	 * The difference between File.delete() and this method are:
+	 * 删除文件，不抛出异常
+	 * 
+	 * 如果文件是目录，则删除它及其所有子目录
+	 * 
+	 * 与 File.delete() 方法的区别：
 	 * <ul>
-	 * <li>A directory to be deleted does not have to be empty.</li>
-	 * <li>No exceptions are thrown when a file or directory cannot be deleted.</li>
+	 * <li>要删除的目录不必为空。</li>
+	 * <li>当无法删除文件或目录时不抛出异常。</li>
 	 * </ul>
 	 *
-	 * @param file file or directory to delete, can be {@code null}
-	 * @return {@code true} if the file or directory was deleted, otherwise
-	 * {@code false}
+	 * @param file 要删除的文件或目录，可以为 {@code null}
+	 * @return 如果文件或目录被删除则返回 {@code true}，否则返回 {@code false}
 	 */
 	public static boolean deleteQuietly(final File file) {
 		if (file == null) {
@@ -351,7 +373,7 @@ public class FileUtil {
 		try {
 			return file.delete();
 		} catch (final Exception ignored) {
-			log.warn("delete file fail:"+file.getAbsolutePath());
+			log.warn("delete file fail:" + file.getAbsolutePath());
 			return false;
 		}
 	}

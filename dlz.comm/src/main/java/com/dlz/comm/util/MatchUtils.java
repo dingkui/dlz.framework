@@ -18,8 +18,16 @@ package com.dlz.comm.util;
 
 
 /**
- * Utility methods for simple pattern matching, in particular for
- * Spring's typical "xxx*", "*xxx" and "*xxx*" pattern styles.
+ * 简单模式匹配工具类
+ * 
+ * 提供简单模式匹配的工具方法，特别适用于Spring典型的"xxx*", "*xxx"和"*xxx*"模式样式
+ * 
+ * 支持以下模式：
+ * - "xxx*"：以指定字符串开头
+ * - "*xxx"：以指定字符串结尾
+ * - "*xxx*"：包含指定字符串
+ * - "xxx*yyy"：包含多个模式部分
+ * - 直接相等匹配
  *
  * @author Juergen Hoeller
  * @since 2.0
@@ -27,12 +35,12 @@ package com.dlz.comm.util;
 public class MatchUtils {
 
 	/**
-	 * Match a String against the given pattern, supporting the following simple
-	 * pattern styles: "xxx*", "*xxx", "*xxx*" and "xxx*yyy" matches (with an
-	 * arbitrary number of pattern parts), as well as direct equality.
-	 * @param pattern the pattern to match against
-	 * @param str the String to match
-	 * @return whether the String matches the given pattern
+	 * 将字符串与给定模式进行匹配，支持以下简单模式样式：
+	 * "xxx*", "*xxx", "*xxx*" 和 "xxx*yyy" 匹配（具有任意数量的模式部分），以及直接相等匹配
+	 * 
+	 * @param pattern 要匹配的模式
+	 * @param str 要匹配的字符串
+	 * @return 如果字符串匹配给定模式则返回true，否则返回false
 	 */
 	public static boolean simpleMatch(String pattern, String str) {
 		if (pattern == null || str == null) {
@@ -72,12 +80,12 @@ public class MatchUtils {
 	}
 
 	/**
-	 * Match a String against the given patterns, supporting the following simple
-	 * pattern styles: "xxx*", "*xxx", "*xxx*" and "xxx*yyy" matches (with an
-	 * arbitrary number of pattern parts), as well as direct equality.
-	 * @param patterns the patterns to match against
-	 * @param str the String to match
-	 * @return whether the String matches any of the given patterns
+	 * 将字符串与给定的多个模式进行匹配，支持以下简单模式样式：
+	 * "xxx*", "*xxx", "*xxx*" 和 "xxx*yyy" 匹配（具有任意数量的模式部分），以及直接相等匹配
+	 * 
+	 * @param patterns 要匹配的模式数组
+	 * @param str 要匹配的字符串
+	 * @return 如果字符串匹配任何给定模式则返回true，否则返回false
 	 */
 	public static boolean simpleMatch(String[] patterns, String str) {
 		if (patterns != null) {

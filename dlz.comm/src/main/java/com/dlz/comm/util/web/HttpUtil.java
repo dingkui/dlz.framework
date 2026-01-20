@@ -25,24 +25,27 @@ import java.net.URLEncoder;
 import java.util.Map;
 
 /**
- * HTTP相关的操作
+ * HTTP工具类
+ * 
+ * 提供HTTP请求执行和结果处理的功能
  *
  * @author dk
+ * @since 2023
  */
 @Slf4j
 public class HttpUtil {
     /**
-     * 执行http操作
+     * 执行HTTP请求
      *
-     * @param request
-     * @param param
+     * @param request HTTP请求对象
+     * @param param HTTP请求参数
+     * @return HTTP响应对象
      */
-    private static HttpResponse executeHttp(HttpRequestBase request,
-                                            HttpRequestParam param) {
+    private static HttpResponse executeHttp(HttpRequestBase request, HttpRequestParam param) {
 //        HttpClient httpClient = HttpConnUtil.wrapClient(param.getUrl(),param.getRequestConfig());
         CloseableHttpClient httpClient = HttpClients.createDefault();
         Map<String, String> headers = param.getHeaders();
-        if(param.getRequestConfig()!=null){
+        if(param.getRequestConfig() != null) {
             request.setConfig(param.getRequestConfig());
         }
         headers.forEach(request::addHeader);
@@ -74,13 +77,13 @@ public class HttpUtil {
 
 
     /**
-     * 执行http并解析结果
+     * 执行HTTP请求并解析结果
      *
-     * @param request
-     * @param param
-          */
-    public static Object doHttp(HttpRequestBase request,
-                                HttpRequestParam param) {
+     * @param request HTTP请求对象
+     * @param param HTTP请求参数
+     * @return 解析后的结果对象
+     */
+    public static Object doHttp(HttpRequestBase request, HttpRequestParam param) {
         Object result = null;
         try {
             HttpResponse execute = executeHttp(request, param);
@@ -107,10 +110,11 @@ public class HttpUtil {
     /**
      * 构建错误信息
      *
-     * @param e
-     * @param url
-     * @param method
-          */
+     * @param e 异常对象
+     * @param url 请求URL
+     * @param method 请求方法
+     * @return 错误信息字符串
+     */
     private static String mkError(Exception e, String url, String method) {
         String message = e.getMessage();
         String info = e.getClass().getName();
@@ -125,9 +129,18 @@ public class HttpUtil {
     }
 
 
+    /**
+     * 构建URI对象
+     *
+     * @param host 主机地址
+     * @param path 路径
+     * @param querys 查询参数
+     * @return URI对象
+     * @throws URISyntaxException URI语法异常
+     */
     public static URI buildUrI(String host, String path, Map<String, Object> querys) throws URISyntaxException {
         // 创建uri
-        URIBuilder builder = new URIBuilder(StringUtils.isEmpty(path)?host:(host+path));
+        URIBuilder builder = new URIBuilder(StringUtils.isEmpty(path) ? host : (host + path));
         if (querys != null) {
             for (String key : querys.keySet()) {
                 builder.addParameter(key, ValUtil.toStr(querys.get(key)));
@@ -136,6 +149,16 @@ public class HttpUtil {
         return builder.build();
     }
 
+    /**
+     * 构建URL字符串
+     *
+     * @param host 主机地址
+     * @param path 路径
+     * @param querys 查询参数
+     * @param enc 编码格式
+     * @return URL字符串
+     * @throws UnsupportedEncodingException 不支持的编码异常
+     */
     public static String buildUrl(String host, String path, Map<String, Object> querys, String enc) throws UnsupportedEncodingException {
         StringBuilder sbUrl = new StringBuilder();
         sbUrl.append(host);
@@ -151,6 +174,14 @@ public class HttpUtil {
         return sbUrl.toString();
     }
 
+    /**
+     * 构建查询字符串
+     *
+     * @param querys 查询参数
+     * @param enc 编码格式
+     * @return 查询字符串
+     * @throws UnsupportedEncodingException 不支持的编码异常
+     */
     public static String buildUrl(Map<String, Object> querys, String enc) throws UnsupportedEncodingException {
         if (null != querys) {
             StringBuilder sbQuery = new StringBuilder();

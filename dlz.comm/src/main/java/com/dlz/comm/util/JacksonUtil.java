@@ -28,7 +28,18 @@ import java.util.*;
 import java.util.regex.Pattern;
 
 /**
- * 2013 2013-9-13 下午4:54:15
+ * Jackson JSON处理工具类
+ * 
+ * 提供便捷的JSON序列化、反序列化、类型转换等功能
+ * 
+ * 主要特性包括：
+ * 1. 支持自定义对象与JSON字符串互转
+ * 2. 支持复杂类型的反序列化
+ * 3. 支持JSON路径取值
+ * 4. 提供统一的日期时间格式处理
+ * 
+ * @author dingkui
+ * @since 2013-09-13
  */
 @SuppressWarnings({"rawtypes", "unchecked"})
 @Slf4j
@@ -37,13 +48,13 @@ public class JacksonUtil {
     private final static Class<?> CLASS_OBJECT = Object.class;
 
     static {
-        //添加自定义解析器，将默认的linckedHashMap 和List对应修改为 JSONMap和JSONList
+        //添加自定义解析器，将默认的linkedHashMap 和List对应修改为 JSONMap和JSONList
         Deserializers deserializers = new Deserializers.Base() {
             @Override
             public JsonDeserializer<?> findBeanDeserializer(JavaType type, DeserializationConfig config, BeanDescription beanDesc) {
                 Class<?> rawType = type.getRawClass();
                 if (rawType == CLASS_OBJECT) {
-                    //添加自定义解析器，将默认的linckedHashMap 和List对应修改为 JSONMap和JSONList
+                    //添加自定义解析器，将默认的linkedHashMap 和List对应修改为 JSONMap和JSONList
                     return new JacksonObjectDeserializer();
                 }
                 return null;
@@ -87,10 +98,21 @@ public class JacksonUtil {
           objectMapper.registerModule(DlzJavaTimeModule.INSTANCE);
     }
 
+    /**
+     * 获取ObjectMapper实例
+     * 
+     * @return ObjectMapper实例
+     */
     public static ObjectMapper getInstance() {
         return objectMapper;
     }
 
+    /**
+     * 将对象转换为JSON字符串
+     * 
+     * @param o 待转换的对象
+     * @return JSON字符串，如果转换失败则抛出异常
+     */
     public static String getJson(Object o) {
         try {
             return objectMapper.writeValueAsString(o);
@@ -102,8 +124,8 @@ public class JacksonUtil {
     /**
      * 将对象序列化成 json byte 数组
      *
-     * @param object javaBean
-     * @return jsonString json字符串
+     * @param object javaBean对象
+     * @return JSON字符串对应的字节数组
      */
     public static byte[] toJsonAsBytes(Object object) {
         try {
@@ -113,34 +135,90 @@ public class JacksonUtil {
         }
     }
 
+    /**
+     * 将字符串反序列化为JSONMap对象
+     * 
+     * @param content JSON字符串内容
+     * @return JSONMap对象
+     */
     public static JSONMap readValue(String content) {
         return readValue(content, mkJavaType(JSONMap.class));
     }
 
+    /**
+     * 将对象反序列化为JSONMap对象
+     * 
+     * @param content 待转换的内容
+     * @return JSONMap对象
+     */
     public static JSONMap readValue(Object content) {
         return readValue(content, mkJavaType(JSONMap.class));
     }
 
+    /**
+     * 将字符串反序列化为指定类型对象
+     * 
+     * @param content JSON字符串内容
+     * @param valueType 目标类型
+     * @param <T> 目标类型泛型
+     * @return 指定类型的对象
+     */
     public static <T> T readValue(String content, Class<T> valueType) {
         return readValue(content, mkJavaType(valueType));
     }
 
+    /**
+     * 将对象反序列化为指定类型对象
+     * 
+     * @param content 待转换的内容
+     * @param valueType 目标类型
+     * @param <T> 目标类型泛型
+     * @return 指定类型的对象
+     */
     public static <T> T readValue(Object content, Class<T> valueType) {
         return readValue(content, mkJavaType(valueType));
     }
 
+    /**
+     * 将对象反序列化为指定类型列表
+     * 
+     * @param content 待转换的内容
+     * @param elementClass 列表元素类型
+     * @param <T> 列表元素类型泛型
+     * @return 指定类型的列表
+     */
     public static <T> List<T> readList(Object content, Class<T> elementClass) {
         return readValue(content, mkJavaType(ArrayList.class, elementClass));
     }
 
+    /**
+     * 将字符串反序列化为JSONList对象
+     * 
+     * @param content JSON字符串内容
+     * @return JSONList对象
+     */
     public static JSONList readList(String content) {
         return readValue(content, mkJavaType(JSONList.class));
     }
 
+    /**
+     * 将对象反序列化为JSONList对象
+     * 
+     * @param content 待转换的内容
+     * @return JSONList对象
+     */
     public static JSONList readList(Object content) {
         return readValue(content, mkJavaType(JSONList.class));
     }
 
+    /**
+     * 将字符串反序列化为指定类型对象
+     * 
+     * @param content JSON字符串内容
+     * @param valueType 目标类型
+     * @param <T> 目标类型泛型
+     * @return 指定类型的对象，如果转换失败则返回null
+     */
     public static <T> T readValue(String content, JavaType valueType) {
         try {
             return objectMapper.readValue(content, valueType);
@@ -153,11 +231,11 @@ public class JacksonUtil {
 
 
     /**
-     * tree 转对象
+     * 将TreeNode转换为指定类型的对象
      *
-     * @param treeNode  TreeNode
-     * @param valueType valueType
-     * @param <T>       泛型标记
+     * @param treeNode JSON树节点
+     * @param valueType 目标类型
+     * @param <T> 目标类型泛型
      * @return 转换结果
      */
     public static <T> T treeToValue(TreeNode treeNode, Class<T> valueType) {
@@ -169,19 +247,20 @@ public class JacksonUtil {
     }
 
     /**
-     * 对象转为 json node
+     * 将对象转换为JsonNode
      *
-     * @param value 对象
-     * @return JsonNode
+     * @param value 待转换的对象
+     * @return JsonNode对象
      */
     public static JsonNode valueToTree(Object value) {
         return objectMapper.valueToTree(value);
     }
 
     /**
-     * 将json字符串转成 JsonNode
+     * 将内容转换为JsonNode
      *
-     * @return jsonString json字符串
+     * @param content 待转换的内容，支持多种类型如String, byte[], InputStream, File, URL, Reader, JsonParser等
+     * @return JsonNode对象
      */
     public static JsonNode readTree(Object content) {
         try {
@@ -206,6 +285,14 @@ public class JacksonUtil {
         }
     }
 
+    /**
+     * 将对象反序列化为指定类型对象
+     * 
+     * @param content 待转换的内容，支持多种类型
+     * @param valueType 目标类型
+     * @param <T> 目标类型泛型
+     * @return 指定类型的对象，如果转换失败则返回null
+     */
     public static <T> T readValue(Object content, JavaType valueType) {
         try {
             if (content instanceof CharSequence) {
@@ -232,6 +319,14 @@ public class JacksonUtil {
         }
     }
 
+    /**
+     * 将对象反序列化为指定类型对象
+     * 
+     * @param content 待转换的内容，支持多种类型
+     * @param valueType 目标类型引用
+     * @param <T> 目标类型泛型
+     * @return 指定类型的对象，如果转换失败则返回null
+     */
     public static <T> T readValue(Object content, TypeReference<T> valueType) {
         try {
             if (content instanceof CharSequence) {
@@ -256,6 +351,14 @@ public class JacksonUtil {
         }
     }
 
+    /**
+     * 将字符串反序列化为指定类型对象
+     * 
+     * @param content JSON字符串内容
+     * @param valueType 目标类型引用
+     * @param <T> 目标类型泛型
+     * @return 指定类型的对象，如果转换失败则返回null
+     */
     public static <T> T readValue(String content, TypeReference<T> valueType) {
         try {
             return objectMapper.readValue(content, valueType);
@@ -265,16 +368,24 @@ public class JacksonUtil {
         }
     }
 
+    /**
+     * 将字符串反序列化为指定类型列表
+     * 
+     * @param content JSON字符串内容
+     * @param valueType 列表元素类型
+     * @param <T> 列表元素类型泛型
+     * @return 指定类型的列表
+     */
     public static <T> List<T> readListValue(String content, Class<T> valueType) {
         return readValue(content, mkJavaType(List.class, valueType));
     }
 
     /**
-     * jackson 的类型转换
+     * 使用Jackson进行类型转换
      *
-     * @param fromValue   来源对象
-     * @param toValueType 转换的类型
-     * @param <T>         泛型标记
+     * @param fromValue 源对象
+     * @param toValueType 目标类型
+     * @param <T> 目标类型泛型
      * @return 转换结果
      */
     public static <T> T convertValue(Object fromValue, Class<T> toValueType) {
@@ -282,11 +393,11 @@ public class JacksonUtil {
     }
 
     /**
-     * jackson 的类型转换
+     * 使用Jackson进行类型转换
      *
-     * @param fromValue   来源对象
-     * @param toValueType 转换的类型
-     * @param <T>         泛型标记
+     * @param fromValue 源对象
+     * @param toValueType 目标类型
+     * @param <T> 目标类型泛型
      * @return 转换结果
      */
     public static <T> T convertValue(Object fromValue, JavaType toValueType) {
@@ -294,11 +405,11 @@ public class JacksonUtil {
     }
 
     /**
-     * jackson 的类型转换
+     * 使用Jackson进行类型转换
      *
-     * @param fromValue      来源对象
-     * @param toValueTypeRef 泛型类型
-     * @param <T>            泛型标记
+     * @param fromValue 源对象
+     * @param toValueTypeRef 目标类型引用
+     * @param <T> 目标类型泛型
      * @return 转换结果
      */
     public static <T> T convertValue(Object fromValue, TypeReference<T> toValueTypeRef) {
@@ -306,9 +417,9 @@ public class JacksonUtil {
     }
 
     /**
-     * 判断是否可以序列化
+     * 判断对象是否可以被序列化
      *
-     * @param value 对象
+     * @param value 待判断的对象
      * @return 是否可以序列化
      */
     public static boolean canSerialize(Object value) {
@@ -321,8 +432,10 @@ public class JacksonUtil {
     /**
      * 类型转换
      *
-     * @param o
-     * @param valueType
+     * @param o 待转换的对象
+     * @param valueType 目标类型
+     * @param <T> 目标类型泛型
+     * @return 转换后的对象
      */
     public static <T> T coverObj(Object o, Class<T> valueType) {
         return coverObj(o, mkJavaType(valueType));
@@ -332,9 +445,11 @@ public class JacksonUtil {
     /**
      * 类型转换
      *
-     * @param o
-     * @param javaType
-          */
+     * @param o 待转换的对象
+     * @param javaType 目标类型
+     * @param <T> 目标类型泛型
+     * @return 转换后的对象
+     */
     public static <T> T coverObj(Object o, JavaType javaType) {
         try {
             if (o == null) {
@@ -386,11 +501,13 @@ public class JacksonUtil {
 //    }
 
     /**
-     * 对象取值
+     * 从对象中按路径提取指定值
      *
-     * @param data
-     * @param key
-     * @param javaType
+     * @param data 数据源，可以是JSON字符串、数组、集合或对象
+     * @param key 路径表达式
+     * @param javaType 目标类型
+     * @param <T> 目标类型泛型
+     * @return 提取的值
      */
     public static <T> T at(Object data, String key, JavaType javaType) {
         Object o = at(data, key);
@@ -400,6 +517,15 @@ public class JacksonUtil {
         return coverObj(o, javaType);
     }
 
+    /**
+     * 从对象中按路径提取指定值
+     *
+     * @param data 数据源，可以是JSON字符串、数组、集合或对象
+     * @param key 路径表达式
+     * @param valueType 目标类型
+     * @param <T> 目标类型泛型
+     * @return 提取的值
+     */
     public static <T> T at(Object data, String key, Class<T> valueType) {
         Object o = at(data, key);
         if (o == null) {
@@ -411,15 +537,16 @@ public class JacksonUtil {
     /**
      * 从对象中使用路径取出需要的值
      *
-     * @param data 可以是json字符串，数组，集合或者对象
-     * @param key  对象路径，支持属性和index
-     *             .符号表示属性操作
-     *             [i]表示index,i设置为负数表示反方向读取，比如 -1表示倒数第一个
-     *             使用例子：{"info":{"a":[[{"b":1},{"c":2}],[{"d":3},{"e":4},{"f":5}]]}}
-     *             要取出  c所在对象的属性：info.a[0][1].b
-     *             取出f所在对象 :info.a[1][2]
-     *             取出f所在对象 :info.a[1][-1]
-          */
+     * @param data 数据源，可以是JSON字符串、数组、集合或对象
+     * @param key 对象路径，支持属性和index
+     *            .符号表示属性操作
+     *            [i]表示index,i设置为负数表示反方向读取，比如 -1表示倒数第一个
+     *            使用例子：{"info":{"a":[[{"b":1},{"c":2}],[{"d":3},{"e":4},{"f":5}]]}}
+     *            要取出 c所在对象的属性：info.a[0][1].c
+     *            取出f所在对象 :info.a[1][2]
+     *            取出f所在对象 :info.a[1][-1]
+     * @return 提取的值
+     */
     public static Object at(Object data, String key) {
         if (data == null || "".equals(key)) {
             return data;
@@ -437,6 +564,13 @@ public class JacksonUtil {
         return getObjFromMap(ValUtil.toObj(data, JSONMap.class), key);
     }
 
+    /**
+     * 从列表中按路径获取对象
+     * 
+     * @param list 列表
+     * @param key 路径表达式
+     * @return 获取的对象
+     */
     private static Object getObjFromList(List list, String key) {
         int size = list.size();
         int end = key.indexOf(']');
@@ -450,6 +584,13 @@ public class JacksonUtil {
         return at(list.get(index), key.substring(end + 1));
     }
 
+    /**
+     * 从Map中按路径获取对象
+     * 
+     * @param para Map对象
+     * @param key 路径表达式
+     * @return 获取的对象
+     */
     private static Object getObjFromMap(Map para, String key) {
         String pName = key;
         if (para.containsKey(pName)) {
@@ -473,11 +614,12 @@ public class JacksonUtil {
     }
 
     /**
-     * 类型转换
+     * 构建JavaType对象
      *
-     * @param valueType
-     * @param parameterTypes
-          */
+     * @param valueType 基础类型
+     * @param parameterTypes 参数类型数组
+     * @return JavaType对象
+     */
     public static JavaType mkJavaTypeByJavaTypes(Class<?> valueType, JavaType... parameterTypes) {
         int len = parameterTypes.length;
         if (len == 0) {
@@ -487,11 +629,12 @@ public class JacksonUtil {
     }
 
     /**
-     * 类型转换
+     * 构建JavaType对象
      *
-     * @param valueType
-     * @param parameterClasses
-          */
+     * @param valueType 基础类型
+     * @param parameterClasses 参数类型数组
+     * @return JavaType对象
+     */
     public static JavaType mkJavaType(Class<?> valueType, Class<?>... parameterClasses) {
         int len = parameterClasses.length;
         if (len == 0) {
@@ -500,6 +643,12 @@ public class JacksonUtil {
         return objectMapper.getTypeFactory().constructParametricType(valueType, parameterClasses);
     }
 
+    /**
+     * 根据类型构建JavaType对象
+     *
+     * @param type 类型
+     * @return JavaType对象
+     */
     public static JavaType mkJavaType(Type type) {
         if (type == null) {
             return null;
@@ -524,10 +673,22 @@ public class JacksonUtil {
     private static Pattern JsonObjPattern = Pattern.compile("^\\{(([\"\\w]+:.+)||)\\}$");
     private static Pattern JsonArrayPattern = Pattern.compile("^\\[[^\\[^\\]]*\\]$");
 
+    /**
+     * 判断字符串是否为JSON对象格式
+     * 
+     * @param str 待检测的字符串
+     * @return 如果是JSON对象格式返回true，否则返回false
+     */
     public static boolean isJsonObj(String str) {
         return JsonObjPattern.matcher(str.replaceAll("\\s", "")).matches();
     }
 
+    /**
+     * 判断字符串是否为JSON数组格式
+     * 
+     * @param str 待检测的字符串
+     * @return 如果是JSON数组格式返回true，否则返回false
+     */
     public static boolean isJsonArray(String str) {
         return JsonArrayPattern.matcher(str.replaceAll("\\s", "")).find();
     }

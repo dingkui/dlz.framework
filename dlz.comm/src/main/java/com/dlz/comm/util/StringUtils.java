@@ -9,38 +9,46 @@ import java.util.function.Function;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+/**
+ * 字符串工具类
+ * 
+ * 提供便捷的字符串处理功能，包括字符串格式化、判空、补零、首字母大写等操作
+ * 
+ * @author dingkui
+ * @since 2023
+ */
 @Slf4j
 public class StringUtils {
     private static Pattern paraPattern = Pattern.compile("\\$\\{([\\w\\.]+)\\}");
 
     /**
-     * 根据属性名称获得对应值
+     * 根据属性名称获得对应值，并递归替换字符串中的占位符
      *
-     * \
      * @param name 属性名称
-     * @param nullType 数据为null时类型  0返回null,1返回name,其他返回 {name}
-     * @return 属性对应的值
+     * @param c 获取属性值的函数
+     * @param nullType 数据为null时的处理方式：0返回null,1返回name,其他返回 {name}
+     * @return 属性对应的值，如果是字符串则递归替换其中的占位符
      */
-    public static Object getReplaceStr(String name, Function<String,Object> c,int nullType) {
-        Object ret=c.apply(name);
+    public static Object getReplaceStr(String name, Function<String,Object> c, int nullType) {
+        Object ret = c.apply(name);
         if(ret == null){
-            return nullType==0?null:nullType==1?name:"{"+name+"}";
+            return nullType == 0 ? null : nullType == 1 ? name : "{" + name + "}";
         }
         if(ret instanceof CharSequence){
             String retStr = ret.toString().trim();
             Matcher mat = paraPattern.matcher(retStr);
-            StringBuilder sb=null;
-            int end=0;
+            StringBuilder sb = null;
+            int end = 0;
             while(mat.find()){
                 String group = mat.group(1);
-                if(sb==null){
-                    sb=new StringBuilder();
+                if(sb == null){
+                    sb = new StringBuilder();
                 }
                 sb.append(retStr, 0, mat.start());
                 sb.append(getReplaceStr(group, c, 2));
-                end=mat.end();
+                end = mat.end();
             }
-            if(end==0){
+            if(end == 0){
                 return retStr;
             }
             sb.append(retStr.substring(end));
@@ -49,6 +57,13 @@ public class StringUtils {
         return ret;
     }
 
+    /**
+     * 使用指定分隔符合并字符串集合
+     *
+     * @param separator 分隔符
+     * @param strings 字符串集合
+     * @return 合并后的字符串
+     */
     public static String join(CharSequence separator, Iterable<?> strings) {
         Iterator<?> i = strings.iterator();
         if (!i.hasNext()) {
@@ -62,39 +77,72 @@ public class StringUtils {
         return sb.toString();
     }
 
+    /**
+     * 如果字符串为null则返回空字符串
+     *
+     * @param cs 待处理的字符串
+     * @return 如果cs为null返回空字符串，否则返回原字符串
+     */
     public static String NVL(String cs) {
         return NVL(cs, "");
     }
 
+    /**
+     * 如果字符串为null则返回默认值
+     *
+     * @param cs 待处理的字符串
+     * @param defaultStr 默认值
+     * @return 如果cs为null返回默认值，否则返回原字符串
+     */
     public static String NVL(String cs, String defaultStr) {
         return cs == null ? defaultStr : cs;
     }
 
-
+    /**
+     * 根据类名生成Bean ID
+     * 
+     * 规则：将类名首字母小写
+     *
+     * @param className 完整类名
+     * @return Bean ID
+     */
     public static String getBeanId(String className) {
         int lastIndexOf = className.lastIndexOf(".");
         return className.substring(lastIndexOf + 1, lastIndexOf + 2).toLowerCase() + className.substring(lastIndexOf + 2);
     }
 
+    /**
+     * 根据类生成Bean ID
+     * 
+     * 规则：将类名首字母小写
+     *
+     * @param clazz 类对象
+     * @return Bean ID
+     */
     public static String getBeanId(Class<?> clazz) {
         return getBeanId(clazz.getName());
     }
 
     private static Pattern myMsgPattern = Pattern.compile("\\{([\\w]*)\\}");
     private static Pattern myMsgPatternSub = Pattern.compile(".*([\\d]+)$");
+    
     /**
-     * 格式化文本, {} 表示占位符<br>
-     *  {xxx0},{0}表示用参数下标,支持用字符说明，结尾的数字是下标<br>
-     *  无下标时，默认采用当前所在的序号<br>
-     *  下标无效时，此处不做替换<br>
-     * 例：<br>
-     * 通常使用：formatMsg("this is {} for {}", "a", "b") -> this is a for b<br>
-     * 指定下标： formatMsg("this is {1} for {}", "a", "b") -> this is b for b<br>
-     * 说明+明确下标： formatMsg("this is {b1} for {}", "a", "b") -> this is b for b<br>
-     * 说明+明确下标： formatMsg("this is {xx1x_1} for {}", "a", "b") -> this is b for b<br>
-     * 下标无效： formatMsg("this is {9} for {}", "a", "b") -> this is {9} for b<br>
-     * 下标无效： formatMsg("this is {} for {} and {}", "a", "b") -> this is a for b and {}<br>
+     * 格式化文本，{} 表示占位符
+     * 
+     * 支持位置占位符，如 {xxx0},{0}表示用参数下标，支持用字符说明，结尾的数字是下标
+     * 无下标时，默认采用当前所在的序号
+     * 下标无效时，此处不做替换
+     * 
+     * 示例：
+     * 通常使用：formatMsg("this is {} for {}", "a", "b") -> this is a for b
+     * 指定下标： formatMsg("this is {1} for {}", "a", "b") -> this is b for b
+     * 说明+明确下标： formatMsg("this is {b1} for {}", "a", "b") -> this is b for b
+     * 说明+明确下标： formatMsg("this is {xx1x_1} for {}", "a", "b") -> this is b for b
+     * 下标无效： formatMsg("this is {9} for {}", "a", "b") -> this is {9} for b
+     * 下标无效： formatMsg("this is {} for {} and {}", "a", "b") -> this is a for b and {}
      *
+     * @param message 待格式化的消息模板
+     * @param paras 格式化参数
      * @return 格式化后的文本
      */
     public static String formatMsg(Object message, Object... paras) {
@@ -104,11 +152,11 @@ public class StringUtils {
         int end = 0;
         int i = 0;
         while (mat.find()) {
-            int index=i;
+            int index = i;
             String indexStr = mat.group(1);
-            if(indexStr.length()>0){
+            if(indexStr.length() > 0){
                 indexStr = myMsgPatternSub.matcher(indexStr).replaceAll("$1");
-                if (indexStr.length()>0) {
+                if (indexStr.length() > 0) {
                      index = Integer.parseInt(indexStr);
                 }
             }
@@ -125,13 +173,16 @@ public class StringUtils {
     }
 
     /**
-     * 替换内容匹配符：如  ${bb}
+     * 替换内容匹配符：如 ${bb}
      */
     private static Pattern PATTERN_REPLACE = Pattern.compile("\\$\\{(\\w[\\.\\w]*)\\}");
+    
     /**
-     * msg 语句中 ${aa} 的内容进行文本替换
-     * @param input
-     * @param m
+     * 对消息语句中 ${aa} 的内容进行文本替换
+     * 
+     * @param input 待处理的输入字符串
+     * @param m JSONMap对象，提供替换值
+     * @return 替换后的字符串
      */
     public static String formatMsg(Object input, JSONMap m) {
         String msg = ValUtil.toStr(input, "");
@@ -156,23 +207,23 @@ public class StringUtils {
     }
 
     /**
-     * 补0成指定长度的字符串
+     * 在数字前面补0至指定长度
      *
-     * @param i
-     * @param length
-          */
+     * @param i 待处理的数字
+     * @param length 目标长度
+     * @return 补0后的字符串
+     */
     public static String addZeroBefor(long i, int length) {
-        return leftPad(String.valueOf(i),length,'0');
+        return leftPad(String.valueOf(i), length, '0');
     }
 
     /**
-     * <p>
-     * 检验是否为空
-     * </p>
-     *
-     * <pre>
-     * Collection，Map，Array,CharSequence
-     * </pre>
+     * 检查对象是否为空
+     * 
+     * 支持的类型包括：Collection、Map、Array、CharSequence
+     * 
+     * @param obj 待检查的对象
+     * @return 如果对象为空返回true，否则返回false
      */
     @SuppressWarnings({"rawtypes"})
     public static boolean isEmpty(Object obj) {
@@ -197,6 +248,12 @@ public class StringUtils {
         return false;
     }
 
+    /**
+     * 检查对象数组中是否存在任意一个空对象
+     * 
+     * @param cs 待检查的对象数组
+     * @return 如果存在任意一个空对象返回true，否则返回false
+     */
     public static boolean isAnyEmpty(Object... cs) {
         for (final Object c : cs) {
             if (isEmpty(c)) {
@@ -205,15 +262,19 @@ public class StringUtils {
         }
         return false;
     }
+    
     /**
-     * 判断输入的字符是否为空或纯空格
-     * <pre class="code">
+     * 判断输入的字符序列是否为空或纯空格
+     * 
+     * 示例：
      * StringUtils.isBlank(null) = true
      * StringUtils.isBlank("") = true
      * StringUtils.isBlank(" ") = true
      * StringUtils.isBlank("12345") = false
      * StringUtils.isBlank(" 12345 ") = false
-     * </pre>
+     * 
+     * @param cs 待检查的字符序列
+     * @return 如果字符序列为空或纯空格返回true，否则返回false
      */
     public static boolean isBlank(final CharSequence cs) {
         int strLen;
@@ -228,6 +289,12 @@ public class StringUtils {
         return true;
     }
 
+    /**
+     * 检查字符序列数组中是否存在任意一个空白字符序列
+     * 
+     * @param cs 待检查的字符序列数组
+     * @return 如果存在任意一个空白字符序列返回true，否则返回false
+     */
     public static boolean isAnyBlank(CharSequence... cs) {
         for (final CharSequence c : cs) {
             if (isBlank(c)) {
@@ -237,6 +304,12 @@ public class StringUtils {
         return false;
     }
 
+    /**
+     * 检查字符序列数组中是否全部为空白字符序列
+     * 
+     * @param cs 待检查的字符序列数组
+     * @return 如果全部为空白字符序列返回true，否则返回false
+     */
     public static boolean isAllBlank(CharSequence... cs) {
         for (final CharSequence c : cs) {
             if (!isBlank(c)) {
@@ -246,8 +319,15 @@ public class StringUtils {
         return true;
     }
 
+    /**
+     * 检查字符序列是否以指定的任一字符串开头
+     * 
+     * @param sequence 待检查的字符序列
+     * @param searchStrings 查找的字符串数组
+     * @return 如果以任一字符串开头返回true，否则返回false
+     */
     public static boolean startsWithAny(final CharSequence sequence, final CharSequence... searchStrings) {
-        if (isEmpty(sequence) || searchStrings.length==0) {
+        if (isEmpty(sequence) || searchStrings.length == 0) {
             return false;
         }
         for (final CharSequence searchString : searchStrings) {
@@ -258,9 +338,16 @@ public class StringUtils {
         return false;
     }
 
+    /**
+     * 检查字符序列是否以指定字符串开头
+     * 
+     * @param sequence 待检查的字符序列
+     * @param searchString 指定的字符串
+     * @return 如果以指定字符串开头返回true，否则返回false
+     */
     public static boolean startsWith(final CharSequence sequence, CharSequence searchString) {
         int length = searchString.length();
-        if(isEmpty(sequence) || sequence.length()< length){
+        if(isEmpty(sequence) || sequence.length() < length){
             return false;
         }
         for (int i = 0; i < length; i++) {
@@ -271,29 +358,47 @@ public class StringUtils {
         return true;
     }
 
+    /**
+     * 检查字符序列是否为数值
+     * 
+     * @param o 待检查的字符序列
+     * @return 如果是数值返回true，否则返回false
+     */
     public static boolean isNumber(CharSequence o) {
         return o.length() > 0 && o.toString().replaceAll("[\\d\\.+-]", "").length() == 0;
     }
 
+    /**
+     * 检查字符序列是否为长整型或整型
+     * 
+     * @param o 待检查的字符序列
+     * @return 如果是长整型或整型返回true，否则返回false
+     */
     public static boolean isLongOrInt(CharSequence o) {
         return o.length() > 0 && o.toString().replaceAll("[\\d+-]", "").length() == 0;
     }
 
+    /**
+     * 检查对象是否非空
+     * 
+     * @param cs 待检查的对象
+     * @return 如果对象非空返回true，否则返回false
+     */
     public static boolean isNotEmpty(Object cs) {
         return !isEmpty(cs);
     }
 
     /**
-     * <p>
-     * 首字母大写
-     * </p>
-     *
-     * <pre>
+     * 将字符串首字母大写
+     * 
+     * 示例：
      * StringUtils.capitalize(null)  = null
      * StringUtils.capitalize("")    = ""
      * StringUtils.capitalize("cat") = "Cat"
      * StringUtils.capitalize("cAt") = "CAt"
-     * </pre>
+     * 
+     * @param str 待处理的字符串
+     * @return 首字母大写后的字符串
      */
     public static String capitalize(final String str) {
         int strLen;
@@ -309,18 +414,20 @@ public class StringUtils {
     }
 
     /**
-     * <p>
-     * 在左边添加指定字符达到指定的长度
-     * </p>
-     *
-     * <pre>
+     * 在字符串左边添加指定字符达到指定的长度
+     * 
+     * 示例：
      * StringUtils.leftPad(null, *, *)     = null
      * StringUtils.leftPad("", 3, 'z')     = "zzz"
      * StringUtils.leftPad("bat", 3, 'z')  = "bat"
      * StringUtils.leftPad("bat", 5, 'z')  = "zzbat"
      * StringUtils.leftPad("bat", 1, 'z')  = "bat"
      * StringUtils.leftPad("bat", -1, 'z') = "bat"
-     * </pre>
+     * 
+     * @param str 待处理的字符串
+     * @param size 目标长度
+     * @param padChar 填充字符
+     * @return 左填充后的字符串
      */
     public static String leftPad(final String str, final int size, final char padChar) {
         if (str == null) {
@@ -334,36 +441,38 @@ public class StringUtils {
     }
 
     /**
-     * <p>
      * 构造指定个数的字符的字符串
-     * </p>
-     *
-     * <pre>
+     * 
+     * 示例：
      * StringUtils.repeat('e', 0)  = ""
      * StringUtils.repeat('e', 3)  = "eee"
      * StringUtils.repeat('e', -2) = ""
-     * </pre>
+     * 
+     * @param ch 要重复的字符
+     * @param repeat 重复次数
+     * @return 重复字符构成的字符串
      */
     public static String repeat(final char ch, int repeat) {
         final char[] buf = new char[repeat];
-        while (repeat-->0) {
+        while (repeat-- > 0) {
             buf[repeat] = ch;
         }
         return new String(buf);
     }
 
     /**
-     * <p>
-     * 试用指定字符构造字符串
-     * </p>
-     *
-     * <pre>
+     * 使用指定分隔符合并数组元素
+     * 
+     * 示例：
      * StringUtils.join(null, *)         = null
      * StringUtils.join([], *)           = ""
      * StringUtils.join([null], *)       = ""
      * StringUtils.join([1, 2, 3], ";")  = "1;2;3"
      * StringUtils.join([1, 2, 3], null) = "123"
-     * </pre>
+     * 
+     * @param array 待合并的数组
+     * @param separator 分隔符
+     * @return 合并后的字符串
      */
     public static <T> String join(final T[] array, String separator) {
         if (array == null) {
@@ -374,27 +483,60 @@ public class StringUtils {
         }
         final StringJoiner buf = new StringJoiner(NVL(separator));
         for (T element : array){
-            buf.add(ValUtil.toStr(element,""));
+            buf.add(ValUtil.toStr(element, ""));
         }
         return buf.toString();
     }
 
+    /**
+     * 将数组转换为列表
+     * 
+     * @param array 待转换的数组
+     * @return 转换后的列表
+     */
     public static <T> List<T> arrayToList(final T[] array) {
         return Arrays.asList(array);
     }
 
+    /**
+     * 将列表转换为数组
+     * 
+     * @param list 待转换的列表
+     * @return 转换后的数组
+     */
     public static <T> Object[] listToArray(final Collection<T> list) {
         return list.toArray();
     }
 
+    /**
+     * 使用指定分隔符合并集合元素
+     * 
+     * @param array 待合并的集合
+     * @param separator 分隔符
+     * @return 合并后的字符串
+     */
     public static <T> String join(final Collection<T> array, String separator) {
         return join(listToArray(array), separator);
     }
 
+    /**
+     * 使用指定字符分隔符合并集合元素
+     * 
+     * @param array 待合并的集合
+     * @param separator 分隔符
+     * @return 合并后的字符串
+     */
     public static <T> String join(final Collection<T> array, char separator) {
         return join(listToArray(array), String.valueOf(separator));
     }
 
+    /**
+     * 按正则表达式分割字符串
+     * 
+     * @param value 待分割的字符串
+     * @param regex 分割正则表达式
+     * @return 分割后的字符串数组
+     */
     public static String[] split(String value, String regex) {
         return value == null ? null : value.split(regex);
     }
