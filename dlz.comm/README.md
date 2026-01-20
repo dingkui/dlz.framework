@@ -2,6 +2,14 @@
 
 DLZ COMM 是一个功能丰富的通用工具包，提供了对象转换、JSON处理、加密解密、日期计算等多种实用功能。
 
+## 目录
+
+- [核心功能](#核心功能)
+- [工具模块文档](#工具模块文档)
+- [快速开始](#快速开始)
+- [特性](#特性)
+- [许可证](#许可证)
+
 ## 核心功能
 
 ### 1. 对象转换工具类 - ValUtil
@@ -65,131 +73,59 @@ System.out.println("f所在对象：" + JacksonUtil.at(data, "info.a[1][2]"));  
 System.out.println("f所在对象：" + JacksonUtil.at(data, "info.a[1][-1]"));   // 输出：{"f":5}
 ```
 
-### 3. JSONMap 使用指南
+## 工具模块文档
 
-#### 构造方法
+- [对象转换工具 - ValUtil](docs/valutil.md)
+- [JSON处理工具 - JacksonUtil](docs/jacksonutil.md)
+- [JSONMap/JSONList - JSON数据结构](docs/jsonmap-jsonlist.md)
+- [字符串处理工具 - StringUtils](docs/stringutils.md)
+- [日期处理工具 - DateUtil](docs/dateutil.md)
+- [文件处理工具 - FileUtil](docs/fileutil.md)
+- [XML处理工具 - XmlUtil](docs/xmlutil.md)
+- [加密工具 - EncryptUtil](docs/encryptutil.md)
+- [缓存工具 - Cache](docs/cache.md)
+- [异常处理 - Exceptions](docs/exceptions.md)
+- [常量定义 - Constants](docs/constants.md)
+- [反射工具 - Reflections](docs/reflections.md)
+- [树结构工具 - TreeUtil](docs/treeutil.md)
+- [HTTP工具 - HttpUtil](docs/httputil.md)
 
-##### 无参构造方法
-```java
-@Test
-public void test1() {
-    JSONMap paras = new JSONMap();
-    System.out.println(paras);          // 输出：{}
-    paras.put("a", 1);
-    System.out.println(paras);          // 输出：{"a":1}
-    paras.put("a", "1");
-    System.out.println(paras);          // 输出：{"a":"1"}
-}
+## 快速开始
+
+### Maven 依赖
+
+```xml
+<dependency>
+    <groupId>com.chan3d</groupId>
+    <artifactId>dlz.comm</artifactId>
+    <version>6.3.3</version>
+</dependency>
 ```
 
-##### 使用JSON字符串构造
-```java
-@Test
-public void test2() {
-    JSONMap paras = new JSONMap("{\"a\":{\"b\":2}}");
-    System.out.println(paras);          // 输出：{"a":{"b":2}}
-    paras.put("b", "2");
-    System.out.println(paras);          // 输出：{"a":{"b":2},"b":"2"}
-
-    paras.set("c.c1", "666");
-    System.out.println(paras);          // 输出：{"a":{"b":2},"b":"2","c":{"c1":"666"}}
-}
-```
-
-##### 使用键值对构造
-```java
-@Test
-public void test3() {
-    JSONMap paras = new JSONMap("a", 1, "b", "2");
-    System.out.println(paras);          // 输出：{"a":1,"b":"2"}
-    paras.put("c", "3");
-    System.out.println(paras);          // 输出：{"a":1,"b":"2","c":"3"}
-}
-```
-
-##### 使用Map构造
-```java
-@Test
-public void test4() {
-    Map<String, Object> arg = new HashMap<>();
-    arg.put("a", 1);
-    arg.put("b", "2");
-    JSONMap paras = new JSONMap(arg);
-    System.out.println(paras);          // 输出：{"a":1,"b":"2"}
-    paras.put("c", "3");
-    System.out.println(paras);          // 输出：{"a":1,"b":"2","c":"3"}
-}
-```
-
-##### 使用对象构造
-```java
-@Test
-public void test5() {
-    TestBean arg = new TestBean();
-    arg.setA(1);
-    arg.setB("2");
-    JSONMap paras = new JSONMap(arg);
-    System.out.println(paras);          // 输出：{"a":1,"b":"2"}
-    paras.put("c", "3");
-    System.out.println(paras);          // 输出：{"a":1,"b":"2","c":"3"}
-
-    paras.put("a", "12");
-    TestBean as = paras.as(TestBean.class);
-    System.out.println(as);             // 输出：com.dlz.test.comm.json.TestBean@...
-    System.out.println(as.getA());      // 输出：12
-    System.out.println(as.getB());      // 输出：2
-}
-```
-
-#### 取值方法
-取值key支持多级取值表达式，示例如下：
+### 基本使用示例
 
 ```java
-/**
- * 获取多级数据并进行类型转换——数组下标取值示例
- */
-@Test
-public void test3() {
-    JSONMap paras = new JSONMap("{\"d\":[666,111,222,333,444]}");
-    System.out.println(paras);                              // 输出：{"d":[666,111,222,333,444]}
+// 类型转换示例
+String strValue = "123";
+int intValue = ValUtil.toInt(strValue);  // 转换为整数
 
-    Integer intD0 = paras.getInt("d[0]");                   // 根据子对象数组下标获取并转换类型
-    System.out.println(intD0.getClass() + ":" + intD0);     // 输出：class java.lang.Integer:666
+// JSON处理示例
+String jsonStr = "{\"name\":\"John\", \"age\":30}";
+JSONMap jsonMap = new JSONMap(jsonStr);
+String name = jsonMap.getStr("name");  // 获取name字段
 
-    Integer intDlast = paras.getInt("d[-1]");               // 获取最后一个元素
-    System.out.println(intDlast.getClass() + ":" + intDlast); // 输出：class java.lang.Integer:444
-
-    Integer intDlast2 = paras.getInt("d[-2]");              // 获取倒数第二个元素
-    System.out.println(intDlast2.getClass() + ":" + intDlast2); // 输出应为：class java.lang.Integer:333
-}
+// 日期处理示例
+Date now = DateUtil.now();  // 获取当前时间
+String dateStr = DateUtil.getDateStr(now);  // 格式化为字符串
 ```
 
-### 4. JSONList 使用指南
-JSONList 的使用方法与 JSONMap 类似，构造参数需要是列表或数组类型对象。
+## 特性
 
-## 其他功能模块
-
-### 缓存工具
-提供内存缓存和通用缓存接口实现
-
-### 常量定义
-预定义字符、字符集和字符串常量
-
-### 异常处理
-提供业务异常、数据库异常、HTTP异常等专用异常类
-
-### JSON处理
-提供 JSONMap、JSONList 等高级 JSON 处理功能
-
-### 加密解密
-支持 MD5、SHA、AES、RSA、BASE64 等多种加密算法
-
-### 日期处理
-提供日期计算、格式化等便捷功能
-
-## 使用说明
-
-本工具包旨在简化开发过程中的常见操作，提高开发效率。所有工具类均设计为静态方法工具类，可直接调用。
+- **轻量级**：专注于提供核心工具功能
+- **高性能**：优化过的算法和数据结构
+- **易用性**：提供简洁的API和链式调用
+- **类型安全**：充分使用泛型确保类型安全
+- **可扩展**：支持自定义实现和扩展
 
 ## 许可证
 
