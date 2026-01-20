@@ -9,7 +9,6 @@ public interface ISocketListener {
 	/**
 	 * 处理传入数据，并返回信息
 	 * @param reciveStr 传入数据
-	 * @return
 	 */
 	String deal(String reciveStr, String channelId);
 }

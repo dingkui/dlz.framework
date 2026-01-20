@@ -51,7 +51,6 @@ public class TokenHolder {
 		}
 		/**
 		 * 是否在有效期内
-		 * @return
 		 */
 		public boolean isUsefull() {
 			return System.currentTimeMillis()/1000 < expiresTime;

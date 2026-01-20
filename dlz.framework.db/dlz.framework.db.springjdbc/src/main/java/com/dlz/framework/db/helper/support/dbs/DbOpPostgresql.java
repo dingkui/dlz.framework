@@ -32,8 +32,7 @@ public class DbOpPostgresql extends SqlHelper {
     /**
      * @param currPage 从1开始
      * @param pageSize
-     * @return
-     */
+          */
     @Override
     public String getLimitSql(long currPage, long pageSize) {
         return " LIMIT " + pageSize + " OFFSET " + (currPage - 1) * pageSize;

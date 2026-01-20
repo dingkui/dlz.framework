@@ -24,15 +24,12 @@ public @interface AnnoRedisQueueProvider {
 
     /**
      * 队列名称
-     *
-     * @return
      */
     String value() default "";
 
     /**
      * 发送策略，默认同步
      * 异步发送并发时有问题，取消该配置 2020-10-15
-     * @return
      */
 //    SendStrategyEn strategy() default SendStrategyEn.SYNC;
 }

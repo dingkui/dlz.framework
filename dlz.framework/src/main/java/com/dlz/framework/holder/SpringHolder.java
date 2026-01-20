@@ -77,7 +77,6 @@ public class SpringHolder {
      * 是否包含某个bean
      *
      * @param beanName
-     * @return
      */
     public static boolean containsBean(String beanName) {
         return beanFactory.containsBean(beanName);

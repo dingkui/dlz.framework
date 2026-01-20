@@ -83,7 +83,7 @@ public class DateUtil {
      *
      * @param date
      * @param pattern
-     * @return
+     * @return  String
      */
     public static String format(Date date, String pattern) {
         if (date == null) {

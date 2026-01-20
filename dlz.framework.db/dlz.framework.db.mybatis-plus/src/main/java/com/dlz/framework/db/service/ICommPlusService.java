@@ -21,7 +21,6 @@ public interface ICommPlusService{
      * 添加
      * @param entity
      * @param <T>
-     * @return
      */
     <T> int save(T entity);
 
@@ -31,8 +30,7 @@ public interface ICommPlusService{
      * @param id
      * @param clazz
      * @param <T>
-     * @return
-     */
+          */
     <T> int removeById(Serializable id, Class<T> clazz) ;
     <T> int removeByMap(JSONMap columnMap, Class<T> clazz);
     <T> int remove(Wrapper<T> queryWrapper, Class<T> clazz);
@@ -50,7 +48,6 @@ public interface ICommPlusService{
      * 修改
      * @param entity
      * @param <T>
-     * @return
      */
     <T> int updateById(T entity) ;
     <T> int update(T entity, Wrapper<T> updateWrapper) ;
@@ -72,8 +69,7 @@ public interface ICommPlusService{
      * @param clazz
      * @param throwEx
      * @param <T>
-     * @return
-     */
+          */
     <T> T getOne(Wrapper<T> queryWrapper, Class<T> clazz, boolean throwEx) ;
     default <T>  T getOne(Wrapper<T> wrapper){
         return getOne(wrapper, DbUtil.getEntityClass(wrapper));

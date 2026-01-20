@@ -68,8 +68,7 @@ public class ParaMap<ME extends ParaMap> implements Serializable , ISqlPara, IPa
      *
      * @param key
      * @param value
-     * @return
-     */
+          */
     public ME addPara(String key, Object value) {
 		para.put(key, value == null ? "" : value);
         return (ME)me();
@@ -84,8 +83,7 @@ public class ParaMap<ME extends ParaMap> implements Serializable , ISqlPara, IPa
      * @param key
      * @param value
      * @param pte
-     * @return
-     */
+          */
     public ME addPara(String key, String value, ParaTypeEnum pte) {
 		para.put(key, SqlUtil.coverString2Object(value, pte));
         return me();

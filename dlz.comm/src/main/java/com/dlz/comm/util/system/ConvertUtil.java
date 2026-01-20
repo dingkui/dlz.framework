@@ -37,8 +37,7 @@ public class ConvertUtil {
      * @param <T>
      * @param input
      * @param tClass
-     * @return
-     */
+          */
     public static <T, S> List<T> convertList(List<S> input, Class<S> sClass, Class<T> tClass, Consumer<T> fn) {
         if (ValUtil.isEmpty(input)) {
             return new ArrayList<>();
@@ -58,8 +57,7 @@ public class ConvertUtil {
      * @param <T>
      * @param input
      * @param tClass
-     * @return
-     */
+          */
     public static <T> List<T> convertList(List<?> input, Class<T> tClass, Consumer<T> fn) {
         if (ValUtil.isEmpty(input)) {
             return new ArrayList<>();

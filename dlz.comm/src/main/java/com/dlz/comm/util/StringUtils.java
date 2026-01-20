@@ -132,7 +132,6 @@ public class StringUtils {
      * msg 语句中 ${aa} 的内容进行文本替换
      * @param input
      * @param m
-     * @return
      */
     public static String formatMsg(Object input, JSONMap m) {
         String msg = ValUtil.toStr(input, "");
@@ -161,8 +160,7 @@ public class StringUtils {
      *
      * @param i
      * @param length
-     * @return
-     */
+          */
     public static String addZeroBefor(long i, int length) {
         return leftPad(String.valueOf(i),length,'0');
     }

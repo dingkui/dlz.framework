@@ -52,8 +52,7 @@ public class FieldReflections {
 
     /**
      * 直接设置对象属性值, 无视private/protected修饰符, 不经过setter函数.
-     * @return
-     */
+          */
     public static boolean setValue(final Object obj, final String fieldName, final Object value, final boolean ignore) {
         if (obj == null) {
             if(ignore){

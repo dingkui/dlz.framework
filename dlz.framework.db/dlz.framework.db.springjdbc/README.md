@@ -20,14 +20,13 @@ import com.dlz.framework.db.config.DlzDbConfig;
 import org.springframework.context.annotation.Configuration;
 
 /**
- * @author: dk
- * @date: 2022-4-12
+ * @author dk
+ * date 2022-4-12
  */
 @Configuration
 public class DlzDbConfigs extends DlzDbConfig {
     /**
      * 如果没有初始化dataSource则构建
-     * @return
      */
     @Bean
     public DataSource dataSource() {

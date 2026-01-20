@@ -41,8 +41,7 @@ public interface IParaMap<ME extends IParaMap> extends IChained<ME> {
      *
      * @param key
      * @param value
-     * @return
-     */
+          */
     default ME addPara(String key, Object value) {
         getPara().put(key, value == null ? "" : value);
         return me();
@@ -58,8 +57,7 @@ public interface IParaMap<ME extends IParaMap> extends IChained<ME> {
      * @param key
      * @param value
      * @param pte
-     * @return
-     */
+          */
     default ME addPara(String key, String value, ParaTypeEnum pte) {
         getPara().put(key, SqlUtil.coverString2Object(value, pte));
         return me();

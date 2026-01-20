@@ -13,7 +13,7 @@ public class ExceptionUtils {
     /**
      * 只显示app相关的堆栈
      * @param throwable
-     * @return
+     * @return String
      */
     public static String getStackTrace(final Throwable throwable) {
         return getStackTrace(null,throwable, true,COMPILE);
@@ -22,7 +22,6 @@ public class ExceptionUtils {
     /**
      * 只显示app相关的堆栈
      * @param throwable
-     * @return
      */
     public static String getStackTrace(final String msg,final Throwable throwable) {
         return getStackTrace(msg,throwable, true,COMPILE);
@@ -34,7 +33,6 @@ public class ExceptionUtils {
      * @param throwable
      * @param onlyShowAppLog 是否只显示app相关的堆栈
      * @param marchPattern 匹配的pattern才打印
-     * @return
      */
     public static String getStackTrace(final String msg,final Throwable throwable, boolean onlyShowAppLog,Pattern marchPattern) {
         return new ExceptionTrace(throwable, onlyShowAppLog,marchPattern).getStackTrace(msg);

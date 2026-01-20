@@ -325,7 +325,7 @@ public class DateCalcUtil {
 	/**
 	 * 获取当前时间戳(秒)
 	 *
-	 * @return
+	 * @return 时间戳
 	 */
 	public static long dateline() {
 		return System.currentTimeMillis() / 1000;

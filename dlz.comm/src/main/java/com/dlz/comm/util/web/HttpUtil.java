@@ -36,7 +36,6 @@ public class HttpUtil {
      *
      * @param request
      * @param param
-     * @return
      */
     private static HttpResponse executeHttp(HttpRequestBase request,
                                             HttpRequestParam param) {
@@ -79,8 +78,7 @@ public class HttpUtil {
      *
      * @param request
      * @param param
-     * @return
-     */
+          */
     public static Object doHttp(HttpRequestBase request,
                                 HttpRequestParam param) {
         Object result = null;
@@ -112,8 +110,7 @@ public class HttpUtil {
      * @param e
      * @param url
      * @param method
-     * @return
-     */
+          */
     private static String mkError(Exception e, String url, String method) {
         String message = e.getMessage();
         String info = e.getClass().getName();

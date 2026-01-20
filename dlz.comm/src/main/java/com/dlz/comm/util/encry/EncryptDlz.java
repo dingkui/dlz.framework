@@ -109,9 +109,9 @@ public class EncryptDlz {
         /**
          * 使用XOR加密,如果密码为空则不加密直接返回base64编码
          *
-         * @param {Uint8Array | String} input - 输入字节数组
-         * @param {Uint8Array | String} key - 密钥字节数组
-         * @return {String} 加密后的密文（base64编码）
+         * @param input {Uint8Array | String}  - 输入字节数组
+         * @param key {Uint8Array | String}  - 密钥字节数组
+         * @return 加密后的密文 {String} （base64编码）
          */
         public String encry(Object input, Object key) {
             return Base64.encode2Str(this.xor(input, key))
@@ -123,9 +123,9 @@ public class EncryptDlz {
         /**
          * 使用XOR加密
          *
-         * @param {String}    input - 密文（base64编码）
-         * @param {Uint8Array | String} key - 密钥字节数组
-         * @return {String} 解密后的明文
+         * @param input {String}     - 密文（base64编码）
+         * @param key {Uint8Array | String}  - 密钥字节数组
+         * @return 解密后的明文 {String}
          */
         public byte[] decry(String input, String key) {
             String base64Str = input
@@ -138,9 +138,9 @@ public class EncryptDlz {
         /**
          * 使用XOR加密
          *
-         * @param {String}    input - 密文（base64编码）
-         * @param {Uint8Array | String} key - 密钥字节数组
-         * @return {String} 解密后的明文
+         * @param input {String}     - 密文（base64编码）
+         * @param key {Uint8Array | String}  - 密钥字节数组
+         * @return 解密后的明文 {String}
          */
         public String decryAsStr(String input, String key) {
             byte[] decry = decry(input, key);
@@ -297,9 +297,9 @@ public class EncryptDlz {
          * 3.base64恢复成byte[]
          * 4.xor解密
          *
-         * @param {String} input - 打乱的密文（base64编码）
-         * @param {String} key - 密钥
-         * @return {byte[]} 解密后的byte[]
+         * @param input String  - 打乱的密文（base64编码）
+         * @param key String key - 密钥
+         * @return  解密后的byte数组 byte[]
          */
         public byte[] decry(String input, String key) {
             String result = mix.decode(input);

@@ -41,8 +41,6 @@ public class DbLogUtil {
 
     /**
      * 取得调用者
-     *
-     * @return
      */
     public static String getTraceCaller(final int level) {
         StackTraceElement[] trace = new Throwable().getStackTrace();

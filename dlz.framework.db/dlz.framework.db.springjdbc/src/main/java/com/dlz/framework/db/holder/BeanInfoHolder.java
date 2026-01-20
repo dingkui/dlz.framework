@@ -40,8 +40,7 @@ public class BeanInfoHolder {
      * （带缓存）取得字段对应的数据库字段名
      *
      * @param field
-     * @return
-     */
+          */
     public static String getColumnName(Field field) {
         return columnNameCache.getAndSet(field, () -> {
             String columnName = null;
@@ -90,8 +89,7 @@ public class BeanInfoHolder {
      *
      * @param tableName  表名
      * @param columnName 字段名：支持bean字段名，数据库字段名
-     * @return
-     * @author dk 2018-09-28
+          * @author dk 2018-09-28
      */
     public static boolean isColumnExists(String tableName, String columnName) {
         Map<String, Integer> map = getTableColumnsInfo(tableName);
@@ -105,8 +103,7 @@ public class BeanInfoHolder {
      * bean字段名转换成数据库字段名
      *
      * @param field
-     * @return
-     */
+          */
     public static String getColumnName(String field) {
         return DbConvertUtil.toDbColumnName(field);
     }
@@ -115,8 +112,7 @@ public class BeanInfoHolder {
      * 根据bean取得表注释
      *
      * @param clazz
-     * @return
-     */
+          */
     public static String getTableComment(Class<?> clazz) {
         ApiModel name = clazz.getAnnotation(ApiModel.class);
         if (name != null && StringUtils.isNotEmpty(name.value())) {
@@ -129,8 +125,7 @@ public class BeanInfoHolder {
      * 根据bean字段取得字段注释
      *
      * @param field
-     * @return
-     */
+          */
     public static String getColumnComment(Field field) {
         ApiModelProperty name = field.getAnnotation(ApiModelProperty.class);
         if (name != null && StringUtils.isNotEmpty(name.value())) {
@@ -143,8 +138,7 @@ public class BeanInfoHolder {
      * （带缓存）根据bean取得表名
      *
      * @param clazz
-     * @return
-     */
+          */
     public static String getTableName(Class<?> clazz) {
         return tableNameCache.getAndSet(clazz, () -> {
             TableName name = clazz.getAnnotation(TableName.class);
@@ -168,8 +162,7 @@ public class BeanInfoHolder {
      * （带缓存）取得数据库表字段信息
      *
      * @param tableName
-     * @return
-     */
+          */
     public static HashMap<String, Integer> getTableColumnsInfo(String tableName) {
         return tableColumnsInfoCahe.getAndSet(tableName, () ->
                 DBHolder.getService().getDao().getTableColumnsInfo(tableName)
@@ -180,8 +173,7 @@ public class BeanInfoHolder {
      * （带缓存）根据bean取得数据库对应的字段信息，如果字段在表中不存在，则不返回
      *
      * @param beanClass
-     * @return
-     */
+          */
     public static List<Field> getBeanFields(Class<?> beanClass) {
         String tableName = getTableName(beanClass);
         return tableFieldCache.getAndSet(tableName, () -> {
@@ -197,8 +189,7 @@ public class BeanInfoHolder {
      *
      * @param column
      * @param <T>
-     * @return
-     */
+          */
     public static <T> String fnName(DlzFn<T, ?> column) {
         return getColumnName(FieldReflections.getFn(column).v2);
     }

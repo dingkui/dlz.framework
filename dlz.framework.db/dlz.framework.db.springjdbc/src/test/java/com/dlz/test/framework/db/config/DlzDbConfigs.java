@@ -17,8 +17,8 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Lazy;
 
 /**
- * @author: dk
- * @date: 2020-10-15
+ * @author dk
+ * date 2020-10-15
  */
 @Slf4j
 @Configuration

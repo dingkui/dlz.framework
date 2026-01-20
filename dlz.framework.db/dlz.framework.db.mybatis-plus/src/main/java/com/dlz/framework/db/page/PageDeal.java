@@ -6,7 +6,7 @@ import com.dlz.comm.util.ValUtil;
 
 /**
  * @author dk
- * @date 2020-03-10
+ * date 2020-03-10
  * 翻页处理器
  * @param <T> 查询数据对应的bean class
  * @param <O> 输出列表的bean class
@@ -38,7 +38,6 @@ public abstract class PageDeal<T, O> {
     /**
      * 根据数据库查询结果构建目标结果数据
      * @param bean
-     * @return
      */
     public final O getOutBean(T bean){
         try{

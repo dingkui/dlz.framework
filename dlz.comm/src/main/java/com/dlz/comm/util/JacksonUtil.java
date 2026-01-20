@@ -323,7 +323,6 @@ public class JacksonUtil {
      *
      * @param o
      * @param valueType
-     * @return
      */
     public static <T> T coverObj(Object o, Class<T> valueType) {
         return coverObj(o, mkJavaType(valueType));
@@ -335,8 +334,7 @@ public class JacksonUtil {
      *
      * @param o
      * @param javaType
-     * @return
-     */
+          */
     public static <T> T coverObj(Object o, JavaType javaType) {
         try {
             if (o == null) {
@@ -393,7 +391,6 @@ public class JacksonUtil {
      * @param data
      * @param key
      * @param javaType
-     * @return
      */
     public static <T> T at(Object data, String key, JavaType javaType) {
         Object o = at(data, key);
@@ -422,8 +419,7 @@ public class JacksonUtil {
      *             要取出  c所在对象的属性：info.a[0][1].b
      *             取出f所在对象 :info.a[1][2]
      *             取出f所在对象 :info.a[1][-1]
-     * @return
-     */
+          */
     public static Object at(Object data, String key) {
         if (data == null || "".equals(key)) {
             return data;
@@ -481,8 +477,7 @@ public class JacksonUtil {
      *
      * @param valueType
      * @param parameterTypes
-     * @return
-     */
+          */
     public static JavaType mkJavaTypeByJavaTypes(Class<?> valueType, JavaType... parameterTypes) {
         int len = parameterTypes.length;
         if (len == 0) {
@@ -496,8 +491,7 @@ public class JacksonUtil {
      *
      * @param valueType
      * @param parameterClasses
-     * @return
-     */
+          */
     public static JavaType mkJavaType(Class<?> valueType, Class<?>... parameterClasses) {
         int len = parameterClasses.length;
         if (len == 0) {

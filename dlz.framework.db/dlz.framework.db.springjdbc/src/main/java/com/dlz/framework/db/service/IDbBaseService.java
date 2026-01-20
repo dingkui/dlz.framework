@@ -12,8 +12,7 @@ import java.util.function.Function;
  * sql语句，可以带参数如：select AD_ENDDATE from JOB_AD t where ad_id=#{ad_id}
  * paraMap ：Map<String,Object> m=new HashMap<String,Object>();m.put("ad_id", "47");
  *
- * @return
- * @throws Exception
+  * @throws Exception
  */
 public interface IDbBaseService {
     IDlzDao getDao();

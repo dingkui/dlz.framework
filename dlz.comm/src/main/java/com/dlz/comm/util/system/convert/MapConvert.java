@@ -86,8 +86,7 @@ public class MapConvert implements IConvert{
      * @param clazz
      * @param fn
      * @param <T>
-     * @return
-     */
+          */
     private <T> T toMap(final Map map, final Class<T> clazz, Consumer<T> fn) {
         if (clazz.isAssignableFrom(map.getClass())) {
             return (T) map;

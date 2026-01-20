@@ -42,8 +42,7 @@ public class MakerUpdate extends AMakerSearch<MakerUpdate> implements IOperatorE
      * 添加要更新的值集合
      *
      * @param setValues
-     * @return
-     */
+          */
     public MakerUpdate set(Map<String, Object> setValues) {
         for (String str : setValues.keySet()) {
             set(str, setValues.get(str));

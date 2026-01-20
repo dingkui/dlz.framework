@@ -8,8 +8,9 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Lazy;
 
 /**
- * @author: dk
- * @date: 2020-10-15
+ * mybatis 数据库架构初始化配置
+ * @author dk
+ * date 2020-10-15
  */
 @Slf4j
 public class DlzDbMbConfig extends DlzDbConfig{

@@ -450,7 +450,6 @@ public class ValUtil {
      *                  {a:{b:[1,2]}}  取值2： fieldNames="a.b.1"
      * @param ignore    忽略空值或错误的属性
      * @param <T>
-     * @return
      */
     public static <T> T getValue(final Object obj, final String fieldName, final boolean ignore) {
         Object object = obj;

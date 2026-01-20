@@ -34,8 +34,7 @@ public interface ISqlMakerPage<T extends ISqlMakerPage>{
      * @param current 页号，从1开始
      * @param size    每页大小 最大10000,0则默认每页20条
      * @param orders
-     * @return
-     */
+          */
     default T page(long current, long size, List<Order> orders) {
         Page pmPage = getPage();
         if (pmPage == null) {
@@ -56,8 +55,7 @@ public interface ISqlMakerPage<T extends ISqlMakerPage>{
      * @param current 页号，从1开始
      * @param size    每页大小 最大10000,0则默认每页20条
      * @param orders
-     * @return
-     */
+          */
     default T page(long current, long size, Order... orders) {
         Page pmPage = getPage();
         if (pmPage == null) {

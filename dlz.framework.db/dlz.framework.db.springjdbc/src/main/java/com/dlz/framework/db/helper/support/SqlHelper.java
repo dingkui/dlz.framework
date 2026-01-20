@@ -33,29 +33,25 @@ public abstract class SqlHelper {
      * 取得翻页sql后缀
      * @param currPage 从1开始
      * @param pageSize
-     * @return
-     */
+          */
     public abstract String getLimitSql(long currPage, long pageSize);
 
     /**
      * 获取表所有字段
      * @param tableName
-     * @return
-     */
+          */
     public abstract Set<String> getTableColumnNames(String tableName);
 
     /**
      * 获取表所有索引
      * @param tableName
-     * @return
-     */
+          */
     public abstract List<ResultMap> getTableIndexs(String tableName);
 
     /**
      * 获取表所有索引
      * @param tableName
-     * @return
-     */
+          */
     public abstract TableInfo getTableInfo(String tableName);
 
     /**
@@ -77,8 +73,7 @@ public abstract class SqlHelper {
     /**
      * 根据属性取得数据库字段属性
      * @param field
-     * @return
-     */
+          */
     public abstract String getDbClumnType(Field field);
 
 

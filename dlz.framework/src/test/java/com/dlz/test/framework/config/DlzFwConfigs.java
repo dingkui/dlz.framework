@@ -6,8 +6,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Configuration;
 
 /**
- * @author: dk
- * @date: 2020-10-15
+ * @author dk
+ * date 2020-10-15
  */
 @Slf4j
 @Configuration
@@ -15,7 +15,6 @@ import org.springframework.context.annotation.Configuration;
 public class DlzFwConfigs extends DlzFwConfig {
 //    /**
 //     * 缓存实现
-//     * @return
 //     */
 //    @Bean(name = "dlzCache")
 //    public CacheRedisJsonKey dlzCache() {

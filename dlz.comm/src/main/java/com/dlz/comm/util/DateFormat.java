@@ -64,7 +64,7 @@ public class DateFormat {
 	 * 格式化日期
 	 *
 	 * @param date
-	 * @return
+	 * @return String
 	 */
 	public String format(TemporalAccessor date) {
 		if (date == null) {
@@ -108,7 +108,7 @@ public class DateFormat {
 
 	/**
 	 * 格式化日期
-	 * @return
+	 * @return  String
 	 */
 	public String toString() {
 		return pattern;

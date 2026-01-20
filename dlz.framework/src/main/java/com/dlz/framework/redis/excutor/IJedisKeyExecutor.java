@@ -36,7 +36,6 @@ public interface IJedisKeyExecutor extends IJedisExecutor {
      * 查找匹配key
      *
      * @param pattern key
-     * @return /
      */
     default Set<String> keys(String name,String pattern) {
         int len=name.length()+1;

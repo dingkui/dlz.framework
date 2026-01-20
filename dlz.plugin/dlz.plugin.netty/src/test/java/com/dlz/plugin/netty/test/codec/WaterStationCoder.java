@@ -173,7 +173,6 @@ public class WaterStationCoder implements ICoder<TestTranseDto, TestTranseDto> {
      * 计算CRC16校验码
      *
      * @param puchMsg
-     * @return
      */
     private static String getCRC(byte[] puchMsg) {
         int crc_reg = 0xFFFF;

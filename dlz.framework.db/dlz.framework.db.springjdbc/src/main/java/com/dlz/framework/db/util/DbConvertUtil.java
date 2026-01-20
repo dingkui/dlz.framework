@@ -31,7 +31,6 @@ public class DbConvertUtil {
 	 * @param clumnName
 	 * @param value
 	 * @author dk 2018-09-28
-	 * @return
 	 */
 	public static Object getVal4Db(String tableName,String clumnName,Object value) {
 		return tableCloumnMapper==null?value:tableCloumnMapper.converObj4Db(tableName, clumnName, value);
@@ -44,7 +43,6 @@ public class DbConvertUtil {
 	 * 从Map里取得字符串
 	 * @param m
 	 * @author dk 2015-04-09
-	 * @return
 	 */
 	public static Object getFistColumn(ResultMap m){
 		if(m==null){
@@ -62,7 +60,6 @@ public class DbConvertUtil {
 	 * 从Map里取得字符串
 	 * @param m
 	 * @author dk 2015-04-09
-	 * @return
 	 */
 	public static <T> T getFistColumn(ResultMap m, Class<T> classs){
 		return ValUtil.toObj(getFistColumn(m), classs);
@@ -71,7 +68,6 @@ public class DbConvertUtil {
 	/**
 	 * 数据库字段名转换成bean字段名,一般都是下划线转驼峰
 	 * @param dbKey
-	 * @return
 	 */
 	public static String toFieldName(String dbKey) {
 		return columnMapper.toFieldName(dbKey);
@@ -83,7 +79,6 @@ public class DbConvertUtil {
 	/**
 	 * bean字段名转换成数据库字段名,一般是驼峰转下划线
 	 * @param beanKey
-	 * @return
 	 */
 	public static String toDbColumnNames(String beanKey) {
 		return columnMapper.toDbColumnName(beanKey.replaceAll("\\s+", " "));

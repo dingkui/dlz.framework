@@ -14,8 +14,7 @@ import com.dlz.framework.db.modal.para.WrapperUpdate;
  * sql语句，可以带参数如：select AD_ENDDATE from JOB_AD t where ad_id=#{ad_id}
  * paraMap ：Map<String,Object> m=new HashMap<String,Object>();m.put("ad_id", "47");
  *
- * @return
- * @throws Exception
+  * @throws Exception
  */
 public interface IDbExcuteService extends IDbBaseService{
 
@@ -24,8 +23,7 @@ public interface IDbExcuteService extends IDbBaseService{
      * sql语句，可以带参数如：update JOB_AD set AD_text=#{adText} where ad_id in (${ad_id})
      *
      * @param paraMap ：Map<String,Object> m=new HashMap<String,Object>();m.put("ad_id", "47");
-     * @return
-     * @throws Exception
+          * @throws Exception
      */
     default Long insertWithAutoKey(IOperatorInsert paraMap) {
         return doDb(paraMap, jdbcSql -> getDao().updateForId(jdbcSql.sql, jdbcSql.paras));
@@ -36,8 +34,7 @@ public interface IDbExcuteService extends IDbBaseService{
      * sql语句，可以带参数如：update JOB_AD set AD_text=#{adText} where ad_id in (${ad_id})
      *
      * @param paraMap ：Map<String,Object> m=new HashMap<String,Object>();m.put("ad_id", "47");
-     * @return
-     * @throws Exception
+     * @return 影响行数
      */
     default int excute(IOperatorExec paraMap) {
         return doDb(paraMap, jdbcSql -> getDao().update(jdbcSql.sql, jdbcSql.paras));

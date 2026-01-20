@@ -26,7 +26,7 @@ import java.util.Set;
  * @Mapper
  * public interface TestDao extends SuperMapper<Test> {}
  * @author dk
- * @date 2020-03-10
+ * date 2020-03-10
  */
 @Slf4j
 @Transactional(rollbackFor = {Exception.class, RuntimeException.class})

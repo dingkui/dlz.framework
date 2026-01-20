@@ -48,7 +48,6 @@ public interface IScaner {
 		 * 是否符合处理器条件
 		 * 
 		 * @param beanDefinition
-		 * @return
 		 */
 		boolean isCandidate(AnnotatedBeanDefinition beanDefinition);
 

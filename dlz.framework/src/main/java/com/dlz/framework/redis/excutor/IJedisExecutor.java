@@ -23,14 +23,12 @@ interface IJedisExecutor {
      * 将业务keu构建成带项目前缀的key
      * @param key
      * @param other
-     * @return
      */
     String getRedisKey(String key, Serializable... other);
 
     /**
      * 将redis中的key转为客户端使用的key
      * @param key
-     * @return
      */
     String getClientKey(String key);
 

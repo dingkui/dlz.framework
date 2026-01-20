@@ -145,7 +145,6 @@ interface IJedisHashExecutor extends IJedisExecutor {
      * @param key  键
      * @param item 项
      * @param by   要增加几(大于0)
-     * @return
      */
     default Long hincrBy(String key, String item, long by) {
         return excute(j -> j.hincrBy(getRedisKey(key), item, by));

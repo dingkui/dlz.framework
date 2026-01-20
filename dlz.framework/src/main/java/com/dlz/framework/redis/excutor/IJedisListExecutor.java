@@ -14,7 +14,6 @@ public interface IJedisListExecutor extends IJedisExecutor {
      * @param key   键
      * @param start 开始
      * @param end   结束 0 到 -1代表所有值
-     * @return
      */
     default List<String> lrange(String key, long start, long end) {
         return excute(j -> j.lrange(getRedisKey(key), start, end));
@@ -24,7 +23,6 @@ public interface IJedisListExecutor extends IJedisExecutor {
      * 获取list缓存的长度
      *
      * @param key 键
-     * @return
      */
     default long llen(String key) {
         return excute(j -> j.llen(getRedisKey(key)));
@@ -35,7 +33,6 @@ public interface IJedisListExecutor extends IJedisExecutor {
      *
      * @param key   键
      * @param index 索引 index>=0时， 0 表头，1 第二个元素，依次类推；index<0时，-1，表尾，-2倒数第二个元素，依次类推
-     * @return
      */
     default Object lGetIndex(String key, long index) {
         return excute(j -> j.lindex(getRedisKey(key), index));
@@ -46,7 +43,6 @@ public interface IJedisListExecutor extends IJedisExecutor {
      *
      * @param key   键
      * @param value 值
-     * @return
      */
     default Long lpush(String key, String... value) {
         return lpush(key, 0, value);
@@ -56,9 +52,8 @@ public interface IJedisListExecutor extends IJedisExecutor {
      * 将list放入缓存
      *
      * @param key   键
-     * @param time  时间(秒)
+     * @param seconds  时间(秒)
      * @param value 值
-     * @return
      */
     default Long lpush(String key, int seconds, String... value) {
         return excute(j -> {
@@ -78,7 +73,6 @@ public interface IJedisListExecutor extends IJedisExecutor {
      * @param key   键
      * @param index 索引
      * @param value 值
-     * @return /
      */
     default Boolean lUpdateIndex(String key, long index, String value) {
         excute(j -> j.lset(getRedisKey(key), index, value));

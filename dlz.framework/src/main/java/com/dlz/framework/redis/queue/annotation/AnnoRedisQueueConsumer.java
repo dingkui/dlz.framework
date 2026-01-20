@@ -31,12 +31,11 @@ import java.lang.annotation.*;
 @Documented
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)
-@Component
+//@Component
 //@Conditional(RedisQueueCondition.class)
 public @interface AnnoRedisQueueConsumer {
     /**
      * 队列名称 
-     * @return
      */
     String value() default "";
 

@@ -26,8 +26,7 @@ public class MethodReflections {
      * x1 -> x1
      *
      * @param methodName
-     * @return
-     */
+          */
     private static String getFieldName(String methodName) {
         int start = methodName.startsWith(GETTER_PREFIX) ? 3 : methodName.startsWith(IS_PREFIX) ? 2 : methodName.startsWith(SETTER_PREFIX) ? 3 : 0;
         return methodName.substring(start, 1).toLowerCase() + methodName.substring(start + 1);
@@ -38,8 +37,7 @@ public class MethodReflections {
      *
      * @param propertyName
      * @param methodPrefix 方法前缀 get set is
-     * @return
-     */
+          */
     public static String mkMethodName(String propertyName, String methodPrefix) {
         return (methodPrefix + Character.toUpperCase(propertyName.charAt(0)) + propertyName.substring(1)).intern();
     }

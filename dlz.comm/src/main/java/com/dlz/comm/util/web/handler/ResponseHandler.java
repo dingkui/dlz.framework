@@ -44,9 +44,6 @@ public class ResponseHandler<T> {
     protected String getNgResult(InputStream content,HttpRequestParam param){
         return DEFAULT_READER.read(content, param.getCharsetNameResponse());
     }
-    /**
-     * @return
-     */
     public T handle(HttpRequestParam<T> param,
                         int statusCode,
                         HttpResponse response) {

@@ -16,28 +16,26 @@ public @interface CacheAnno {
     /**
      * 表名
      *
-     * @return
+     * @return 表名
      */
     String value() default "";
 
 	/**
 	 * 键值的key 方法的参数名 如 id,key,bean等，支持 bean.id形式
 	 *
-	 * @return
+	 * @return 键值的key
 	 */
 	String key() default "id";
 
 //	/**
 //	 * 缓存实现
-//	 *
-//	 * @return
 //	 */
 //	Class<? extends ICache> cacheClass() default CacheEhcahe.class;
 
     /**
      * 缓存时间 毫秒
      *
-     * @return
+     * @return 缓存时间
      */
     long cacheTime() default 3600000L;
 

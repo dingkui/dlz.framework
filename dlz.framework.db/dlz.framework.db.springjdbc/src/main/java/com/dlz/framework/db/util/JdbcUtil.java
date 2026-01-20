@@ -33,7 +33,6 @@ public class JdbcUtil {
 	/**
 	 * from jFinal
 	 * @param rs
-	 * @return
 	 * @throws SQLException
 	 */
 	public static List<ResultMap> buildResultMapList(ResultSet rs) throws SQLException{
@@ -52,7 +51,6 @@ public class JdbcUtil {
 	/**
 	 * from jFinal
 	 * @param rs
-	 * @return
 	 * @throws SQLException
 	 */
 	public static ResultMap buildResultMap(ResultSet rs,int columnCount,String[] labelNames,int[] types) throws SQLException{
@@ -77,7 +75,6 @@ public class JdbcUtil {
 	 * from springJdbc
 	 * @param rs
 	 * @param index
-	 * @return
 	 * @throws SQLException
 	 */
 	public static Object getResultSetValue(ResultSet rs, int index) throws SQLException {

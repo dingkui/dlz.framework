@@ -37,8 +37,8 @@ import org.springframework.lang.NonNull;
 import javax.sql.DataSource;
 
 /**
- * @author: dk
- * @date: 2020-10-15
+ * @author dk
+ * date 2020-10-15
  */
 @Slf4j
 @EnableConfigurationProperties({DlzDbProperties.class})

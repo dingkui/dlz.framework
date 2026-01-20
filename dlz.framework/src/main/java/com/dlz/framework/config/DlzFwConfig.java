@@ -23,16 +23,14 @@ import org.springframework.core.env.Environment;
 import redis.clients.jedis.JedisPool;
 
 /**
- * @author: dk
- * @date: 2020-10-15
+ * @author dk
+ * date 2020-10-15
  */
 @Slf4j
 @EnableConfigurationProperties({DlzProperties.class})
 public class DlzFwConfig {
     /**
      * spring 容器启动开始执行
-     *
-     * @return
      */
     @Bean
     public BeanFactoryPostProcessor myBeanFactory(Environment env) {
@@ -50,8 +48,6 @@ public class DlzFwConfig {
 
     /**
      * 缓存实现
-     *
-     * @return
      */
     @Bean(name = "dlzCache")
     @ConditionalOnMissingBean(name = "dlzCache")
@@ -68,8 +64,6 @@ public class DlzFwConfig {
 
     /**
      * redis key构建器
-     *
-     * @return
      */
     @Bean(name = "redisKeyMaker")
     @ConditionalOnMissingBean(name = "redisKeyMaker")
@@ -97,7 +91,6 @@ public class DlzFwConfig {
      * 缓存切面
      * dlz.cache.anno=true时生效
      * @param cache
-     * @return
      */
     @Bean
     @ConditionalOnProperty(value = "dlz.cache.anno", havingValue = "true")
@@ -110,7 +103,6 @@ public class DlzFwConfig {
 
     /**
      * redis生产者消费者模式,开启本功能依赖开启dlz.fw.api-scan-path路径扫描
-     * @return
      */
     @Bean(name = "redisQueueProviderApiHandler")
     @Lazy
@@ -134,8 +126,6 @@ public class DlzFwConfig {
 
     /**
      * 系统配置取值器
-     *
-     * @return
      */
     @Bean
     @Lazy

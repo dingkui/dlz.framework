@@ -13,8 +13,7 @@ public class RSAUtil {
 	/**
 	 * 从流中读取密钥到字符串
 	 * @param inputStream
-	 * @return
-	 */
+	 	 */
 	private static String getKeyFromStream(InputStream inputStream){
 		StringBuilder sb = new StringBuilder();
 		try {
@@ -121,8 +120,7 @@ public class RSAUtil {
 	 * 
 	 * @param publicKeyStr 私钥字符串
 	 * @param keyAlgorithm  请求密钥算法的名称 如：RSA
-	 * @return
-	 * @throws Exception
+	 	 * @throws Exception
 	 */
 	public static PublicKey getPublicKey(String publicKeyStr, String keyAlgorithm) throws Exception {
 		try {
@@ -159,8 +157,7 @@ public class RSAUtil {
 	 * 
 	 * @param privateKeyStr 私钥字符串
 	 * @param keyAlgorithm  请求密钥算法的名称 如：RSA
-	 * @return
-	 * @throws Exception
+	 	 * @throws Exception
 	 */
 	public static PrivateKey getPrivateKey(String privateKeyStr, String keyAlgorithm) throws Exception {
 		try {

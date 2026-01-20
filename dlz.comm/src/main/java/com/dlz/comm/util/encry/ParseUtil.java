@@ -88,7 +88,6 @@ public class ParseUtil {
 	/**
 	 * long转多进制
 	 * @param value
-	 * @return
 	 */
 	public static String encode(long value,char[] rDigits) {
 		int digitIndex = 0;
@@ -108,8 +107,7 @@ public class ParseUtil {
 	/**
 	 * 多进制转long
 	 * @param value
-	 * @return
-	 * @throws Exception
+	 	 * @throws Exception
 	 */
 	public static long decode(String value,char[] rDigits) throws Exception {
 		int fromBase = rDigits.length;

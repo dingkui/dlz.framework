@@ -40,8 +40,7 @@ public class MakerUtil {
     /**
      * 生成查询条件sql
      *
-     * @return
-     */
+          */
     public static void buildSql(AMaker maker) {
         maker.getSqlItem().setSqlKey(maker.getSql());
         maker.addPara(MAKER_TABLENAME, maker.getTableName());
@@ -62,8 +61,7 @@ public class MakerUtil {
     /**
      * 生成查询条件sql
      *
-     * @return
-     */
+          */
     public static void buildWhereColums(MakerQuery maker) {
         maker.addPara(MAKER_COLUMS, maker.colums);
     }
@@ -71,8 +69,7 @@ public class MakerUtil {
     /**
      * 生成查询条件sql
      *
-     * @return
-     */
+          */
     public static void buildWhere(AMakerSearch maker) {
         final String logicDeleteField = SqlHolder.properties.getLogicDeleteField();
         if (BeanInfoHolder.isColumnExists(maker.getTableName(), logicDeleteField)) {
@@ -90,8 +87,7 @@ public class MakerUtil {
     /**
      * 生成掺入sql
      *
-     * @return
-     */
+          */
     public static void buildInsertSql(MakerInsert maker) {
         StringBuilder sbColums = new StringBuilder();
         StringBuilder sbValues = new StringBuilder();
@@ -128,8 +124,7 @@ public class MakerUtil {
     /**
      * 生成更新信息
      *
-     * @return
-     */
+          */
     public static void buildUpdateSql(MakerUpdate maker) {
         StringBuilder sbSets = new StringBuilder();
         if(maker.updateSets.isEmpty()){

@@ -15,7 +15,6 @@ public class NettyServerListener implements ISocketListener {
 	 * 客户端收到传入数据
 	 * （同步模式下，将处理结果保存到监听器中，在后续操作中取得）
 	 * @param reciveStr 传入数据
-	 * @return
 	 */
 	public String deal(String reciveStr,String channelId){
 		log.info("服务器接收到客户端消息:channelId={},msg={}",channelId,reciveStr);

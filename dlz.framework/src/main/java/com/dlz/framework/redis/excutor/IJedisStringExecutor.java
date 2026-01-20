@@ -22,7 +22,6 @@ public interface IJedisStringExecutor extends IJedisExecutor {
      * 批量获取
      *
      * @param keys
-     * @return
      */
     default List<String> mget(String... keys) {
         return excute(j -> j.mget(getKeyArray(keys)));
@@ -71,7 +70,6 @@ public interface IJedisStringExecutor extends IJedisExecutor {
      *
      * @param key   键
      * @param delta 要增加几(大于0)
-     * @return
      */
     default long incrBy(String key, long delta) {
         if (delta < 0) {
@@ -85,7 +83,6 @@ public interface IJedisStringExecutor extends IJedisExecutor {
      * 递增 此时value值必须为int类型 否则报错
      *
      * @param key   键
-     * @return
      */
     default long incr(String key) {
         return excute(j -> j.incr(getRedisKey(key)));
@@ -96,7 +93,6 @@ public interface IJedisStringExecutor extends IJedisExecutor {
      *
      * @param key   键
      * @param delta 要减少几(小于0)
-     * @return
      */
     default long decrBy(String key, long delta) {
         if (delta < 0) {

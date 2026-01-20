@@ -65,7 +65,6 @@ public class ThreadUtil {
 	 * 设置一个值到ThreadLocal
 	 *
 	 * @param map map
-	 * @return 被放入的值
 	 * @see Map#putAll(Map)
 	 */
 	public static void put(Map<String, Object> map) {
@@ -119,8 +118,8 @@ public class ThreadUtil {
 	 * @param key 键
 	 * @param <T> 值类型
 	 * @return 值, 不存在则返回null
-	 * @see this#get(String)
-	 * @see this#remove(String)
+	 * @see this #get(String)
+	 * @see this #remove(String)
 	 */
 	public static <T> T getAndRemove(String key) {
 		try {

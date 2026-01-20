@@ -41,8 +41,7 @@ public class ColumnNameCamel implements IColumnNameConvertor {
 	 * 如果参数含有_则不做转换
 	 * @param beanKey
 	 * @author dk 2015-04-10
-	 * @return
-	 */
+	 	 */
 	@Override
 	public String toDbColumnName(String beanKey) {
 		if(beanKey==null){

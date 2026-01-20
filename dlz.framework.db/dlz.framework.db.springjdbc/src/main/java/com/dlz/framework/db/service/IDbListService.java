@@ -13,8 +13,7 @@ import java.util.List;
  * sql语句，可以带参数如：select AD_ENDDATE from JOB_AD t where ad_id=#{ad_id}
  * paraMap ：Map<String,Object> m=new HashMap<String,Object>();m.put("ad_id", "47");
  *
- * @return
- * @throws Exception
+  * @throws Exception
  */
 public interface IDbListService extends IDbBaseService{
     /**
@@ -22,8 +21,7 @@ public interface IDbListService extends IDbBaseService{
      * sql语句，可以带参数如：select AD_ENDDATE from JOB_AD t where ad_id=#{ad_id}
      *
      * @param paraMap ：Map<String,Object> m=new HashMap<String,Object>();m.put("ad_id", "47");
-     * @return
-     * @throws Exception
+     * @return List<ResultMap>
      */
     default List<ResultMap> getMapList(IOperatorQuery paraMap) {
         return doDb(paraMap, jdbcSql -> getDao().getList(jdbcSql.sql, jdbcSql.paras));
@@ -46,8 +44,7 @@ public interface IDbListService extends IDbBaseService{
     /**
      * 取得分页数据
      *
-     * @return
-     * @throws Exception
+     * @return Page<ResultMap>
      */
     default Page<ResultMap> getPage(IOperatorQuery paraMap) {
         Page<ResultMap> page = (Page<ResultMap>)paraMap.getPage();

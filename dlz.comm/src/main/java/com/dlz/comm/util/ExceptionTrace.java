@@ -139,7 +139,6 @@ public class ExceptionTrace {
     /**
      * 过滤掉不需要打印的日志
      * @param trace
-     * @return
      */
     private void printTraceElement(String prefix, StackTraceElement trace) {
         String traceInfo = getTraceElement(trace);

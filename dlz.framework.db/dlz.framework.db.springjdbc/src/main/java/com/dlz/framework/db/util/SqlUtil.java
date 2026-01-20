@@ -59,8 +59,6 @@ public class SqlUtil {
 
     /**
      * 转换mybatisSQl为jdbcSql
-     *
-     * @return
      * @throws Exception
      * @author dk 2015-04-09
      */
@@ -69,8 +67,6 @@ public class SqlUtil {
     }
     /**
      * 转换mybatisSQl为jdbcSql
-     *
-     * @return
      * @throws Exception
      * @author dk 2015-04-09
      */
@@ -100,7 +96,6 @@ public class SqlUtil {
      *
      * @param jdbcSql
      * @param paraList
-     * @return
      * @throws Exception
      * @author dk 2015-04-09
      */
@@ -132,7 +127,6 @@ public class SqlUtil {
      *
      * @param paraMap
      * @param dealType 1:普通sql 2:查询条数 3：翻页
-     * @return
      * @throws Exception
      * @author dk 2015-04-09
      */
@@ -167,8 +161,7 @@ public class SqlUtil {
      *
      * @param paraMap
      * @param dealType 1:普通sql 2:查询条数 3：翻页
-     * @return
-     * @throws Exception
+          * @throws Exception
      * @author dk 2015-04-09
      */
     public static JdbcItem dealJdbc(ParaJdbc paraMap, int dealType) {
@@ -190,8 +183,7 @@ public class SqlUtil {
 //     *
 //     * @param sql
 //     * @param para
-//     * @return
-//     * @throws Exception
+//     //     * @throws Exception
 //     * @author dk 2015-04-09
 //     */
 //    public static ParaMapBase getParmMap(String sql, Object... para) {
@@ -207,8 +199,7 @@ public class SqlUtil {
      *
      * @param para
      * @param sql
-     * @return
-     * @throws Exception
+          * @throws Exception
      * @author dk 2015-04-09
      */
     private static String createSqlDeal(Map<String, Object> para, String sql) {
@@ -222,8 +213,7 @@ public class SqlUtil {
     /**
      * 转换成翻页sql
      *
-     * @return
-     * @throws Exception
+          * @throws Exception
      */
     public static String getPageSql(ParaMap paraMap) {
         SqlItem sqlItem = paraMap.getSqlItem();
@@ -243,8 +233,7 @@ public class SqlUtil {
     /**
      * 转换成翻页sql
      *
-     * @return
-     * @throws Exception
+          * @throws Exception
      */
     private static VAL<String, JSONMap> pageSql(String sql, Page page) {
         String _orderBy = page.getSortSql();
@@ -277,8 +266,6 @@ public class SqlUtil {
     }
     /**
      * 转换成翻页sql
-     *
-     * @return
      * @throws Exception
      */
     public static JdbcItem getPageSql(ParaJdbc paraMap) {
@@ -304,8 +291,6 @@ public class SqlUtil {
     }
     /**
      * 转换成查询条数sql
-     *
-     * @return
      * @throws Exception
      */
     public static String getCntSql(String sql) {
@@ -322,8 +307,7 @@ public class SqlUtil {
      * @param sql
      * @param m
      * @param replaceTimes
-     * @return
-     */
+          */
     public static String replaceSql(String sql, Map<String, Object> m, int replaceTimes) {
         int length = sql.length();
         if (length > 10000 || replaceTimes++ > 3000) {
@@ -362,8 +346,7 @@ public class SqlUtil {
      *
      * @param sql
      * @param m
-     * @return
-     */
+          */
     public static String getConditionStr(String sql, Map<String, Object> m) {
         Matcher mat = PATTERN_CONDITION.matcher(sql);
         int start = 0;
@@ -413,8 +396,7 @@ public class SqlUtil {
      *
      * @param value
      * @param pte
-     * @return
-     * @author dk 2015-04-09
+          * @author dk 2015-04-09
      */
     public static Object coverString2Object(String value, ParaTypeEnum pte) {
         try {
@@ -437,8 +419,7 @@ public class SqlUtil {
      * 创建表插入语句
      *
      * @param p
-     * @return
-     * @throws SQLException
+          * @throws SQLException
      */
     public static String createInsertSql(Map<String, Object> p) throws SQLException {
         String tableNm = (String) p.get(SU_STR_TABLE_NM);
@@ -465,8 +446,7 @@ public class SqlUtil {
      *
      * @param p
      * @param endSql
-     * @return
-     * @throws SQLException
+          * @throws SQLException
      */
     public static String createUpdateSql(Map<String, Object> p, String endSql) throws SQLException {
         String tableNm = (String) p.get(SU_STR_TABLE_NM);
