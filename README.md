@@ -14,7 +14,7 @@
 <dependency>
     <groupId>com.chan3d</groupId>
     <artifactId>dlz.comm</artifactId>
-    <version>6.3.2</version>
+    <version>6.3.3</version>
 </dependency>
 ```
 ### 2.spring组件 [详细使用说明](./md/framework.md)
@@ -22,7 +22,7 @@
 <dependency>
     <groupId>com.chan3d</groupId>
     <artifactId>dlz.framework</artifactId>
-    <version>6.3.2</version>
+    <version>6.3.3</version>
 </dependency>
 ```
 ### 3.数据库操作组件 [详细使用说明](./md/framework.db.springjdbc.md)
@@ -30,7 +30,7 @@
 <dependency>
     <groupId>com.chan3d</groupId>
     <artifactId>dlz.framework.db.springjdbc</artifactId>
-    <version>6.3.2</version>
+    <version>6.3.3</version>
     </dependency>
 <dependency>
 ```
@@ -39,7 +39,7 @@
 <dependency>
     <groupId>com.chan3d</groupId>
     <artifactId>dlz.framework.db.mybatis-plus</artifactId>
-    <version>6.3.2</version>
+    <version>6.3.3</version>
 </dependency>
 ```
 ### 5.基于netty的websocket组件 [详细使用说明](./md/plugin.netty.md)
@@ -47,7 +47,7 @@
 <dependency>
   <groupId>com.chan3d</groupId>
   <artifactId>dlz.plugin.netty</artifactId>
-  <version>6.3.2</version>
+  <version>6.3.3</version>
 </dependency>
 ```
 
@@ -64,7 +64,7 @@
 <dependency>
     <groupId>com.chan3d</groupId>
     <artifactId>dlz.framework.db.mybatis-plus</artifactId>
-    <version>6.3.2</version>
+    <version>6.3.3</version>
 </dependency>
 ```
 
@@ -76,7 +76,7 @@
 <dependency>
     <groupId>com.chan3d</groupId>
     <artifactId>dlz.plugin.netty</artifactId>
-    <version>6.3.2</version>
+    <version>6.3.3</version>
 </dependency>
 ```
 
@@ -87,7 +87,7 @@
 <dependency>
     <groupId>com.chan3d</groupId>
     <artifactId>dlz.framework.db.springjdbc</artifactId>
-    <version>6.3.2</version>
+    <version>6.3.3</version>
 </dependency>
 ```
 * `[增加功能]`CacheEhcahe支持重写

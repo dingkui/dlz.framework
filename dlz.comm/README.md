@@ -4,7 +4,7 @@ DLZ COMM 是一个功能丰富的通用工具包，提供了对象转换、JSON�
 
 ## 目录
 
-- [核心功能](#核心功能)
+- [特色功能](#特色功能)
 - [工具模块文档](#工具模块文档)
 - [快速开始](#快速开始)
 - [特性](#特性)
@@ -33,7 +33,7 @@ ValUtil.toList(obj, defaultV);          // 转换为列表（带默认值）
 ValUtil.toList(obj, clazz);             // 转换为指定类型的列表
 ValUtil.toStr(obj, defaultV);           // 转换为字符串（带默认值）
 ValUtil.toBoolean(obj, defaultV);       // 转换为布尔值（带默认值）
-ValUtil.toDate(obj);                    // 转换为日期
+ValUtil.toDate(obj);                    // 转换为日期,指定识别格式
 ValUtil.toDate(obj, format);            // 转换为日期（指定格式）
 ValUtil.toDateStr(obj);                 // 转换为日期字符串
 ValUtil.toDateStr(obj, format);         // 转换为日期字符串（指定格式）
