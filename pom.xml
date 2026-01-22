@@ -14,7 +14,6 @@
         <module>dlz.comm</module>
         <module>dlz.framework</module>
         <module>dlz.framework.db</module>
-<!--        <module>dlz.webs</module>-->
         <module>dlz.plugin</module>
     </modules>
 
