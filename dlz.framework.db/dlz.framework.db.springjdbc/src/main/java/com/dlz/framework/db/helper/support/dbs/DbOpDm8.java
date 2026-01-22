@@ -1,6 +1,7 @@
 package com.dlz.framework.db.helper.support.dbs;
 
 import com.dlz.comm.util.StringUtils;
+import com.dlz.comm.util.system.FieldReflections;
 import com.dlz.framework.db.dao.IDlzDao;
 import com.dlz.framework.db.helper.bean.ColumnInfo;
 import com.dlz.framework.db.helper.bean.TableInfo;
@@ -21,11 +22,40 @@ public class DbOpDm8 extends SqlHelper {
     @Override
     public void createTable(String tableName, Class<?> clazz) {
         // 达梦数据库表名需大写
-        String sql = "CREATE TABLE \"" + tableName.toUpperCase() + "\" (ID VARCHAR2(32) NOT NULL PRIMARY KEY)";
+
+        final String columns = FieldReflections.getFields(clazz).stream().map(field -> {
+                    String columnName = BeanInfoHolder.getColumnName(field);
+                    String column = null;
+                    if (columnName.equals("")) {
+                        return column;
+                    }
+                    column = " \"" + columnName.toUpperCase() + "\" " + getDbClumnType(field);
+                    return column;
+                }).filter(column -> column != null)
+                .collect(Collectors.joining(","));
+
+        String sql = StringUtils.formatMsg("CREATE TABLE \"{}\" ({});", tableName,columns);
+
         String tableComment = BeanInfoHolder.getTableComment(clazz);
         if (StringUtils.isNotEmpty(tableComment)) {
-            sql += " COMMENT ON TABLE \"" + tableName.toUpperCase() + "\" IS '" + tableComment + "'";
+            sql += "; COMMENT ON TABLE \"" + tableName.toUpperCase() + "\" IS '" + tableComment + "'";
         }
+
+        final String columnsCommont = FieldReflections.getFields(clazz).stream().map(field -> {
+                    String columnName = BeanInfoHolder.getColumnName(field);
+                    String clumnCommont = BeanInfoHolder.getColumnComment(field);
+                    String column = null;
+                    if (columnName.equals("") && StringUtils.isEmpty(clumnCommont)) {
+                        return column;
+                    }
+                    return "COMMENT ON COLUMN \"" + tableName.toUpperCase() + "\".\"" + columnName.toUpperCase() + "\" IS '" + clumnCommont + "'";
+                }).filter(column -> column != null)
+                .collect(Collectors.joining(";"));
+        if (StringUtils.isNotEmpty(columnsCommont)) {
+            sql += ";"+columnsCommont;
+        }
+
+
         DBHolder.getService().getDao().execute(sql);
     }
 

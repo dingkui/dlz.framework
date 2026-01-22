@@ -135,6 +135,19 @@ public class BeanInfoHolder {
     }
 
     /**
+     * 根据bean字段判断是否pk
+     *
+     * @param field
+          */
+    public static boolean isColumnPk(Field field) {
+        TableId name = field.getAnnotation(TableId.class);
+        if (name != null ) {
+            return true;
+        }
+        return field.getName().equals("id");
+    }
+
+    /**
      * （带缓存）根据bean取得表名
      *
      * @param clazz

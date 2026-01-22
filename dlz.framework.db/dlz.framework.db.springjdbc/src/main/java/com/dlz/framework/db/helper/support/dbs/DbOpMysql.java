@@ -1,6 +1,7 @@
 package com.dlz.framework.db.helper.support.dbs;
 
 import com.dlz.comm.util.StringUtils;
+import com.dlz.comm.util.system.FieldReflections;
 import com.dlz.framework.db.dao.IDlzDao;
 import com.dlz.framework.db.helper.bean.ColumnInfo;
 import com.dlz.framework.db.helper.bean.TableInfo;
@@ -18,13 +19,50 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 public class DbOpMysql extends SqlHelper {
+    /*
+    CREATE TABLE `ds_info`  (
+        `id` varchar(32) NOT NULL PRIMARY KEY,
+        `PLUGIN_ID` varchar(255) COMMENT '插件id',
+        `NAME` varchar(255) COMMENT '数据源名称',
+        `URL` varchar(255) COMMENT '数据源连接地址',
+        `USERNAME` varchar(255) COMMENT '数据源用户名',
+        `PASSWORD` varchar(255) COMMENT '数据源密码',
+        `JSON` varchar(255) COMMENT '其他定义',
+        `DESCRIPTION` varchar(255) COMMENT '数据源描述',
+        `TYPE` varchar(255) COMMENT '数据源类型',
+        `STATUS` varchar(255) COMMENT '数据源状态'
+    )COMMENT = 'xxxx';
+*/
     @Override
     public void createTable(String tableName, Class<?> clazz) {
-        String sql = "CREATE TABLE IF NOT EXISTS `" + tableName + "` (id VARCHAR(32) NOT NULL PRIMARY KEY)";
-        String clumnCommont = BeanInfoHolder.getTableComment(clazz);
-        if (StringUtils.isNotEmpty(clumnCommont)) {
-            sql += " COMMENT = '" + clumnCommont + "'";
+        String createSql = "CREATE TABLE IF NOT EXISTS `{}` ({}){}";
+        final String columns = FieldReflections.getFields(clazz).stream().map(field -> {
+            String columnName = BeanInfoHolder.getColumnName(field);
+            String column = null;
+            if (columnName.equals("")) {
+                return column;
+            }
+            column = " `" + columnName + "` " + getDbClumnType(field);
+            String clumnCommont = BeanInfoHolder.getColumnComment(field);
+            if (StringUtils.isNotEmpty(clumnCommont)) {
+                column += " COMMENT '" + clumnCommont + "'";
+            }
+            if (BeanInfoHolder.isColumnPk(field)) {
+                column += " PRIMARY KEY";
+            }
+            return column;
+        }).filter(column -> column != null)
+                .collect(Collectors.joining(","));
+
+        String tableCommont = BeanInfoHolder.getTableComment(clazz);
+        if (StringUtils.isNotEmpty(tableCommont)) {
+            tableCommont = " COMMENT = '" + tableCommont  + "'";
+        }else{
+            tableCommont = "";
         }
+
+        String sql = StringUtils.formatMsg(createSql, tableName,columns,tableCommont);
+
         DBHolder.getService().getDao().execute(sql);
     }
 
