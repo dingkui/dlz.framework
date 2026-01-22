@@ -51,8 +51,7 @@ public class DbLogUtil {
         String traceInfo;
         while (true) {
             if (index > trace.length - 1) {
-                traceInfo = trace[index].toString();
-                break;
+                return null;
             }
             traceInfo = trace[index].toString();
 
@@ -60,7 +59,7 @@ public class DbLogUtil {
                     traceInfo.startsWith("sun.") ||
                     traceInfo.startsWith("java.") ||
                     traceInfo.startsWith("org.springframework.") ||
-                    traceInfo.startsWith("com.dlz.framework.db.") ||
+                    (traceInfo.startsWith("com.dlz.framework.db.") && !traceInfo.startsWith("com.dlz.framework.db.helper"))||
                     traceInfo.startsWith("com.dlz.comm.")
             ) {
                 index++;
