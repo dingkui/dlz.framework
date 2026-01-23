@@ -25,19 +25,18 @@ import org.springframework.context.annotation.Lazy;
 @EnableConfigurationProperties({DlzDbProperties.class, DlzProperties.class})
 public class DlzDbConfigs extends DlzDbConfig {
 
-//    @Bean(name = "dlzDao")
-//    @Lazy
-//    public IDlzDao dlzDao2(DlzDbProperties properties, ResultMapRowMapper resultRowMapper) {
-//        SqlHolder.init(properties);
-//        DbLogUtil.init(properties);
-//        final IDlzDao dlzDao = new DlzTestDao();
-//        DbConvertUtil.tableCloumnMapper= new TableColumnMapper(dlzDao);
-//        if(log.isInfoEnabled()){
-//            log.info("init test dlzDao:"+DlzTestDao.class.getName());
-//            log.info("init resultRowMapper:"+resultRowMapper.getClass().getName());
-//            log.info("init tableCloumnMapper:"+TableColumnMapper.class.getName());
-//        }
-//        return dlzDao;
-//    }
+    @Bean(name = "dlzDao")
+    @Lazy
+    public IDlzDao dlzDao2(DlzDbProperties properties) {
+        SqlHolder.init(properties);
+        DbLogUtil.init(properties);
+        final IDlzDao dlzDao = new DlzTestDao();
+        DbConvertUtil.tableCloumnMapper= new TableColumnMapper(dlzDao);
+        if(log.isInfoEnabled()){
+            log.info("init test dlzDao:"+DlzTestDao.class.getName());
+            log.info("init tableCloumnMapper:"+TableColumnMapper.class.getName());
+        }
+        return dlzDao;
+    }
 
 }

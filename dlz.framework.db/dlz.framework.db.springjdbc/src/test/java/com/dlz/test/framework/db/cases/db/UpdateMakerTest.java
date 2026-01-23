@@ -25,6 +25,5 @@ public class UpdateMakerTest extends SpingDbBaseTest {
 				);
 		where.excute();
 		showSql(where,"UpdateParaMapTest","update Sys_Sql t set sql_key='1' where equipment_id = 1 and equipment_id2 = 1 and IS_DELETED = 0");
-
 	}
 }

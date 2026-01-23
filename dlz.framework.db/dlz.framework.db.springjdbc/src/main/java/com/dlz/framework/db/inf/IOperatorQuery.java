@@ -33,26 +33,38 @@ public interface IOperatorQuery extends ISqlPara {
     default <T> Page<T> queryPage(Class<T> tClass) {
         return DBHolder.doDb(s->s.getPage(this,tClass));
     }
-    default Page<ResultMap> queryPageData() {
-        return DBHolder.doDb(s->s.getPage(this));
-    }
 
 
     default String queryStr() {
         return DBHolder.doDb(s->s.getStr(this));
     }
-
-
-
     default List<String> queryStrList() {
         return DBHolder.doDb(s->s.getStrList(this));
     }
+
     default Long queryLong() {
         return DBHolder.doDb(s->s.getLong(this));
     }
     default List<Long> queryLongList() {
         return DBHolder.doDb(s->s.getLongList(this));
     }
+
+
+    default Double queryDouble() {
+        return DBHolder.doDb(s->s.getDouble(this));
+    }
+    default List<Double> queryDoubleList() {
+        return DBHolder.doDb(s->s.getDoubleList(this));
+    }
+
+
+    default Integer queryInt() {
+        return DBHolder.doDb(s->s.getInt(this));
+    }
+    default List<Integer> queryIntList() {
+        return DBHolder.doDb(s->s.getIntList(this));
+    }
+
     default int count() {
         return DBHolder.doDb(s->s.getCnt(this));
     }

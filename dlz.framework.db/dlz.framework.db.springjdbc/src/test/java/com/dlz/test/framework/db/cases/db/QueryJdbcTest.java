@@ -33,6 +33,7 @@ public class QueryJdbcTest extends SpingDbBaseTest{
     @Test
     public void pageSqlTest3() {
         final JdbcQuery page = DB.jdbcSelect("select 1 from dual where ?=1", 1)
+                .page(1,20, Order.descs("x1","x2"))
                 .page(Page.build(Order.descs("x1","x2")));
         showSql(page,"pageSqlTest3","select 1 from dual where 1=1 order by X1 desc,X2 desc");
     }

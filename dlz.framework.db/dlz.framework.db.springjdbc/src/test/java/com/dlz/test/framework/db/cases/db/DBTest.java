@@ -36,7 +36,7 @@ public class DBTest extends SpingDbBaseTest{
 
         YcRecord yc1Record = new Yc1Record();
         Class<YcRecord> yc1Recordc = (Class<YcRecord>)yc1Record.getClass();
-        DB.insert(yc1Recordc);
+        DB.insert(yc1Recordc).excute();
     }
     @Test
     public void updateByIdTest1() {
@@ -57,6 +57,7 @@ public class DBTest extends SpingDbBaseTest{
     }
     @Test
     public void getUseDbById1() {
+
         final DataSourceProperty properties = new DataSourceProperty();
         properties.setName("test");
         properties.setDriverClassName("com.mysql.cj.jdbc.Driver");
@@ -64,6 +65,8 @@ public class DBTest extends SpingDbBaseTest{
         properties.setPassword("1234qwer");
         properties.setUrl("jdbc:mysql://192.168.1.126:3306/test?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&transformedBitIsBoolean=true&allowMultiQueries=true&useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=Asia/Shanghai");
         DBDynamic.setDataSource(properties);
+
+
         DBDynamic.use("test",()-> {
             DB.getById(SysSql.class, "1");
             DB.getById(SysSql.class, "2");
