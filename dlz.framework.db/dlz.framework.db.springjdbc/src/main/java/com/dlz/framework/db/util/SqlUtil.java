@@ -16,6 +16,7 @@ import com.dlz.framework.db.modal.result.Page;
 import lombok.extern.slf4j.Slf4j;
 
 import java.sql.SQLException;
+import java.time.temporal.TemporalAccessor;
 import java.util.*;
 import java.util.Map.Entry;
 import java.util.regex.Matcher;
@@ -114,8 +115,16 @@ public class SqlUtil {
             sbRunSql.append(_startStr);
             if(jdbcParaItem instanceof Number){
                 sbRunSql.append(jdbcParaItem);
+            }else if(jdbcParaItem instanceof Date){
+                sbRunSql.append("'"+DateUtil.DATETIME.format((Date)jdbcParaItem)+"'");
+            }else if(jdbcParaItem instanceof TemporalAccessor){
+                sbRunSql.append("'"+DateUtil.DATETIME.format((TemporalAccessor)jdbcParaItem)+"'");
             }else{
-                sbRunSql.append("'"+ValUtil.toStr(jdbcParaItem)+"'");
+                try {
+                    sbRunSql.append("'"+ValUtil.toStr(jdbcParaItem)+"'");
+                } catch (Exception e) {
+                    throw new RuntimeException(e);
+                }
             }
         }
         sbRunSql.append(jdbcSql.substring(beginIndex));
