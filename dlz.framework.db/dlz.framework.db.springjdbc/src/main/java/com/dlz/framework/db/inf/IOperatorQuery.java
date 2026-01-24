@@ -14,7 +14,7 @@ public interface IOperatorQuery extends ISqlPara {
     Page<?> getPage();
 
     void setPage(Page<?> page);
-    default ResultMap query() {
+    default ResultMap queryOne() {
         return DBHolder.doDb(s->s.getMap(this));
     }
     default List<ResultMap> queryList() {
@@ -24,7 +24,7 @@ public interface IOperatorQuery extends ISqlPara {
         return DBHolder.doDb(s->s.getPage(this));
     }
 
-    default <T> T query(Class<T> tClass) {
+    default <T> T queryOne(Class<T> tClass) {
         return DBHolder.doDb(s->s.getBean(this,tClass));
     }
     default <T> List<T> queryList(Class<T> tClass) {
