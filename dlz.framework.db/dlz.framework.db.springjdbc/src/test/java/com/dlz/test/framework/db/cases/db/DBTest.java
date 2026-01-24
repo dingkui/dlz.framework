@@ -35,8 +35,7 @@ public class DBTest extends SpingDbBaseTest{
         DB.save(dict);
 
         YcRecord yc1Record = new Yc1Record();
-        Class<YcRecord> yc1Recordc = (Class<YcRecord>)yc1Record.getClass();
-        DB.insert(yc1Recordc).excute();
+        DB.insert(yc1Record).excute();
     }
     @Test
     public void updateByIdTest1() {

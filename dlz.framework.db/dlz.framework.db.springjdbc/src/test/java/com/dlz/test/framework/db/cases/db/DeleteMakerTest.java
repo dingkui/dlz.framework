@@ -76,7 +76,7 @@ public class DeleteMakerTest extends SpingDbBaseTest {
                 .in(Dict::getA2, "1")
                 .in(Dict::getA2, "sql:select 2 from dual"))
         ;
-        showSql(paraMap,"conditionTest3","delete from t_b_dict where (XXSS in (3,4,5,6) or XXSS in ('31','111','5','6') or XXSS in (1) or XXSS in (SELECT 2 FROM DUAL)) and IS_DELETED = 0");
+        showSql(paraMap,"conditionTest3","delete from t_b_dict where (XXSS in (3,4,5,6) or XXSS in ('31','111','5','6') or XXSS in (1) or XXSS in (select 2 from dual)) and IS_DELETED = 0");
     }
 
     @Test

@@ -119,7 +119,7 @@ public class QueryWrapperTest extends SpingDbBaseTest{
         SysSql dict = new SysSql();
         dict.setId(123L);
         WrapperQuery select = DB.select(SysSql.class,SysSql::getId);
-        showSql(select,"searchWrapperTest1","select id from SYS_SQL t where IS_DELETED = 0");
+        showSql(select,"searchWrapperTest1","select ID from SYS_SQL t where IS_DELETED = 0");
     }
     @Test
     public void searchWrapperTest2() {
@@ -158,6 +158,6 @@ public class QueryWrapperTest extends SpingDbBaseTest{
         final WrapperQuery eq = DB.select(Role.class,Role::getId)
                 .in(Role::getId, "a11,x22")
                 .eq(Role::getIsDeleted, 0);
-        showSql(eq,"dbSqlTest2","select id from sys_role t where ID in ('a11','x22') and IS_DELETED = 0");
+        showSql(eq,"dbSqlTest2","select ID from sys_role t where ID in ('a11','x22') and IS_DELETED = 0");
     }
 }
