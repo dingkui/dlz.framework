@@ -69,6 +69,12 @@
 	<sql sqlId="key.sqlTest.sqlUtil"><![CDATA[
 	   select * from bb ${key.sqlTest.sqlUtilTest}
  	]]></sql>
+ 	<!--
+		测试
+	-->
+	<sql sqlId="key.conditionTest4_6_2"><![CDATA[
+	   age > #{minAge} [AND age < #{maxAge}]
+ 	]]></sql>
  	
 	
 </sqlList>
