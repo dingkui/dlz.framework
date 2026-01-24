@@ -76,7 +76,8 @@ public class DateFormat {
 		try {
 			return LocalDateTime.parse(dateStr, formatter);
 		} catch (Exception e) {
-			log.error(ExceptionUtils.getStackTrace(e));
+            log.warn("parse2LocalDate错误:"+pattern+" "+dateStr);
+//			log.error(ExceptionUtils.getStackTrace(e));
 			return null;
 		}
 	}

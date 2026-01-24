@@ -82,9 +82,9 @@ public class DateUtil {
 
     /** 日期格式转换规则数组 */
     private final static VAL<String, Pattern>[] date_trans = new VAL[]{
-            VAL.of("yyyy-MM-dd HH:mm:ss", Pattern.compile("^\\d{4}-[0,1]?\\d-[0-3]?\\d \\d{2}:\\d{2}:\\d{2}.*")),
-            VAL.of("yyyy-MM-dd", Pattern.compile("^\\d{4}-\\d{1,2}-\\d{1,2}$")),
-            VAL.of("yyyy-MM", Pattern.compile("^\\d{4}-\\d{1,2}$")),
+            VAL.of(PATTERN_DATETIME, Pattern.compile("^\\d{4}-[0,1]?\\d-[0-3]?\\d \\d{2}:\\d{2}:\\d{2}.*")),
+            VAL.of(PATTERN_DATE, Pattern.compile("^\\d{4}-\\d{1,2}-\\d{1,2}$")),
+            VAL.of(PATTERN_MONTH, Pattern.compile("^\\d{4}-\\d{1,2}$")),
             VAL.of("yyyy-MM-dd HH:mm", Pattern.compile("^\\d{4}-\\d{1,2}-\\d{1,2} \\d{1,2}:\\d{1,2}$")),
             VAL.of("yyyy年MM月dd日 HH时mm分ss秒", Pattern.compile("^\\d{4}年[0,1]?\\d月[0-3]?\\d日 \\d{2}时\\d{2}分\\d{2}秒"))
     };
@@ -348,7 +348,18 @@ public class DateUtil {
         String input2 = input.replaceAll("/", "-").replaceAll("\"", "");
         for (int i = 0; i < date_trans.length; i++) {
             if (date_trans[i].v2.matcher(input2).matches()) {
-                return DateUtil.formatter(date_trans[i].v1).parse2LocalDate(input2);
+                final String v1 = date_trans[i].v1;
+                LocalDateTime localDateTime = DateUtil.formatter(v1).parse2LocalDate(input2);
+                if(localDateTime == null && v1==PATTERN_MONTH){
+                    localDateTime = DateUtil.formatter(v1+"-dd HH").parse2LocalDate(input2+"-01 00");
+                }
+                if(localDateTime == null && v1==PATTERN_DATE){
+                    localDateTime = DateUtil.formatter(v1+" HH").parse2LocalDate(input2+" 00");
+                }
+                if(localDateTime == null){
+                    log.error("转换日期格式未识别：" + input);
+                }
+                return localDateTime;
             }
         }
         if (TIME_PATTERN_1.matcher(input2).matches()) {
