@@ -15,14 +15,17 @@ public interface ICondAndOr<T extends ICondAndOr> extends ICondBase<T> {
      * 通过自定义SQL和参数构建条件对象
      * 此方法允许使用自定义的SQL语句和参数来构建数据库查询条件，特别适用于需要执行复杂查询的情况
      *
+     * @param is 是否执行
      * @param sql  自定义的SQL语句模板，其中的参数使用$,#标记${id}表示全文替换，#{id}表示占位符，中括号表示条件语句
      * @param paras 包含SQL参数的JSONMap，用于替换SQL模板中的参数标记
      * @return 返回Condition对象本身，支持链式调用
      */
-    default T sql(String sql, JSONMap paras) {
-        Condition sqlCond = DbBuildEnum.sql.build(sql, paras);
-        if(sqlCond != null){
-            addChildren(sqlCond);
+    default T sql(boolean is, String sql, JSONMap paras) {
+        if(is){
+            Condition sqlCond = DbBuildEnum.sql.build(sql, paras);
+            if(sqlCond != null){
+                addChildren(sqlCond);
+            }
         }
         return me();
     }
@@ -34,12 +37,29 @@ public interface ICondAndOr<T extends ICondAndOr> extends ICondBase<T> {
      * @param paras 包含SQL参数的JSONMap，用于替换SQL模板中的参数标记
      * @return 返回Condition对象本身，支持链式调用
      */
-    default T apply(String sql, Object... paras) {
-        Condition sqlCond = DbBuildEnum.apply.build(sql, paras);
-        if(sqlCond != null){
-            addChildren(sqlCond);
+    default T sql(String sql, JSONMap paras) {
+        return sql(true, sql, paras);
+    }
+    /**
+     * 通过自定义SQL和参数构建条件对象
+     * 此方法允许使用自定义的SQL语句和参数来构建数据库查询条件，特别适用于需要执行复杂查询的情况
+     *
+     * @param is 是否执行
+     * @param sql  自定义的SQL语句模板，采用jdbcsql模式，数值采用 {0} {1} {2}形式做参数下表，系统会自动转换成 占位符
+     * @param paras 多个参数下标
+     * @return 返回Condition对象本身，支持链式调用
+     */
+    default T apply(boolean is,String sql, Object... paras) {
+        if(is){
+            Condition sqlCond = DbBuildEnum.apply.build(sql, paras);
+            if(sqlCond != null){
+                addChildren(sqlCond);
+            }
         }
         return me();
+    }
+    default T apply(String sql, Object... paras) {
+        return apply(true, sql, paras);
     }
 
 //    /**
