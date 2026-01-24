@@ -5,6 +5,7 @@ import com.dlz.comm.util.StringUtils;
 import com.dlz.framework.db.convertor.rowMapper.ResultMapRowMapper;
 import com.dlz.framework.db.enums.DbTypeEnum;
 import com.dlz.framework.db.helper.support.SqlHelper;
+import com.zaxxer.hikari.HikariDataSource;
 import lombok.extern.slf4j.Slf4j;
 
 import javax.sql.DataSource;
@@ -109,13 +110,19 @@ public class DBDynamic {
             v.setDataSource(dataSource);
             configPool.put(name, v);
             try {
-                Connection connection = dataSource.getConnection();
-                DatabaseMetaData metaData = connection.getMetaData();
-                defaultProperties.setDriverClassName(metaData.getDriverName());
-                defaultProperties.setUrl(metaData.getURL());
-                defaultProperties.setUsername(metaData.getUserName());
-                defaultProperties.setDbProductName(metaData.getDatabaseProductName());// 如 "MySQL", "Oracle", "PostgreSQL"
-                connection.close();
+                if(dataSource instanceof HikariDataSource){
+                    HikariDataSource hds = (HikariDataSource) dataSource;
+                    defaultProperties.setUrl(hds.getJdbcUrl());
+                    defaultProperties.setUsername(hds.getUsername());
+                }else{
+                    Connection connection = dataSource.getConnection();
+                    DatabaseMetaData metaData = connection.getMetaData();
+                    defaultProperties.setDriverClassName(metaData.getDriverName());
+                    defaultProperties.setUrl(metaData.getURL());
+                    defaultProperties.setUsername(metaData.getUserName());
+                    defaultProperties.setDbProductName(metaData.getDatabaseProductName());// 如 "MySQL", "Oracle", "PostgreSQL"
+                    connection.close();
+                }
             } catch (Exception e) {
                 log.error("获取数据库类型失败: " + name, e);
                 // 忽略错误
