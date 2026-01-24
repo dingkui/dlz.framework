@@ -158,7 +158,8 @@ public class FieldReflections {
         if (name == null || name.length() == 0) {
             return name;
         }
-        if (name.equals(name.toUpperCase(Locale.ROOT))){
+//        if (name.equals(name.toUpperCase(Locale.ROOT))){
+        if (name.length() > 1 && Character.isUpperCase(name.charAt(1)) && Character.isUpperCase(name.charAt(0))){
             return name;
         }
         char chars[] = name.toCharArray();
