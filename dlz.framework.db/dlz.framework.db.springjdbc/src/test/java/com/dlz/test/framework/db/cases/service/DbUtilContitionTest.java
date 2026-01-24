@@ -21,7 +21,7 @@ public class DbUtilContitionTest  extends SpingDbBaseTest {
 		DB.sqlSelect("select t.* from PTN t where t.id=${key.comm.pageSql} and t.cc=${a} and c=${b} and ccc")
 				.addPara("a", "a${b}")
 				.addPara("b", "b${c}")
-				.addPara("_sql", "_sql${a}").query();
+				.addPara("_sql", "_sql${a}").queryOne();
 //		ump2.setPage(Page.build(1, 2,"id","asc"));
 	}
 	@Test

@@ -19,7 +19,7 @@ public class CommServicePageTest extends SpingDbBaseTest {
     public void PageTest2() {
         DB.sqlSelect("select t.* from PTN_GOODS_PRICE t where t.goods_id=#{goodsId}")
                 .page(Page.build(1, 2, Order.asc("id"), Order.desc("xx2")))
-                .addPara("goodsId", 123).query();
+                .addPara("goodsId", 123).queryOne();
     }
 
     @Test
