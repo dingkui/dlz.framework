@@ -153,7 +153,7 @@ public class DB {
                 batchSize = valueBeans.size();
             }
             List<Object[]> paramValues = valueBeans.subList(0, batchSize);
-            DBHolder.getService().getDao().batchUpdate(sql, paramValues);
+            DBHolder.getDao().batchUpdate(sql, paramValues);
         }
         return true;
     }

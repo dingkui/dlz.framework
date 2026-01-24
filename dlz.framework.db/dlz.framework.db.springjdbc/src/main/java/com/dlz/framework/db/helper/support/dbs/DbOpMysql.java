@@ -63,7 +63,7 @@ public class DbOpMysql extends SqlHelper {
 
         String sql = StringUtils.formatMsg(createSql, tableName,columns,tableCommont);
 
-        DBHolder.getService().getDao().execute(sql);
+        DBHolder.getDao().execute(sql);
     }
 
     /**
@@ -79,7 +79,7 @@ public class DbOpMysql extends SqlHelper {
     public Set<String> getTableColumnNames(String tableName) {
 //        // 获取表所有字段
 //        String sql = "SHOW COLUMNS FROM `" + tableName + "`";
-//        List<ResultMap> maps = DBHolder.getService().getDao().getList(sql);
+//        List<ResultMap> maps = DBHolder.getDao().getList(sql);
 //        Set<String> re = new HashSet();
 //        maps.forEach(item -> {
 //            String field = ValUtil.toStr(item.get("Field"), "");
@@ -95,7 +95,7 @@ public class DbOpMysql extends SqlHelper {
         // 构建查询字段信息的SQL语句
         String sql = "SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = ?";
         // 执行查询并获取结果
-        return DBHolder.getService().getDao().getList(sql, tableName).stream().map(item -> item.getStr("columnName")).collect(Collectors.toSet());
+        return DBHolder.getDao().getList(sql, tableName).stream().map(item -> item.getStr("columnName")).collect(Collectors.toSet());
     }
 
     @Override
@@ -105,19 +105,19 @@ public class DbOpMysql extends SqlHelper {
         // 执行查询并获取结果
         TableInfo tableInfo = new TableInfo();
         tableInfo.setTableName(tableName);
-        tableInfo.setTableComment(DBHolder.getService().getDao().getFistColumn(sql, String.class, tableName));
+        tableInfo.setTableComment(DBHolder.getDao().getFistColumn(sql, String.class, tableName));
 
         // 获取主键信息
         // 构建查询主键的SQL语句
         sql = "SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = ? AND CONSTRAINT_NAME = 'PRIMARY'";
         // 执行查询并获取结果
-        List<String> primaryKeys = DBHolder.getService().getDao().getList(sql, tableName).stream().map(map -> map.getStr("columnName", "")).collect(Collectors.toList());
+        List<String> primaryKeys = DBHolder.getDao().getList(sql, tableName).stream().map(map -> map.getStr("columnName", "")).collect(Collectors.toList());
         tableInfo.setPrimaryKeys(primaryKeys);
 
         // 构建查询字段信息的SQL语句
         sql = "SELECT COLUMN_NAME, COLUMN_TYPE, COLUMN_COMMENT FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = ?";
         // 执行查询并获取结果
-        List<ColumnInfo> columnInfos = DBHolder.getService().getDao().getList(sql, tableName).stream().map(map -> {
+        List<ColumnInfo> columnInfos = DBHolder.getDao().getList(sql, tableName).stream().map(map -> {
             ColumnInfo columnInfo = new ColumnInfo();
             columnInfo.setColumnName(map.getStr("columnName", ""));
             columnInfo.setColumnType(map.getStr("columnType", ""));
@@ -136,7 +136,7 @@ public class DbOpMysql extends SqlHelper {
     public List<ResultMap> getTableIndexs(String tableName) {
         // 获取表所有索引
         String sql = "SHOW INDEX FROM `" + tableName + "`";
-        return DBHolder.getService().getDao().getList(sql);
+        return DBHolder.getDao().getList(sql);
     }
 
     @Override
@@ -146,16 +146,16 @@ public class DbOpMysql extends SqlHelper {
         if (StringUtils.isNotEmpty(clumnCommont)) {
             sql += " COMMENT '" + clumnCommont + "'";
         }
-        DBHolder.getService().getDao().execute(sql);
+        DBHolder.getDao().execute(sql);
     }
 
     @Override
     public void updateDefaultValue(String tableName, String columnName, String value) {
         String sql = "SELECT COUNT(*) FROM " + tableName + " WHERE `" + columnName + "` IS NULL";
-        Long count = DBHolder.getService().getDao().getFistColumn(sql, Long.class);
+        Long count = DBHolder.getDao().getFistColumn(sql, Long.class);
         if (count > 0) {
             sql = "UPDATE " + tableName + " SET `" + columnName + "` = ? WHERE `" + columnName + "` IS NULL";
-            DBHolder.getService().getDao().update(sql, value);
+            DBHolder.getDao().update(sql, value);
         }
     }
 

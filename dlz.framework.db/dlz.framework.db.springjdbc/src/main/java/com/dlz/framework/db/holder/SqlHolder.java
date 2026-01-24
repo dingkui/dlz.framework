@@ -5,8 +5,6 @@ import com.dlz.comm.util.ExceptionUtils;
 import com.dlz.framework.db.config.DlzDbProperties;
 import com.dlz.framework.db.enums.DbTypeEnum;
 import com.dlz.framework.db.modal.result.ResultMap;
-import com.dlz.framework.db.service.ICommService;
-import com.dlz.framework.holder.SpringHolder;
 import lombok.extern.slf4j.Slf4j;
 import org.dom4j.Document;
 import org.dom4j.DocumentException;
@@ -138,11 +136,11 @@ public class SqlHolder {
         initIng = false;
     }
 
-    public static void loadDbSql(ICommService service){
+    public static void loadDbSql(){
         if(properties.isUseDbSql()){
             String sql = clearSql(properties.getSql());
             try {
-                List<ResultMap> mapList = service.getMapList(sql);
+                List<ResultMap> mapList = DBHolder.getDao().getList(sql);
                 mapList.forEach(item->addSqlSetting("key."+item.getStr("k"),item.getStr("s"),true));
             }catch (Exception e){
                 log.error(ExceptionUtils.getStackTrace(e));
@@ -155,7 +153,7 @@ public class SqlHolder {
     public static void reLoad() {
         m_sqlList.clear();
         load();
-        loadDbSql(SpringHolder.getBean(ICommService.class));
+        loadDbSql();
     }
     private static String clearSql(String sqlStr){
         return sqlStr.replaceAll("--.*", "").replaceAll("[\\s]+", " ");

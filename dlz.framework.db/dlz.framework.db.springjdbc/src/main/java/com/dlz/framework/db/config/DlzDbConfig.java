@@ -4,10 +4,9 @@ import com.dlz.framework.config.DlzFwConfig;
 import com.dlz.framework.db.convertor.dbtype.TableColumnMapper;
 import com.dlz.framework.db.dao.DlzDao;
 import com.dlz.framework.db.dao.IDlzDao;
-import com.dlz.framework.db.ds.DBDynamic;
 import com.dlz.framework.db.ds.DynamicJdbcTemplate;
 import com.dlz.framework.db.helper.support.HelperScan;
-import com.dlz.framework.db.helper.support.SqlHelper;
+import com.dlz.framework.db.holder.DBHolder;
 import com.dlz.framework.db.holder.SqlHolder;
 import com.dlz.framework.db.service.ICommService;
 import com.dlz.framework.db.service.impl.CommServiceImpl;
@@ -17,7 +16,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.DependsOn;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.jdbc.core.JdbcTemplate;
 
@@ -42,6 +40,13 @@ public class DlzDbConfig extends DlzFwConfig {
             log.info("init dlzDao:" + DlzDao.class.getName());
             log.info("init tableCloumnMapper:" + TableColumnMapper.class.getName());
         }
+        DBHolder.dao = dlzDao;
+        SqlHolder.loadDbSql();
+        //自动扫描
+        if (properties.getHelper().autoUpdate) {
+            log.info("dlzHelper autoUpdate ...");
+            HelperScan.scan(properties.getHelper().packageName);
+        }
         return dlzDao;
     }
 
@@ -53,7 +58,6 @@ public class DlzDbConfig extends DlzFwConfig {
         if (log.isInfoEnabled()) {
             log.info("init commService:" + CommServiceImpl.class.getName());
         }
-        SqlHolder.loadDbSql(commService);
         return commService;
     }
 
@@ -65,22 +69,5 @@ public class DlzDbConfig extends DlzFwConfig {
             log.info("init JdbcTemplate:" + DynamicJdbcTemplate.class.getName());
         }
         return new DynamicJdbcTemplate(dataSource);
-    }
-
-    /**
-     * sqlHelper
-     */
-    @Lazy
-    @Bean(name = "dlzHelperDbOp")
-    @ConditionalOnMissingBean(name = "dlzHelperDbOp")
-    @DependsOn("JdbcTemplate")
-    public SqlHelper dlzHelperDbOp(DlzDbProperties properties) {
-        SqlHelper helpler = DBDynamic.getSqlHelper();
-        //自动扫描
-        if (properties.getHelper().autoUpdate) {
-            log.info("dlzHelper autoUpdate ...");
-            new Thread(() -> HelperScan.scan(properties.getHelper().packageName, helpler)).start();
-        }
-        return helpler;
     }
 }

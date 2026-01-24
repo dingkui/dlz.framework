@@ -57,7 +57,7 @@ public class WrapperInsert<T> extends AWrapper<T, MakerInsert> implements IOpera
             List<Object[]> paramValues = ts.stream()
                     .map(v -> MakerUtil.buildInsertParams(dbName,v, fields))
                     .collect(Collectors.toList());
-            DBHolder.getService().getDao().batchUpdate(sql, paramValues);
+            DBHolder.getDao().batchUpdate(sql, paramValues);
             valueBeans = valueBeans.subList(batchSize, valueBeans.size());
         }
         return true;

@@ -17,17 +17,10 @@ import java.util.function.Function;
  */
 @Slf4j
 public class DBHolder {
-    private static IDlzDao dao;
-    private static ResultMapRowMapper rowMapper;
-    private static ICommService service;
-    private static JedisExecutor jedis;
+    public static IDlzDao dao;
+    public static ICommService service;
+    public static JedisExecutor jedis;
 
-    public static ResultMapRowMapper getRowMapper() {
-        if (rowMapper == null) {
-            rowMapper = SpringHolder.getBean(ResultMapRowMapper.class);
-        }
-        return rowMapper;
-    }
     public static IDlzDao getDao() {
         if (dao == null) {
             dao = SpringHolder.getBean(IDlzDao.class);
@@ -53,7 +46,7 @@ public class DBHolder {
         Long seq = getJedis().incrBy(key, initSeq);
         if (seq == initSeq) {
             try {
-                final String fistColumn = getService().getDao().getFistColumn("select max(id) from " + tableName, String.class);
+                final String fistColumn = getDao().getFistColumn("select max(id) from " + tableName, String.class);
                 if(fistColumn==null || !StringUtils.isNumber(fistColumn)){
                     return seq;
                 }
@@ -77,6 +70,6 @@ public class DBHolder {
     }
 
     public static <R> R doDao(Function<IDlzDao, R> s) {
-        return s.apply(getService().getDao());
+        return s.apply(getDao());
     }
 }

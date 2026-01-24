@@ -17,7 +17,7 @@ public class DbOpSqlite extends SqlHelper {
     @Override
     public void createTable(String tableName, Class<?> clazz) {
         String sql = "CREATE TABLE IF NOT EXISTS `" + tableName + "` (id VARCHAR(32) NOT NULL PRIMARY KEY)";
-        DBHolder.getService().getDao().execute(sql);
+        DBHolder.getDao().execute(sql);
     }
 
     @Override
@@ -41,12 +41,12 @@ public class DbOpSqlite extends SqlHelper {
     public TableInfo getTableInfo(String tableName) {
         // 获取表注释
         String sql = "SELECT table_comment FROM table_comments WHERE table_name = ?";
-        String tableComment = DBHolder.getService().getDao().getFistColumn(sql, String.class, tableName);
+        String tableComment = DBHolder.getDao().getFistColumn(sql, String.class, tableName);
 
         // 构建查询主键的SQL语句
         sql = "PRAGMA table_info(`" + tableName + "`)";
         // 执行查询并获取结果
-        List<ResultMap> maps = DBHolder.getService().getDao().getList(sql);
+        List<ResultMap> maps = DBHolder.getDao().getList(sql);
         List<String> primaryKeys = new ArrayList<>();
 
         for (ResultMap map : maps) {
@@ -58,7 +58,7 @@ public class DbOpSqlite extends SqlHelper {
 
         // 获取字段信息
         sql = "PRAGMA TABLE_INFO(`" + tableName + "`)";
-        maps = DBHolder.getService().getDao().getList(sql);
+        maps = DBHolder.getDao().getList(sql);
         List<ColumnInfo> columnInfos = new ArrayList<>();
 
         for (ResultMap map : maps) {
@@ -85,22 +85,22 @@ public class DbOpSqlite extends SqlHelper {
     public List<ResultMap> getTableIndexs(String tableName) {
         // 获取表所有索引
         String sql = "PRAGMA INDEX_LIST(`" + tableName + "`)";
-        return DBHolder.getService().getDao().getList(sql);
+        return DBHolder.getDao().getList(sql);
     }
 
     @Override
     public void createColumn(String tableName, String name, Field field) {
         String sql = "ALTER TABLE `" + tableName + "` ADD COLUMN `" + name + "` " + getDbClumnType(field);
-        DBHolder.getService().getDao().execute(sql);
+        DBHolder.getDao().execute(sql);
     }
 
     @Override
     public void updateDefaultValue(String tableName, String columnName, String value) {
         String sql = "SELECT COUNT(*) FROM " + tableName + " WHERE `" + columnName + "` IS NULL";
-        Long count = DBHolder.getService().getDao().getFistColumn(sql, Long.class);
+        Long count = DBHolder.getDao().getFistColumn(sql, Long.class);
         if (count > 0) {
             sql = "UPDATE " + tableName + " SET `" + columnName + "` = ? WHERE `" + columnName + "` IS NULL";
-            DBHolder.getService().getDao().update(sql, value);
+            DBHolder.getDao().update(sql, value);
         }
     }
 

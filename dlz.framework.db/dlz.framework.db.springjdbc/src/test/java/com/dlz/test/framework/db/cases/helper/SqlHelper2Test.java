@@ -1,5 +1,6 @@
 package com.dlz.test.framework.db.cases.helper;
 
+import com.dlz.framework.db.ds.DBDynamic;
 import com.dlz.framework.db.helper.bean.TableInfo;
 import com.dlz.test.framework.db.config.SpingDbBaseTest;
 import org.junit.Test;
@@ -19,7 +20,7 @@ public class SqlHelper2Test extends SpingDbBaseTest {
 //        DlzDao dao = new DlzDao(jdbcTemplate);
 //        DbOpMysql dbOpMysql = new DbOpMysql(dao);
 
-        TableInfo sys_test = sqlHelper.getTableInfo("sys_code");
+        TableInfo sys_test = DBDynamic.getSqlHelper().getTableInfo("sys_code");
         System.out.println(sys_test);
     }
     @Test
@@ -35,7 +36,7 @@ public class SqlHelper2Test extends SpingDbBaseTest {
 //        DlzDao dao = new DlzDao(jdbcTemplate);
 //        DbOpMysql dbOpMysql = new DbOpMysql(dao);
 
-        TableInfo sys_test = sqlHelper.getTableInfo("elec_graph");
+        TableInfo sys_test = DBDynamic.getSqlHelper().getTableInfo("elec_graph");
         System.out.println(sys_test);
     }
 }

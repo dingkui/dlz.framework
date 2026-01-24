@@ -36,10 +36,11 @@ public class HelperScan {
         return classes;
     }
 
-    public static void scan(String packageName,SqlHelper helper) {
+    public static void scan(String packageName) {
         if (StringUtils.isEmpty(packageName)) {
             return;
         }
+        final SqlHelper helper = DBDynamic.getSqlHelper();
         Set<Class<?>> set = scanPackage(packageName, TableName.class);
         boolean initSync = DBDynamic.getDbType() == DbTypeEnum.SQLITE;
         if (initSync) {

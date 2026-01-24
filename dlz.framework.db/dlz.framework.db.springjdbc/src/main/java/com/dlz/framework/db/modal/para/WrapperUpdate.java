@@ -81,7 +81,7 @@ public class WrapperUpdate<T> extends AWrapperSearch<WrapperUpdate<T>,T, MakerUp
 			List<Object[]> paramValues = ts.stream()
 					.map(v->MakerUtil.buildUpdateParams(v,fields))
 					.collect(Collectors.toList());
-			DBHolder.getService().getDao().batchUpdate(sql, paramValues);
+			DBHolder.getDao().batchUpdate(sql, paramValues);
 			valueBeans = valueBeans.subList(batchSize, valueBeans.size());
 		}
 		return true;
