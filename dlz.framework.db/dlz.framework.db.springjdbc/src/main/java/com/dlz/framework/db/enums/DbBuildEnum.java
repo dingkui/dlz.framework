@@ -3,6 +3,7 @@ package com.dlz.framework.db.enums;
 import com.dlz.comm.exception.SystemException;
 import com.dlz.comm.json.JSONMap;
 import com.dlz.comm.util.StringUtils;
+import com.dlz.framework.db.holder.SqlHolder;
 import com.dlz.framework.db.modal.condition.Condition;
 import com.dlz.framework.db.util.KeyUtil;
 import com.dlz.framework.db.util.SqlUtil;
@@ -29,6 +30,9 @@ public enum DbBuildEnum {
             case sql:
                 if(StringUtils.isEmpty(sql)){
                     return null;
+                }
+                if(sql.startsWith("key.")){
+                    sql= SqlHolder.getSql(sql);
                 }
                 sql = sql.replaceAll("\\$\\.", "\\\\\\$\\\\\\.");
                 sql = SqlUtil.getConditionStr(sql, paras);
