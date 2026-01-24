@@ -60,6 +60,15 @@ public class Condition implements ICondAndOr<Condition>, ICondAddByKey<Condition
     public static Condition where() {
         return DbBuildEnum.where.build();
     }
+    public Condition clone() {
+        Condition condition = new Condition();
+        condition.builder = builder;
+        condition.paras.putAll( paras);
+        condition.children.addAll(children);
+        condition.isMake = false;
+        condition.runsql = "";
+        return condition;
+    }
 
     public String getRunsql(ParaMap pm) {
         make(pm);
@@ -90,7 +99,11 @@ public class Condition implements ICondAndOr<Condition>, ICondAddByKey<Condition
     }
 
     public void addChildren(Condition child) {
-        children.add(child);
+        if(child.children.size()>0){
+            children.addAll(child.children);
+        }else{
+            children.add(child);
+        }
     }
 
     public boolean isContainCondition(String column){

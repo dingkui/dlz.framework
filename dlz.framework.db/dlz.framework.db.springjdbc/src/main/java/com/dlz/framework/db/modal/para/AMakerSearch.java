@@ -20,7 +20,7 @@ public abstract class AMakerSearch<T extends AMakerSearch> extends AMaker<T> imp
         return whereCond;
     }
     public T where(Condition cond) {
-        this.whereCond = cond;
+        this.whereCond = cond.clone();
         return me();
     }
 
