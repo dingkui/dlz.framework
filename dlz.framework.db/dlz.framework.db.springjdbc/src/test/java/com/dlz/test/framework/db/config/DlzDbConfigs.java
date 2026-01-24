@@ -5,8 +5,8 @@ import com.dlz.framework.db.DlzTestDao;
 import com.dlz.framework.db.config.DlzDbConfig;
 import com.dlz.framework.db.config.DlzDbProperties;
 import com.dlz.framework.db.convertor.dbtype.TableColumnMapper;
-import com.dlz.framework.db.convertor.rowMapper.ResultMapRowMapper;
 import com.dlz.framework.db.dao.IDlzDao;
+import com.dlz.framework.db.ds.DBDynamic;
 import com.dlz.framework.db.holder.SqlHolder;
 import com.dlz.framework.db.util.DbConvertUtil;
 import com.dlz.framework.db.util.DbLogUtil;
@@ -15,6 +15,9 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Lazy;
+import org.springframework.jdbc.core.JdbcTemplate;
+
+import javax.sql.DataSource;
 
 /**
  * @author dk
@@ -27,7 +30,7 @@ public class DlzDbConfigs extends DlzDbConfig {
 
     @Bean(name = "dlzDao")
     @Lazy
-    public IDlzDao dlzDao2(DlzDbProperties properties) {
+    public IDlzDao dlzDao2(JdbcTemplate jdbc,DlzDbProperties properties) {
         SqlHolder.init(properties);
         DbLogUtil.init(properties);
         final IDlzDao dlzDao = new DlzTestDao();
@@ -37,6 +40,12 @@ public class DlzDbConfigs extends DlzDbConfig {
             log.info("init tableCloumnMapper:"+TableColumnMapper.class.getName());
         }
         return dlzDao;
+    }
+
+    @Bean(name = "JdbcTemplate")
+    public JdbcTemplate JdbcTemplate(DataSource dataSource) {
+        DBDynamic.setDefaultDataSource(dataSource);
+        return new JdbcTemplate(dataSource);
     }
 
 }
