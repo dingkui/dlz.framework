@@ -18,7 +18,7 @@ public class YcRecord implements Serializable {
     private static final long serialVersionUID = 1L;
     /** 主键 */
     @ApiModelProperty(value = "主键")
-    @TableId(value = "id", type = IdType.SEQ)
+    @TableId(value = "id", type = IdType.ASSIGN_ID)
     private Long id;
 
     /** 预测类型 */
