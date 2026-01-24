@@ -75,7 +75,7 @@ public enum DbOprateEnum {
         if (value instanceof String) {
             String v = ((String) value);
             if (v.startsWith("sql:")) {
-                condition.addPara(key, DbConvertUtil.toDbColumnName(v.substring(4)));
+                condition.addPara(key, v.substring(4));
                 return condition;
             }
         }
