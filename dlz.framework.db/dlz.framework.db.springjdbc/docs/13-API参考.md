@@ -123,10 +123,10 @@ Condition condition = Condition.where()
 DB.query("user").where(condition).list();
 
 // 应用到更新
-DB.update("user").set("flag", 1).where(condition).execute();
+DB.update("user").set("flag", 1).where(condition).excute();
 
 // 应用到删除
-DB.delete("user").where(condition).execute();
+DB.delete("user").where(condition).excute();
 ```
 ---
 

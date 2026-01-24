@@ -42,7 +42,7 @@ DB.update(User.class)
     .set(User::getStatus, 0)
     .set(User::getUpdateTime, new Date())
     .eq(User::getId, 1)
-    .execute();
+    .excute();
 ```
 
 #### 删除
@@ -50,7 +50,7 @@ DB.update(User.class)
 ```java
 DB.delete(User.class)
     .eq(User::getId, 1)
-    .execute();
+    .excute();
 ```
 
 #### 插入指定字段
@@ -58,7 +58,7 @@ DB.delete(User.class)
 ```java
 DB.insert(user)
     .insertFields(User::getName, User::getAge, User::getEmail)
-    .execute();
+    .excute();
 ```
 
 ### 字段名解析规则
