@@ -17,7 +17,7 @@ public class QueryMakerTest extends SpingDbBaseTest{
         menu.setCode("qsm");
         menu.setCode("qsm");
         menu.setName("全生命周期项目");
-        final WrapperQuery<Menu> menuQueryWrapper = DB.query(Menu.class);
+        final WrapperQuery<Menu> menuQueryWrapper = DB.Wrapper.query(Menu.class);
         if (menu.getId() != null) {
             menuQueryWrapper.ne(Menu::getId, menu.getId());
         }
@@ -32,7 +32,7 @@ public class QueryMakerTest extends SpingDbBaseTest{
         Menu menu = new Menu();
         menu.setCode("qsm");
         menu.setName("全生命周期项目");
-        final WrapperQuery<Menu> menuQueryWrapper = DB.query(Menu.class);
+        final WrapperQuery<Menu> menuQueryWrapper = DB.Wrapper.query(Menu.class);
         if (menu.getId() != null) {
             menuQueryWrapper.ne(Menu::getId, menu.getId());
         }
@@ -47,7 +47,7 @@ public class QueryMakerTest extends SpingDbBaseTest{
         Menu menu = new Menu();
         menu.setCode("qsm");
         menu.setName("全生命周期项目");
-        final WrapperQuery<Menu> menuQueryWrapper = DB.query(Menu.class);
+        final WrapperQuery<Menu> menuQueryWrapper = DB.Wrapper.query(Menu.class);
         if (menu.getId() != null) {
             menuQueryWrapper.ne(Menu::getId, menu.getId());
         }
@@ -60,7 +60,7 @@ public class QueryMakerTest extends SpingDbBaseTest{
         Menu menu = new Menu();
         menu.setCode("qsm");
         menu.setName("全生命周期项目");
-        final WrapperQuery<Menu> menuQueryWrapper = DB.query(Menu.class);
+        final WrapperQuery<Menu> menuQueryWrapper = DB.Wrapper.query(Menu.class);
         if (menu.getId() != null) {
             menuQueryWrapper.ne(Menu::getId, menu.getId());
         }
@@ -73,7 +73,7 @@ public class QueryMakerTest extends SpingDbBaseTest{
         Menu menu = new Menu();
         menu.setCode("qsm");
         menu.setName("全生命周期项目");
-        final WrapperQuery<Menu> menuQueryWrapper = DB.query(Menu.class);
+        final WrapperQuery<Menu> menuQueryWrapper = DB.Wrapper.query(Menu.class);
         if (menu.getId() != null) {
             menuQueryWrapper.ne(Menu::getId, menu.getId());
         }
@@ -88,7 +88,7 @@ public class QueryMakerTest extends SpingDbBaseTest{
         menu.setId(1L);
         menu.setCode("qsm");
         menu.setName("全生命周期项目");
-        final WrapperQuery<Menu> menuQueryWrapper = DB.query(Menu.class);
+        final WrapperQuery<Menu> menuQueryWrapper = DB.Wrapper.query(Menu.class);
         if (menu.getId() != null) {
             menuQueryWrapper.ne(Menu::getId, menu.getId());
         }
@@ -101,7 +101,7 @@ public class QueryMakerTest extends SpingDbBaseTest{
         menu.setId(1L);
         menu.setCode("qsm");
         menu.setName("全生命周期项目");
-        final WrapperQuery<Menu> menuQueryWrapper = DB.query(Menu.class);
+        final WrapperQuery<Menu> menuQueryWrapper = DB.Wrapper.query(Menu.class);
         menuQueryWrapper.ne(Menu::getId, menu.getId());
         menuQueryWrapper.sql("xx in (select x from dual where 1=#{a} and 2=#{b})",new JSONMap("a",1,"b",2));
         showSql(menuQueryWrapper, "conditionWhereTest4_2","select * from sys_menu t where ID <> 1 and (xx in (select x from dual where 1=1 and 2=2)) and IS_DELETED = 0");

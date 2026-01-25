@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration scan="false" scanPeriod="60 seconds" debug="false">
     <property name="CONSOLE_LOG_PATTERN_COLOR"
-              value="%d{HH:mm:ss.SSS} %highlight(%-5level) %cyan([%-8X{traceId:-traceId}]) %logger{32}:%line%X{caller} %yellow(%m) %cyan([%thread]) %n" />
+              value="%d{yyyy-MM-dd HH:mm:ss.SSS} %highlight(%-5level) %cyan([%X{traceId}-%thread]) %logger{32}:%line%X{caller} %yellow(%m) %n" />
     <property name="CONSOLE_LOG_PATTERN_NO_COLOR"
               value="%d{yyyy-MM-dd HH:mm:ss.SSS} %level [%X{traceId}-%thread] %logger:%line %m%n" />
     <!-- 控制台日志 -->
@@ -13,7 +13,7 @@
             <charset>UTF-8</charset>
         </encoder>
     </appender>
-    <logger name="com.dlz" level="trace" addtivity="false"/>
+    <logger name="com.dlz" level="info" addtivity="false"/>
     <logger name="com.dlz.framework.db.ds.DynamicJdbcTemplate" level="warn" addtivity="false"/>
     <root level="warn">
         <appender-ref ref="StdoutAppender"/>

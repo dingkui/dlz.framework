@@ -22,7 +22,7 @@ public class CommServiceQwTest  extends SpingDbBaseTest {
     @Test
     public void getBeanList1() {
         Dict dict = new Dict();
-        WrapperQuery.wrapper(dict).queryBeanList();
+        DB.Wrapper.query(dict).queryBeanList();
     }
     @Test
     public void getBeanList1N() {
@@ -58,11 +58,11 @@ public class CommServiceQwTest  extends SpingDbBaseTest {
 
     @Test
     public void getBeanList2() {
-        DB.select(Dict.class,Dict::getA2).eq("xx",1).queryStr();
-        DB.select(Dict.class,Dict::getA2).eq(Dict::getA7,1).queryStrList();
-        DB.query(Dict.class).eq(Dict::getA2,1).queryBean();
+        DB.Wrapper.query(Dict.class).select(Dict::getA2).eq("xx",1).queryStr();
+        DB.Wrapper.query(Dict.class).select(Dict::getA2).eq(Dict::getA7,1).queryStrList();
+        DB.Wrapper.query(Dict.class).eq(Dict::getA2,1).queryBean();
 
-        DB.insert(new Dict()).excute();
+        DB.insert(new Dict()).execute();
 
 
     }

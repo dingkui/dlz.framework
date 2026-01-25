@@ -9,6 +9,7 @@ public class SysSql {
     @TableId(value = "id",type = IdType.INPUT)
     private Long id;
     private String sqlKey;
+    private String sqlValue;
     private String name;
     private String sqlRole;
 }

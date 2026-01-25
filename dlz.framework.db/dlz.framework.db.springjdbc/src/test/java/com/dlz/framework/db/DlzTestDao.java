@@ -1,6 +1,7 @@
 package com.dlz.framework.db;
 
 import com.dlz.comm.cache.CacheUtil;
+import com.dlz.comm.json.JSONList;
 import com.dlz.comm.util.VAL;
 import com.dlz.framework.db.dao.IDlzDao;
 import com.dlz.framework.db.holder.SqlHolder;
@@ -25,7 +26,7 @@ public class DlzTestDao implements IDlzDao {
 
     @Override
     public <T> List<T> getList(String sql, RowMapper<T> mapper, Object... args) throws DataAccessException {
-        return doDb(() -> new ArrayList<>(),
+        return doDb(() -> sql.startsWith("select count(1)")? (ArrayList<T>)new JSONList("[{\"cnt\":1000}]",ResultMap.class) :new ArrayList<>(),
                 (t, r) -> DbLogUtil.generateSqlMessage(t, r, "getList", sql, args));
     }
 
@@ -57,6 +58,7 @@ public class DlzTestDao implements IDlzDao {
             HashMap<String, Integer> infos = new HashMap(){
                 @Override
                 public boolean containsKey(Object key) {
+//                    return !"IS_DELETED".equals( key);
                     return true;
                 }
             };

@@ -18,7 +18,7 @@ public class DbUtilContitionTest  extends SpingDbBaseTest {
 //		ParaMap ump=new ParaMap("select 1 from dual");
 //		ump.setPage(Page.build(1, 1));
 //		cs.getMap(ump);
-		DB.sqlSelect("select t.* from PTN t where t.id=${key.comm.pageSql} and t.cc=${a} and c=${b} and ccc")
+		DB.Sql.select("select t.* from PTN t where t.id=${key.comm.pageSql} and t.cc=${a} and c=${b} and ccc")
 				.addPara("a", "a${b}")
 				.addPara("b", "b${c}")
 				.addPara("_sql", "_sql${a}").queryOne();
@@ -27,7 +27,7 @@ public class DbUtilContitionTest  extends SpingDbBaseTest {
 	@Test
 	public void ConditionTest2(){
 		String sql = "key.sqlTest.sqlUtil";
-		SqlKeyQuery ump2=DB.sqlSelect(sql);
+		SqlKeyQuery ump2=DB.Sql.select(sql);
 		ump2.addPara("a", "a1");
 		ump2.addPara("b", "b1");
 		ump2.addPara("d", "d1");

@@ -29,7 +29,7 @@ dlz:
   db:
     use-db-sql: true
     log:
-      show-result: true
+      show-result: false
       show-run-sql: true
       show-key-sql: true
       jdbc-sql: true
@@ -37,6 +37,8 @@ dlz:
     helper:
       auto-update: false
       package-name: com.dlz.test.db.entity
+    logic-delete-field: IS_DELETED
+    table-cache-time: -1
   fw:
     api-scan-path:
 

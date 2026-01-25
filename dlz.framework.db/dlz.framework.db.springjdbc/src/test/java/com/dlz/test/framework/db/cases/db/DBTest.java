@@ -17,14 +17,14 @@ public class DBTest extends SpingDbBaseTest{
     public void insertOrUpdateTest1() {
         SysSql dict = new SysSql();
         dict.setName("xx");
-        DB.insertOrUpdate(dict);
+        DB.Wrapper.insertOrUpdate(dict);
     }
 
     @Test
     public void saveTest1() {
         SysSql dict = new SysSql();
         dict.setName("xx");
-        DB.save(dict);
+        DB.Wrapper.save(dict);
     }
     @Test
     public void saveTest2() {
@@ -32,27 +32,27 @@ public class DBTest extends SpingDbBaseTest{
         dict.setRe("xx");
         dict.setPcid("xx");
         dict.setSta(1);
-        DB.save(dict);
+        DB.Wrapper.save(dict);
 
         YcRecord yc1Record = new Yc1Record();
-        DB.insert(yc1Record).excute();
+        DB.Wrapper.insert(yc1Record).execute();
     }
     @Test
     public void updateByIdTest1() {
         SysSql dict = new SysSql();
         dict.setId(1l);
         dict.setName("xx");
-        DB.updateById(dict);
+        DB.Wrapper.updateById(dict);
     }
 
     @Test
     public void removeByIds1() {
-        DB.removeByIds(SysSql.class, "1,2,3");
+        DB.Wrapper.removeByIds(SysSql.class, "1,2,3");
     }
 
     @Test
     public void getById1() {
-        DB.getById(SysSql.class, "1");
+        DB.Wrapper.getById(SysSql.class, "1");
     }
     @Test
     public void getUseDbById1() {
@@ -67,15 +67,15 @@ public class DBTest extends SpingDbBaseTest{
 
 
         DBDynamic.use("test",()-> {
-            DB.getById(SysSql.class, "1");
-            DB.getById(SysSql.class, "2");
+            DB.Wrapper.getById(SysSql.class, "1");
+            DB.Wrapper.getById(SysSql.class, "2");
             return null;
         });
 
-        DB.getById(SysSql.class, "1");
+        DB.Wrapper.getById(SysSql.class, "1");
         DBDynamic.use("default",()-> {
-            DB.getById(SysSql.class, "1");
-            DB.getById(SysSql.class, "2");
+            DB.Wrapper.getById(SysSql.class, "1");
+            DB.Wrapper.getById(SysSql.class, "2");
             return null;
         });
 

@@ -3,6 +3,7 @@ package com.dlz.test.framework.db.config;
 import com.dlz.comm.util.ValUtil;
 import com.dlz.comm.util.encry.TraceUtil;
 import com.dlz.comm.util.system.FieldReflections;
+import com.dlz.framework.db.modal.DB;
 import com.dlz.framework.db.modal.items.JdbcItem;
 import com.dlz.framework.db.modal.items.SqlItem;
 import com.dlz.framework.db.modal.para.AWrapper;
@@ -10,6 +11,7 @@ import com.dlz.framework.db.modal.para.ParaJdbc;
 import com.dlz.framework.db.modal.para.ParaMap;
 import com.dlz.framework.db.service.ICommService;
 import com.dlz.framework.db.util.SqlUtil;
+import com.dlz.test.framework.db.entity.SysSql;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Before;
 import org.junit.runner.RunWith;
@@ -29,7 +31,7 @@ public class SpingDbBaseTest {
     protected ICommService commService;
     @Before
     public void before(){
-        if(TraceUtil.getTraceid()!=null){
+        if(TraceUtil.getTraceid()==null){
             TraceUtil.setTraceId();
         }
     }

@@ -13,7 +13,7 @@ public class QuerySqlKeyTest extends SpingDbBaseTest {
     @Test
     public void SqlSearchParaTest1() {
         String sql = "key.sqlTest.sqlUtil";
-        SqlKeyQuery ump2 = DB.sqlSelect(sql);
+        SqlKeyQuery ump2 = DB.Sql.select(sql);
         ump2.addPara("a", "a1");
         ump2.addPara("b", "b1");
         ump2.addPara("d", "d1");
@@ -27,7 +27,7 @@ public class QuerySqlKeyTest extends SpingDbBaseTest {
     @Test
     public void SqlSearchKeyTest1() {
         String sql = "key.test";
-        SqlKeyQuery ump2 = DB.sqlSelect(sql);
+        SqlKeyQuery ump2 = DB.Sql.select(sql);
         ump2.addPara("a", "a1");
         ump2.addPara("b", "b1");
         ump2.addPara("d", "d1");

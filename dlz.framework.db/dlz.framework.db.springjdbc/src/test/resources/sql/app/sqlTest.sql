@@ -70,10 +70,16 @@
 	   select * from bb ${key.sqlTest.sqlUtilTest}
  	]]></sql>
  	<!--
-		测试
+		测试4_6_2
 	-->
 	<sql sqlId="key.conditionTest4_6_2"><![CDATA[
 	   age > #{minAge} [AND age < #{maxAge}]
+ 	]]></sql>
+ 	<!--
+		测试5_1_4
+	-->
+	<sql sqlId="key.pageAndOrderTest5_1_4"><![CDATA[
+	   SELECT * FROM user WHERE and status = #{status}
  	]]></sql>
  	
 	

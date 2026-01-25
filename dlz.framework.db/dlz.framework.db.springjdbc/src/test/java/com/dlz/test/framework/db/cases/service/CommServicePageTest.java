@@ -10,14 +10,14 @@ import org.junit.Test;
 public class CommServicePageTest extends SpingDbBaseTest {
     @Test
     public void PageTest() {
-        DB.sqlSelect("select t.* from Goods t where t.goods_id=310")
+        DB.Sql.select("select t.* from Goods t where t.goods_id=310")
                 .page(Page.build(1, 2, Order.asc("id")))
                 .queryPage();
     }
 
     @Test
     public void PageTest2() {
-        DB.sqlSelect("select t.* from PTN_GOODS_PRICE t where t.goods_id=#{goodsId}")
+        DB.Sql.select("select t.* from PTN_GOODS_PRICE t where t.goods_id=#{goodsId}")
                 .page(Page.build(1, 2, Order.asc("id"), Order.desc("xx2")))
                 .addPara("goodsId", 123).queryOne();
     }
