@@ -16,7 +16,7 @@ public interface IJedisListExecutor extends IJedisExecutor {
      * @param end   结束 0 到 -1代表所有值
      */
     default List<String> lrange(String key, long start, long end) {
-        return excute(j -> j.lrange(getRedisKey(key), start, end));
+        return execute(j -> j.lrange(getRedisKey(key), start, end));
     }
 
     /**
@@ -25,7 +25,7 @@ public interface IJedisListExecutor extends IJedisExecutor {
      * @param key 键
      */
     default long llen(String key) {
-        return excute(j -> j.llen(getRedisKey(key)));
+        return execute(j -> j.llen(getRedisKey(key)));
     }
 
     /**
@@ -35,7 +35,7 @@ public interface IJedisListExecutor extends IJedisExecutor {
      * @param index 索引 index>=0时， 0 表头，1 第二个元素，依次类推；index<0时，-1，表尾，-2倒数第二个元素，依次类推
      */
     default Object lGetIndex(String key, long index) {
-        return excute(j -> j.lindex(getRedisKey(key), index));
+        return execute(j -> j.lindex(getRedisKey(key), index));
     }
 
     /**
@@ -56,7 +56,7 @@ public interface IJedisListExecutor extends IJedisExecutor {
      * @param value 值
      */
     default Long lpush(String key, int seconds, String... value) {
-        return excute(j -> {
+        return execute(j -> {
             String key1 = getRedisKey(key);
             Long lpush = j.lpush(key1, value);
             if (seconds > 0) {
@@ -75,7 +75,7 @@ public interface IJedisListExecutor extends IJedisExecutor {
      * @param value 值
      */
     default Boolean lUpdateIndex(String key, long index, String value) {
-        excute(j -> j.lset(getRedisKey(key), index, value));
+        execute(j -> j.lset(getRedisKey(key), index, value));
         return true;
     }
 
@@ -88,6 +88,6 @@ public interface IJedisListExecutor extends IJedisExecutor {
      * @return 移除的个数
      */
     default long lRemove(String key, long count, String value) {
-        return excute(j -> j.lrem(getRedisKey(key), count, value));
+        return execute(j -> j.lrem(getRedisKey(key), count, value));
     }
 }

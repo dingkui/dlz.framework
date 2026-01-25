@@ -26,7 +26,7 @@ interface IJedisHashExecutor extends IJedisExecutor {
      * @return 值
      */
     default String hget(String key, String item) {
-        return excute(j -> j.hget(getRedisKey(key), item));
+        return execute(j -> j.hget(getRedisKey(key), item));
     }
 
     /**
@@ -37,7 +37,7 @@ interface IJedisHashExecutor extends IJedisExecutor {
      * @return 值
      */
     default byte[] hget(byte[] key, byte[] item) {
-        return excute(j -> j.hget(key, item));
+        return execute(j -> j.hget(key, item));
     }
 
     /**
@@ -47,7 +47,7 @@ interface IJedisHashExecutor extends IJedisExecutor {
      * @return 对应的多个键值
      */
     default Map<String, String> hgetAll(String key) {
-        Map<String, String> result = excute(j -> j.hgetAll(getRedisKey(key)));
+        Map<String, String> result = execute(j -> j.hgetAll(getRedisKey(key)));
         Map<String, String> map = new HashMap<>(result.size());
         result.forEach((k, v) -> map.put(k, v));
         return map;
@@ -73,7 +73,7 @@ interface IJedisHashExecutor extends IJedisExecutor {
      * @return true成功 false失败
      */
     default Boolean hset(String key, Map<String, String> map, int seconds) {
-        return excute(j -> {
+        return execute(j -> {
             String key1 = getRedisKey(key);
             map.entrySet().forEach(m -> j.hset(key1, m.getKey(), m.getValue()));
             if (seconds > 0) {
@@ -105,7 +105,7 @@ interface IJedisHashExecutor extends IJedisExecutor {
      * @return true 成功 false失败
      */
     default Boolean hset(String key, String item, String value, int seconds) {
-        return excute(j -> {
+        return execute(j -> {
             String key1 = getRedisKey(key);
             j.hset(key1, item, value);
             if (seconds > 0) {
@@ -122,7 +122,7 @@ interface IJedisHashExecutor extends IJedisExecutor {
      * @param items 项 可以使多个 不能为null
      */
     default void hdel(String key, String... items) {
-        excute(j -> {
+        execute(j -> {
             j.hdel(getRedisKey(key), items);
             return true;
         });
@@ -136,7 +136,7 @@ interface IJedisHashExecutor extends IJedisExecutor {
      * @return true 存在 false不存在
      */
     default Boolean hexists(String key, String item) {
-        return excute(j -> j.hexists(getRedisKey(key), item));
+        return execute(j -> j.hexists(getRedisKey(key), item));
     }
 
     /**
@@ -147,7 +147,7 @@ interface IJedisHashExecutor extends IJedisExecutor {
      * @param by   要增加几(大于0)
      */
     default Long hincrBy(String key, String item, long by) {
-        return excute(j -> j.hincrBy(getRedisKey(key), item, by));
+        return execute(j -> j.hincrBy(getRedisKey(key), item, by));
     }
 
 
@@ -182,7 +182,7 @@ interface IJedisHashExecutor extends IJedisExecutor {
     }
 
     default Boolean hsetSe(String key, String item, Serializable value, int seconds) {
-        return excute(j -> {
+        return execute(j -> {
             byte[] key1 = SafeEncoder.encode(getRedisKey(key));
             byte[] item1 = SafeEncoder.encode(item);
             j.hset(key1, item1, SerializeUtil.serialize(value));
@@ -194,7 +194,7 @@ interface IJedisHashExecutor extends IJedisExecutor {
     }
 
     default Object hgetSe(String key, String item) {
-        return excute(j -> {
+        return execute(j -> {
             byte[] key1 = SafeEncoder.encode(getRedisKey(key));
             byte[] item1 = SafeEncoder.encode(item);
             byte[] hget = j.hget(key1, item1);

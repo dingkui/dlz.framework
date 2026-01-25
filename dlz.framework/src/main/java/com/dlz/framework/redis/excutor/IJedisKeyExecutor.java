@@ -18,7 +18,7 @@ public interface IJedisKeyExecutor extends IJedisExecutor {
      */
     default Boolean expire(String key, int seconds) {
         if (seconds > 0) {
-            excute(j -> j.expire(getRedisKey(key), seconds));
+            execute(j -> j.expire(getRedisKey(key), seconds));
         }
         return true;
     }
@@ -29,7 +29,7 @@ public interface IJedisKeyExecutor extends IJedisExecutor {
      * @param key 键
      */
     default String type(String key) {
-        return excute(j -> j.type(getRedisKey(key)));
+        return execute(j -> j.type(getRedisKey(key)));
     }
 
     /**
@@ -39,7 +39,7 @@ public interface IJedisKeyExecutor extends IJedisExecutor {
      */
     default Set<String> keys(String name,String pattern) {
         int len=name.length()+1;
-        return excute(j -> j.keys(getRedisKey(name,pattern)))
+        return execute(j -> j.keys(getRedisKey(name,pattern)))
                 .stream()
                 .map(o -> getClientKey(o).substring(len))
                 .collect(Collectors.toSet());
@@ -52,7 +52,7 @@ public interface IJedisKeyExecutor extends IJedisExecutor {
      * @return true 存在 false不存在
      */
     default Boolean exists(String key) {
-        return excute(j -> j.exists(getRedisKey(key)));
+        return execute(j -> j.exists(getRedisKey(key)));
     }
 
     /**
@@ -61,6 +61,6 @@ public interface IJedisKeyExecutor extends IJedisExecutor {
      * @param keys 可以传一个值 或多个
      */
     default Long del(String... keys) {
-        return excute(j -> j.del(getKeyArray(keys)));
+        return execute(j -> j.del(getKeyArray(keys)));
     }
 }

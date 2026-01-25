@@ -24,11 +24,11 @@ public interface IJedisStringExecutor extends IJedisExecutor {
      * @param keys
      */
     default List<String> mget(String... keys) {
-        return excute(j -> j.mget(getKeyArray(keys)));
+        return execute(j -> j.mget(getKeyArray(keys)));
     }
 
     default String get(String key) {
-        return excute(j -> j.get(getRedisKey(key)));
+        return execute(j -> j.get(getRedisKey(key)));
     }
 
     /**
@@ -54,7 +54,7 @@ public interface IJedisStringExecutor extends IJedisExecutor {
         if(value == null){
             return false;
         }
-        return excute(j -> {
+        return execute(j -> {
             String key1 = getRedisKey(key);
             j.set(key1, value);
             if (seconds > 0) {
@@ -75,7 +75,7 @@ public interface IJedisStringExecutor extends IJedisExecutor {
         if (delta < 0) {
             throw new RuntimeException("递增因子必须大于0");
         }
-        return excute(j -> j.incrBy(getRedisKey(key), delta));
+        return execute(j -> j.incrBy(getRedisKey(key), delta));
     }
 
 
@@ -85,7 +85,7 @@ public interface IJedisStringExecutor extends IJedisExecutor {
      * @param key   键
      */
     default long incr(String key) {
-        return excute(j -> j.incr(getRedisKey(key)));
+        return execute(j -> j.incr(getRedisKey(key)));
     }
 
     /**
@@ -98,7 +98,7 @@ public interface IJedisStringExecutor extends IJedisExecutor {
         if (delta < 0) {
             throw new RuntimeException("递减因子必须大于0");
         }
-        return excute(j -> j.decrBy(getRedisKey(key), delta));
+        return execute(j -> j.decrBy(getRedisKey(key), delta));
     }
 
     // ===========getSo String中保存ObjectClasss,支持直接取得类型===========
@@ -133,7 +133,7 @@ public interface IJedisStringExecutor extends IJedisExecutor {
     }
 
     default Boolean setSe(String key, Serializable value, int seconds) {
-        return excute(j -> {
+        return execute(j -> {
             byte[] key1 = SafeEncoder.encode(getRedisKey(key));
             j.set(key1, SerializeUtil.serialize(value));
             if (seconds > 0) {
@@ -144,7 +144,7 @@ public interface IJedisStringExecutor extends IJedisExecutor {
     }
 
     default Object getSe(String key) {
-        return excute(j -> {
+        return execute(j -> {
             byte[] key1 = SafeEncoder.encode(getRedisKey(key));
             byte[] bytes = j.get(key1);
             if (bytes==null){

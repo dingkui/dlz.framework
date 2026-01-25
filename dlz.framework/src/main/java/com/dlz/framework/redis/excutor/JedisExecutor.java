@@ -32,7 +32,7 @@ public class JedisExecutor implements IJedisKeyExecutor, IJedisStringExecutor, I
      * @param j 处理逻辑，通过 lambda行为参数化
      * @return 处理结果
      */
-    public <T> T excute(Function<Jedis, T> j) throws RemoteException {
+    public <T> T execute(Function<Jedis, T> j) throws RemoteException {
         try (Jedis jedis = jedisPool.getResource()) {
             return j.apply(jedis);
         } catch (Exception e) {
