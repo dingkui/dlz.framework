@@ -120,13 +120,13 @@ Condition condition = Condition.where()
     .gt("age", 18);
 
 // 应用到查询
-DB.query("user").where(condition).list();
+DB.Wrapper.query("user").where(condition).list();
 
 // 应用到更新
-DB.update("user").set("flag", 1).where(condition).excute();
+DB.Table.update("user").set("flag", 1).where(condition).execute();
 
 // 应用到删除
-DB.delete("user").where(condition).excute();
+DB.delete("user").where(condition).execute();
 ```
 ---
 

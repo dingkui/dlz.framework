@@ -67,7 +67,7 @@ INSERT INTO sys_sql (sql_key, sql_content, description) VALUES
 
 ```java
 // 获取预设 SQL
-SqlKeyQuery query = DB.sqlSelect("user.findByCondition");
+SqlKeyQuery query = DB.Sql.select("user.findByCondition");
 
 // 添加参数
 query.addPara("status", 1);
@@ -99,7 +99,7 @@ user.search: |
 ```
 
 ```java
-SqlKeyQuery query = DB.sqlSelect("user.search");
+SqlKeyQuery query = DB.Sql.select("user.search");
 
 // 只传了 status 和 name
 query.addPara("status", 1);
@@ -140,7 +140,7 @@ user.dynamicSort: |
 ```
 
 ```java
-SqlKeyQuery query = DB.sqlSelect("user.dynamicSort");
+SqlKeyQuery query = DB.Sql.select("user.dynamicSort");
 query.addPara("sortField", "create_time");  // ⚠️ 需要校验白名单
 query.addPara("sortOrder", "DESC");
 ```
@@ -190,7 +190,7 @@ user.count: |
 
 ```java
 // 参数会传递到嵌套的 SQL 中
-SqlKeyQuery query = DB.sqlSelect("user.list");
+SqlKeyQuery query = DB.Sql.select("user.list");
 query.addPara("status", 1);
 query.addPara("deptId", 100);
 
@@ -206,7 +206,7 @@ List<User> users = query.queryList(User.class);
 
 ```java
 // 通过 _sql 参数动态指定嵌套的 SQL key
-SqlKeyQuery query = DB.sqlSelect("common.pagedQuery");
+SqlKeyQuery query = DB.Sql.select("common.pagedQuery");
 query.addPara("_sql", "user.baseCondition");
 ```
 

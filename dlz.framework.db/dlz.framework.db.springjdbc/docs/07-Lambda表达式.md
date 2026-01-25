@@ -26,7 +26,7 @@
 #### 查询
 
 ```java
-DB.query(User.class)
+DB.Wrapper.query(User.class)
     .select(User::getId, User::getName, User::getAge)
     .eq(User::getStatus, 1)
     .gt(User::getAge, 18)
@@ -38,19 +38,19 @@ DB.query(User.class)
 #### 更新
 
 ```java
-DB.update(User.class)
+DB.Wrapper.update(User.class)
     .set(User::getStatus, 0)
     .set(User::getUpdateTime, new Date())
     .eq(User::getId, 1)
-    .excute();
+    .execute();
 ```
 
 #### 删除
 
 ```java
-DB.delete(User.class)
+DB.Wrapper.delete(User.class)
     .eq(User::getId, 1)
-    .excute();
+    .execute();
 ```
 
 #### 插入指定字段
@@ -58,7 +58,7 @@ DB.delete(User.class)
 ```java
 DB.insert(user)
     .insertFields(User::getName, User::getAge, User::getEmail)
-    .excute();
+    .execute();
 ```
 
 ### 字段名解析规则
@@ -79,7 +79,7 @@ User::getEmail     →  email_address
 
 ```java
 // Lambda 和字符串可以混合使用
-DB.query(User.class)
+DB.Wrapper.query(User.class)
     .eq(User::getStatus, 1)           // Lambda
     .apply("create_time > {0}", date) // 自定义 SQL
     .sql("score >= #{min}", params)   // 命名参数
