@@ -21,12 +21,12 @@ DLZ-DB 是 `dlz.framework` 的核心数据库组件。它摒弃了传统 ORM 的
 [![JDK](https://img.shields.io/badge/JDK-8+-green.svg)](https://www.oracle.com/java/)
 
 ## 导航
-* [30 秒快速体验](#30秒快速体验) 
-* [核心特性](#核心特性) 
-* [快速开始](#快速开始)
-* [最佳实践](#最佳实践)
-* [常见问题](#常见问题)
-* [速查文档](#速查文档)
+* [30 秒快速体验](./README.md#30秒快速体验) 
+* [核心特性](./README.md#核心特性) 
+* [快速开始](./README.md#快速开始)
+* [最佳实践](./README.md#最佳实践)
+* [常见问题](./README.md#常见问题)
+* [速查文档](./README.md#速查文档)
 
 ## 🤔为什么需要 DLZ-DB？
 
@@ -56,7 +56,7 @@ DLZ-DB 是 `dlz.framework` 的核心数据库组件。它摒弃了传统 ORM 的
 ---
 
 ## ⚡30秒快速体验
- * [回到导航](#导航)
+* [回到导航](./README.md#导航)
 ```java
 // 查询
 User user = DB.Wrapper.query(User.class).eq(User::getId, 1).queryOne();
@@ -76,7 +76,7 @@ DB.delete(User.class).eq(User::getId, 1).execute();
 ---
 
 ## ✨核心特性
- * [回到导航](#导航)
+* [回到导航](./README.md#导航)
 ### 🎯 特性一：SQL 日志直接定位代码行（独家）
 
 > **告别全局搜索，一眼定位问题 SQL 来源**
@@ -162,7 +162,7 @@ result.getList("orders", Order.class);//orders字段对应json数组
 ---
 
 ## 🚀快速开始
- * [回到导航](#导航)
+* [回到导航](./README.md#导航)
 ### 1. 引入依赖
 
 ```xml
@@ -214,7 +214,7 @@ public class UserController {
 ---
 
 ## 💡最佳实践
- * [回到导航](#导航)
+* [回到导航](./README.md#导航)
 ### 1. 简单查询：直接用 DB
 
 ```java
@@ -260,7 +260,7 @@ BigDecimal amount = stats.getBigDecimal("totalAmount");
 ---
 
 ## 🤝常见问题
- * [回到导航](#导航) 
+* [回到导航](./README.md#导航) 
 ### Q: 复杂 SQL 怎么写？
 
 ```java
@@ -297,7 +297,7 @@ DLZ-DB 底层基于 JDBC，无额外性能损耗。
 ---
 
 ## 📖速查文档
- * [回到导航](#导航)
+* [回到导航](./README.md#导航)
 
 [一、查询操作](./docs/00-速查文档.md#一查询操作)
 - [1.1 基于 Bean 的查询（推荐）](./docs/00-速查文档.md#11-基于-bean-的查询推荐)
@@ -345,7 +345,7 @@ DLZ-DB 底层基于 JDBC，无额外性能损耗。
 ---
 
 ## 📖更多详细文档
-* [回到导航](#导航)
+* [回到导航](./README.md#导航)
 * 
 
 ## 📄 License
