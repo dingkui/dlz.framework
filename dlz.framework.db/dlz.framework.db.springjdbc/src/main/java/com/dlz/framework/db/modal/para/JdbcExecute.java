@@ -9,11 +9,9 @@ import lombok.extern.slf4j.Slf4j;
  * @author dingkui
  */
 @Slf4j
-@SuppressWarnings("rawtypes")
-public class SqlKeyExcute extends ParaMap implements IOperatorExec {
+public class JdbcExecute extends ParaJdbc implements IOperatorExec {
     private static final long serialVersionUID = 8374167270612933157L;
-    public SqlKeyExcute(String sql) {
-        super(sql);
+    public JdbcExecute(String sql, Object... paras) {
+        super(sql,paras);
     }
-
 }

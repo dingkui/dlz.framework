@@ -7,13 +7,12 @@ import com.dlz.comm.util.VAL;
 import com.dlz.comm.util.ValUtil;
 import com.dlz.comm.util.system.ConvertUtil;
 import com.dlz.comm.util.system.FieldReflections;
-import com.dlz.framework.db.dao.IDlzDao;
 import com.dlz.framework.db.helper.bean.TableInfo;
 import com.dlz.framework.db.helper.wrapper.ConditionAndWrapper;
 import com.dlz.framework.db.helper.wrapper.ConditionWrapper;
 import com.dlz.framework.db.holder.BeanInfoHolder;
 import com.dlz.framework.db.holder.DBHolder;
-import com.dlz.framework.db.modal.para.MakerUtil;
+import com.dlz.framework.db.modal.para.TableMakerUtil;
 import com.dlz.framework.db.modal.result.Page;
 import com.dlz.framework.db.modal.result.ResultMap;
 import com.dlz.framework.db.modal.result.Sort;
@@ -135,7 +134,7 @@ public abstract class SqlHelper {
                     throw new SystemException("添加数据时ID重复！"+ BeanInfoHolder.getTableName(beanClass) +" id="+id);
                 }
             }
-            final Object idValue = MakerUtil.getIdValue(idField, BeanInfoHolder.getTableName(beanClass));
+            final Object idValue = TableMakerUtil.getIdValue(idField, BeanInfoHolder.getTableName(beanClass));
             if (idValue == null) {
                 autoId = true;
             }else{
@@ -164,7 +163,7 @@ public abstract class SqlHelper {
     private VAL<List<Field>, String> mkInsertInfo(Class<?> cls) {
         String dbName = BeanInfoHolder.getTableName(cls);
         List<Field> fields = BeanInfoHolder.getBeanFields(cls);
-        return VAL.of(fields, MakerUtil.buildInsertSql(dbName, fields));
+        return VAL.of(fields, TableMakerUtil.buildInsertSql(dbName, fields));
     }
     /**
      * 插入
@@ -185,8 +184,8 @@ public abstract class SqlHelper {
         FieldReflections.setValue(obj,"updateTime",System.currentTimeMillis(),true);
         // 更新
         List<Field> fields = FieldReflections.getFields(objClass);
-        String sql = MakerUtil.buildUpdateSql(dbTableName, fields);
-        return  DBHolder.doDao(w->w.update(sql, MakerUtil.buildUpdateParams(obj, fields)));
+        String sql = TableMakerUtil.buildUpdateSql(dbTableName, fields);
+        return  DBHolder.doDao(w->w.update(sql, TableMakerUtil.buildUpdateParams(obj, fields)));
     }
 
     /**
@@ -274,8 +273,8 @@ public abstract class SqlHelper {
             return;
         }
         List<Field> fields = FieldReflections.getFields(object.getClass());
-        String sql = MakerUtil.buildUpdateSql(BeanInfoHolder.getTableName(object.getClass()),fields);
-        DBHolder.doDao(w->w.update(sql, MakerUtil.buildUpdateParams(object, fields)));
+        String sql = TableMakerUtil.buildUpdateSql(BeanInfoHolder.getTableName(object.getClass()),fields);
+        DBHolder.doDao(w->w.update(sql, TableMakerUtil.buildUpdateParams(object, fields)));
     }
 
     /**

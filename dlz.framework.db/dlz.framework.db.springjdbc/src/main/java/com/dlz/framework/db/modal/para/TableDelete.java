@@ -7,18 +7,18 @@ import com.dlz.framework.db.inf.IOperatorDelete;
  * @author dingkui
  *
  */
-public class MakerDelete extends AMakerSearch<MakerDelete> implements IOperatorDelete<MakerDelete> {
+public class TableDelete extends AQuery<TableDelete> implements IOperatorDelete<TableDelete> {
 	private static final long serialVersionUID = 8374167270612933157L;
-	public MakerDelete(String tableName){
+	public TableDelete(String tableName){
 		super(tableName);
 	}
 	@Override
-	public MakerDelete me() {
+	public TableDelete me() {
 		return this;
 	}
 
 	@Override
 	public String getSql() {
-		return MakerUtil.MAKER_SQL_DELETE;
+		return TableMakerUtil.MAKER_SQL_DELETE;
 	}
 }

@@ -1,15 +1,15 @@
 package com.dlz.framework.db.modal.para;
 
 import com.dlz.framework.db.inf.IOperatorDelete;
-import com.dlz.framework.db.inf.ISqlWrapperSearch;
+import com.dlz.framework.db.inf.ISqlWrapperQuery;
 
 /**
  * 删除语句生成器
  *
  * @author dk
  */
-public class WrapperDelete<T> extends AWrapperSearch<WrapperDelete<T>,T, MakerDelete> implements
-        ISqlWrapperSearch<WrapperDelete<T>, T>,
+public class WrapperDelete<T> extends AWrapperQuery<WrapperDelete<T>,T, TableDelete> implements
+        ISqlWrapperQuery<WrapperDelete<T>, T>,
         IOperatorDelete<WrapperDelete<T>> {
 
     public static <T> WrapperDelete<T> wrapper(T conditionBean) {
@@ -22,12 +22,12 @@ public class WrapperDelete<T> extends AWrapperSearch<WrapperDelete<T>,T, MakerDe
 
     private WrapperDelete(Class<T> beanClass) {
         super(beanClass);
-        setPm(new MakerDelete(getTableName()));
+        setPm(new TableDelete(getTableName()));
     }
 
     private WrapperDelete(T conditionBean) {
         super(conditionBean);
-        setPm(new MakerDelete(getTableName()));
+        setPm(new TableDelete(getTableName()));
     }
 
     @Override

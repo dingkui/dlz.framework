@@ -53,7 +53,7 @@ public interface IDbJdbcService {
      * @param sql  sql语句，可以用问号传参数如：update JOB_AD set AD_text=? where ad_id = ?
      * @param para ：参数数组
      */
-    default int excuteSql(String sql, Object... para) {
+    default int executeSql(String sql, Object... para) {
 		return doJdbc(() -> getDao().update(sql, para));
     }
 

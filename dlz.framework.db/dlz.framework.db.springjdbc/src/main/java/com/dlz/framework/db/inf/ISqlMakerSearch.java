@@ -7,6 +7,6 @@ package com.dlz.framework.db.inf;
  * @param <T>
  */
 public interface ISqlMakerSearch<T extends ISqlMakerSearch> extends
-        ISqlSearch<T>,
+        ISqlQuery<T>,
         ICondAddByFn<T>{
 }

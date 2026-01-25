@@ -21,9 +21,6 @@ public class Sort<T extends Sort> implements Serializable, IChained<T> {
     @ApiModelProperty(value = "排序")
     private List<Order> orders=new ArrayList<>();
 
-    public static Sort buildSort(Order... order){
-        return new Sort(order);
-    }
     public Sort(Order... order){
         this.orders.addAll( Arrays.asList(order));
     }

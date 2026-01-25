@@ -16,15 +16,15 @@ import java.util.Map;
  * @author dingkui
  */
 @Slf4j
-public class MakerUpdate extends AMakerSearch<MakerUpdate> implements IOperatorExec {
+public class TableUpdate extends AQuery<TableUpdate> implements IOperatorExec {
     private static final long serialVersionUID = 8374167270612933157L;
     final Map<String, Object> updateSets = new HashMap<>();
 
-    public MakerUpdate(String tableName) {
+    public TableUpdate(String tableName) {
         super(tableName);
     }
 
-    public MakerUpdate set(String paraName, Object value) {
+    public TableUpdate set(String paraName, Object value) {
         paraName = DbConvertUtil.toDbColumnNames(paraName);
         if (!BeanInfoHolder.isColumnExists(getTableName(),paraName)) {
             log.warn("column is not exists:" + getTableName() + "." + paraName);
@@ -43,7 +43,7 @@ public class MakerUpdate extends AMakerSearch<MakerUpdate> implements IOperatorE
      *
      * @param setValues
           */
-    public MakerUpdate set(Map<String, Object> setValues) {
+    public TableUpdate set(Map<String, Object> setValues) {
         for (String str : setValues.keySet()) {
             set(str, setValues.get(str));
         }
@@ -51,12 +51,12 @@ public class MakerUpdate extends AMakerSearch<MakerUpdate> implements IOperatorE
     }
 
     @Override
-    public MakerUpdate me() {
+    public TableUpdate me() {
         return this;
     }
 
     @Override
     public String getSql() {
-        return MakerUtil.MAKER_SQL_UPDATE;
+        return TableMakerUtil.MAKER_SQL_UPDATE;
     }
 }

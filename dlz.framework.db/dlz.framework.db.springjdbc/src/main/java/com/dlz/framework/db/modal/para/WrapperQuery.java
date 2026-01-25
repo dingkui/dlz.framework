@@ -5,7 +5,7 @@ import com.dlz.framework.db.holder.BeanInfoHolder;
 import com.dlz.framework.db.holder.DBHolder;
 import com.dlz.framework.db.inf.IOperatorQuery;
 import com.dlz.framework.db.inf.ISqlMakerPage;
-import com.dlz.framework.db.inf.ISqlWrapperSearch;
+import com.dlz.framework.db.inf.ISqlWrapperQuery;
 import com.dlz.framework.db.modal.items.JdbcItem;
 import com.dlz.framework.db.modal.result.Order;
 import com.dlz.framework.db.modal.result.Page;
@@ -18,8 +18,8 @@ import java.util.Map;
  *
  * @author dk
  */
-public class WrapperQuery<T> extends AWrapperSearch<WrapperQuery<T>,T, MakerQuery> implements
-        ISqlWrapperSearch<WrapperQuery<T>, T>,
+public class WrapperQuery<T> extends AWrapperQuery<WrapperQuery<T>,T, TableQuery> implements
+        ISqlWrapperQuery<WrapperQuery<T>, T>,
         ISqlMakerPage<WrapperQuery<T>>,
         IOperatorQuery {
 
@@ -33,13 +33,13 @@ public class WrapperQuery<T> extends AWrapperSearch<WrapperQuery<T>,T, MakerQuer
 
     private WrapperQuery(Class<T> beanClass) {
         super(beanClass);
-        setPm(new MakerQuery(getTableName()));
+        setPm(new TableQuery(getTableName()));
         setAllowFullQuery(true);
     }
 
     private WrapperQuery(T conditionBean) {
         super(conditionBean);
-        setPm(new MakerQuery(getTableName()));
+        setPm(new TableQuery(getTableName()));
         setAllowFullQuery(true);
     }
 

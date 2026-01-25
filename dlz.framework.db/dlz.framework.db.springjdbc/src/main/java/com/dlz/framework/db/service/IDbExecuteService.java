@@ -16,7 +16,7 @@ import com.dlz.framework.db.modal.para.WrapperUpdate;
  *
   * @throws Exception
  */
-public interface IDbExcuteService extends IDbBaseService{
+public interface IDbExecuteService extends IDbBaseService{
 
     /**
      * 插入数据库
@@ -36,12 +36,12 @@ public interface IDbExcuteService extends IDbBaseService{
      * @param paraMap ：Map<String,Object> m=new HashMap<String,Object>();m.put("ad_id", "47");
      * @return 影响行数
      */
-    default int excute(IOperatorExec paraMap) {
+    default int execute(IOperatorExec paraMap) {
         return doDb(paraMap, jdbcSql -> getDao().update(jdbcSql.sql, jdbcSql.paras));
     }
 
     default <T> long insert(T bean){
-        return excute(WrapperInsert.wrapper(bean));
+        return execute(WrapperInsert.wrapper(bean));
     }
 
     default <T> long insertWithAutoKey(T bean){
@@ -59,28 +59,28 @@ public interface IDbExcuteService extends IDbBaseService{
     default <T> int updateByIdOrInsert(T bean){
         Object id = FieldReflections.getValue(bean, "id",false);
         if(StringUtils.isEmpty(id)){
-            excute(WrapperInsert.wrapper(bean));
+            execute(WrapperInsert.wrapper(bean));
             return 1;
         }
-        return excute(WrapperUpdate.wrapper((Class<T>)bean.getClass()).eq("id",id).set(bean));
+        return execute(WrapperUpdate.wrapper((Class<T>)bean.getClass()).eq("id",id).set(bean));
     }
     default <T> int updateById(T bean){
         Object id = FieldReflections.getValue(bean, "id",false);
         if(StringUtils.isEmpty(id)){
             throw new ValidateException("id不能为空");
         }
-        return excute(WrapperUpdate.wrapper((Class<T>)bean.getClass()).eq("id",id).set(bean));
+        return execute(WrapperUpdate.wrapper((Class<T>)bean.getClass()).eq("id",id).set(bean));
     }
     default <T> int deleteById(String id,Class<T> clazz){
         if(StringUtils.isEmpty(id)){
             throw new ValidateException("id不能为空");
         }
-        return excute(WrapperDelete.wrapper(clazz).eq("id",id));
+        return execute(WrapperDelete.wrapper(clazz).eq("id",id));
     }
     default <T> int deleteByIds(String id,Class<T> clazz){
         if(StringUtils.isEmpty(id)){
             throw new ValidateException("id不能为空");
         }
-        return excute(WrapperDelete.wrapper(clazz).in("id",id));
+        return execute(WrapperDelete.wrapper(clazz).in("id",id));
     }
 }

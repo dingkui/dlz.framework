@@ -18,22 +18,22 @@ import java.util.stream.Collectors;
  */
 @Slf4j
 @SuppressWarnings("rawtypes")
-public class MakerQuery extends AMakerSearch<MakerQuery> implements ISqlMakerPage<MakerQuery>, IOperatorQuery {
+public class TableQuery extends AQuery<TableQuery> implements ISqlMakerPage<TableQuery>, IOperatorQuery {
     private static final long serialVersionUID = 8374167270612933157L;
     String colums="*";
 
-    public MakerQuery(String tableName) {
+    public TableQuery(String tableName) {
         super(tableName);
     }
 
-    public MakerQuery select(String... colums) {
+    public TableQuery select(String... colums) {
         if (colums.length > 0) {
             this.colums = StringUtils.join(colums, ",");
         }
         return this;
     }
 
-    public <T> MakerQuery select(DlzFn<T, ?>... colums) {
+    public <T> TableQuery select(DlzFn<T, ?>... colums) {
         if (colums.length > 0) {
             this.colums = Arrays.stream(colums).map(item -> BeanInfoHolder.fnName(item)).collect(Collectors.joining(","));
         }
@@ -42,16 +42,16 @@ public class MakerQuery extends AMakerSearch<MakerQuery> implements ISqlMakerPag
 
     @Override
     public String getSql() {
-        return MakerUtil.MAKER_SQL_SEARCHE;
+        return TableMakerUtil.MAKER_SQL_SEARCHE;
     }
 
     @Override
-    public MakerQuery me() {
+    public TableQuery me() {
         return this;
     }
 
     @Override
-    public MakerQuery page(Page page) {
+    public TableQuery page(Page page) {
         if (page != null) {
             this.setPage(page);
         }

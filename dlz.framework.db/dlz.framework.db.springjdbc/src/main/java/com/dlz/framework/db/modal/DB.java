@@ -1,161 +1,123 @@
 package com.dlz.framework.db.modal;
 
-import com.dlz.comm.exception.SystemException;
-import com.dlz.comm.fn.DlzFn;
-import com.dlz.comm.util.StringUtils;
-import com.dlz.comm.util.system.FieldReflections;
-import com.dlz.framework.db.holder.DBHolder;
 import com.dlz.framework.db.modal.para.*;
-import com.dlz.framework.db.util.DbConvertUtil;
 
-import java.lang.reflect.Field;
 import java.util.List;
 import java.util.function.Function;
 
 public class DB {
+    public final static DbJdbc Jdbc = new DbJdbc();
+    public final static DbTable Table = new DbTable();
+    public final static DbSql Sql = new DbSql();
+    public final static DbWrapper Wrapper = new DbWrapper();
+    public final static DbBatch Batch = new DbBatch();
 
+    /// JDBC 快捷操作
     public static JdbcQuery jdbcSelect(String sql, Object... para) {
-        return new JdbcQuery(sql,para);
+        return Jdbc.select(sql,para);
     }
 
-    public static JdbcInsert jdbcInsert(String sql, Object... para) {
-        return new JdbcInsert(sql, para);
+    public static JdbcExecute jdbcExute(String sql, Object... para) {
+        return Jdbc.executer(sql, para);
     }
 
-    public static JdbcExcute jdbcExute(String sql, Object... para) {
-        return new JdbcExcute(sql, para);
-    }
-
+    /// SQL 快捷操作
     public static SqlKeyQuery sqlSelect(String sql) {
-        return new SqlKeyQuery(sql);
+        return Sql.select(sql);
     }
 
-    public static SqlKeyInsert sqlInsert(String sql) {
-        return new SqlKeyInsert(sql);
+    public static SqlKeyExecute sqlExuter(String sql) {
+        return Sql.executer(sql);
     }
 
-    public static SqlKeyExcute sqlExuter(String sql) {
-        return new SqlKeyExcute(sql);
+    /// Table 快捷操作
+    public static TableInsert tableInsert(String tableName) {
+        return Table.insert(tableName);
     }
 
-    public static MakerInsert insert(String tableName) {
-        return new MakerInsert(tableName);
+    public static TableDelete tableDelete(String tableName) {
+        return Table.delete(tableName);
     }
 
-    public static MakerDelete delete(String tableName) {
-        return new MakerDelete(tableName);
+    public static TableUpdate tableUpdate(String tableName) {
+        return Table.update(tableName);
     }
 
-    public static MakerUpdate update(String tableName) {
-        return new MakerUpdate(tableName);
+    public static TableQuery tableSelect(String tableName) {
+        return Table.select(tableName);
     }
 
-    public static MakerQuery select(String tableName) {
-        return new MakerQuery(tableName);
-    }
-
-//    public static <T> WrapperQuery<T> select(DlzFn<T, ?> column) {
-//        VAL<Class<?>, Field> infos = FieldReflections.getFn(column);
-//        return WrapperQuery.wrapper((Class<T>)infos.v1).select(BeanInfoHolder.getColumnName(infos.v2));
-//    }
-    public static <T> WrapperQuery<T> select(Class<T> re, DlzFn<T, ?>... column) {
-        return WrapperQuery.wrapper(re).select(column);
-    }
+    /// Wrapper 快捷操作
     public static <T> WrapperQuery<T> query(Class<T> re) {
-        return WrapperQuery.wrapper(re);
+        return Wrapper.query(re);
     }
     public static <T> WrapperQuery<T> query(T contion) {
-        return WrapperQuery.wrapper(contion);
+        return Wrapper.query(contion);
     }
 
     public static <T> WrapperDelete<T> delete(Class<T> beanClass) {
-        return WrapperDelete.wrapper(beanClass);
+        return Wrapper.delete(beanClass);
     }
 
     public static <T> WrapperDelete<T> delete(T condition) {
-        return WrapperDelete.wrapper(condition);
+        return Wrapper.delete(condition);
     }
 
     public static <T> WrapperInsert<T> insert(T bean) {
-        return WrapperInsert.wrapper(bean);
+        return Wrapper.insert(bean);
     }
-    public static <T> int save(T bean) {
-        return insert(bean).excute();
-    }
-    public static <T> boolean saveBatch(List<T> bean) {
-        return saveBatch(bean,1000);
-    }
-    public static <T> boolean saveBatch(List<T> bean, int batchSize) {
-        if(bean.size()>0){
-            return WrapperInsert.wrapper(bean.get(0)).batch(bean,batchSize);
-        }
-        return false;
-    }
-
     public static <T> WrapperUpdate<T> update(Class<T> beanClass) {
-        return WrapperUpdate.wrapper(beanClass);
+        return Wrapper.update(beanClass);
     }
 
     public static <T> WrapperUpdate<T> update(T value, Function<String,Boolean> ignore) {
-        return WrapperUpdate.wrapper((Class<T>)value.getClass()).set(value,ignore);
+        return Wrapper.update(value,ignore);
     }
 
     public static <T> WrapperUpdate<T> update(T value) {
-        return WrapperUpdate.wrapper((Class<T>)value.getClass()).set(value);
+        return Wrapper.update( value);
     }
 
+    /// Wrapper 执行快捷操作
+    public static <T> int save(T bean) {
+        return Wrapper.save(bean);
+    }
     public static <T> int insertOrUpdate(T obj,String idName){
-        final Field field = FieldReflections.getField(obj, idName,false);
-        final Object id = FieldReflections.getValue(obj, field);
-        if(StringUtils.isEmpty(id)){
-            return DB.insert(obj).excute();
-        }
-        return DB.update(obj, name->name.equalsIgnoreCase(idName)).eq(idName,id).excute();
+        return Wrapper.insertOrUpdate(obj,idName);
     }
     public static <T> int insertOrUpdate(T obj){
-        return insertOrUpdate(obj,"id");
+        return Wrapper.insertOrUpdate(obj);
     }
     public static <T> int updateById(T obj){
-        return updateById(obj,"id");
+        return Wrapper.updateById(obj);
     }
     public static <T> int updateById(T obj,String idName){
-        final Object id = FieldReflections.getValue(obj, DbConvertUtil.toFieldName(idName), true);
-        if(StringUtils.isEmpty(id)){
-            throw new SystemException(idName+"不能为空");
-        }
-        return DB.update((Class<T>) obj.getClass()).set(obj,name->name.equalsIgnoreCase(idName)).eq(idName,id).excute();
+        return Wrapper.updateById(obj,idName);
     }
     public static <T> T getById(Class<T> c,Object id,String idName){
-        if(StringUtils.isEmpty(id)){
-            throw new SystemException(idName+"不能为空");
-        }
-        return DB.query(c).eq(idName,id).queryBean();
+        return Wrapper.getById(c,id,idName);
     }
     public static <T> T getById(Class<T> c,Object id){
-        return getById(c,id,"id");
+        return Wrapper.getById(c,id);
     }
     public static <T> int removeByIds(Class<T> c,String ids){
-        return removeByIds(c,ids,"id");
+        return Wrapper.removeByIds(c,ids);
     }
     public static <T> int removeByIds(Class<T> c,String ids,String idName){
-        if(StringUtils.isEmpty(ids)){
-            throw new SystemException(idName+"不能为空");
-        }
-        return DB.delete(c).in(idName,ids).excute();
+        return Wrapper.removeByIds(c,ids,idName);
     }
 
+    /// Batch 快捷操作
+    public static <T> boolean saveBatch(List<T> bean) {
+        return Batch.insert(bean, 1000);
+    }
+    public static <T> boolean saveBatch(List<T> bean, int batchSize) {
+        return Batch.insert(bean,batchSize);
+    }
     public static boolean batchUpdate(String sql, List<Object[]> valueBeans) {
-        return batchUpdate(sql, valueBeans, 1000);
+        return Batch.update(sql, valueBeans, 1000);
     }
     public static boolean batchUpdate(String sql, List<Object[]> valueBeans, int batchSize) {
-        for (; valueBeans.size() > 0 && batchSize > 0; valueBeans = valueBeans.subList(batchSize, valueBeans.size())) {
-            if (batchSize > valueBeans.size()) {
-                batchSize = valueBeans.size();
-            }
-            List<Object[]> paramValues = valueBeans.subList(0, batchSize);
-            DBHolder.getDao().batchUpdate(sql, paramValues);
-        }
-        return true;
+        return Batch.update(sql, valueBeans, batchSize);
     }
-
 }

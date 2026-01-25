@@ -8,7 +8,7 @@ import com.dlz.framework.db.modal.condition.Condition;
  *
  * @param <T>
  */
-public interface ISqlSearch<T extends ISqlSearch> extends
+public interface ISqlQuery<T extends ISqlQuery> extends
         ICondAndOr<T>,
         ICondAddByKey<T>,
         ICondAuto<T> {

@@ -3,7 +3,7 @@ package com.dlz.framework.db.modal.para;
 import com.dlz.comm.util.StringUtils;
 import com.dlz.comm.util.system.FieldReflections;
 import com.dlz.framework.db.holder.BeanInfoHolder;
-import com.dlz.framework.db.inf.ISqlWrapperSearch;
+import com.dlz.framework.db.inf.ISqlWrapperQuery;
 import com.dlz.framework.db.modal.condition.Condition;
 
 import java.lang.reflect.Field;
@@ -15,12 +15,12 @@ import java.util.List;
  *
  * @author dingkui
  */
-public abstract class AWrapperSearch<ME extends AWrapperSearch, T, PM extends AMakerSearch> extends AWrapper<T, PM> implements ISqlWrapperSearch<ME, T> {
-    protected AWrapperSearch(Class<T> beanClass) {
+public abstract class AWrapperQuery<ME extends AWrapperQuery, T, PM extends AQuery> extends AWrapper<T, PM> implements ISqlWrapperQuery<ME, T> {
+    protected AWrapperQuery(Class<T> beanClass) {
         super(beanClass);
     }
 
-    protected AWrapperSearch(T conditionBean) {
+    protected AWrapperQuery(T conditionBean) {
         super(conditionBean);
     }
 

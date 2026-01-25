@@ -9,10 +9,10 @@ import com.dlz.framework.db.modal.condition.Condition;
  *
  * @author dingkui
  */
-public abstract class AMakerSearch<T extends AMakerSearch> extends AMaker<T> implements ISqlMakerSearch<T> {
+public abstract class AQuery<T extends AQuery> extends ATableMaker<T> implements ISqlMakerSearch<T> {
     private Condition whereCond = Condition.where();
     private boolean allowFullQuery = false;//是否允许全表查询，默认不允许
-    protected AMakerSearch(String tableName) {
+    protected AQuery(String tableName) {
         super(tableName);
     }
 

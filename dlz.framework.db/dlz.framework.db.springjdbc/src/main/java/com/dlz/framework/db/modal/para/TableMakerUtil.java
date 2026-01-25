@@ -25,7 +25,7 @@ import java.util.UUID;
  * @author ding_kui 2010-12-14
  */
 @Slf4j
-public class MakerUtil {
+public class TableMakerUtil {
     public static final String MAKER_SQL_INSERT = "insert into ${tableName}(${colums}) values(${values})";
     public static final String MAKER_SQL_DELETE = "delete from ${tableName} ${where}";
     public static final String MAKER_SQL_UPDATE = "update ${tableName} t set ${sets} ${where}";
@@ -41,20 +41,20 @@ public class MakerUtil {
      * 生成查询条件sql
      *
           */
-    public static void buildSql(AMaker maker) {
+    public static void buildSql(ATableMaker maker) {
         maker.getSqlItem().setSqlKey(maker.getSql());
         maker.addPara(MAKER_TABLENAME, maker.getTableName());
-        if (maker instanceof AMakerSearch) {
-            buildWhere((AMakerSearch) maker);
+        if (maker instanceof AQuery) {
+            buildWhere((AQuery) maker);
         }
-        if (maker instanceof MakerQuery) {
-            buildWhereColums((MakerQuery) maker);
+        if (maker instanceof TableQuery) {
+            buildWhereColums((TableQuery) maker);
         }
-        if (maker instanceof MakerUpdate) {
-            buildUpdateSql((MakerUpdate) maker);
+        if (maker instanceof TableUpdate) {
+            buildUpdateSql((TableUpdate) maker);
         }
-        if (maker instanceof MakerInsert) {
-            buildInsertSql((MakerInsert) maker);
+        if (maker instanceof TableInsert) {
+            buildInsertSql((TableInsert) maker);
         }
     }
 
@@ -62,7 +62,7 @@ public class MakerUtil {
      * 生成查询条件sql
      *
           */
-    public static void buildWhereColums(MakerQuery maker) {
+    public static void buildWhereColums(TableQuery maker) {
         maker.addPara(MAKER_COLUMS, maker.colums);
     }
 
@@ -70,7 +70,7 @@ public class MakerUtil {
      * 生成查询条件sql
      *
           */
-    public static void buildWhere(AMakerSearch maker) {
+    public static void buildWhere(AQuery maker) {
         final String logicDeleteField = SqlHolder.properties.getLogicDeleteField();
         if (BeanInfoHolder.isColumnExists(maker.getTableName(), logicDeleteField)) {
             if (!maker.where().isContainCondition(logicDeleteField)) {
@@ -88,7 +88,7 @@ public class MakerUtil {
      * 生成掺入sql
      *
           */
-    public static void buildInsertSql(MakerInsert maker) {
+    public static void buildInsertSql(TableInsert maker) {
         StringBuilder sbColums = new StringBuilder();
         StringBuilder sbValues = new StringBuilder();
         if(maker.insertValues.isEmpty()){
@@ -125,7 +125,7 @@ public class MakerUtil {
      * 生成更新信息
      *
           */
-    public static void buildUpdateSql(MakerUpdate maker) {
+    public static void buildUpdateSql(TableUpdate maker) {
         StringBuilder sbSets = new StringBuilder();
         if(maker.updateSets.isEmpty()){
             throw new SystemException("更新字段信息未设置");
@@ -174,7 +174,7 @@ public class MakerUtil {
             if (!dbClumnName.equals("")) {
                 Object value = FieldReflections.getValue(object, field);
                 if(value==null){
-                    value = MakerUtil.getIdValue(field, dbName);
+                    value = TableMakerUtil.getIdValue(field, dbName);
                 }
                 params.add(value);
             }

@@ -5,7 +5,7 @@ import com.dlz.comm.util.system.FieldReflections;
 import com.dlz.framework.db.holder.BeanInfoHolder;
 import com.dlz.framework.db.holder.DBHolder;
 import com.dlz.framework.db.inf.IOperatorExec;
-import com.dlz.framework.db.inf.ISqlWrapperSearch;
+import com.dlz.framework.db.inf.ISqlWrapperQuery;
 
 import java.lang.reflect.Field;
 import java.util.List;
@@ -19,8 +19,8 @@ import java.util.stream.Collectors;
  * @author dk
  *
  */
-public class WrapperUpdate<T> extends AWrapperSearch<WrapperUpdate<T>,T, MakerUpdate> implements
-		ISqlWrapperSearch<WrapperUpdate<T>, T>,
+public class WrapperUpdate<T> extends AWrapperQuery<WrapperUpdate<T>,T, TableUpdate> implements
+        ISqlWrapperQuery<WrapperUpdate<T>, T>,
 		IOperatorExec {
 	public static <T> WrapperUpdate<T> wrapper(Class<T> beanClass) {
 		return new WrapperUpdate(beanClass);
@@ -28,7 +28,7 @@ public class WrapperUpdate<T> extends AWrapperSearch<WrapperUpdate<T>,T, MakerUp
 
 	private WrapperUpdate(Class<T> beanClass) {
 		super(beanClass);
-		setPm(new MakerUpdate(getTableName()));
+		setPm(new TableUpdate(getTableName()));
 	}
 
 	public WrapperUpdate<T> set(DlzFn<T, ?> column, Object value) {
@@ -71,7 +71,7 @@ public class WrapperUpdate<T> extends AWrapperSearch<WrapperUpdate<T>,T, MakerUp
 	public boolean batch(List<T> valueBeans,int batchSize){
 		String dbName = BeanInfoHolder.getTableName(getBeanClass());
 		final List<Field> fields = BeanInfoHolder.getBeanFields(getBeanClass());
-		String sql = MakerUtil.buildUpdateSql(dbName, fields);
+		String sql = TableMakerUtil.buildUpdateSql(dbName, fields);
 		while (valueBeans.size()>0 && batchSize>0){
 			if(batchSize>valueBeans.size()){
 				batchSize=valueBeans.size();
@@ -79,7 +79,7 @@ public class WrapperUpdate<T> extends AWrapperSearch<WrapperUpdate<T>,T, MakerUp
 			final List<T> ts = valueBeans.subList(0, batchSize);
 
 			List<Object[]> paramValues = ts.stream()
-					.map(v->MakerUtil.buildUpdateParams(v,fields))
+					.map(v-> TableMakerUtil.buildUpdateParams(v,fields))
 					.collect(Collectors.toList());
 			DBHolder.getDao().batchUpdate(sql, paramValues);
 			valueBeans = valueBeans.subList(batchSize, valueBeans.size());

@@ -6,5 +6,5 @@ package com.dlz.framework.db.inf;
  *
  * @param <ME>
  */
-public interface ISqlWrapperSearch<ME extends ISqlWrapperSearch, T> extends ISqlSearch<ME>,ICondAddByLamda<ME, T> {
+public interface ISqlWrapperQuery<ME extends ISqlWrapperQuery, T> extends ISqlQuery<ME>,ICondAddByLamda<ME, T> {
 }

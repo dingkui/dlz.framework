@@ -14,14 +14,14 @@ import java.util.stream.Collectors;
  *
  * @author dk
  */
-public class WrapperInsert<T> extends AWrapper<T, MakerInsert> implements IOperatorInsert {
+public class WrapperInsert<T> extends AWrapper<T, TableInsert> implements IOperatorInsert {
     public static <T> WrapperInsert<T> wrapper(T valueBean) {
         return new WrapperInsert(valueBean);
     }
 
     private WrapperInsert(T valueBean) {
         super(valueBean);
-        setPm(new MakerInsert(getTableName()));
+        setPm(new TableInsert(getTableName()));
     }
 
     @Override
@@ -31,7 +31,7 @@ public class WrapperInsert<T> extends AWrapper<T, MakerInsert> implements IOpera
             if (value != null) {
                 getPm().value(BeanInfoHolder.getColumnName(field), value);
             } else {
-                value = MakerUtil.getIdValue(field, getTableName());
+                value = TableMakerUtil.getIdValue(field, getTableName());
                 if (value != null) {
                     FieldReflections.setValue(bean, field, value);
                     getPm().value(BeanInfoHolder.getColumnName(field), value);
@@ -47,7 +47,7 @@ public class WrapperInsert<T> extends AWrapper<T, MakerInsert> implements IOpera
     public boolean batch(List<T> valueBeans, int batchSize) {
         String dbName = BeanInfoHolder.getTableName(getBeanClass());
         final List<Field> fields = BeanInfoHolder.getBeanFields(getBeanClass());
-        String sql = MakerUtil.buildInsertSql(dbName, fields);
+        String sql = TableMakerUtil.buildInsertSql(dbName, fields);
         while (valueBeans.size() > 0 && batchSize > 0) {
             if (batchSize > valueBeans.size()) {
                 batchSize = valueBeans.size();
@@ -55,7 +55,7 @@ public class WrapperInsert<T> extends AWrapper<T, MakerInsert> implements IOpera
             final List<T> ts = valueBeans.subList(0, batchSize);
 
             List<Object[]> paramValues = ts.stream()
-                    .map(v -> MakerUtil.buildInsertParams(dbName,v, fields))
+                    .map(v -> TableMakerUtil.buildInsertParams(dbName,v, fields))
                     .collect(Collectors.toList());
             DBHolder.getDao().batchUpdate(sql, paramValues);
             valueBeans = valueBeans.subList(batchSize, valueBeans.size());
