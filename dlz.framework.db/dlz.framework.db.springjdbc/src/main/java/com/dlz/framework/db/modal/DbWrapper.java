@@ -3,20 +3,18 @@ package com.dlz.framework.db.modal;
 import com.dlz.comm.exception.SystemException;
 import com.dlz.comm.util.StringUtils;
 import com.dlz.comm.util.system.FieldReflections;
-import com.dlz.framework.db.holder.DBHolder;
 import com.dlz.framework.db.modal.para.*;
 import com.dlz.framework.db.util.DbConvertUtil;
 
 import java.lang.reflect.Field;
-import java.util.List;
 import java.util.function.Function;
 
 public class DbWrapper {
-    public <T> WrapperQuery<T> query(Class<T> re) {
+    public <T> WrapperQuery<T> select(Class<T> re) {
         return WrapperQuery.wrapper(re);
     }
 
-    public <T> WrapperQuery<T> query(T conditionBean) {
+    public <T> WrapperQuery<T> select(T conditionBean) {
         return WrapperQuery.wrapper(conditionBean);
     }
 
@@ -78,7 +76,7 @@ public class DbWrapper {
         if (StringUtils.isEmpty(id)) {
             throw new SystemException(idName + "不能为空");
         }
-        return query(c).eq(idName, id).queryBean();
+        return select(c).eq(idName, id).queryBean();
     }
 
     public <T> T getById(Class<T> c, Object id) {

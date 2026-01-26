@@ -43,16 +43,16 @@ public class WrapperQuery<T> extends AWrapperQuery<WrapperQuery<T>,T, TableQuery
         setAllowFullQuery(true);
     }
 
-    public WrapperQuery<T> select(String... colums) {
-        if (colums.length > 0) {
-            getPm().select(colums);
+    public WrapperQuery<T> columns(String... columns) {
+        if (columns.length > 0) {
+            getPm().select(columns);
         }
         return this;
     }
 
-    public WrapperQuery<T> select(DlzFn<T, ?>... colums) {
-        if (colums.length > 0) {
-            getPm().select(colums);
+    public WrapperQuery<T> columns(DlzFn<T, ?>... columns) {
+        if (columns.length > 0) {
+            getPm().select(columns);
         }
         return this;
     }

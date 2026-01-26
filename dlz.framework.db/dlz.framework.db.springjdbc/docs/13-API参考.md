@@ -120,7 +120,7 @@ Condition condition = Condition.where()
     .gt("age", 18);
 
 // 应用到查询
-DB.Wrapper.query("user").where(condition).list();
+DB.Wrapper.select("user").where(condition).list();
 
 // 应用到更新
 DB.Table.update("user").set("flag", 1).where(condition).execute();

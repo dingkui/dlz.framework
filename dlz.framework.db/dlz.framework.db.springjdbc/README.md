@@ -59,7 +59,7 @@ DLZ-DB 是 `dlz.framework` 的核心数据库组件。它摒弃了传统 ORM 的
 * [回到导航](./README.md#导航)
 ```java
 // 查询
-User user = DB.Wrapper.query(User.class).eq(User::getId, 1).queryOne();
+User user = DB.Wrapper.select(User.class).eq(User::getId, 1).queryOne();
 
 // 插入
 DB.insert(user).execute();
@@ -103,7 +103,7 @@ caller:(UserController.java:42) getList 15ms sql:SELECT * FROM user WHERE id = 1
 
 ```java
 // 链式查询，流畅自然
-List<User> users = DB.Wrapper.query(User.class)
+List<User> users = DB.Wrapper.select(User.class)
     .eq(User::getStatus, 1)
     .gt(User::getAge, 18)
     .like(User::getName, "张")
@@ -136,7 +136,7 @@ DB.delete(User.class).eq(User::getId, 1).execute();
 
 ```java
 // 查询结果是 ResultMap，继承自 JSONMap
-ResultMap result = DB.Wrapper.query("user").eq("id", 1).one();
+ResultMap result = DB.Wrapper.select("user").eq("id", 1).one();
 
 // 支持深度取值
 result.getInt("age", 0);
@@ -207,7 +207,7 @@ public class User {
 public class UserController {
     @GetMapping("/user/{id}")
     public User getUser(@PathVariable Long id) {
-        return DB.Wrapper.query(User.class).eq(User::getId, id).queryOne();
+        return DB.Wrapper.select(User.class).eq(User::getId, id).queryOne();
     }
 }
 ```
@@ -221,7 +221,7 @@ public class UserController {
 // 不需要 Service 层，Controller 直接调用
 @GetMapping("/users")
 public List<User> list(@RequestParam Integer status) {
-    return DB.Wrapper.query(User.class)
+    return DB.Wrapper.select(User.class)
         .eq(User::getStatus, status)
         .orderByDesc(User::getCreateTime)
         .list();
@@ -234,7 +234,7 @@ public List<User> list(@RequestParam Integer status) {
 // 复杂查询封装成方法，便于复用
 public class UserService implements IUserService{
     public List<User> findActiveUsers(String keyword, Integer minAge) {
-        return DB.Wrapper.query(User.class)
+        return DB.Wrapper.select(User.class)
             .eq(User::getStatus, 1)
             .like(StringUtil.isNotBlank(keyword), User::getName, keyword)
             .gt(minAge != null, User::getAge, minAge)
@@ -271,7 +271,7 @@ DB.Jdbc.select("复杂的SQL语句", 参数1, 参数2).queryList();
 DB.Sql.select("key.复杂查询").addPara("x", 1).queryList();
 
 // 方式3：条件构造器 + sql()
-DB.Wrapper.query(User.class)
+DB.Wrapper.select(User.class)
     .eq(User::getStatus, 1)
     .sql("EXISTS (SELECT 1 FROM ...)", params)
     .list();

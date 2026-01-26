@@ -26,7 +26,7 @@
 #### 查询
 
 ```java
-DB.Wrapper.query(User.class)
+DB.Wrapper.select(User.class)
     .select(User::getId, User::getName, User::getAge)
     .eq(User::getStatus, 1)
     .gt(User::getAge, 18)
@@ -79,7 +79,7 @@ User::getEmail     →  email_address
 
 ```java
 // Lambda 和字符串可以混合使用
-DB.Wrapper.query(User.class)
+DB.Wrapper.select(User.class)
     .eq(User::getStatus, 1)           // Lambda
     .apply("create_time > {0}", date) // 自定义 SQL
     .sql("score >= #{min}", params)   // 命名参数

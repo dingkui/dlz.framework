@@ -20,22 +20,22 @@ import java.util.stream.Collectors;
 @SuppressWarnings("rawtypes")
 public class TableQuery extends AQuery<TableQuery> implements ISqlMakerPage<TableQuery>, IOperatorQuery {
     private static final long serialVersionUID = 8374167270612933157L;
-    String colums="*";
+    String columns="*";
 
     public TableQuery(String tableName) {
         super(tableName);
     }
 
-    public TableQuery select(String... colums) {
-        if (colums.length > 0) {
-            this.colums = StringUtils.join(colums, ",");
+    public TableQuery select(String... columns) {
+        if (columns.length > 0) {
+            this.columns = StringUtils.join(columns, ",");
         }
         return this;
     }
 
-    public <T> TableQuery select(DlzFn<T, ?>... colums) {
-        if (colums.length > 0) {
-            this.colums = Arrays.stream(colums).map(item -> BeanInfoHolder.fnName(item)).collect(Collectors.joining(","));
+    public <T> TableQuery select(DlzFn<T, ?>... columns) {
+        if (columns.length > 0) {
+            this.columns = Arrays.stream(columns).map(item -> BeanInfoHolder.fnName(item)).collect(Collectors.joining(","));
         }
         return this;
     }

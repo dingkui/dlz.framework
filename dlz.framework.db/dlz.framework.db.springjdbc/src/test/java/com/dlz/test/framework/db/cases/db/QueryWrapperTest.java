@@ -19,7 +19,7 @@ public class QueryWrapperTest extends SpingDbBaseTest{
         menu.setCode("qsm");
         menu.setCode("qsm");
         menu.setName("全生命周期项目");
-        final WrapperQuery<Menu> menuQueryWrapper = DB.Wrapper.query(Menu.class);
+        final WrapperQuery<Menu> menuQueryWrapper = DB.Wrapper.select(Menu.class);
         if (menu.getId() != null) {
             menuQueryWrapper.ne(Menu::getId, menu.getId());
         }
@@ -34,7 +34,7 @@ public class QueryWrapperTest extends SpingDbBaseTest{
         Menu menu = new Menu();
         menu.setCode("qsm");
         menu.setName("全生命周期项目");
-        final WrapperQuery<Menu> menuQueryWrapper = DB.Wrapper.query(Menu.class);
+        final WrapperQuery<Menu> menuQueryWrapper = DB.Wrapper.select(Menu.class);
         if (menu.getId() != null) {
             menuQueryWrapper.ne(Menu::getId, menu.getId());
         }
@@ -49,7 +49,7 @@ public class QueryWrapperTest extends SpingDbBaseTest{
         Menu menu = new Menu();
         menu.setCode("qsm");
         menu.setName("全生命周期项目");
-        final WrapperQuery<Menu> menuQueryWrapper = DB.Wrapper.query(Menu.class);
+        final WrapperQuery<Menu> menuQueryWrapper = DB.Wrapper.select(Menu.class);
         if (menu.getId() != null) {
             menuQueryWrapper.ne(Menu::getId, menu.getId());
         }
@@ -62,7 +62,7 @@ public class QueryWrapperTest extends SpingDbBaseTest{
         Menu menu = new Menu();
         menu.setCode("qsm");
         menu.setName("全生命周期项目");
-        final WrapperQuery<Menu> menuQueryWrapper = DB.Wrapper.query(Menu.class);
+        final WrapperQuery<Menu> menuQueryWrapper = DB.Wrapper.select(Menu.class);
         if (menu.getId() != null) {
             menuQueryWrapper.ne(Menu::getId, menu.getId());
         }
@@ -75,7 +75,7 @@ public class QueryWrapperTest extends SpingDbBaseTest{
         Menu menu = new Menu();
         menu.setCode("qsm");
         menu.setName("全生命周期项目");
-        final WrapperQuery<Menu> menuQueryWrapper = DB.Wrapper.query(Menu.class);
+        final WrapperQuery<Menu> menuQueryWrapper = DB.Wrapper.select(Menu.class);
         if (menu.getId() != null) {
             menuQueryWrapper.ne(Menu::getId, menu.getId());
         }
@@ -90,7 +90,7 @@ public class QueryWrapperTest extends SpingDbBaseTest{
         menu.setId(1L);
         menu.setCode("qsm");
         menu.setName("全生命周期项目");
-        final WrapperQuery<Menu> menuQueryWrapper = DB.Wrapper.query(Menu.class);
+        final WrapperQuery<Menu> menuQueryWrapper = DB.Wrapper.select(Menu.class);
         if (menu.getId() != null) {
             menuQueryWrapper.ne(Menu::getId, menu.getId());
         }
@@ -103,7 +103,7 @@ public class QueryWrapperTest extends SpingDbBaseTest{
         menu.setId(1L);
         menu.setCode("qsm");
         menu.setName("全生命周期项目");
-        final WrapperQuery<Menu> menuQueryWrapper = DB.Wrapper.query(Menu.class);
+        final WrapperQuery<Menu> menuQueryWrapper = DB.Wrapper.select(Menu.class);
         menuQueryWrapper.ne(Menu::getId, menu.getId());
         menuQueryWrapper.sql("xx in (select x from dual where 1=#{a} and 2=#{b})",new JSONMap("a",1,"b",2));
         showSql(menuQueryWrapper, "conditionWhereTest4_2","select * from sys_menu t where ID <> 1 and (xx in (select x from dual where 1=1 and 2=2)) and IS_DELETED = 0");
@@ -114,28 +114,28 @@ public class QueryWrapperTest extends SpingDbBaseTest{
     public void searchWrapperTest1() {
         SysSql dict = new SysSql();
         dict.setId(123L);
-        WrapperQuery select = DB.Wrapper.query(SysSql.class).select(SysSql::getId);
+        WrapperQuery select = DB.Wrapper.select(SysSql.class).columns(SysSql::getId);
         showSql(select,"searchWrapperTest1","select ID from SYS_SQL t where IS_DELETED = 0");
     }
     @Test
     public void searchWrapperTest2() {
         SysSql dict = new SysSql();
         dict.setId(123L);
-        WrapperQuery<SysSql> query = DB.Wrapper.query(SysSql.class);
+        WrapperQuery<SysSql> query = DB.Wrapper.select(SysSql.class);
         showSql(query,"searchWrapperTest2","select * from SYS_SQL t where IS_DELETED = 0");
     }
     @Test
     public void searchWrapperTest3() {
         SysSql dict = new SysSql();
         dict.setId(123L);
-        WrapperQuery<SysSql> query = DB.Wrapper.query(SysSql.class).eq(SysSql::getId, 123);
+        WrapperQuery<SysSql> query = DB.Wrapper.select(SysSql.class).eq(SysSql::getId, 123);
         showSql(query,"searchWrapperTest3","select * from SYS_SQL t where ID = 123 and IS_DELETED = 0");
     }
 
 
     @Test
     public void dbSqlTest1() {
-        final WrapperQuery eq = DB.Wrapper.query(Role.class).select(Role::getRoleAlias)
+        final WrapperQuery eq = DB.Wrapper.select(Role.class).columns(Role::getRoleAlias)
                 .in(Role::getId, "11,22")
                 .eq(Role::getIsDeleted, 0);
         showSql(eq,"dbSqlTest1","select ROLE_ALIAS from sys_role t where ID in (11,22) and IS_DELETED = 0");
@@ -144,14 +144,14 @@ public class QueryWrapperTest extends SpingDbBaseTest{
 
     @Test
     public void dbSqlTest2() {
-        final WrapperQuery eq = DB.Wrapper.query(Role.class).select(Role::getRoleAlias)
+        final WrapperQuery eq = DB.Wrapper.select(Role.class).columns(Role::getRoleAlias)
                 .in(Role::getId, "a11,x22")
                 .eq(Role::getIsDeleted, 0);
         showSql(eq,"dbSqlTest2","select ROLE_ALIAS from sys_role t where ID in ('a11','x22') and IS_DELETED = 0");
     }
     @Test
     public void dbSqlTest21() {
-        final WrapperQuery eq = DB.Wrapper.query(Role.class).select(Role::getId)
+        final WrapperQuery eq = DB.Wrapper.select(Role.class).columns(Role::getId)
                 .in(Role::getId, "a11,x22")
                 .eq(Role::getIsDeleted, 0);
         showSql(eq,"dbSqlTest2","select ID from sys_role t where ID in ('a11','x22') and IS_DELETED = 0");

@@ -442,8 +442,8 @@ public class SqlUtil {
         Iterator<Entry<String, Object>> it = p.entrySet().iterator();
         while (it.hasNext()) {
             Entry<String, Object> entry = it.next();
-            String columeNm = entry.getKey();
-            String valueStr = "#{" + columeNm + "}";
+            String columnNm = entry.getKey();
+            String valueStr = "#{" + columnNm + "}";
             sb1.append((String) entry.getKey() + ",");
             sb2.append(valueStr + ",");
         }
@@ -491,8 +491,8 @@ public class SqlUtil {
         Iterator<Entry<String, Object>> it = p.entrySet().iterator();
         while (it.hasNext()) {
             Entry<String, Object> entry = it.next();
-            String columeNm = String.valueOf(entry.getKey());
-            String valueStr = "#{" + columeNm + "}";
+            String columnNm = String.valueOf(entry.getKey());
+            String valueStr = "#{" + columnNm + "}";
             sb1.append((String) entry.getKey() + "=");
             sb1.append(valueStr + ",");
         }
@@ -525,9 +525,9 @@ public class SqlUtil {
         Iterator<Entry<String, Object>> it = p.entrySet().iterator();
         while (it.hasNext()) {
             Entry<String, Object> entry = it.next();
-            String columeNm = String.valueOf(entry.getKey());
+            String columnNm = String.valueOf(entry.getKey());
             String value = String.valueOf(entry.getValue());
-            String valueStr = "#{" + columeNm + "}";
+            String valueStr = "#{" + columnNm + "}";
             if (value == null) {
                 sql.append(" and " + entry.getKey() + " is null");
             } else {

@@ -26,13 +26,13 @@ import java.util.UUID;
  */
 @Slf4j
 public class TableMakerUtil {
-    public static final String MAKER_SQL_INSERT = "insert into ${tableName}(${colums}) values(${values})";
+    public static final String MAKER_SQL_INSERT = "insert into ${tableName}(${columns}) values(${values})";
     public static final String MAKER_SQL_DELETE = "delete from ${tableName} ${where}";
     public static final String MAKER_SQL_UPDATE = "update ${tableName} t set ${sets} ${where}";
-    public static final String MAKER_SQL_SEARCHE = "select ${colums} from ${tableName} t ${where} ${otherwhere}";
+    public static final String MAKER_SQL_SEARCHE = "select ${columns} from ${tableName} t ${where} ${otherwhere}";
 
     private static final String MAKER_TABLENAME = "tableName";
-    private static final String MAKER_COLUMS = "colums";
+    private static final String MAKER_COLUMS = "columns";
     private static final String MAKER_VALUES = "values";
     private static final String MAKER_STR_SETS = "sets";
     private static final String MAKER_WHERE = "where";
@@ -48,7 +48,7 @@ public class TableMakerUtil {
             buildWhere((AQuery) maker);
         }
         if (maker instanceof TableQuery) {
-            buildWhereColums((TableQuery) maker);
+            buildWhereColumns((TableQuery) maker);
         }
         if (maker instanceof TableUpdate) {
             buildUpdateSql((TableUpdate) maker);
@@ -62,8 +62,8 @@ public class TableMakerUtil {
      * 生成查询条件sql
      *
           */
-    public static void buildWhereColums(TableQuery maker) {
-        maker.addPara(MAKER_COLUMS, maker.colums);
+    public static void buildWhereColumns(TableQuery maker) {
+        maker.addPara(MAKER_COLUMS, maker.columns);
     }
 
     /**
@@ -89,7 +89,7 @@ public class TableMakerUtil {
      *
           */
     public static void buildInsertSql(TableInsert maker) {
-        StringBuilder sbColums = new StringBuilder();
+        StringBuilder sbColumns = new StringBuilder();
         StringBuilder sbValues = new StringBuilder();
         if(maker.insertValues.isEmpty()){
             throw new SystemException("插入字段信息未设置");
@@ -99,11 +99,11 @@ public class TableMakerUtil {
             Object value = e.getValue();
             String clumnName = paraName.replaceAll("`", "");
 
-            if (sbColums.length() > 0) {
-                sbColums.append(',');
+            if (sbColumns.length() > 0) {
+                sbColumns.append(',');
                 sbValues.append(',');
             }
-            sbColums.append(paraName);
+            sbColumns.append(paraName);
             if (value instanceof String) {
                 String v = ((String) value);
                 if (v.startsWith("sql:")) {
@@ -116,7 +116,7 @@ public class TableMakerUtil {
                 value = "";
             maker.addPara(clumnName, DbConvertUtil.getVal4Db(maker.getTableName(), clumnName, value));
         });
-        maker.addPara(MAKER_COLUMS, sbColums.toString());
+        maker.addPara(MAKER_COLUMS, sbColumns.toString());
         maker.addPara(MAKER_VALUES, sbValues.toString());
         maker.addPara(MAKER_TABLENAME, maker.getTableName());
     }

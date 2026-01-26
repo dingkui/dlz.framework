@@ -40,13 +40,13 @@ public class Doc05PageAndOrderTest extends SpingDbBaseTest {
     public void pageAndOrderTest5_1_2() {
         // 分页构造方式1：page单独构建
         final Page<?> page = Page.build(1, 10, Order.desc("create_time"));
-        DB.Wrapper.query(User.class)
+        DB.Wrapper.select(User.class)
                 .eq(User::getStatus, 1)
                 .page(page)
                 .queryBeanPage();
 
         // 分页构造方式2：分页和排序链式构建
-        DB.Wrapper.query(User.class)
+        DB.Wrapper.select(User.class)
                 .eq(User::getStatus, 1)
                 .page(1,10)
                 .orderByAsc(User::getId)
@@ -92,11 +92,11 @@ public class Doc05PageAndOrderTest extends SpingDbBaseTest {
     public void pageAndOrderTest5_1_5() {
         // 只需要排序，不需要分页
         //方法1：设置只有排序的分页
-        DB.Wrapper.query(User.class)
+        DB.Wrapper.select(User.class)
             .page(Page.build(Order.descs("create_time", "id")))  // 不传页码
             .queryList();
         //方法2：直接链式设置order
-        DB.Wrapper.query(User.class)
+        DB.Wrapper.select(User.class)
             .orderByDesc("create_time", "id")  // 不传页码
             .queryList();
 

@@ -49,10 +49,10 @@ public class DB {
 
     /// Wrapper 快捷操作
     public static <T> WrapperQuery<T> query(Class<T> re) {
-        return Wrapper.query(re);
+        return Wrapper.select(re);
     }
     public static <T> WrapperQuery<T> query(T contion) {
-        return Wrapper.query(contion);
+        return Wrapper.select(contion);
     }
 
     public static <T> WrapperDelete<T> delete(Class<T> beanClass) {
