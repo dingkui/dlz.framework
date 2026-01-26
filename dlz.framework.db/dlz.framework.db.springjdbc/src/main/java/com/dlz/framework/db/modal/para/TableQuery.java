@@ -26,14 +26,14 @@ public class TableQuery extends AQuery<TableQuery> implements ISqlMakerPage<Tabl
         super(tableName);
     }
 
-    public TableQuery select(String... columns) {
+    public TableQuery columns(String... columns) {
         if (columns.length > 0) {
             this.columns = StringUtils.join(columns, ",");
         }
         return this;
     }
 
-    public <T> TableQuery select(DlzFn<T, ?>... columns) {
+    public <T> TableQuery columns(DlzFn<T, ?>... columns) {
         if (columns.length > 0) {
             this.columns = Arrays.stream(columns).map(item -> BeanInfoHolder.fnName(item)).collect(Collectors.joining(","));
         }
