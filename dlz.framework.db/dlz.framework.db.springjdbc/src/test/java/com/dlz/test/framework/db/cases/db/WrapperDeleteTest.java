@@ -6,7 +6,7 @@ import com.dlz.test.framework.db.config.SpingDbBaseTest;
 import com.dlz.test.framework.db.entity.SysSql;
 import org.junit.Test;
 
-public class DeleteWrapperTest extends SpingDbBaseTest {
+public class WrapperDeleteTest extends SpingDbBaseTest {
 
     @Test
     public void deleteWrapperTest1() {

@@ -7,6 +7,7 @@ import com.dlz.framework.db.config.DlzDbProperties;
 import com.dlz.framework.db.convertor.dbtype.TableColumnMapper;
 import com.dlz.framework.db.dao.IDlzDao;
 import com.dlz.framework.db.ds.DBDynamic;
+import com.dlz.framework.db.holder.DBHolder;
 import com.dlz.framework.db.holder.SqlHolder;
 import com.dlz.framework.db.util.DbConvertUtil;
 import com.dlz.framework.db.util.DbLogUtil;
@@ -14,6 +15,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.DependsOn;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.jdbc.core.JdbcTemplate;
 
@@ -30,11 +32,13 @@ public class DlzDbConfigs extends DlzDbConfig {
 
     @Bean(name = "dlzDao")
     @Lazy
-    public IDlzDao dlzDao2(JdbcTemplate jdbc,DlzDbProperties properties) {
+    @DependsOn("JdbcTemplate")
+    public IDlzDao dlzDao2(DlzDbProperties properties) {
         SqlHolder.init(properties);
         DbLogUtil.init(properties);
         final IDlzDao dlzDao = new DlzTestDao();
         DbConvertUtil.tableCloumnMapper= new TableColumnMapper(dlzDao);
+        DBHolder.dao = dlzDao;
         if(log.isInfoEnabled()){
             log.info("init test dlzDao:"+DlzTestDao.class.getName());
             log.info("init tableCloumnMapper:"+TableColumnMapper.class.getName());

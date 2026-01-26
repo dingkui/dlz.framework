@@ -5,6 +5,7 @@ import com.dlz.comm.util.ValUtil;
 import com.dlz.framework.db.convertor.rowMapper.ResultMapRowMapper;
 import com.dlz.framework.db.dao.IDlzDao;
 import com.dlz.framework.db.service.ICommService;
+import com.dlz.framework.db.service.impl.CommServiceImpl;
 import com.dlz.framework.holder.SpringHolder;
 import com.dlz.framework.redis.excutor.JedisExecutor;
 import lombok.extern.slf4j.Slf4j;
@@ -27,9 +28,13 @@ public class DBHolder {
         }
         return dao;
     }
+
     public static ICommService getService() {
         if (service == null) {
-            service = SpringHolder.getBean(ICommService.class);
+            service = SpringHolder.registerBean(CommServiceImpl.class);
+            if (log.isInfoEnabled()) {
+                log.debug("commService:" + CommServiceImpl.class.getName());
+            }
         }
         return service;
     }
@@ -47,7 +52,7 @@ public class DBHolder {
         if (seq == initSeq) {
             try {
                 final String fistColumn = getDao().getFistColumn("select max(id) from " + tableName, String.class);
-                if(fistColumn==null || !StringUtils.isNumber(fistColumn)){
+                if (fistColumn == null || !StringUtils.isNumber(fistColumn)) {
                     return seq;
                 }
                 seq = ValUtil.toBigDecimalZero(fistColumn).longValue() + initSeq;

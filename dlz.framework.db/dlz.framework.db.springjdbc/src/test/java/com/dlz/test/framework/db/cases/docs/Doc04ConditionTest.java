@@ -1,4 +1,4 @@
-package com.dlz.test.framework.db.docs;
+package com.dlz.test.framework.db.cases.docs;
 
 import com.dlz.comm.json.JSONMap;
 import com.dlz.comm.util.DateUtil;

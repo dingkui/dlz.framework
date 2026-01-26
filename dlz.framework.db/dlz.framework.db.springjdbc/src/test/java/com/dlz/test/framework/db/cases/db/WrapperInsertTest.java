@@ -6,7 +6,7 @@ import com.dlz.test.framework.db.config.SpingDbBaseTest;
 import com.dlz.test.framework.db.entity.SysSql;
 import org.junit.Test;
 
-public class InsertWrapperTest extends SpingDbBaseTest {
+public class WrapperInsertTest extends SpingDbBaseTest {
 
     @Test
     public void insertWrapperTest1() {

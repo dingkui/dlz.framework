@@ -49,17 +49,17 @@ public class DlzDbConfig extends DlzFwConfig {
         }
         return dlzDao;
     }
-
-    @Bean(name = "commService")
-    @Lazy
-    @ConditionalOnMissingBean(name = "commService")
-    public ICommService commService(IDlzDao dao) {
-        CommServiceImpl commService = new CommServiceImpl(dao);
-        if (log.isInfoEnabled()) {
-            log.info("init commService:" + CommServiceImpl.class.getName());
-        }
-        return commService;
-    }
+//
+//    @Bean(name = "commService")
+//    @Lazy
+//    @ConditionalOnMissingBean(name = "commService")
+//    public ICommService commService(IDlzDao dao) {
+//        CommServiceImpl commService = new CommServiceImpl(dao);
+//        if (log.isInfoEnabled()) {
+//            log.info("init commService:" + CommServiceImpl.class.getName());
+//        }
+//        return commService;
+//    }
 
     @Bean(name = "JdbcTemplate")
     @Lazy

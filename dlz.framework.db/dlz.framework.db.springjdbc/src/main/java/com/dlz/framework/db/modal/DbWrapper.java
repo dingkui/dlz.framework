@@ -1,6 +1,7 @@
 package com.dlz.framework.db.modal;
 
 import com.dlz.comm.exception.SystemException;
+import com.dlz.comm.fn.DlzFn;
 import com.dlz.comm.util.StringUtils;
 import com.dlz.comm.util.system.FieldReflections;
 import com.dlz.framework.db.modal.para.*;
@@ -10,7 +11,7 @@ import java.lang.reflect.Field;
 import java.util.function.Function;
 
 public class DbWrapper {
-    public <T> WrapperQuery<T> select(Class<T> re) {
+    public  <T> WrapperQuery<T> select(Class<T> re) {
         return WrapperQuery.wrapper(re);
     }
 

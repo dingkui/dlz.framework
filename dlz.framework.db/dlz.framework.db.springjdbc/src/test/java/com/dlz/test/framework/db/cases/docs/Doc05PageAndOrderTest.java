@@ -1,4 +1,4 @@
-package com.dlz.test.framework.db.docs;
+package com.dlz.test.framework.db.cases.docs;
 
 import com.dlz.framework.db.modal.DB;
 import com.dlz.framework.db.modal.result.Order;
