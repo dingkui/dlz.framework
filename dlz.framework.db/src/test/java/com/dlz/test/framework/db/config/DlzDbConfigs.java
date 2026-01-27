@@ -1,7 +1,6 @@
 package com.dlz.test.framework.db.config;
 
 import com.dlz.framework.config.DlzProperties;
-import com.dlz.framework.db.DlzTestDao;
 import com.dlz.framework.db.config.DlzDbConfig;
 import com.dlz.framework.db.config.DlzDbProperties;
 import com.dlz.framework.db.convertor.dbtype.TableColumnMapper;

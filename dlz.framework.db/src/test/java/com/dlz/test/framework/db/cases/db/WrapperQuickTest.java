@@ -5,8 +5,8 @@ import com.dlz.framework.db.ds.DataSourceProperty;
 import com.dlz.framework.db.modal.DB;
 import com.dlz.test.framework.db.config.SpingDbBaseTest;
 import com.dlz.test.framework.db.entity.SysSql;
-import com.dlz.test.framework.db.testbean.Yc1Record;
-import com.dlz.test.framework.db.testbean.YcRecord;
+import com.dlz.test.framework.db.entity.Yc1Record;
+import com.dlz.test.framework.db.entity.YcRecord;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Test;
 

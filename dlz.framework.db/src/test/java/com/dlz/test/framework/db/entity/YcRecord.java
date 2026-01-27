@@ -1,4 +1,4 @@
-package com.dlz.test.framework.db.testbean;
+package com.dlz.test.framework.db.entity;
 
 import com.dlz.framework.db.annotation.IdType;
 import com.dlz.framework.db.annotation.TableId;

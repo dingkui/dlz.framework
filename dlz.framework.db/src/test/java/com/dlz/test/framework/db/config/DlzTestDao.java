@@ -1,4 +1,4 @@
-package com.dlz.framework.db;
+package com.dlz.test.framework.db.config;
 
 import com.dlz.comm.cache.CacheUtil;
 import com.dlz.comm.json.JSONList;
