@@ -1,1 +1,0 @@
-对fastjson ，gson等代码进行写法兼容
