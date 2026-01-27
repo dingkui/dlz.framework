@@ -9,16 +9,14 @@ import com.dlz.framework.db.holder.SqlHolder;
 import com.dlz.framework.db.modal.items.JdbcItem;
 import com.dlz.framework.db.modal.items.SqlItem;
 import com.dlz.framework.db.modal.para.ATableMaker;
-import com.dlz.framework.db.modal.para.TableMakerUtil;
 import com.dlz.framework.db.modal.para.ParaJdbc;
 import com.dlz.framework.db.modal.para.ParaMap;
+import com.dlz.framework.db.modal.para.TableMakerUtil;
 import com.dlz.framework.db.modal.result.Page;
 import lombok.extern.slf4j.Slf4j;
 
-import java.sql.SQLException;
 import java.time.temporal.TemporalAccessor;
 import java.util.*;
-import java.util.Map.Entry;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -30,9 +28,6 @@ import java.util.regex.Pattern;
  */
 @Slf4j
 public class SqlUtil {
-    public final static String SU_STR_TABLE_NM = "SU_STR_TABLE_NM";
-    public final static String SU_STR_UPDATE_KEYS = "SU_STR_UPDATE_KEYS";
-
     /**
      * 参数匹配符：如  ?
      */
@@ -89,8 +84,6 @@ public class SqlUtil {
         sb.append(sqlRun.substring(beginIndex));
         return JdbcItem.of(sb.toString(),paraList.toArray());
     }
-
-
 
     /**
      * 取得可以直接运行的sql
@@ -186,22 +179,6 @@ public class SqlUtil {
         }
         throw new DbException("dealType错误", 1002);
     }
-
-//    /**
-//     * 转换参数
-//     *
-//     * @param sql
-//     * @param para
-//     //     * @throws Exception
-//     * @author dk 2015-04-09
-//     */
-//    public static ParaMapBase getParmMap(String sql, Object... para) {
-//        ParaMapBase paraMap = new ParaMapBase(null);
-//        SqlItem sqlItem = paraMap.getSqlItem();
-//        sqlItem.setSqlJdbc(sql);
-//        sqlItem.setSqlJdbcPara(para);
-//        return paraMap;
-//    }
 
     /**
      * 创建执行sql(带替换符)
@@ -421,123 +398,6 @@ public class SqlUtil {
             log.error(ExceptionUtils.getStackTrace(e.getMessage(),e));
         }
         return value;
-    }
-
-
-    /**
-     * 创建表插入语句
-     *
-     * @param p
-          * @throws SQLException
-     */
-    public static String createInsertSql(Map<String, Object> p) throws SQLException {
-        String tableNm = (String) p.get(SU_STR_TABLE_NM);
-        if (tableNm == null) {
-            throw new SQLException("创建sql出错，参数中缺少表名：" + SU_STR_TABLE_NM);
-        }
-        p.remove(SU_STR_TABLE_NM);
-
-        StringBuffer sb1 = new StringBuffer("insert into " + tableNm + "(");
-        StringBuffer sb2 = new StringBuffer(" values (");
-        Iterator<Entry<String, Object>> it = p.entrySet().iterator();
-        while (it.hasNext()) {
-            Entry<String, Object> entry = it.next();
-            String columnNm = entry.getKey();
-            String valueStr = "#{" + columnNm + "}";
-            sb1.append((String) entry.getKey() + ",");
-            sb2.append(valueStr + ",");
-        }
-        return sb1.substring(0, sb1.length() - 1) + ")" + sb2.substring(0, sb2.length() - 1) + ")";
-    }
-
-    /**
-     * 创建表更新语句
-     *
-     * @param p
-     * @param endSql
-          * @throws SQLException
-     */
-    public static String createUpdateSql(Map<String, Object> p, String endSql) throws SQLException {
-        String tableNm = (String) p.get(SU_STR_TABLE_NM);
-        if (tableNm == null) {
-            throw new SQLException("创建sql出错，参数中缺少表名：" + SU_STR_TABLE_NM);
-        }
-        p.remove(SU_STR_TABLE_NM);
-
-        String keys = (String) p.get(SU_STR_UPDATE_KEYS);
-        if (keys == null) {
-            throw new SQLException("创建sql出错，参数中缺少检索条件：" + SU_STR_UPDATE_KEYS);
-        }
-        p.remove(SU_STR_UPDATE_KEYS);
-        // where语句
-        StringBuffer sb2 = new StringBuffer(" where 1=1");
-        for (String key : keys.split(",")) {
-            if (p.containsKey(key)) {
-                String valueStr = "#{" + key + "}";
-                sb2.append(" and " + key + "=" + valueStr);
-                p.remove(key);
-            } else {
-                throw new SQLException("参数中键值未设定：" + key);
-            }
-        }
-        if (endSql != null) {
-            sb2.append(endSql);
-        }
-        if (sb2.toString().equals(" where 1=1 ")) {
-            throw new SQLException("更新条件为空：" + p);
-        }
-        // update语句
-        StringBuffer sb1 = new StringBuffer("update " + tableNm + " set ");
-        Iterator<Entry<String, Object>> it = p.entrySet().iterator();
-        while (it.hasNext()) {
-            Entry<String, Object> entry = it.next();
-            String columnNm = String.valueOf(entry.getKey());
-            String valueStr = "#{" + columnNm + "}";
-            sb1.append((String) entry.getKey() + "=");
-            sb1.append(valueStr + ",");
-        }
-        // sql语句拼接
-        return sb1.substring(0, sb1.length() - 1) + sb2.toString();
-    }
-
-
-    /**
-     * 创建单表查询语句
-     *
-     * @param p
-     * @param endSql
-     * @return list
-     * @throws SQLException
-     */
-    public static String createSelectSql(Map<String, Object> p, String endSql) throws SQLException {
-        String tableNm = (String) p.get(SU_STR_TABLE_NM);
-        if (tableNm == null) {
-            throw new SQLException("创建sql出错，参数中缺少表名：" + SU_STR_TABLE_NM);
-        }
-        tableNm = tableNm.toUpperCase();
-        p.remove(SU_STR_TABLE_NM);
-
-        StringBuilder sql = new StringBuilder("SELECT *");
-        sql.append(",'" + tableNm + "' " + SU_STR_TABLE_NM);
-        sql.append(" FROM " + tableNm);
-        sql.append(" WHERE 1=1 ");
-
-        Iterator<Entry<String, Object>> it = p.entrySet().iterator();
-        while (it.hasNext()) {
-            Entry<String, Object> entry = it.next();
-            String columnNm = String.valueOf(entry.getKey());
-            String value = String.valueOf(entry.getValue());
-            String valueStr = "#{" + columnNm + "}";
-            if (value == null) {
-                sql.append(" and " + entry.getKey() + " is null");
-            } else {
-                sql.append(" and " + entry.getKey() + "=" + valueStr);
-            }
-        }
-        if (endSql != null) {
-            sql.append(endSql);
-        }
-        return sql.toString();
     }
 
     public static String getSqlInStr(Object o) {
