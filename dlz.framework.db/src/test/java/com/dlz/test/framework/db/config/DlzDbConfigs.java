@@ -5,9 +5,9 @@ import com.dlz.framework.db.config.DlzDbConfig;
 import com.dlz.framework.db.config.DlzDbProperties;
 import com.dlz.framework.db.convertor.dbtype.TableColumnMapper;
 import com.dlz.framework.db.dao.IDlzDao;
-import com.dlz.framework.db.ds.DBDynamic;
 import com.dlz.framework.db.holder.DBHolder;
 import com.dlz.framework.db.holder.SqlHolder;
+import com.dlz.framework.db.modal.DB;
 import com.dlz.framework.db.util.DbConvertUtil;
 import com.dlz.framework.db.util.DbLogUtil;
 import lombok.extern.slf4j.Slf4j;
@@ -47,7 +47,7 @@ public class DlzDbConfigs extends DlzDbConfig {
 
     @Bean(name = "JdbcTemplate")
     public JdbcTemplate JdbcTemplate(DataSource dataSource) {
-        DBDynamic.setDefaultDataSource(dataSource);
+        DB.Dynamic.setDefaultDataSource(dataSource);
         return new JdbcTemplate(dataSource);
     }
 

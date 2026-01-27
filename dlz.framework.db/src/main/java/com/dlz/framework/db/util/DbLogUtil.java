@@ -4,7 +4,7 @@ import com.dlz.comm.fn.DlzFn2;
 import com.dlz.comm.util.ExceptionUtils;
 import com.dlz.comm.util.StringUtils;
 import com.dlz.framework.db.config.DlzDbProperties;
-import com.dlz.framework.db.ds.DBDynamic;
+import com.dlz.framework.db.modal.DB;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.MDC;
 
@@ -78,7 +78,7 @@ public class DbLogUtil {
 
     public static <T> String generateSqlMessage(Long t, T reulst, String methodName, String sql, Object[] args) {
         final long l = System.currentTimeMillis() - t;
-        final String usedDataSourseName = DBDynamic.getUsedDataSourceName();
+        final String usedDataSourseName = DB.Dynamic.getUsedDataSourceName();
         if(usedDataSourseName!=null){
             methodName = "["+usedDataSourseName+"] "+methodName;
         }

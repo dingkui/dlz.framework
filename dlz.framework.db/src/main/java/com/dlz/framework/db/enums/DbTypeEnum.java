@@ -1,7 +1,6 @@
 package com.dlz.framework.db.enums;
 
-import com.dlz.framework.db.ds.DBDynamic;
-import com.dlz.framework.db.holder.SqlHolder;
+import com.dlz.framework.db.modal.DB;
 
 public enum DbTypeEnum {
     MYSQL(".mysql"),
@@ -25,7 +24,7 @@ public enum DbTypeEnum {
         for (int i = 0; i < values.length; i++) {
             DbTypeEnum item = values[i];
             if(key.endsWith(item.getEnd())){
-                if(DBDynamic.getDbType()== item){
+                if(DB.Dynamic.getDbType()== item){
                     return key.substring(0, key.length()- item.getEnd().length());
                 }
                 return null;

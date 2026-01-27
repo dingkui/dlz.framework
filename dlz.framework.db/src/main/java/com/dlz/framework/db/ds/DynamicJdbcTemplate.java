@@ -1,5 +1,6 @@
 package com.dlz.framework.db.ds;
 
+import com.dlz.framework.db.modal.DB;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.jdbc.core.JdbcTemplate;
 
@@ -13,13 +14,13 @@ import javax.sql.DataSource;
 public class DynamicJdbcTemplate extends JdbcTemplate {
 
     public DynamicJdbcTemplate(DataSource dataSource) {
-        DBDynamic.setDefaultDataSource(dataSource);
+        DB.Dynamic.setDefaultDataSource(dataSource);
     }
 
     @Override
     public DataSource getDataSource() {
         // 从连接池管理器获取对应的数据源
-        return DBDynamic.getDataSource();
+        return DB.Dynamic.getDataSource();
     }
 
     @Override

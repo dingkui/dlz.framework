@@ -1,12 +1,11 @@
 package com.dlz.framework.db.helper.support;
 
-import com.dlz.framework.db.annotation.TableName;
 import com.dlz.comm.util.StringUtils;
 import com.dlz.comm.util.system.FieldReflections;
-import com.dlz.framework.db.ds.DBDynamic;
+import com.dlz.framework.db.annotation.TableName;
 import com.dlz.framework.db.enums.DbTypeEnum;
 import com.dlz.framework.db.holder.BeanInfoHolder;
-import com.dlz.framework.db.holder.SqlHolder;
+import com.dlz.framework.db.modal.DB;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.ClassPathScanningCandidateComponentProvider;
@@ -40,9 +39,9 @@ public class HelperScan {
         if (StringUtils.isEmpty(packageName)) {
             return;
         }
-        final SqlHelper helper = DBDynamic.getSqlHelper();
+        final SqlHelper helper = DB.Dynamic.getSqlHelper();
         Set<Class<?>> set = scanPackage(packageName, TableName.class);
-        boolean initSync = DBDynamic.getDbType() == DbTypeEnum.SQLITE;
+        boolean initSync = DB.Dynamic.getDbType() == DbTypeEnum.SQLITE;
         if (initSync) {
             set.stream().forEach(clazz -> initTable(clazz,helper));
         } else {

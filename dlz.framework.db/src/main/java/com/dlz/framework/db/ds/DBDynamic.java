@@ -23,12 +23,12 @@ import java.util.function.Supplier;
  */
 @Slf4j
 public class DBDynamic {
-    public final static String defaultName = "default";
-    private static final ThreadLocal<DataSourceConfig> HOLDER_config = new ThreadLocal<>();
+    private final String defaultName = "default";
+    private final ThreadLocal<DataSourceConfig> HOLDER_config = new ThreadLocal<>();
 
-    private static final Map<String, DataSourceConfig> configPool = new ConcurrentHashMap<>();
+    private final Map<String, DataSourceConfig> configPool = new ConcurrentHashMap<>();
 
-    public static <T> T use(String name, Supplier<T> c) {
+    public <T> T use(String name, Supplier<T> c) {
         try {
             if (name == null || name.isEmpty()) {
                 name = defaultName;
@@ -47,10 +47,10 @@ public class DBDynamic {
     /**
      * 获取当前线程的数据源名称
      */
-    private static DataSourceConfig getConfig() {
+    private DataSourceConfig getConfig() {
         DataSourceConfig config = HOLDER_config.get();
         if (config == null) {
-            config = configPool.get(DBDynamic.defaultName);
+            config = configPool.get(defaultName);
         }
         if (config == null) {
             throw new SystemException("数据源不存在:" + defaultName);
@@ -61,14 +61,14 @@ public class DBDynamic {
     /**
      * 获取当前线程的数据源名称
      */
-    public static DataSource getDataSource() {
+    public DataSource getDataSource() {
         return getConfig().getDataSource();
     }
 
     /**
      * 获取当前线程的数据源名称
      */
-    public static String getUsedDataSourceName() {
+    public String getUsedDataSourceName() {
         DataSourceConfig config = HOLDER_config.get();
         if (config == null) {
             return null;
@@ -79,21 +79,21 @@ public class DBDynamic {
     /**
      * 获取当前线程的数据源名称
      */
-    public static ResultMapRowMapper getRowMapper() {
+    public ResultMapRowMapper getRowMapper() {
         return getConfig().getRowMapper();
     }
 
     /**
      * 获取当前线程的数据源名称
      */
-    public static DbTypeEnum getDbType() {
+    public DbTypeEnum getDbType() {
         return getConfig().getDbType();
     }
 
     /**
      * 获取当前线程的数据源名称
      */
-    public static SqlHelper getSqlHelper() {
+    public SqlHelper getSqlHelper() {
         return getConfig().getSqlHelper();
     }
 
@@ -101,10 +101,10 @@ public class DBDynamic {
     /**
      * 更新数据源
      */
-    public static synchronized boolean setDefaultDataSource(DataSource dataSource) {
+    public synchronized boolean setDefaultDataSource(DataSource dataSource) {
         if (dataSource != null) {
             final DataSourceProperty defaultProperties = new DataSourceProperty();
-            String name = DBDynamic.defaultName;
+            String name = defaultName;
             defaultProperties.setName(name);
             final DataSourceConfig v = new DataSourceConfig(defaultProperties);
             v.setDataSource(dataSource);
@@ -135,13 +135,13 @@ public class DBDynamic {
     /**
      * 更新数据源
      */
-    public static synchronized boolean setDataSource(DataSourceProperty properties) {
+    public synchronized boolean setDataSource(DataSourceProperty properties) {
         if (properties == null) {
             throw new SystemException("数据源配置不能为空");
         }
         String name = properties.getName();
         if (StringUtils.isEmpty(name)) {
-            name = DBDynamic.defaultName;
+            name = defaultName;
         }
         if (configPool.containsKey(name)) {
             // 关闭旧的数据源
@@ -150,7 +150,7 @@ public class DBDynamic {
 
         try {
             configPool.put(name, new DataSourceConfig(properties));
-            if (name.equals(DBDynamic.defaultName)) {
+            if (name.equals(defaultName)) {
                 log.warn("修改系统默认数据源: " + properties.getUrl());
             }
             // 创建新的数据源
@@ -163,7 +163,7 @@ public class DBDynamic {
     /**
      * 删除数据源
      */
-    public static synchronized boolean removeDataSource(String name) {
+    public synchronized boolean removeDataSource(String name) {
         DataSourceConfig config = configPool.remove(name);
         if (config != null) {
             try {
@@ -182,14 +182,14 @@ public class DBDynamic {
     /**
      * 获取所有数据源名称
      */
-    public static Set<String> getAllDataSourceNames() {
+    public Set<String> getAllDataSourceNames() {
         return new HashSet<>(configPool.keySet());
     }
 
     /**
      * 获取当前线程的数据源名称
      */
-    public static DataSourceProperty getDataSourceProperty(String name) {
+    public DataSourceProperty getDataSourceProperty(String name) {
         DataSourceConfig config = configPool.get(name);
         if (config == null) {
             throw new SystemException("数据源不存在:" + name);

@@ -4,6 +4,7 @@ import com.dlz.comm.util.system.FieldReflections;
 import com.dlz.framework.db.ds.DBDynamic;
 import com.dlz.framework.db.helper.wrapper.ConditionOrWrapper;
 import com.dlz.framework.db.holder.BeanInfoHolder;
+import com.dlz.framework.db.modal.DB;
 import com.dlz.test.framework.db.config.SpingDbBaseTest;
 import com.dlz.test.framework.db.entity.Dict;
 import org.junit.Test;
@@ -50,6 +51,6 @@ public class SqlHelperTest extends SpingDbBaseTest {
 
     @Test
     public void doTest() {
-        DBDynamic.getSqlHelper().findById("1", Dict.class);
+        DB.Dynamic.getSqlHelper().findById("1", Dict.class);
     }
 }

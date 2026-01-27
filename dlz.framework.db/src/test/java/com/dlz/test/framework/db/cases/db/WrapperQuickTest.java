@@ -63,17 +63,17 @@ public class WrapperQuickTest extends SpingDbBaseTest{
         properties.setUsername("root");
         properties.setPassword("1234qwer");
         properties.setUrl("jdbc:mysql://192.168.1.126:3306/test?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&transformedBitIsBoolean=true&allowMultiQueries=true&useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=Asia/Shanghai");
-        DBDynamic.setDataSource(properties);
+        DB.Dynamic.setDataSource(properties);
 
 
-        DBDynamic.use("test",()-> {
+        DB.Dynamic.use("test",()-> {
             DB.Wrapper.getById(SysSql.class, "1");
             DB.Wrapper.getById(SysSql.class, "2");
             return null;
         });
 
         DB.Wrapper.getById(SysSql.class, "1");
-        DBDynamic.use("default",()-> {
+        DB.Dynamic.use("default",()-> {
             DB.Wrapper.getById(SysSql.class, "1");
             DB.Wrapper.getById(SysSql.class, "2");
             return null;

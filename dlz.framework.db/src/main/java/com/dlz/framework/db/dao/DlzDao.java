@@ -1,6 +1,6 @@
 package com.dlz.framework.db.dao;
 
-import com.dlz.framework.db.ds.DBDynamic;
+import com.dlz.framework.db.modal.DB;
 import com.dlz.framework.db.modal.result.ResultMap;
 import com.dlz.framework.db.util.DbLogUtil;
 import lombok.extern.slf4j.Slf4j;
@@ -29,7 +29,7 @@ public class DlzDao implements IDlzDao {
 
     @Override
     public List<ResultMap> getList(String sql, Object... args) throws DataAccessException {
-        return getList(sql, DBDynamic.getRowMapper(), args);
+        return getList(sql, DB.Dynamic.getRowMapper(), args);
     }
 
     @Override
