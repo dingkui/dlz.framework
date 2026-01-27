@@ -56,7 +56,7 @@ public class SqlUtil {
     /**
      * 是否数字
      */
-    private static Pattern PATTERN_ISNUM = Pattern.compile("^[\\d\\.-]+$");
+    private static Pattern PATTERN_ISNUM = Pattern.compile("^-?\\d+(\\.\\d+)?$");
 
     /**
      * 转换mybatisSQl为jdbcSql
