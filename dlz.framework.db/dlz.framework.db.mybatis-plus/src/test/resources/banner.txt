@@ -1,5 +1,0 @@
-${AnsiColor.BRIGHT_GREEN}     DLZ-Framework
-${AnsiColor.BRIGHT_RED}Spring Boot: ${spring-boot.version}
-${AnsiColor.BRIGHT_BLACK}APP  : ${spring.application.name}(${spring.profiles.active})  http://127.0.0.1:${server.port}${server.servlet.context-path:/}
-REDIS: ${spring.redis.password}@${spring.redis.host}:${spring.redis.port}
-${AnsiColor.BLACK}

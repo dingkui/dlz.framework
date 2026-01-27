@@ -1,75 +1,67 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-    <modelVersion>4.0.0</modelVersion>
-    <parent>
-        <groupId>com.chan3d</groupId>
-        <artifactId>dlz-dependencies</artifactId>
-        <version>6.4.0-SNAPSHOT</version>
-    </parent>
-    <artifactId>dlz.framework.db</artifactId>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>com.chan3d</groupId>
+		<artifactId>dlz.framework.db</artifactId>
+		<version>6.4.0-SNAPSHOT</version>
+	</parent>
     <name>dlz.framework.db</name>
-    <packaging>pom</packaging>
-    <modules>
-        <module>dlz.framework.db.springjdbc</module>
-        <module>dlz.framework.db.mybatis-plus</module>
-<!--        <module>dlz.framework.mongo</module>-->
-    </modules>
-    <dependencies>
+	<artifactId>dlz.framework.db</artifactId>
+	<packaging>jar</packaging>
+
+	<dependencies>
+        <!-- 框架 -->
         <dependency>
             <groupId>com.chan3d</groupId>
             <artifactId>dlz.framework</artifactId>
             <version>${dlz.fw.version}</version>
         </dependency>
-<!--        <dependency>-->
-<!--            <groupId>comlib.jdbc</groupId>-->
-<!--            <artifactId>ojdbc14</artifactId>-->
-<!--            <scope>test</scope>-->
-<!--        </dependency>-->
+
+		<!--Swagger注解 -->
+		<dependency>
+			<groupId>io.swagger</groupId>
+			<artifactId>swagger-annotations</artifactId>
+			<version>${swagger.models.version}</version>
+		</dependency>
+
+        <!-- spring -->
         <dependency>
-            <groupId>c3p0</groupId>
-            <artifactId>c3p0</artifactId>
-            <scope>test</scope>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-configuration-processor</artifactId>
+            <optional>true</optional>
         </dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-jdbc</artifactId>
+			<exclusions>
+				<exclusion>
+					<artifactId>tomcat-jdbc</artifactId>
+					<groupId>org.apache.tomcat</groupId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+
+
+        <!-- 测试 -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
             <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-configuration-processor</artifactId>
-            <optional>true</optional>
+            <groupId>c3p0</groupId>
+            <artifactId>c3p0</artifactId>
+            <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>mysql</groupId>
             <artifactId>mysql-connector-java</artifactId>
             <scope>test</scope>
         </dependency>
-    </dependencies>
-    <dependencyManagement>
-        <dependencies>
-            <dependency>
-                <groupId>c3p0</groupId>
-                <artifactId>c3p0</artifactId>
-                <version>0.9.1.2</version>
-            </dependency>
-            <!-- jdbc/ojdbc14-1.0.jar -->
-<!--            <dependency>-->
-<!--                <groupId>comlib.jdbc</groupId>-->
-<!--                <artifactId>ojdbc14</artifactId>-->
-<!--                <version>1.0</version>-->
-<!--            </dependency>-->
-            <dependency>
-                <groupId>com.chan3d</groupId>
-                <artifactId>dlz.framework.db.springjdbc</artifactId>
-                <version>${dlz.fw.version}</version>
-            </dependency>
-            <!-- util/qrcode-1.0.jar -->
-            <!--            <dependency>-->
-            <!--                <groupId>comlib.util</groupId>-->
-            <!--                <artifactId>qrcode</artifactId>-->
-            <!--                <version>1.0</version>-->
-            <!--            </dependency>-->
-        </dependencies>
-    </dependencyManagement>
+        <!--        <dependency>-->
+        <!--            <groupId>comlib.jdbc</groupId>-->
+        <!--            <artifactId>ojdbc14</artifactId>-->
+        <!--            <scope>test</scope>-->
+        <!--        </dependency>-->
+	</dependencies>
 </project>
