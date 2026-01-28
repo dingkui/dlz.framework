@@ -5,7 +5,7 @@ import com.dlz.comm.util.encry.TraceUtil;
 import com.dlz.comm.util.system.FieldReflections;
 import com.dlz.framework.db.modal.items.JdbcItem;
 import com.dlz.framework.db.modal.items.SqlItem;
-import com.dlz.framework.db.modal.para.AWrapper;
+import com.dlz.framework.db.modal.para.AParaPojo;
 import com.dlz.framework.db.modal.para.ParaJdbc;
 import com.dlz.framework.db.modal.para.ParaMap;
 import com.dlz.framework.db.util.SqlUtil;
@@ -68,12 +68,12 @@ public class SpingDbBaseTest {
     public void showSql(ParaMap paraMap, String fn) {
         showSql(paraMap, fn, null);
     }
-    public void showSql(AWrapper wrapper, String fn, String re) {
+    public void showSql(AParaPojo wrapper, String fn, String re) {
         wrapper.jdbcSql();
         ParaMap paraMap = FieldReflections.getValue(wrapper, "pm",false);
         showSql(paraMap, fn, re);
     }
-    public void showSql(AWrapper wrapper, String fn) {
+    public void showSql(AParaPojo wrapper, String fn) {
         showSql(wrapper, fn, null);
     }
 }

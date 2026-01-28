@@ -1,9 +1,10 @@
-package com.dlz.framework.db.modal.para;
+package com.dlz.framework.db.modal.wrapper;
 
 import com.dlz.comm.util.system.FieldReflections;
 import com.dlz.framework.db.holder.BeanInfoHolder;
 import com.dlz.framework.db.holder.DBHolder;
-import com.dlz.framework.db.inf.IOperatorInsert;
+import com.dlz.framework.db.modal.para.AParaPojo;
+import com.dlz.framework.db.inf.IExecutorInsert;
 
 import java.lang.reflect.Field;
 import java.util.List;
@@ -14,12 +15,12 @@ import java.util.stream.Collectors;
  *
  * @author dk
  */
-public class WrapperInsert<T> extends AWrapper<T, TableInsert> implements IOperatorInsert {
-    public static <T> WrapperInsert<T> wrapper(T valueBean) {
-        return new WrapperInsert(valueBean);
+public class PojoInsert<T> extends AParaPojo<T, TableInsert> implements IExecutorInsert {
+    public static <T> PojoInsert<T> wrapper(T valueBean) {
+        return new PojoInsert(valueBean);
     }
 
-    private WrapperInsert(T valueBean) {
+    private PojoInsert(T valueBean) {
         super(valueBean);
         setPm(new TableInsert(getTableName()));
     }
@@ -31,7 +32,7 @@ public class WrapperInsert<T> extends AWrapper<T, TableInsert> implements IOpera
             if (value != null) {
                 getPm().value(BeanInfoHolder.getColumnName(field), value);
             } else {
-                value = TableMakerUtil.getIdValue(field, getTableName());
+                value = WrapperBuildUtil.getIdValue(field, getTableName());
                 if (value != null) {
                     FieldReflections.setValue(bean, field, value);
                     getPm().value(BeanInfoHolder.getColumnName(field), value);
@@ -47,7 +48,7 @@ public class WrapperInsert<T> extends AWrapper<T, TableInsert> implements IOpera
     public boolean batch(List<T> valueBeans, int batchSize) {
         String dbName = BeanInfoHolder.getTableName(getBeanClass());
         final List<Field> fields = BeanInfoHolder.getBeanFields(getBeanClass());
-        String sql = TableMakerUtil.buildInsertSql(dbName, fields);
+        String sql = WrapperBuildUtil.buildInsertSql(dbName, fields);
         while (valueBeans.size() > 0 && batchSize > 0) {
             if (batchSize > valueBeans.size()) {
                 batchSize = valueBeans.size();
@@ -55,7 +56,7 @@ public class WrapperInsert<T> extends AWrapper<T, TableInsert> implements IOpera
             final List<T> ts = valueBeans.subList(0, batchSize);
 
             List<Object[]> paramValues = ts.stream()
-                    .map(v -> TableMakerUtil.buildInsertParams(dbName,v, fields))
+                    .map(v -> WrapperBuildUtil.buildInsertParams(dbName,v, fields))
                     .collect(Collectors.toList());
             DBHolder.getDao().batchUpdate(sql, paramValues);
             valueBeans = valueBeans.subList(batchSize, valueBeans.size());

@@ -16,7 +16,7 @@ import java.util.List;
  *
  * @author dk
  */
-public abstract class AWrapper<T,P extends ParaMap> implements ISqlPara {
+public abstract class AParaPojo<T,P extends ParaMap> implements ISqlPara {
     private final Class<T> beanClass;
     protected T bean;
     private final String tableName;
@@ -26,7 +26,7 @@ public abstract class AWrapper<T,P extends ParaMap> implements ISqlPara {
     @Setter
     private P pm;
 
-    public AWrapper(Class<T> beanClass) {
+    public AParaPojo(Class<T> beanClass) {
         this.beanClass = beanClass;
         if(beanClass == Class.class){
             throw new DbException("bean需要为实体对象",1002);
@@ -35,7 +35,7 @@ public abstract class AWrapper<T,P extends ParaMap> implements ISqlPara {
         tableName= BeanInfoHolder.getTableName(beanClass);
         fields= BeanInfoHolder.getBeanFields(beanClass);
     }
-    public AWrapper(T bean) {
+    public AParaPojo(T bean) {
         this.bean = bean;
         if(bean == null){
             throw new DbException("bean不能为空",1002);

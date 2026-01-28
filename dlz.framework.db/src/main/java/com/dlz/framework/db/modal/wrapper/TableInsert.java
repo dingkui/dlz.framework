@@ -1,8 +1,9 @@
-package com.dlz.framework.db.modal.para;
+package com.dlz.framework.db.modal.wrapper;
 
 import com.dlz.comm.fn.DlzFn;
 import com.dlz.framework.db.holder.BeanInfoHolder;
-import com.dlz.framework.db.inf.IOperatorInsert;
+import com.dlz.framework.db.modal.para.AParaTable;
+import com.dlz.framework.db.inf.IExecutorInsert;
 import com.dlz.framework.db.util.DbConvertUtil;
 import lombok.extern.slf4j.Slf4j;
 
@@ -15,7 +16,7 @@ import java.util.Map;
  * @author dingkui
  */
 @Slf4j
-public class TableInsert extends ATableMaker implements IOperatorInsert {
+public class TableInsert extends AParaTable implements IExecutorInsert {
     private static final long serialVersionUID = 8374167270612933157L;
     final Map<String, Object> insertValues = new HashMap<>();
 
@@ -25,7 +26,7 @@ public class TableInsert extends ATableMaker implements IOperatorInsert {
 
     @Override
     public String getSql() {
-        return TableMakerUtil.MAKER_SQL_INSERT;
+        return WrapperBuildUtil.MAKER_SQL_INSERT;
     }
 
     public <T> void value(DlzFn<T, ?> column, Object value) {

@@ -1,6 +1,6 @@
 package com.dlz.framework.db.service;
 
-import com.dlz.framework.db.inf.IOperatorQuery;
+import com.dlz.framework.db.inf.IExecutorQuery;
 import com.dlz.framework.db.util.DbConvertUtil;
 
 import java.math.BigDecimal;
@@ -15,59 +15,59 @@ import java.util.List;
  */
 public interface IDbClumnService extends IDbBaseService {
 
-    default String getStr(IOperatorQuery paraMap) {
+    default String getStr(IExecutorQuery paraMap) {
         return getFistColumn(paraMap, String.class);
     }
 
-    default <T> List<T> getColumnList(IOperatorQuery paraMap, Class<T> tClass) {
+    default <T> List<T> getColumnList(IExecutorQuery paraMap, Class<T> tClass) {
         return doDb(paraMap, jdbcSql -> DbConvertUtil.getColumnList(getDao().getList(jdbcSql.sql, jdbcSql.paras), tClass));
     }
 
-    default <T> T getFistColumn(IOperatorQuery paraMap, Class<T> tClass) {
+    default <T> T getFistColumn(IExecutorQuery paraMap, Class<T> tClass) {
         return doDb(paraMap, jdbcSql -> getDao().getFistColumn(jdbcSql.sql, tClass, jdbcSql.paras));
     }
 
-    default BigDecimal getBigDecimal(IOperatorQuery paraMap) {
+    default BigDecimal getBigDecimal(IExecutorQuery paraMap) {
         return getFistColumn(paraMap, BigDecimal.class);
     }
 
-    default Float getFloat(IOperatorQuery paraMap) {
+    default Float getFloat(IExecutorQuery paraMap) {
         return getFistColumn(paraMap, Float.class);
     }
 
-    default Integer getInt(IOperatorQuery paraMap) {
+    default Integer getInt(IExecutorQuery paraMap) {
         return getFistColumn(paraMap, Integer.class);
     }
 
-    default Long getLong(IOperatorQuery paraMap) {
+    default Long getLong(IExecutorQuery paraMap) {
         return getFistColumn(paraMap, Long.class);
     }
 
-    default Double getDouble(IOperatorQuery paraMap) {
+    default Double getDouble(IExecutorQuery paraMap) {
         return getFistColumn(paraMap, Double.class);
     }
 
-    default List<String> getStrList(IOperatorQuery paraMap) {
+    default List<String> getStrList(IExecutorQuery paraMap) {
         return getColumnList(paraMap, String.class);
     }
 
-    default List<BigDecimal> getBigDecimalList(IOperatorQuery paraMap) {
+    default List<BigDecimal> getBigDecimalList(IExecutorQuery paraMap) {
         return getColumnList(paraMap, BigDecimal.class);
     }
 
-    default List<Float> getFloatList(IOperatorQuery paraMap) {
+    default List<Float> getFloatList(IExecutorQuery paraMap) {
         return getColumnList(paraMap, Float.class);
     }
 
-    default List<Integer> getIntList(IOperatorQuery paraMap) {
+    default List<Integer> getIntList(IExecutorQuery paraMap) {
         return getColumnList(paraMap, Integer.class);
     }
 
-    default List<Long> getLongList(IOperatorQuery paraMap) {
+    default List<Long> getLongList(IExecutorQuery paraMap) {
         return getColumnList(paraMap, Long.class);
     }
 
-    default List<Double> getDoubleList(IOperatorQuery paraMap) {
+    default List<Double> getDoubleList(IExecutorQuery paraMap) {
         return getColumnList(paraMap, Double.class);
     }
 }

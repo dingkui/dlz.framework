@@ -3,8 +3,9 @@ package com.dlz.framework.db.modal.para;
 import com.dlz.comm.util.StringUtils;
 import com.dlz.comm.util.system.FieldReflections;
 import com.dlz.framework.db.holder.BeanInfoHolder;
-import com.dlz.framework.db.inf.ISqlWrapperQuery;
+import com.dlz.framework.db.inf.ISqlQuery;
 import com.dlz.framework.db.modal.condition.Condition;
+import com.dlz.framework.db.inf.ICondAddByLamda;
 
 import java.lang.reflect.Field;
 import java.util.List;
@@ -15,12 +16,14 @@ import java.util.List;
  *
  * @author dingkui
  */
-public abstract class AWrapperQuery<ME extends AWrapperQuery, T, PM extends AQuery> extends AWrapper<T, PM> implements ISqlWrapperQuery<ME, T> {
-    protected AWrapperQuery(Class<T> beanClass) {
+public abstract class APojoQuery<ME extends APojoQuery, T, PM extends AQuery>
+        extends AParaPojo<T, PM>
+        implements ISqlQuery<ME>, ICondAddByLamda<ME, T> {
+    protected APojoQuery(Class<T> beanClass) {
         super(beanClass);
     }
 
-    protected AWrapperQuery(T conditionBean) {
+    protected APojoQuery(T conditionBean) {
         super(conditionBean);
     }
 

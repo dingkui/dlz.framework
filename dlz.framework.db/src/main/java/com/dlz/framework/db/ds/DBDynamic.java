@@ -28,6 +28,9 @@ public class DBDynamic {
 
     private final Map<String, DataSourceConfig> configPool = new ConcurrentHashMap<>();
 
+    /**
+     * 使用指定数据源执行
+     */
     public <T> T use(String name, Supplier<T> c) {
         try {
             if (name == null || name.isEmpty()) {
@@ -45,7 +48,7 @@ public class DBDynamic {
     }
 
     /**
-     * 获取当前线程的数据源名称
+     * 获取当前线程的数据源配置
      */
     private DataSourceConfig getConfig() {
         DataSourceConfig config = HOLDER_config.get();
@@ -59,7 +62,7 @@ public class DBDynamic {
     }
 
     /**
-     * 获取当前线程的数据源名称
+     * 获取当前线程的数据源
      */
     public DataSource getDataSource() {
         return getConfig().getDataSource();
@@ -77,7 +80,7 @@ public class DBDynamic {
     }
 
     /**
-     * 获取当前线程的数据源名称
+     * 获取当前线程的数据源的列映射器
      */
     public ResultMapRowMapper getRowMapper() {
         return getConfig().getRowMapper();

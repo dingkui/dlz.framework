@@ -3,8 +3,8 @@ package com.dlz.framework.db.service;
 import com.dlz.comm.exception.ValidateException;
 import com.dlz.comm.util.StringUtils;
 import com.dlz.comm.util.system.ConvertUtil;
-import com.dlz.framework.db.inf.IOperatorQuery;
-import com.dlz.framework.db.modal.para.WrapperQuery;
+import com.dlz.framework.db.inf.IExecutorQuery;
+import com.dlz.framework.db.modal.wrapper.PojoQuery;
 import com.dlz.framework.db.modal.result.ResultMap;
 
 /**
@@ -19,34 +19,34 @@ public interface IDbOneService extends IDbBaseService {
     /**
      * 从数据库中取得集合
      */
-    default ResultMap getMap(IOperatorQuery paraMap) {
+    default ResultMap getMap(IExecutorQuery paraMap) {
         return getMap(paraMap, false);
     }
 
-    default ResultMap getMap(IOperatorQuery paraMap, boolean throwEx) {
+    default ResultMap getMap(IExecutorQuery paraMap, boolean throwEx) {
         return doDb(paraMap, jdbcSql -> getDao().getOne(jdbcSql.sql, throwEx, jdbcSql.paras));
     }
 
-    default <T> T getBean(WrapperQuery<T> wrapper, boolean throwEx) {
+    default <T> T getBean(PojoQuery<T> wrapper, boolean throwEx) {
         return doDb(wrapper, jdbcSql -> ConvertUtil.convert(getDao().getOne(jdbcSql.sql, throwEx, jdbcSql.paras),wrapper.getBeanClass()));
     }
-    default <T> T getBean(IOperatorQuery paraMap, Class<T> t, boolean throwEx) {
+    default <T> T getBean(IExecutorQuery paraMap, Class<T> t, boolean throwEx) {
         return doDb(paraMap, jdbcSql -> ConvertUtil.convert(getDao().getOne(jdbcSql.sql, throwEx, jdbcSql.paras), t));
     }
 
-    default <T> T getBean(IOperatorQuery paraMap, Class<T> t) {
+    default <T> T getBean(IExecutorQuery paraMap, Class<T> t) {
         return getBean(paraMap, t, false);
     }
 
     default <T> T getBean(T bean) {
-        final WrapperQuery<T> wrapper = WrapperQuery.wrapper(bean);
+        final PojoQuery<T> wrapper = PojoQuery.wrapper(bean);
         return getBean(wrapper, wrapper.getBeanClass(), true);
     }
     default <T> T getById(String id,Class<T> clazz){
         if(StringUtils.isEmpty(id)){
             throw new ValidateException("id不能为空");
         }
-        return getBean(WrapperQuery.wrapper(clazz).eq("id",id),clazz,true);
+        return getBean(PojoQuery.wrapper(clazz).eq("id",id),clazz,true);
     }
 
 }

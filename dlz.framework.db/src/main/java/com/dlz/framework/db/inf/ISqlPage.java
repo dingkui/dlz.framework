@@ -7,11 +7,11 @@ import java.util.Arrays;
 import java.util.List;
 
 /**
- * sqlMaker 翻页查询 查询需要实现
+ * 翻页参数构造器
  *
  * @param <T>
  */
-public interface ISqlMakerPage<T extends ISqlMakerPage>{
+public interface ISqlPage<T extends ISqlPage>{
     Page getPage();
 
     T page(Page page);

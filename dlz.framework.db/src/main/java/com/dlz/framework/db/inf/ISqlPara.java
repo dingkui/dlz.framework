@@ -4,7 +4,7 @@ import com.dlz.framework.db.modal.items.JdbcItem;
 import com.dlz.framework.db.modal.items.SqlItem;
 
 /**
- * 添加and or条件
+ * 参数转sql构造器
  */
 public interface ISqlPara {
     JdbcItem jdbcSql();

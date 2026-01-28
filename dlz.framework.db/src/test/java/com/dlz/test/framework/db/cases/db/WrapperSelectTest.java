@@ -2,7 +2,7 @@ package com.dlz.test.framework.db.cases.db;
 
 import com.dlz.comm.json.JSONMap;
 import com.dlz.framework.db.modal.DB;
-import com.dlz.framework.db.modal.para.WrapperQuery;
+import com.dlz.framework.db.modal.wrapper.PojoQuery;
 import com.dlz.test.framework.db.config.SpingDbBaseTest;
 import com.dlz.test.framework.db.entity.Menu;
 import com.dlz.test.framework.db.entity.Role;
@@ -17,7 +17,7 @@ public class WrapperSelectTest extends SpingDbBaseTest {
         Menu menu = new Menu();
         menu.setCode("qsm");
         menu.setName("全生命周期项目");
-        final WrapperQuery<Menu> wrapper = DB.Wrapper.select(Menu.class)
+        final PojoQuery<Menu> wrapper = DB.Pojo.select(Menu.class)
                 .ne(menu.getId() != null, Menu::getId, menu.getId())
                 .or(w -> w
                         .eq(Menu::getCode, menu.getCode())
@@ -30,7 +30,7 @@ public class WrapperSelectTest extends SpingDbBaseTest {
         Menu menu = new Menu();
         menu.setCode("qsm");
         menu.setName("全生命周期项目");
-        final WrapperQuery<Menu> menuQueryWrapper = DB.Wrapper.select(Menu.class)
+        final PojoQuery<Menu> menuQueryWrapper = DB.Pojo.select(Menu.class)
                 .ne(menu.getId() != null, Menu::getId, menu.getId())
                 .eq(Menu::getCategory, "1")
                 .or(w -> w
@@ -44,7 +44,7 @@ public class WrapperSelectTest extends SpingDbBaseTest {
         Menu menu = new Menu();
         menu.setCode("qsm");
         menu.setName("全生命周期项目");
-        final WrapperQuery<Menu> menuQueryWrapper = DB.Wrapper.select(Menu.class)
+        final PojoQuery<Menu> menuQueryWrapper = DB.Pojo.select(Menu.class)
                 .ne(menu.getId() != null, Menu::getId, menu.getId())
                 .eq(Menu::getCategory, "1")
                 .or(xx -> xx
@@ -58,7 +58,7 @@ public class WrapperSelectTest extends SpingDbBaseTest {
         Menu menu = new Menu();
         menu.setCode("qsm");
         menu.setName("全生命周期项目");
-        final WrapperQuery<Menu> menuQueryWrapper = DB.Wrapper.select(Menu.class)
+        final PojoQuery<Menu> menuQueryWrapper = DB.Pojo.select(Menu.class)
                 .ne(menu.getId() != null, Menu::getId, menu.getId())
                 .or(w -> w
                         .eq(Menu::getCode, menu.getCode())
@@ -74,7 +74,7 @@ public class WrapperSelectTest extends SpingDbBaseTest {
         menu.setId(1L);
         menu.setCode("qsm");
         menu.setName("全生命周期项目");
-        final WrapperQuery<Menu> menuQueryWrapper = DB.Wrapper.select(Menu.class)
+        final PojoQuery<Menu> menuQueryWrapper = DB.Pojo.select(Menu.class)
                 .ne(menu.getId() != null, Menu::getId, menu.getId())
                 .apply("xx in (select x from dual where 1={0} and 2={1})", 1, 2);
         showSql(menuQueryWrapper, "conditionWhereTest4_1", "select * from sys_menu t where ID <> 1 and (xx in (select x from dual where 1=1 and 2=2)) and IS_DELETED = 0");
@@ -86,7 +86,7 @@ public class WrapperSelectTest extends SpingDbBaseTest {
         menu.setId(1L);
         menu.setCode("qsm");
         menu.setName("全生命周期项目");
-        final WrapperQuery<Menu> menuQueryWrapper = DB.Wrapper.select(Menu.class)
+        final PojoQuery<Menu> menuQueryWrapper = DB.Pojo.select(Menu.class)
                 .ne(menu.getId() != null, Menu::getId, menu.getId())
                 .sql("xx in (select x from dual where 1=#{a} and 2=#{b})", new JSONMap("a", 1, "b", 2));
         showSql(menuQueryWrapper, "conditionWhereTest4_2", "select * from sys_menu t where ID <> 1 and (xx in (select x from dual where 1=1 and 2=2)) and IS_DELETED = 0");
@@ -97,7 +97,7 @@ public class WrapperSelectTest extends SpingDbBaseTest {
     public void searchWrapperTest1() {
         SysSql dict = new SysSql();
         dict.setId(123L);
-        WrapperQuery select = DB.Wrapper.select(SysSql.class)
+        PojoQuery select = DB.Pojo.select(SysSql.class)
                 .columns(SysSql::getId);
         showSql(select, "searchWrapperTest1", "select ID from SYS_SQL t where IS_DELETED = 0");
     }
@@ -106,7 +106,7 @@ public class WrapperSelectTest extends SpingDbBaseTest {
     public void searchWrapperTest2() {
         SysSql dict = new SysSql();
         dict.setId(123L);
-        WrapperQuery<SysSql> query = DB.Wrapper.select(SysSql.class);
+        PojoQuery<SysSql> query = DB.Pojo.select(SysSql.class);
         showSql(query, "searchWrapperTest2", "select * from SYS_SQL t where IS_DELETED = 0");
     }
 
@@ -114,7 +114,7 @@ public class WrapperSelectTest extends SpingDbBaseTest {
     public void searchWrapperTest3() {
         SysSql dict = new SysSql();
         dict.setId(123L);
-        WrapperQuery<SysSql> query = DB.Wrapper.select(SysSql.class)
+        PojoQuery<SysSql> query = DB.Pojo.select(SysSql.class)
                 .eq(SysSql::getId, 123);
         showSql(query, "searchWrapperTest3", "select * from SYS_SQL t where ID = 123 and IS_DELETED = 0");
     }
@@ -122,7 +122,7 @@ public class WrapperSelectTest extends SpingDbBaseTest {
 
     @Test
     public void dbSqlTest1() {
-        final WrapperQuery eq = DB.Wrapper.select(Role.class)
+        final PojoQuery eq = DB.Pojo.select(Role.class)
                 .columns(Role::getRoleAlias)
                 .in(Role::getId, "11,22")
                 .eq(Role::getIsDeleted, 0);
@@ -132,7 +132,7 @@ public class WrapperSelectTest extends SpingDbBaseTest {
 
     @Test
     public void dbSqlTest2() {
-        final WrapperQuery eq = DB.Wrapper.select(Role.class)
+        final PojoQuery eq = DB.Pojo.select(Role.class)
                 .columns(Role::getRoleAlias)
                 .in(Role::getId, "a11,x22")
                 .eq(Role::getIsDeleted, 0);
@@ -141,7 +141,7 @@ public class WrapperSelectTest extends SpingDbBaseTest {
 
     @Test
     public void dbSqlTest21() {
-        final WrapperQuery eq = DB.Wrapper.select(Role.class)
+        final PojoQuery eq = DB.Pojo.select(Role.class)
                 .columns(Role::getId)
                 .in(Role::getId, "a11,x22")
                 .eq(Role::getIsDeleted, 0);

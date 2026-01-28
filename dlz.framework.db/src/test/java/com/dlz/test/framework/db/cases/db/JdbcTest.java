@@ -1,7 +1,7 @@
 package com.dlz.test.framework.db.cases.db;
 
 import com.dlz.framework.db.modal.DB;
-import com.dlz.framework.db.modal.para.JdbcQuery;
+import com.dlz.framework.db.modal.wrapper.JdbcQuery;
 import com.dlz.framework.db.modal.result.Order;
 import com.dlz.framework.db.modal.result.Page;
 import com.dlz.test.framework.db.config.SpingDbBaseTest;

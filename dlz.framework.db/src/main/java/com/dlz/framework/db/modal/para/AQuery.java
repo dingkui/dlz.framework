@@ -1,7 +1,8 @@
 package com.dlz.framework.db.modal.para;
 
-import com.dlz.framework.db.inf.ISqlMakerSearch;
+import com.dlz.framework.db.inf.ISqlQuery;
 import com.dlz.framework.db.modal.condition.Condition;
+import com.dlz.framework.db.inf.ICondAddByFn;
 
 
 /**
@@ -9,7 +10,9 @@ import com.dlz.framework.db.modal.condition.Condition;
  *
  * @author dingkui
  */
-public abstract class AQuery<T extends AQuery> extends ATableMaker<T> implements ISqlMakerSearch<T> {
+public abstract class AQuery<T extends AQuery> extends AParaTable<T> implements
+        ISqlQuery<T>,
+        ICondAddByFn<T> {
     private Condition whereCond = Condition.where();
     private boolean allowFullQuery = false;//是否允许全表查询，默认不允许
     protected AQuery(String tableName) {

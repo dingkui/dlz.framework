@@ -1,7 +1,7 @@
 package com.dlz.framework.db.modal;
 
 import com.dlz.framework.db.holder.DBHolder;
-import com.dlz.framework.db.modal.para.WrapperInsert;
+import com.dlz.framework.db.modal.wrapper.PojoInsert;
 
 import java.util.List;
 
@@ -12,7 +12,7 @@ public class DbBatch {
 
     public <T> boolean insert(List<T> bean, int batchSize) {
         if (bean.size() > 0) {
-            return WrapperInsert.wrapper(bean.get(0)).batch(bean, batchSize);
+            return PojoInsert.wrapper(bean.get(0)).batch(bean, batchSize);
         }
         return false;
     }
@@ -32,6 +32,4 @@ public class DbBatch {
         }
         return true;
     }
-
-
 }

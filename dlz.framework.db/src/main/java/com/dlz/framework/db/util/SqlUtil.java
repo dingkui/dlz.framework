@@ -8,10 +8,10 @@ import com.dlz.framework.db.enums.ParaTypeEnum;
 import com.dlz.framework.db.holder.SqlHolder;
 import com.dlz.framework.db.modal.items.JdbcItem;
 import com.dlz.framework.db.modal.items.SqlItem;
-import com.dlz.framework.db.modal.para.ATableMaker;
+import com.dlz.framework.db.modal.para.AParaTable;
 import com.dlz.framework.db.modal.para.ParaJdbc;
 import com.dlz.framework.db.modal.para.ParaMap;
-import com.dlz.framework.db.modal.para.TableMakerUtil;
+import com.dlz.framework.db.modal.wrapper.WrapperBuildUtil;
 import com.dlz.framework.db.modal.result.Page;
 import lombok.extern.slf4j.Slf4j;
 
@@ -134,8 +134,8 @@ public class SqlUtil {
      */
     public static SqlItem dealParm(ParaMap paraMap, int dealType) {
         SqlItem sqlItem = paraMap.getSqlItem();
-        if(sqlItem.getSqlKey() == null && paraMap instanceof ATableMaker){
-             TableMakerUtil.buildSql((ATableMaker) paraMap);
+        if(sqlItem.getSqlKey() == null && paraMap instanceof AParaTable){
+             WrapperBuildUtil.buildSql((AParaTable) paraMap);
         }
         if (sqlItem.getSqlKey() != null){
             String sql = sqlItem.getSqlDeal();

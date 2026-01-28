@@ -1,8 +1,9 @@
-package com.dlz.framework.db.modal.para;
+package com.dlz.framework.db.modal.wrapper;
 
 import com.dlz.comm.fn.DlzFn;
 import com.dlz.framework.db.holder.BeanInfoHolder;
-import com.dlz.framework.db.inf.IOperatorExec;
+import com.dlz.framework.db.modal.para.AQuery;
+import com.dlz.framework.db.inf.IExecutorUDI;
 import com.dlz.framework.db.util.DbConvertUtil;
 import lombok.extern.slf4j.Slf4j;
 
@@ -16,7 +17,7 @@ import java.util.Map;
  * @author dingkui
  */
 @Slf4j
-public class TableUpdate extends AQuery<TableUpdate> implements IOperatorExec {
+public class TableUpdate extends AQuery<TableUpdate> implements IExecutorUDI {
     private static final long serialVersionUID = 8374167270612933157L;
     final Map<String, Object> updateSets = new HashMap<>();
 
@@ -57,6 +58,6 @@ public class TableUpdate extends AQuery<TableUpdate> implements IOperatorExec {
 
     @Override
     public String getSql() {
-        return TableMakerUtil.MAKER_SQL_UPDATE;
+        return WrapperBuildUtil.MAKER_SQL_UPDATE;
     }
 }

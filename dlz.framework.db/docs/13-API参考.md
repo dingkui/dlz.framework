@@ -13,7 +13,7 @@
 | `query(Class<T>)` | `WrapperQuery<T>` | Bean 查询 |
 | `query(String tableName)` | `MakerSelect` | 表名查询 |
 | `jdbcSelect(String sql, Object... args)` | `JdbcQuery` | 原生 SQL 查询 |
-| `sqlSelect(String key)` | `SqlKeyQuery` | 预设 SQL 查询 |
+| `sqlSelect(String key)` | `SqlQuery` | 预设 SQL 查询 |
 
 ### 插入方法
 
@@ -120,7 +120,7 @@ Condition condition = Condition.where()
     .gt("age", 18);
 
 // 应用到查询
-DB.Wrapper.select("user").where(condition).list();
+DB.Pojo.select("user").where(condition).list();
 
 // 应用到更新
 DB.Table.update("user").set("flag", 1).where(condition).execute();

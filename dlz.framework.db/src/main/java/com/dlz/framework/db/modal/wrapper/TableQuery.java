@@ -1,11 +1,12 @@
-package com.dlz.framework.db.modal.para;
+package com.dlz.framework.db.modal.wrapper;
 
 import com.dlz.comm.fn.DlzFn;
 import com.dlz.comm.util.StringUtils;
 import com.dlz.framework.db.holder.BeanInfoHolder;
-import com.dlz.framework.db.inf.IOperatorQuery;
-import com.dlz.framework.db.inf.ISqlMakerPage;
+import com.dlz.framework.db.inf.ISqlPage;
+import com.dlz.framework.db.modal.para.AQuery;
 import com.dlz.framework.db.modal.result.Page;
+import com.dlz.framework.db.inf.IExecutorQuery;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.Arrays;
@@ -18,7 +19,7 @@ import java.util.stream.Collectors;
  */
 @Slf4j
 @SuppressWarnings("rawtypes")
-public class TableQuery extends AQuery<TableQuery> implements ISqlMakerPage<TableQuery>, IOperatorQuery {
+public class TableQuery extends AQuery<TableQuery> implements ISqlPage<TableQuery>, IExecutorQuery {
     private static final long serialVersionUID = 8374167270612933157L;
     String columns="*";
 
@@ -42,7 +43,7 @@ public class TableQuery extends AQuery<TableQuery> implements ISqlMakerPage<Tabl
 
     @Override
     public String getSql() {
-        return TableMakerUtil.MAKER_SQL_SEARCHE;
+        return WrapperBuildUtil.MAKER_SQL_SEARCHE;
     }
 
     @Override

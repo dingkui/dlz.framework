@@ -1,6 +1,5 @@
 package com.dlz.test.framework.db.cases.db;
 
-import com.dlz.framework.db.ds.DBDynamic;
 import com.dlz.framework.db.ds.DataSourceProperty;
 import com.dlz.framework.db.modal.DB;
 import com.dlz.test.framework.db.config.SpingDbBaseTest;
@@ -17,14 +16,14 @@ public class WrapperQuickTest extends SpingDbBaseTest{
     public void insertOrUpdateTest1() {
         SysSql dict = new SysSql();
         dict.setName("xx");
-        DB.Wrapper.insertOrUpdate(dict);
+        DB.Pojo.insertOrUpdate(dict);
     }
 
     @Test
     public void saveTest1() {
         SysSql dict = new SysSql();
         dict.setName("xx");
-        DB.Wrapper.save(dict);
+        DB.Pojo.save(dict);
     }
     @Test
     public void saveTest2() {
@@ -32,27 +31,27 @@ public class WrapperQuickTest extends SpingDbBaseTest{
         dict.setRe("xx");
         dict.setPcid("xx");
         dict.setSta(1);
-        DB.Wrapper.save(dict);
+        DB.Pojo.save(dict);
 
         YcRecord yc1Record = new Yc1Record();
-        DB.Wrapper.insert(yc1Record).execute();
+        DB.Pojo.insert(yc1Record).execute();
     }
     @Test
     public void updateByIdTest1() {
         SysSql dict = new SysSql();
         dict.setId(1l);
         dict.setName("xx");
-        DB.Wrapper.updateById(dict);
+        DB.Pojo.updateById(dict);
     }
 
     @Test
     public void removeByIds1() {
-        DB.Wrapper.removeByIds(SysSql.class, "1,2,3");
+        DB.Pojo.removeByIds(SysSql.class, "1,2,3");
     }
 
     @Test
     public void getById1() {
-        DB.Wrapper.getById(SysSql.class, "1");
+        DB.Pojo.getById(SysSql.class, "1");
     }
     @Test
     public void getUseDbById1() {
@@ -67,15 +66,15 @@ public class WrapperQuickTest extends SpingDbBaseTest{
 
 
         DB.Dynamic.use("test",()-> {
-            DB.Wrapper.getById(SysSql.class, "1");
-            DB.Wrapper.getById(SysSql.class, "2");
+            DB.Pojo.getById(SysSql.class, "1");
+            DB.Pojo.getById(SysSql.class, "2");
             return null;
         });
 
-        DB.Wrapper.getById(SysSql.class, "1");
+        DB.Pojo.getById(SysSql.class, "1");
         DB.Dynamic.use("default",()-> {
-            DB.Wrapper.getById(SysSql.class, "1");
-            DB.Wrapper.getById(SysSql.class, "2");
+            DB.Pojo.getById(SysSql.class, "1");
+            DB.Pojo.getById(SysSql.class, "2");
             return null;
         });
 

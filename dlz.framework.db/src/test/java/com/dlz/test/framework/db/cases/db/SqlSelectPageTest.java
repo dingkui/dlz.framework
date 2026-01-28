@@ -24,7 +24,7 @@ public class SqlSelectPageTest extends SpingDbBaseTest {
 
     @Test
     public void SeqTest2() {
-        System.out.println(DBHolder.sequence("sys_sql_copy1", 1));
-        System.out.println(DBHolder.sequence("sys_sql", 1));
+//        System.out.println(DBHolder.sequence("sys_sql_copy1", 1));
+//        System.out.println(DBHolder.sequence("sys_sql", 1));
     }
 }

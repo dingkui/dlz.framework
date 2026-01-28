@@ -1,7 +1,7 @@
 package com.dlz.test.framework.db.cases.db;
 
 import com.dlz.framework.db.modal.DB;
-import com.dlz.framework.db.modal.para.WrapperUpdate;
+import com.dlz.framework.db.modal.wrapper.PojoUpdate;
 import com.dlz.test.framework.db.config.SpingDbBaseTest;
 import com.dlz.test.framework.db.entity.Role;
 import com.dlz.test.framework.db.entity.SysSql;
@@ -20,7 +20,7 @@ public class WrapperUpdateTest extends SpingDbBaseTest {
 		role.setRoleName("xx");
 		role.setRoleAlias("xx2");
 
-		final WrapperUpdate<Role> id = DB.Wrapper.update(role)
+		final PojoUpdate<Role> id = DB.Pojo.update(role)
                 .eq("ID", role.getId());
 		showSql(id,"dbSqlTest2","update sys_role t set ROLE_ALIAS='xx2',ROLE_NAME='xx' where ID = 11 and IS_DELETED = 0");
 	}
@@ -31,7 +31,7 @@ public class WrapperUpdateTest extends SpingDbBaseTest {
 		dict.setId(123L);
 		dict.setName("123L");
 
-		WrapperUpdate<SysSql> eq = DB.Wrapper.update(dict)
+		PojoUpdate<SysSql> eq = DB.Pojo.update(dict)
                 .eq(SysSql::getId, 123);
 		showSql(eq,"updateWrapperTest1","update SYS_SQL t set NAME='123L' where ID = 123 and IS_DELETED = 0");
 	}
@@ -41,7 +41,7 @@ public class WrapperUpdateTest extends SpingDbBaseTest {
 		dict.setId(123L);
 		dict.setName("123L");
 
-		WrapperUpdate<SysSql> eq = DB.Wrapper.update(dict);
+		PojoUpdate<SysSql> eq = DB.Pojo.update(dict);
 		showSql(eq,"updateWrapperTest2","update SYS_SQL t set NAME='123L' where IS_DELETED = 0");
 	}
 }

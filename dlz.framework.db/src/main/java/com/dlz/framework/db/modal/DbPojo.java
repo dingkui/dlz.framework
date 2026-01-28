@@ -1,46 +1,48 @@
 package com.dlz.framework.db.modal;
 
 import com.dlz.comm.exception.SystemException;
-import com.dlz.comm.fn.DlzFn;
 import com.dlz.comm.util.StringUtils;
 import com.dlz.comm.util.system.FieldReflections;
-import com.dlz.framework.db.modal.para.*;
+import com.dlz.framework.db.modal.wrapper.PojoDelete;
+import com.dlz.framework.db.modal.wrapper.PojoInsert;
+import com.dlz.framework.db.modal.wrapper.PojoQuery;
+import com.dlz.framework.db.modal.wrapper.PojoUpdate;
 import com.dlz.framework.db.util.DbConvertUtil;
 
 import java.lang.reflect.Field;
 import java.util.function.Function;
 
-public class DbWrapper {
-    public  <T> WrapperQuery<T> select(Class<T> re) {
-        return WrapperQuery.wrapper(re);
+public class DbPojo {
+    public <T> PojoQuery<T> select(Class<T> re) {
+        return PojoQuery.wrapper(re);
     }
 
-    public <T> WrapperQuery<T> select(T conditionBean) {
-        return WrapperQuery.wrapper(conditionBean);
+    public <T> PojoQuery<T> select(T conditionBean) {
+        return PojoQuery.wrapper(conditionBean);
     }
 
-    public <T> WrapperDelete<T> delete(Class<T> beanClass) {
-        return WrapperDelete.wrapper(beanClass);
+    public <T> PojoDelete<T> delete(Class<T> beanClass) {
+        return PojoDelete.wrapper(beanClass);
     }
 
-    public <T> WrapperDelete<T> delete(T condition) {
-        return WrapperDelete.wrapper(condition);
+    public <T> PojoDelete<T> delete(T condition) {
+        return PojoDelete.wrapper(condition);
     }
 
-    public <T> WrapperInsert<T> insert(T bean) {
-        return WrapperInsert.wrapper(bean);
+    public <T> PojoInsert<T> insert(T bean) {
+        return PojoInsert.wrapper(bean);
     }
 
-    public <T> WrapperUpdate<T> update(Class<T> beanClass) {
-        return WrapperUpdate.wrapper(beanClass);
+    public <T> PojoUpdate<T> update(Class<T> beanClass) {
+        return PojoUpdate.wrapper(beanClass);
     }
 
-    public <T> WrapperUpdate<T> update(T value, Function<String, Boolean> ignore) {
-        return WrapperUpdate.wrapper((Class<T>) value.getClass()).set(value, ignore);
+    public <T> PojoUpdate<T> update(T value, Function<String, Boolean> ignore) {
+        return PojoUpdate.wrapper((Class<T>) value.getClass()).set(value, ignore);
     }
 
-    public <T> WrapperUpdate<T> update(T value) {
-        return WrapperUpdate.wrapper((Class<T>) value.getClass()).set(value);
+    public <T> PojoUpdate<T> update(T value) {
+        return PojoUpdate.wrapper((Class<T>) value.getClass()).set(value);
     }
 
 

@@ -7,10 +7,9 @@ import com.dlz.framework.db.modal.result.ResultMap;
 import java.util.List;
 
 /**
- * 添加and or条件
- *
+ * 查询执行器：查询执行并按需进行查询结果转换
  */
-public interface IOperatorQuery extends ISqlPara {
+public interface IExecutorQuery extends ISqlPara {
     Page<?> getPage();
 
     void setPage(Page<?> page);

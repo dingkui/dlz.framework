@@ -3,11 +3,11 @@ package com.dlz.framework.db.service;
 import com.dlz.comm.exception.ValidateException;
 import com.dlz.comm.util.StringUtils;
 import com.dlz.comm.util.system.FieldReflections;
-import com.dlz.framework.db.inf.IOperatorExec;
-import com.dlz.framework.db.inf.IOperatorInsert;
-import com.dlz.framework.db.modal.para.WrapperDelete;
-import com.dlz.framework.db.modal.para.WrapperInsert;
-import com.dlz.framework.db.modal.para.WrapperUpdate;
+import com.dlz.framework.db.inf.IExecutorUDI;
+import com.dlz.framework.db.inf.IExecutorInsert;
+import com.dlz.framework.db.modal.wrapper.PojoDelete;
+import com.dlz.framework.db.modal.wrapper.PojoInsert;
+import com.dlz.framework.db.modal.wrapper.PojoUpdate;
 
 /**
  * 从数据库中取得单条map类型数据：{adEnddate=2015-04-08 13:47:12.0}
@@ -25,7 +25,7 @@ public interface IDbExecuteService extends IDbBaseService{
      * @param paraMap ：Map<String,Object> m=new HashMap<String,Object>();m.put("ad_id", "47");
           * @throws Exception
      */
-    default Long insertWithAutoKey(IOperatorInsert paraMap) {
+    default Long insertWithAutoKey(IExecutorInsert paraMap) {
         return doDb(paraMap, jdbcSql -> getDao().updateForId(jdbcSql.sql, jdbcSql.paras));
     }
 
@@ -36,16 +36,16 @@ public interface IDbExecuteService extends IDbBaseService{
      * @param paraMap ：Map<String,Object> m=new HashMap<String,Object>();m.put("ad_id", "47");
      * @return 影响行数
      */
-    default int execute(IOperatorExec paraMap) {
+    default int execute(IExecutorUDI paraMap) {
         return doDb(paraMap, jdbcSql -> getDao().update(jdbcSql.sql, jdbcSql.paras));
     }
 
     default <T> long insert(T bean){
-        return execute(WrapperInsert.wrapper(bean));
+        return execute(PojoInsert.wrapper(bean));
     }
 
     default <T> long insertWithAutoKey(T bean){
-        final Long newid = insertWithAutoKey(WrapperInsert.wrapper(bean));
+        final Long newid = insertWithAutoKey(PojoInsert.wrapper(bean));
         if(newid != null){
             FieldReflections.setValue(bean, "id", newid);
         }
@@ -53,34 +53,34 @@ public interface IDbExecuteService extends IDbBaseService{
     }
 
     default <T> long delete(T bean){
-        return delete(WrapperDelete.wrapper(bean));
+        return delete(PojoDelete.wrapper(bean));
     }
 
     default <T> int updateByIdOrInsert(T bean){
         Object id = FieldReflections.getValue(bean, "id",false);
         if(StringUtils.isEmpty(id)){
-            execute(WrapperInsert.wrapper(bean));
+            execute(PojoInsert.wrapper(bean));
             return 1;
         }
-        return execute(WrapperUpdate.wrapper((Class<T>)bean.getClass()).eq("id",id).set(bean));
+        return execute(PojoUpdate.wrapper((Class<T>)bean.getClass()).eq("id",id).set(bean));
     }
     default <T> int updateById(T bean){
         Object id = FieldReflections.getValue(bean, "id",false);
         if(StringUtils.isEmpty(id)){
             throw new ValidateException("id不能为空");
         }
-        return execute(WrapperUpdate.wrapper((Class<T>)bean.getClass()).eq("id",id).set(bean));
+        return execute(PojoUpdate.wrapper((Class<T>)bean.getClass()).eq("id",id).set(bean));
     }
     default <T> int deleteById(String id,Class<T> clazz){
         if(StringUtils.isEmpty(id)){
             throw new ValidateException("id不能为空");
         }
-        return execute(WrapperDelete.wrapper(clazz).eq("id",id));
+        return execute(PojoDelete.wrapper(clazz).eq("id",id));
     }
     default <T> int deleteByIds(String id,Class<T> clazz){
         if(StringUtils.isEmpty(id)){
             throw new ValidateException("id不能为空");
         }
-        return execute(WrapperDelete.wrapper(clazz).in("id",id));
+        return execute(PojoDelete.wrapper(clazz).in("id",id));
     }
 }

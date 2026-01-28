@@ -3,8 +3,7 @@ package com.dlz.framework.db.inf;
 import com.dlz.framework.db.modal.condition.Condition;
 
 /**
- * sqlMaker查询接口
- * 删除，更新，查询需要实现
+ * 查询构造器=AndOr条件构造器
  *
  * @param <T>
  */

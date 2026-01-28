@@ -2,7 +2,7 @@ package com.dlz.test.framework.db.cases.db;
 
 import com.dlz.framework.db.modal.DB;
 import com.dlz.framework.db.modal.condition.Condition;
-import com.dlz.framework.db.modal.para.TableUpdate;
+import com.dlz.framework.db.modal.wrapper.TableUpdate;
 import com.dlz.test.framework.db.config.SpingDbBaseTest;
 import org.junit.Test;
 

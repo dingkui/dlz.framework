@@ -1,15 +1,17 @@
-package com.dlz.framework.db.modal.para;
+package com.dlz.framework.db.modal.wrapper;
 
-import com.dlz.framework.db.annotation.IdType;
-import com.dlz.framework.db.annotation.TableId;
 import com.dlz.comm.exception.SystemException;
 import com.dlz.comm.util.StringUtils;
 import com.dlz.comm.util.system.FieldReflections;
+import com.dlz.framework.db.annotation.IdType;
+import com.dlz.framework.db.annotation.TableId;
 import com.dlz.framework.db.annotation.proxy.AnnoProxys;
 import com.dlz.framework.db.helper.support.SnowFlake;
 import com.dlz.framework.db.holder.BeanInfoHolder;
 import com.dlz.framework.db.holder.DBHolder;
 import com.dlz.framework.db.holder.SqlHolder;
+import com.dlz.framework.db.modal.para.AParaTable;
+import com.dlz.framework.db.modal.para.AQuery;
 import com.dlz.framework.db.util.DbConvertUtil;
 import lombok.extern.slf4j.Slf4j;
 
@@ -25,7 +27,7 @@ import java.util.UUID;
  * @author ding_kui 2010-12-14
  */
 @Slf4j
-public class TableMakerUtil {
+public class WrapperBuildUtil {
     public static final String MAKER_SQL_INSERT = "insert into ${tableName}(${columns}) values(${values})";
     public static final String MAKER_SQL_DELETE = "delete from ${tableName} ${where}";
     public static final String MAKER_SQL_UPDATE = "update ${tableName} t set ${sets} ${where}";
@@ -41,7 +43,7 @@ public class TableMakerUtil {
      * 生成查询条件sql
      *
           */
-    public static void buildSql(ATableMaker maker) {
+    public static void buildSql(AParaTable maker) {
         maker.getSqlItem().setSqlKey(maker.getSql());
         maker.addPara(MAKER_TABLENAME, maker.getTableName());
         if (maker instanceof AQuery) {
@@ -174,7 +176,7 @@ public class TableMakerUtil {
             if (!dbClumnName.equals("")) {
                 Object value = FieldReflections.getValue(object, field);
                 if(value==null){
-                    value = TableMakerUtil.getIdValue(field, dbName);
+                    value = WrapperBuildUtil.getIdValue(field, dbName);
                 }
                 params.add(value);
             }

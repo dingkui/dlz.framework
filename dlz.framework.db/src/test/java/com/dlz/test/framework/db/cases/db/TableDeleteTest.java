@@ -3,7 +3,7 @@ package com.dlz.test.framework.db.cases.db;
 import com.dlz.comm.json.JSONMap;
 import com.dlz.framework.db.modal.DB;
 import com.dlz.framework.db.modal.condition.Condition;
-import com.dlz.framework.db.modal.para.TableDelete;
+import com.dlz.framework.db.modal.wrapper.TableDelete;
 import com.dlz.test.framework.db.config.SpingDbBaseTest;
 import com.dlz.test.framework.db.entity.Dict;
 import org.junit.Test;

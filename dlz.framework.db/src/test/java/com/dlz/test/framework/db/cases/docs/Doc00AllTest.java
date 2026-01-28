@@ -13,12 +13,12 @@ public class Doc00AllTest extends SpingDbBaseTest {
         SysSql SysSql = new SysSql();
         SysSql.setSqlKey("test");
         SysSql.setSqlValue("SELECT * FROM user WHERE and status = #{status}");
-        DB.Wrapper.insert(SysSql).execute();
+        DB.Pojo.insert(SysSql).execute();
     }
 
     @Test
     public void allTest_0_1() {
-        DB.Wrapper.delete(User.class).execute();
+        DB.Pojo.delete(User.class).execute();
     }
 
 }

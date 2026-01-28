@@ -12,7 +12,7 @@ import com.dlz.framework.db.helper.wrapper.ConditionAndWrapper;
 import com.dlz.framework.db.helper.wrapper.ConditionWrapper;
 import com.dlz.framework.db.holder.BeanInfoHolder;
 import com.dlz.framework.db.holder.DBHolder;
-import com.dlz.framework.db.modal.para.TableMakerUtil;
+import com.dlz.framework.db.modal.wrapper.WrapperBuildUtil;
 import com.dlz.framework.db.modal.result.Page;
 import com.dlz.framework.db.modal.result.ResultMap;
 import com.dlz.framework.db.modal.result.Sort;
@@ -134,7 +134,7 @@ public abstract class SqlHelper {
                     throw new SystemException("添加数据时ID重复！"+ BeanInfoHolder.getTableName(beanClass) +" id="+id);
                 }
             }
-            final Object idValue = TableMakerUtil.getIdValue(idField, BeanInfoHolder.getTableName(beanClass));
+            final Object idValue = WrapperBuildUtil.getIdValue(idField, BeanInfoHolder.getTableName(beanClass));
             if (idValue == null) {
                 autoId = true;
             }else{
@@ -163,7 +163,7 @@ public abstract class SqlHelper {
     private VAL<List<Field>, String> mkInsertInfo(Class<?> cls) {
         String dbName = BeanInfoHolder.getTableName(cls);
         List<Field> fields = BeanInfoHolder.getBeanFields(cls);
-        return VAL.of(fields, TableMakerUtil.buildInsertSql(dbName, fields));
+        return VAL.of(fields, WrapperBuildUtil.buildInsertSql(dbName, fields));
     }
     /**
      * 插入
@@ -184,8 +184,8 @@ public abstract class SqlHelper {
         FieldReflections.setValue(obj,"updateTime",System.currentTimeMillis(),true);
         // 更新
         List<Field> fields = FieldReflections.getFields(objClass);
-        String sql = TableMakerUtil.buildUpdateSql(dbTableName, fields);
-        return  DBHolder.doDao(w->w.update(sql, TableMakerUtil.buildUpdateParams(obj, fields)));
+        String sql = WrapperBuildUtil.buildUpdateSql(dbTableName, fields);
+        return  DBHolder.doDao(w->w.update(sql, WrapperBuildUtil.buildUpdateParams(obj, fields)));
     }
 
     /**
@@ -273,8 +273,8 @@ public abstract class SqlHelper {
             return;
         }
         List<Field> fields = FieldReflections.getFields(object.getClass());
-        String sql = TableMakerUtil.buildUpdateSql(BeanInfoHolder.getTableName(object.getClass()),fields);
-        DBHolder.doDao(w->w.update(sql, TableMakerUtil.buildUpdateParams(object, fields)));
+        String sql = WrapperBuildUtil.buildUpdateSql(BeanInfoHolder.getTableName(object.getClass()),fields);
+        DBHolder.doDao(w->w.update(sql, WrapperBuildUtil.buildUpdateParams(object, fields)));
     }
 
     /**

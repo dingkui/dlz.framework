@@ -1,8 +1,8 @@
 package com.dlz.framework.db.service;
 
 import com.dlz.comm.util.system.ConvertUtil;
-import com.dlz.framework.db.inf.IOperatorQuery;
-import com.dlz.framework.db.modal.para.WrapperQuery;
+import com.dlz.framework.db.inf.IExecutorQuery;
+import com.dlz.framework.db.modal.wrapper.PojoQuery;
 import com.dlz.framework.db.modal.result.Page;
 import com.dlz.framework.db.modal.result.ResultMap;
 
@@ -23,22 +23,22 @@ public interface IDbListService extends IDbBaseService{
      * @param paraMap ：Map<String,Object> m=new HashMap<String,Object>();m.put("ad_id", "47");
      * @return List<ResultMap>
      */
-    default List<ResultMap> getMapList(IOperatorQuery paraMap) {
+    default List<ResultMap> getMapList(IExecutorQuery paraMap) {
         return doDb(paraMap, jdbcSql -> getDao().getList(jdbcSql.sql, jdbcSql.paras));
     }
-    default <T> List<T> getBeanList(WrapperQuery<T> wrapper) {
+    default <T> List<T> getBeanList(PojoQuery<T> wrapper) {
         return doDb(wrapper, jdbcSql -> ConvertUtil.convertList(getDao().getList(jdbcSql.sql, jdbcSql.paras),wrapper.getBeanClass()));
     }
 
 
-    default <T> List<T> getBeanList(IOperatorQuery paraMap, Class<T> t) {
+    default <T> List<T> getBeanList(IExecutorQuery paraMap, Class<T> t) {
         return ConvertUtil.convertList(getMapList(paraMap), t);
     }
     default <T> List<T> getBeanList(T bean){
-        final WrapperQuery<T> wrapper = WrapperQuery.wrapper(bean);
+        final PojoQuery<T> wrapper = PojoQuery.wrapper(bean);
         return getBeanList(wrapper,wrapper.getBeanClass());
     }
-    default int getCnt(IOperatorQuery paraMap) {
+    default int getCnt(IExecutorQuery paraMap) {
         return doCnt(paraMap, jdbcSql -> getDao().getFistColumn(jdbcSql.sql, Integer.class, jdbcSql.paras));
     }
     /**
@@ -46,7 +46,7 @@ public interface IDbListService extends IDbBaseService{
      *
      * @return Page<ResultMap>
      */
-    default Page<ResultMap> getPage(IOperatorQuery paraMap) {
+    default Page<ResultMap> getPage(IExecutorQuery paraMap) {
         Page<ResultMap> page = (Page<ResultMap>)paraMap.getPage();
         if (page == null) {
             page = Page.build();
@@ -55,7 +55,7 @@ public interface IDbListService extends IDbBaseService{
         return page.doPage(() -> getCnt(paraMap), () -> getMapList(paraMap));
     }
 
-    default <T> Page<T> getPage(IOperatorQuery paraMap, Class<T> t) {
+    default <T> Page<T> getPage(IExecutorQuery paraMap, Class<T> t) {
         Page<T> page = (Page<T>)paraMap.getPage();
         if (page == null) {
             page = Page.build();

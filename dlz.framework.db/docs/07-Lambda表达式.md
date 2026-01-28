@@ -26,7 +26,7 @@
 #### 查询
 
 ```java
-DB.Wrapper.select(User.class)
+DB.Pojo.select(User.class)
     .select(User::getId, User::getName, User::getAge)
     .eq(User::getStatus, 1)
     .gt(User::getAge, 18)
@@ -38,7 +38,7 @@ DB.Wrapper.select(User.class)
 #### 更新
 
 ```java
-DB.Wrapper.update(User.class)
+DB.Pojo.update(User.class)
     .set(User::getStatus, 0)
     .set(User::getUpdateTime, new Date())
     .eq(User::getId, 1)
@@ -48,7 +48,7 @@ DB.Wrapper.update(User.class)
 #### 删除
 
 ```java
-DB.Wrapper.delete(User.class)
+DB.Pojo.delete(User.class)
     .eq(User::getId, 1)
     .execute();
 ```
@@ -79,7 +79,7 @@ User::getEmail     →  email_address
 
 ```java
 // Lambda 和字符串可以混合使用
-DB.Wrapper.select(User.class)
+DB.Pojo.select(User.class)
     .eq(User::getStatus, 1)           // Lambda
     .apply("create_time > {0}", date) // 自定义 SQL
     .sql("score >= #{min}", params)   // 命名参数
