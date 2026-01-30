@@ -1,6 +1,7 @@
 package com.dlz.framework.db.ds;
 
 import com.dlz.comm.exception.SystemException;
+import com.dlz.comm.util.ValUtil;
 import com.dlz.framework.db.convertor.rowMapper.MySqlColumnMapRowMapper;
 import com.dlz.framework.db.convertor.rowMapper.OracleColumnMapRowMapper;
 import com.dlz.framework.db.convertor.rowMapper.ResultMapRowMapper;
@@ -48,12 +49,13 @@ public class DataSourceConfig {
             return dataSource;
         }
         try {
-            if ("hikaricp".equals(property.getType())) {
-                dataSource = new DataSourceCreatorHikari().createDataSource(property);
+            IDataSourceCreator dataSourceCreator;
+            if (ValUtil.isEmpty(property.getCreatorClassName())) {
+                dataSourceCreator = new DataSourceCreatorHikari();
             } else {
-                IDataSourceCreator dataSourceCreator = (IDataSourceCreator) Class.forName(property.getCreatorClassName()).newInstance();
-                dataSource = dataSourceCreator.createDataSource(property);
+                dataSourceCreator = (IDataSourceCreator) Class.forName(property.getCreatorClassName()).newInstance();
             }
+            dataSource = dataSourceCreator.createDataSource(property);
             // 创建新的数据源
             return dataSource;
         } catch (Exception e) {

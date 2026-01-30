@@ -1,6 +1,6 @@
 package com.dlz.framework.db.ds;
 
-import com.dlz.comm.util.StringUtils;
+import com.dlz.comm.util.ValUtil;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 
@@ -13,6 +13,9 @@ public class DataSourceCreatorHikari implements IDataSourceCreator {
         config.setUsername(properties.getUsername());
         config.setPassword(properties.getPassword());
         config.setDriverClassName(properties.getDriverClassName());
+        if(!ValUtil.isEmpty(properties.getSchema())){
+            config.setSchema(properties.getSchema());
+        }
 
         // 连接池配置
         config.setMaximumPoolSize(properties.getMaxPoolSize());
@@ -24,9 +27,16 @@ public class DataSourceCreatorHikari implements IDataSourceCreator {
 
         // 其他配置
         config.setPoolName("dynamic-hikari-pool-" + properties.getName());
-        if(!StringUtils.isEmpty(properties.getTestQuery())){
+        if(!ValUtil.isEmpty(properties.getTestQuery())){
             config.setConnectionTestQuery(properties.getTestQuery());
             config.setValidationTimeout(properties.getValidationTimeout());
+        }
+        if(!ValUtil.isEmpty(properties.getAdditionalProperties())){
+            properties.getAdditionalProperties().forEach(config::addDataSourceProperty);
+
+        }
+        if(!ValUtil.isEmpty(properties.getHealthCheckRegistry())){
+            properties.getHealthCheckRegistry().forEach(config::addHealthCheckProperty);
         }
 
         // 设置延迟初始化 - 只有在首次请求连接时才初始化
