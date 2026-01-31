@@ -41,12 +41,7 @@ public class HelperScan {
         }
         final SqlHelper helper = DB.Dynamic.getSqlHelper();
         Set<Class<?>> set = scanPackage(packageName, TableName.class);
-        boolean initSync = DB.Dynamic.getDbType() == DbTypeEnum.SQLITE;
-        if (initSync) {
-            set.stream().forEach(clazz -> initTable(clazz,helper));
-        } else {
-            set.parallelStream().forEach(clazz -> initTable(clazz,helper));
-        }
+        set.stream().forEach(clazz -> initTable(clazz,helper));
     }
 
     public static void initTable(Class<?> clazz,SqlHelper helper) {
