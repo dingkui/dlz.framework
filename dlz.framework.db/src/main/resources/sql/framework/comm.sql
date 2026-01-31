@@ -32,6 +32,6 @@
  	]]></sql>
  	
  	<sql sqlId="key.comm.pageSql._postgresql"><![CDATA[
-	 ${_sql} ${_orderBy} [ LIMIT [#{page.pageSize}] OFFSET #{_begin} ]
+	 ${_sql} ${_orderBy} [ LIMIT #{_pageSize} [OFFSET #{_begin}] ]
  	]]></sql>
 </sqlList>
