@@ -8,7 +8,9 @@ import com.dlz.framework.db.modal.DB;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.MDC;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Slf4j
 public class DbLogUtil {
@@ -16,7 +18,6 @@ public class DbLogUtil {
     private static boolean showCaller = false;
     private static boolean showRunSql = false;
     private static boolean showResult = false;
-
     public static void init(DlzDbProperties properties) {
         showCaller = properties.getLog().isShowCaller();
         showRunSql = properties.getLog().isShowRunSql();
@@ -49,6 +50,7 @@ public class DbLogUtil {
             index = 1;
         }
         String traceInfo;
+        List<String> frw_trace = new ArrayList<>();
         while (true) {
             if (index > trace.length - 1) {
                 return null;
@@ -56,13 +58,21 @@ public class DbLogUtil {
             traceInfo = trace[index].toString();
 
             if (traceInfo.indexOf("CGLIB$") > -1 ||
+                    traceInfo.indexOf("lambda$") > -1 ||
                     traceInfo.startsWith("sun.") ||
                     traceInfo.startsWith("java.") ||
-                    traceInfo.startsWith("org.springframework.") ||
-                    (traceInfo.startsWith("com.dlz.framework.db.") && !traceInfo.startsWith("com.dlz.framework.db.helper"))||
+                    traceInfo.startsWith("org.springframework.")
+            ) {
+                index++;
+                continue;
+            }
+            if (traceInfo.startsWith("com.dlz.framework.") ||
                     traceInfo.startsWith("com.dlz.comm.")
             ) {
                 index++;
+                if(log.isTraceEnabled()){
+                    frw_trace.add(traceInfo.replaceAll(".*\\((.*)\\)", "$1").replaceAll("\\.java", ""));
+                }
                 continue;
             }
             break;
@@ -73,6 +83,9 @@ public class DbLogUtil {
 //				split[i]=split[i].substring(0,1);
 //			}
 //		}
+        if(frw_trace.size()>0){
+            log.trace("< {}", frw_trace.stream().collect(Collectors.joining(" < ")));
+        }
         return traceInfo.replaceAll(".*\\((.*)\\)", " caller:($1)");
     }
 
