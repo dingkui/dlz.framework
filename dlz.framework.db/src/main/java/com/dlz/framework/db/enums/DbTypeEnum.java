@@ -1,14 +1,12 @@
 package com.dlz.framework.db.enums;
 
-import com.dlz.framework.db.modal.DB;
-
 public enum DbTypeEnum {
-    MYSQL(".mysql"),
-    POSTGRESQL(".postgresql"),
-    ORACLE(".oracle"),
-    DM8(".dm8"),
-    SQLITE(".sqlite"),
-    MSSQL(".sqlserver");
+    MYSQL("_mysql"),
+    POSTGRESQL("_postgresql"),
+    ORACLE("_oracle"),
+    DM8("_dm8"),
+    SQLITE("_sqlite"),
+    MSSQL("_sqlserver");
     private String end;
 
     DbTypeEnum(String end) {
@@ -17,19 +15,5 @@ public enum DbTypeEnum {
 
     public String getEnd() {
         return end;
-    }
-
-    public static String dropSqlKeySufix(String key){
-        DbTypeEnum[] values = DbTypeEnum.values();
-        for (int i = 0; i < values.length; i++) {
-            DbTypeEnum item = values[i];
-            if(key.endsWith(item.getEnd())){
-                if(DB.Dynamic.getDbType()== item){
-                    return key.substring(0, key.length()- item.getEnd().length());
-                }
-                return null;
-            }
-        }
-        return key;
     }
 }

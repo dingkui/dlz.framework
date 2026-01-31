@@ -4,6 +4,7 @@ import com.dlz.comm.exception.DbException;
 import com.dlz.comm.util.ExceptionUtils;
 import com.dlz.framework.db.config.DlzDbProperties;
 import com.dlz.framework.db.enums.DbTypeEnum;
+import com.dlz.framework.db.modal.DB;
 import com.dlz.framework.db.modal.result.ResultMap;
 import lombok.extern.slf4j.Slf4j;
 import org.dom4j.Document;
@@ -30,9 +31,18 @@ import java.util.regex.Pattern;
 @Slf4j
 public class SqlHolder {
     private final static String STR_SQL_FILE = "file:";
-    static final Map<String, String> m_sqlList = new ConcurrentHashMap<>();
+    // 通用的sql
+    static final Map<String, String> m_comm_sql = new ConcurrentHashMap<>();
+    // 方言sql
+    static final Map<String, Map<String, String>> m_dialect_sql = new ConcurrentHashMap<>(DbTypeEnum.values().length);
     private static boolean initIng = false;
     public static DlzDbProperties properties;
+    static{
+        DbTypeEnum[] values = DbTypeEnum.values();
+        for (int i = 0; i < values.length; i++) {
+            m_dialect_sql.put(values[i].getEnd(), new ConcurrentHashMap<>());
+        }
+    }
 
     public static void init(DlzDbProperties properties) {
         SqlHolder.properties = properties;
@@ -79,7 +89,15 @@ public class SqlHolder {
         }
     }
     public static void addSqlSetting(String sqlId,String sqlStr,boolean force){
-        sqlId = DbTypeEnum.dropSqlKeySufix(sqlId);
+        String sqlDB = sqlId.substring(sqlId.lastIndexOf(".")+1);
+        Map<String, String> m_sqlList = m_dialect_sql.get(sqlDB);
+        if(m_sqlList!=null){
+            //表示带数据库，key中删除数据库标记
+            sqlId = sqlId.substring(0, sqlId.length() - sqlDB.length() -1);
+        }else{
+            m_sqlList = m_comm_sql;
+        }
+
         if(sqlId==null||sqlStr==null){
             return;
         }
@@ -105,11 +123,17 @@ public class SqlHolder {
     }
 
     public static String sql(String key) {
-        return m_sqlList.get(key);
+        Map<String, String> m_sqlList = m_dialect_sql.get(DB.Dynamic.getDbType().getEnd());
+        final String sql = m_sqlList.get(key);
+        if(sql!=null){
+            return sql;
+        }
+
+        return m_comm_sql.get(key);
     }
 
     public static void load() {
-        if (initIng || !m_sqlList.isEmpty()) {
+        if (initIng) {
             return;
         }
         initIng = true;
@@ -151,7 +175,8 @@ public class SqlHolder {
     }
 
     public static void reLoad() {
-        m_sqlList.clear();
+        m_comm_sql.clear();
+        m_dialect_sql.values().forEach(item->item.clear());
         load();
         loadDbSql();
     }
