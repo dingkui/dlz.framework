@@ -296,6 +296,31 @@ public class JSONList extends ArrayList<Object> implements IUniversalVals, IUniv
 	public Object getIndexObject(int index) {
 		return get(index);
 	}
+
+    /**
+     * 获取指定索引处的对象
+     *
+     * @param index 索引
+     * @return 指定索引处的对象
+     */
+    @Override
+    public Object getIndexObject(int index,Object defaultV) {
+        try {
+            if(index<0){
+                index = size()+index;
+            }
+            Object re = get(index);
+            if(re == null) {
+                return defaultV;
+            }
+            return re;
+        } catch (IndexOutOfBoundsException e) {
+            if(defaultV!=null){
+                return defaultV;
+            }
+            throw e;
+        }
+    }
 	
 	/**
 	 * 获取信息对象
