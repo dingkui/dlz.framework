@@ -2,6 +2,7 @@ package com.dlz.comm.json;
 
 import com.dlz.comm.util.JacksonUtil;
 import com.dlz.comm.util.ValUtil;
+import lombok.extern.slf4j.Slf4j;
 
 import java.math.BigDecimal;
 import java.util.*;
@@ -9,11 +10,11 @@ import java.util.stream.Collectors;
 
 /**
  * JSON列表类
- * 
  * 继承ArrayList<Object>，实现了IUniversalVals和IUniversalVals4List接口，提供便捷的JSON数组操作功能
  * 
  * @author dk 2017-09-05
  */
+@Slf4j
 public class JSONList extends ArrayList<Object> implements IUniversalVals, IUniversalVals4List {
 	/**
 	 * 序列化版本UID
@@ -165,8 +166,12 @@ public class JSONList extends ArrayList<Object> implements IUniversalVals, IUniv
 				return;
 			}
 			if(!JacksonUtil.isJsonArray(string)) {
-				if(string.indexOf(",") > -1) {
+				if(string.contains(",")) {
 					if(objectClass == String.class || objectClass == null) {
+                        if(JacksonUtil.isJsonObj(string)){
+                            log.warn("参数不能转换成JSONList:" + string);
+                            return;
+                        }
 						Arrays.stream(string.split(",")).forEach(item -> this.add(item.trim()));
 						return;
 					} else if(objectClass == Integer.class) {
