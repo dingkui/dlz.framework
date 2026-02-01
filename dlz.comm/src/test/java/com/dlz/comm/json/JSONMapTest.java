@@ -4,7 +4,7 @@ import com.dlz.comm.exception.SystemException;
 import com.dlz.comm.util.JacksonUtil;
 import com.dlz.comm.util.ValUtil;
 import com.dlz.test.beans.AA;
-import com.dlz.test.comm.json.TestBean;
+import com.dlz.test.beans.TestBean;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -379,334 +379,472 @@ class JSONMapTest {
         }
     }
 
+
     @Nested
     @DisplayName("层级get方法测试：独创功能 ☆☆☆☆☆")
     class HierarchicalOperationGetTests {
+
+        // ==================== 基础类型转换测试 ====================
+
         /**
-         * 取得数据并进行类型转换
+         * 测试基础类型转换功能
+         * <p>
+         * 验证同一个值可以被转换为不同的类型：String、Integer、Float等
          */
-        @org.junit.Test
-        public void test1_1(){
-            TestBean arg=new TestBean();
+        @Test
+        @DisplayName("基础类型转换 - 同一值转换为不同类型")
+        void testBasicTypeConversion() {
+            TestBean arg = new TestBean();
             arg.setA(999);
             arg.setB("bean测试");
-            JSONMap paras = new JSONMap("a",1,"b","2","c",arg);
-            System.out.println(paras);
-            //输出：{"a":1,"b":"2","c":{"a":999,"b":"bean测试"}}
+            JSONMap paras = new JSONMap("a", 1, "b", "2", "c", arg);
 
-            String strA = paras.getStr("a");//取得String
-            System.out.println(strA.getClass()+":"+strA);
-            //输出：class java.lang.String:1
+            // 验证整数可以转换为String
+            String strA = paras.getStr("a");
+            assertEquals(String.class, strA.getClass());
+            assertEquals("1", strA);
 
-            Integer intA = paras.getInt("a");//取得Integer
-            System.out.println(intA.getClass()+":"+intA);
-            //输出：class java.lang.Integer:1
+            // 验证整数可以转换为Integer
+            Integer intA = paras.getInt("a");
+            assertEquals(Integer.class, intA.getClass());
+            assertEquals(Integer.valueOf(1), intA);
 
-            Float floatA = paras.getFloat("a");//取得Float
-            System.out.println(floatA.getClass()+":"+floatA);
-            //输出：class java.lang.Float:1.0
+            // 验证整数可以转换为Float
+            Float floatA = paras.getFloat("a");
+            assertEquals(Float.class, floatA.getClass());
+            assertEquals(Float.valueOf(1.0f), floatA);
         }
 
         /**
-         * 取得多级数据并进行类型转换
+         * 测试BigDecimal类型转换
+         * <p>
+         * 验证各种数值类型（String、Long、Double）都能正确转换为BigDecimal
          */
-        @org.junit.Test
-        public void test2_1(){
-            TestBean arg=new TestBean();
-            arg.setA(999);
-            arg.setB("bean测试");
-            JSONMap paras = new JSONMap("a",1,"b","2","c",arg);
-            System.out.println(paras);
-            //输出：{"a":1,"b":"2","c":{"a":999,"b":"bean测试"}}
+        @Test
+        @DisplayName("BigDecimal类型转换 - 各种数值源转换")
+        void testBigDecimalConversion() {
+            JSONMap paras = new JSONMap();
 
-            String strA = paras.getStr("c.a");//取得子对象属性并转换类型
-            System.out.println(strA.getClass()+":"+strA);
-            //输出：class java.lang.String:999
+            // 超大数字字符串转BigDecimal
+            paras.put("bigNum", "1111111111111111123123123213413333333333333333333333333333333333333333333333333333333333333333333333234124312341431324.21352345324534253");
+            BigDecimal bigNum = paras.getBigDecimal("bigNum");
+            assertNotNull(bigNum);
+            assertTrue(bigNum.toString().startsWith("111111111111111112312312321341333"));
 
-            Integer intA = paras.getInt("c.a");//取得子对象属性并转换类型
-            System.out.println(intA.getClass()+":"+intA);
-            //输出：class java.lang.Integer:999
+            // 整数字符串转BigDecimal
+            paras.put("intStr", "123");
+            assertEquals(new BigDecimal("123"), paras.getBigDecimal("intStr"));
+
+            // Long类型转BigDecimal
+            paras.put("longVal", 123L);
+            assertEquals(new BigDecimal("123"), paras.getBigDecimal("longVal"));
+
+            // 小数字符串转BigDecimal
+            paras.put("decimalStr", "123.1");
+            assertEquals(new BigDecimal("123.1"), paras.getBigDecimal("decimalStr"));
+
+            // Double类型转BigDecimal
+            paras.put("doubleVal", 123.1);
+            assertNotNull(paras.getBigDecimal("doubleVal"));
         }
 
         /**
-         * 取得多级数据并进行类型转换——属性为数组时取法
+         * 测试数值类型互转
+         * <p>
+         * 验证同一个小数值可以转换为Float、Long、Integer、String等类型
          */
-        @org.junit.Test
-        public void test3_1(){
-            JSONMap paras = new JSONMap("{\"d\":[666,111, 222, 333, 444]}");
-            System.out.println(paras);
-            //输出：{"d":[666,111,222,333,444]}
+        @Test
+        @DisplayName("数值类型互转 - 小数转换为各种类型")
+        void testNumericTypeInterConversion() {
+            JSONMap paras = new JSONMap();
+            paras.put("value", 123.1);
 
-            Integer intD0 = paras.getInt("d[0]");//根据子对象数组下标取得并转换类型
-            System.out.println(intD0.getClass()+":"+intD0);
-            //输出：class java.lang.Integer:666
+            // 小数转Float
+            assertEquals(Float.valueOf(123.1f), paras.getFloat("value"));
 
-            Integer intDlast = paras.getInt("d[-1]");//下标倒数第一个
-            System.out.println(intDlast.getClass()+":"+intDlast);
-            //输出：class java.lang.Integer:444
+            // 小数转Long（截断小数部分）
+            assertEquals(Long.valueOf(123L), paras.getLong("value"));
 
-            Integer intDlast2 = paras.getInt("d[-2]");//下标倒数第二个
-            System.out.println(intDlast2.getClass()+":"+intDlast2);
-            //输出：class java.lang.Integer:555
+            // 小数转Integer（截断小数部分）
+            assertEquals(Integer.valueOf(123), paras.getInt("value"));
+
+            // 小数转String
+            assertEquals("123.1", paras.getStr("value"));
         }
 
         /**
-         * 更复杂的多级数据取得
+         * 测试空JSONMap的类型获取
+         * <p>
+         * 验证从空Map或不存在的key获取值时返回null
          */
-        @org.junit.Test
-        public void test4_1(){
-            Integer[] v=new Integer[]{1,2};
-            Map<String,List<TestBean>> map=new HashMap<>();
-            map.put("b",Arrays.stream(v).map(n->{
-                TestBean arg=new TestBean();
-                arg.setB("测试b-"+n);
-                return arg;
-            }).collect(Collectors.toList()));
-            map.put("c",Arrays.stream(v).map(n->{
-                TestBean arg=new TestBean();
-                arg.setB("测试c-"+n);
-                return arg;
-            }).collect(Collectors.toList()));
+        @Test
+        @DisplayName("空值处理 - 不存在的key返回null")
+        void testNullValueHandling() {
+            JSONMap paras = new JSONMap();
 
-            JSONMap paras = new JSONMap("a",map);
-            System.out.println(paras);
-            //输出：{"a":{"b":[{"a":0,"b":"测试b-1"},{"a":0,"b":"测试b-2"}],"c":[{"a":0,"b":"测试c-1"},{"a":0,"b":"测试c-2"}]}}
-
-            System.out.println("a.b:"+paras.getStr("a.b"));
-            //输出：a.b:[{"a":0,"b":"测试b-1"},{"a":0,"b":"测试b-2"}]
-            System.out.println("a.b[0]:"+paras.getStr("a.b[0]"));
-            //输出：a.b[0]:{"a":0,"b":"测试b-1"}
-            System.out.println("a.b[0].b:"+paras.getStr("a.b[0].b"));
-            //输出：a.b[0].b:测试b-1
-
-            System.out.println("a.c:"+paras.getStr("a.c"));
-            //输出：a.c:[{"a":0,"b":"测试c-1"},{"a":0,"b":"测试c-2"}]
-            System.out.println("a.c[1]:"+paras.getStr("a.c[1]"));
-            //输出：a.c[1]:{"a":0,"b":"测试c-2"}
-            System.out.println("a.c[1].b:"+paras.getStr("a.c[1].b"));
-            //输出：a.c[1].b:测试c-2
+            assertNull(paras.getFloat("nonExist"));
+            assertNull(paras.getLong("nonExist"));
+            assertNull(paras.getInt("nonExist"));
+            assertNull(paras.getStr("nonExist"));
         }
 
+        // ==================== 层级路径访问测试 ====================
+
         /**
-         * 基础用法
+         * 测试点号分隔的多级路径访问
+         * <p>
+         * 验证使用"a.b"形式可以访问嵌套对象的属性
          */
-        @org.junit.Test
-        public void test1(){
-            //{"a":{"b":1}}
+        @Test
+        @DisplayName("多级路径访问 - 点号分隔获取嵌套属性")
+        void testDotNotationAccess() {
             JSONMap paras = new JSONMap("{\"a\":{\"b\":1}}");
-            String strB = paras.getStr("a.b");//取得String
-            Integer intB = paras.getInt("a.b");//取得Integer
-            System.out.println(strB.getClass()+":"+strB);
-            //输出：class java.lang.String:1
-            System.out.println(intB.getClass()+":"+intB);
-            //输出：class java.lang.Integer:1
+
+            // 多级路径获取String
+            String strB = paras.getStr("a.b");
+            assertEquals(String.class, strB.getClass());
+            assertEquals("1", strB);
+
+            // 多级路径获取Integer
+            Integer intB = paras.getInt("a.b");
+            assertEquals(Integer.class, intB.getClass());
+            assertEquals(Integer.valueOf(1), intB);
         }
-        @org.junit.Test
-        public void test2(){
-            //{"a":{"b2":{"c22":"221","c21":"22"},"b":{"c1":"22","c2":"221"}}}
+
+        /**
+         * 测试通过对象构造的多级路径访问
+         * <p>
+         * 验证嵌套的Java对象也可以通过点号路径访问
+         */
+        @Test
+        @DisplayName("多级路径访问 - 嵌套对象属性获取")
+        void testNestedObjectAccess() {
+            TestBean arg = new TestBean();
+            arg.setA(999);
+            arg.setB("bean测试");
+            JSONMap paras = new JSONMap("a", 1, "b", "2", "c", arg);
+
+            // 验证JSON结构
+            assertEquals("{\"a\":1,\"b\":\"2\",\"c\":{\"a\":999,\"b\":\"bean测试\"}}", paras.toString());
+
+            // 访问嵌套对象的属性并转换类型
+            assertEquals("999", paras.getStr("c.a"));
+            assertEquals(Integer.valueOf(999), paras.getInt("c.a"));
+            assertEquals("bean测试", paras.getStr("c.b"));
+        }
+
+        /**
+         * 测试三层及以上的多级路径访问
+         * <p>
+         * 验证深层嵌套结构的访问
+         */
+        @Test
+        @DisplayName("多级路径访问 - 深层嵌套结构")
+        void testDeepNestedAccess() {
+            JSONMap paras = new JSONMap();
+            JSONMap paras2 = new JSONMap();
+            JSONMap paras3 = new JSONMap();
+            paras.put("a", paras2);
+            paras2.put("b", paras3);
+            paras3.put("c", 1);
+
+            // 三级路径访问
+            assertEquals("1", paras.getStr("a.b.c"));
+            assertEquals(Float.valueOf(1.0f), paras2.getFloat("b.c"));
+        }
+
+        /**
+         * 测试复杂嵌套结构的路径访问
+         * <p>
+         * 验证包含多个分支的嵌套结构访问
+         */
+        @Test
+        @DisplayName("多级路径访问 - 复杂嵌套结构")
+        void testComplexNestedStructureAccess() {
             JSONMap paras = new JSONMap("{\"a\":{\"b2\":{\"c22\":\"221\",\"c21\":\"22\"},\"b\":{\"c1\":\"22\",\"c2\":\"221\"}}}");
-            System.out.println(paras.getStr("a.b"));
-            //输出：{"c1":"22","c2":"221"}
 
-            //设置数据
-            HashMap<String, Object> objectObjectHashMap = new HashMap<>();
-            objectObjectHashMap.put("d",1);
-            paras.set("a.b.c.d",objectObjectHashMap);
-            System.out.println(paras);
-            //输出：{"a":{"b2":{"c22":"221","c21":"22"},"b":{"c":{"d":{"d":1}},"c1":"22","c2":"221"}}}
-        }
-        @org.junit.Test
-        public void test01(){
-            JSONMap paras = new JSONMap("a",new JSONMap("b",new JSONMap("c1","22","c2","221"),"b2",new JSONMap("c21","22","c22","221")));
-            System.out.println(paras);
-            JSONMap p2=new JSONMap("{\"a\":{\"b2\":{\"c22\":\"221\",\"c21\":\"22\"},\"b\":{\"c1\":\"22\",\"c2\":\"221\"}}}");
-            JSONMap map = p2.getMap("a");
-            map.set("b.c1","999");
-//		HashMap<String, Object> objectObjectHashMap = new HashMap<>();
-//		objectObjectHashMap.put("d",1);
-//		paras.set("a.b",objectObjectHashMap);
-            System.out.println(p2);
-        }
+            // 获取嵌套的Map对象（返回JSON字符串）
+            assertEquals("{\"c1\":\"22\",\"c2\":\"221\"}", paras.getStr("a.b"));
 
-        @org.junit.Test
-        public void test(){
-            JSONMap paras = new JSONMap();
-            paras.put("puid", "1111111111111111123123123213413333333333333333333333333333333333333333333333333333333333333333333333234124312341431324.21352345324534253");
-            System.out.println(paras.getBigDecimal("puid"));
-            paras.put("puid1", "123");
-            System.out.println(paras.getBigDecimal("puid1"));
-            paras.put("puid2", 123L);
-            System.out.println(paras.getBigDecimal("puid2"));
-            paras.put("puid3", "123.1");
-            System.out.println(paras.getBigDecimal("puid3"));
-            paras.put("puid4", 123.1);
-            System.out.println(paras.getBigDecimal("puid4"));
-            System.out.println(paras.getFloat("puid4"));
-            System.out.println(paras.getLong("puid4"));
-            System.out.println(paras.getInt("puid4"));
-            System.out.println(paras.getStr("puid4"));
+            // 访问不同分支
+            assertEquals("22", paras.getStr("a.b.c1"));
+            assertEquals("221", paras.getStr("a.b2.c22"));
         }
 
         /**
-         * 数字类型转换
+         * 测试获取子Map后进行修改
+         * <p>
+         * 验证获取的子Map修改会影响原对象
          */
-        @org.junit.Test
-        public void test13(){
-            JSONMap paras = new JSONMap();
-            paras.put("puid", "1111111111111111123123123213413333333333333333333333333333333333333333333333333333333333333333333333234124312341431324.21352345324534253");
-            System.out.println(paras.getBigDecimal("puid"));
-            paras.put("puid1", "123");
-            System.out.println(paras.getBigDecimal("puid1"));
-            paras.put("puid2", 123L);
-            System.out.println(paras.getBigDecimal("puid2"));
-            paras.put("puid3", "123.1");
-            System.out.println(paras.getBigDecimal("puid3"));
-            paras.put("puid4", 123.1);
-            System.out.println(paras.getBigDecimal("puid4"));
+        @Test
+        @DisplayName("多级路径访问 - 获取子Map并修改")
+        void testGetSubMapAndModify() {
+            JSONMap paras = new JSONMap("{\"a\":{\"b\":{\"c1\":\"22\",\"c2\":\"221\"}}}");
 
-            JSONMap paras2 = new JSONMap(null);
-            System.out.println(paras2.getFloat("puid4"));
-            System.out.println(paras2.getLong("puid4"));
-            System.out.println(paras2.getInt("puid4"));
-            System.out.println(paras2.getStr("puid4"));
+            // 获取子Map
+            JSONMap subMap = paras.getMap("a");
+            assertNotNull(subMap);
+
+            // 修改子Map
+            subMap.set("b.c1", "999");
+
+            // 验证修改影响到原对象
+            assertEquals("999", paras.getStr("a.b.c1"));
+        }
+
+        // ==================== 数组下标访问测试 ====================
+
+        /**
+         * 测试数组下标访问
+         * <p>
+         * 验证使用[index]形式访问数组元素，支持正向和负向索引
+         */
+        @Test
+        @DisplayName("数组下标访问 - 正向和负向索引")
+        void testArrayIndexAccess() {
+            JSONMap paras = new JSONMap("{\"d\":[666,111,222,333,444]}");
+
+            // 正向索引：第一个元素
+            assertEquals(Integer.valueOf(666), paras.getInt("d[0]"));
+
+            // 正向索引：第二个元素
+            assertEquals(Integer.valueOf(111), paras.getInt("d[1]"));
+
+            // 负向索引：倒数第一个元素
+            assertEquals(Integer.valueOf(444), paras.getInt("d[-1]"));
+
+            // 负向索引：倒数第二个元素
+            assertEquals(Integer.valueOf(333), paras.getInt("d[-2]"));
         }
 
         /**
-         * 多级查询
+         * 测试复杂的多级数组路径访问
+         * <p>
+         * 验证"a.b[0].c"形式的混合路径访问
          */
-        @org.junit.Test
-        public void test3(){
-            JSONMap paras = new JSONMap();
-            JSONMap paras2 = new JSONMap();
-            JSONMap paras3 = new JSONMap();
-            paras.put("a", paras2);
-            paras2.put("b", paras3);
-            paras3.put("c", 1);
-            System.out.println(paras.getStr("a.b.c"));
-            System.out.println(paras2.getFloat("b.c"));
+        @Test
+        @DisplayName("数组下标访问 - 混合路径访问")
+        void testMixedPathWithArrayAccess() {
+            Integer[] v = new Integer[]{1, 2};
+            Map<String, List<TestBean>> map = new HashMap<>();
+            map.put("b", Arrays.stream(v).map(n -> {
+                TestBean arg = new TestBean();
+                arg.setB("测试b-" + n);
+                return arg;
+            }).collect(Collectors.toList()));
+            map.put("c", Arrays.stream(v).map(n -> {
+                TestBean arg = new TestBean();
+                arg.setB("测试c-" + n);
+                return arg;
+            }).collect(Collectors.toList()));
+
+            JSONMap paras = new JSONMap("a", map);
+
+            // 获取数组（返回JSON字符串）
+            assertTrue(paras.getStr("a.b").startsWith("["));
+
+            // 获取数组第一个元素
+            assertTrue(paras.getStr("a.b[0]").contains("测试b-1"));
+
+            // 获取数组元素的属性
+            assertEquals("测试b-1", paras.getStr("a.b[0].b"));
+            assertEquals("测试c-2", paras.getStr("a.c[1].b"));
         }
+
+//        /**
+//         * 测试多维数组访问
+//         * <p>
+//         * 验证[0][1]形式的多维数组访问
+//         */
+//        @Test
+//        @DisplayName("数组下标访问 - 多维数组")
+//        void testMultiDimensionalArrayAccess() {
+//
+//
+//            JSONMap b = new JSONMap();
+//            JSONMap a = new JSONMap();
+//            b.add("info", a);
+//
+//            // 构建二维数组结构
+//            a.add("l1", new JSONList().adds(new JSONMap().add("l1_1", 1)).adds(new JSONMap().add("l1_1", 2)));
+//            a.add("l1", new JSONList()
+//                    .adds(new JSONMap().add("l1_2", 3))
+//                    .adds(new JSONMap().add("l1_2", 4))
+//                    .adds(new JSONMap().add("l1_2", 5)), 3);
+//
+//            System.out.println( a.toString());
+//            // 访问二维数组
+//            assertNotNull(b.getList("info.l1[1]"));
+//            assertEquals("4", a.getStr("l1[1][1].l1_2"));
+//            assertEquals("5", b.getStr("info.l1[1][-1].l1_2"));
+//        }
+
+        // ==================== 集合类型转换测试 ====================
+
         /**
-         * JSON构造
+         * 测试获取List和Array
+         * <p>
+         * 验证getList和getArray方法的使用
          */
-        @org.junit.Test
-        public void test4(){
-            JSONMap paras = new JSONMap();
-            JSONMap paras2 = new JSONMap();
-            JSONMap paras3 = new JSONMap();
-            paras.put("a", paras2);
-            paras2.put("b", paras3);
-            paras3.put("c", 1);
-
-            String json1=paras.toString();
-            System.out.println(json1);
-            JSONMap paras4 = JacksonUtil.readValue(json1);
-            System.out.println(paras4.getMap("a.b").get("c"));
-            System.out.println(paras4.getStr("a.b.c"));
-        }
-
-
-        /**
-         * 类型转换
-         */
-        @org.junit.Test
-        public void test5(){
+        @Test
+        @DisplayName("集合类型转换 - getList和getArray")
+        void testGetListAndArray() {
             JSONMap paras = new JSONMap("{\"a\":[1,2,3],\"b\":{\"b\":1,\"a\":2}}");
-            System.out.println(paras.getList("a"));
-            System.out.println(JacksonUtil.getJson(paras.getArray("a")));
-            System.out.println(paras.getList("b"));
 
-            JSONMap c2=JacksonUtil.coverObj(paras, JSONMap.class);
-            System.out.println(c2.getList("a"));
-            System.out.println(JacksonUtil.getJson(c2.getArray("a")));
-            System.out.println(c2.getList("b"));
-            System.out.println(c2.getArray("a",Integer.class));
+            // 获取数组为List
+            JSONList listA = paras.getList("a");
+            assertEquals(3, listA.size());
+            assertEquals(Integer.valueOf(1), listA.getInt(0));
+            assertEquals(Integer.valueOf(3), listA.getInt(2));
+
+            // 获取数组为Array
+            Object[] arrayA = paras.getArray("a");
+            assertEquals(3, arrayA.length);
+
+            // 获取指定类型的Array
+            Integer[] intArray = paras.getArray("a", Integer.class);
+            assertEquals(3, intArray.length);
+            assertEquals(Integer.valueOf(1), intArray[0]);
+
+            // Map转List返回空列表
+            assertEquals(0,paras.getList("b").size());
         }
 
         /**
-         * 类型转换
+         * 测试逗号分隔字符串转List
+         * <p>
+         * 验证字符串"1,2,3"可以转换为List
          */
-        @org.junit.Test
-        public void test6(){
-            JSONList a=new JSONList("[\"{\\\"b\\\":1,\\\"a\\\":2}\",{\"b\":1,\"a\":2},{\"b1\":1,\"a1\":2}]");
+        @Test
+        @DisplayName("集合类型转换 - 逗号分隔字符串转List")
+        void testCommaSeparatedStringToList() {
+            JSONMap paras = new JSONMap("{\"a\":\"1,2,3,4,5\"}");
 
-            System.out.println(a.getMap(0).getStr("b"));
-//		System.out.println(c2.getArray("a"));
-//		System.out.println(c2.getList("b"));
+            List<String> list = paras.getList("a", String.class);
+            assertEquals(5, list.size());
+            assertEquals("1", list.get(0));
+            assertEquals("5", list.get(4));
         }
-
-
 
         /**
-         * 类型转换
+         * 测试ValUtil工具类的数组转换
+         * <p>
+         * 验证ValUtil.toArray和toList方法
          */
-        @org.junit.Test
-        public void test7(){
-            JSONMap b=new JSONMap();
-            JSONMap a=new JSONMap();
-            b.add("info", a);
-            a.add("l1", (new JSONList()).adds((new JSONMap()).add("l1_1", 1)).adds((new JSONMap()).add("l1_1", 2)));
-            a.add("l1", (new JSONList()).adds((new JSONMap()).add("l1_2", 3)).adds((new JSONMap()).add("l1_2", 4)).adds((new JSONMap()).add("l1_2", 5)),3);
-//		a.add("l1", (new JSONMap()).add("l1_2", 123).add("l1_2", 124));
-            System.out.println(a);
-            System.out.println(b);
-            System.out.println(b.getList("info.l1[1]"));
-            System.out.println(a.getStr("l1[1][1].l1_2"));
-            System.out.println(b.getStr("info.l1[1][-1].l1_2"));
+        @Test
+        @DisplayName("集合类型转换 - ValUtil工具类转换")
+        void testValUtilConversion() {
+            String jsonArray = "[\"a\",1]";
 
-//		System.out.println(c2.getArray("a"));
-//		System.out.println(c2.getList("b"));
+            // 转换为String数组
+            String[] strArray = ValUtil.toArray(jsonArray, String.class);
+            assertEquals(2, strArray.length);
+            assertEquals("a", strArray[0]);
+            assertEquals("1", strArray[1]);
+
+            // 转换为String List
+            List<String> strList = ValUtil.toList(jsonArray, String.class);
+            assertNotNull(strList);
+            assertEquals(2, strList.size());
+            assertEquals("a", strList.get(0));
+
+            // 逗号分隔字符串转Integer List
+            String commaSeparated = "1,2,3,4,5";
+            List<Integer> intList = ValUtil.toList(commaSeparated, Integer.class);
+            assertNotNull(intList);
+            assertEquals(5, intList.size());
+            assertEquals(Integer.valueOf(1), intList.get(0));
+            assertEquals(Integer.valueOf(5), intList.get(4));
         }
+
+        // ==================== 对象类型转换测试 ====================
+
         /**
-         * 类型转换
+         * 测试JSONList中的嵌套JSON字符串解析
+         * <p>
+         * 验证数组中的JSON字符串元素可以被解析为Map
          */
-        @org.junit.Test
-        public void test8(){
-            String a="[{\"xxx\":null,\"c\":[{\"d\":1}]}]";
-            final JSONList jsonList = new JSONList(a, AA.class);
-            System.out.println(jsonList.get(0) instanceof JSONMap);
-            System.out.println(jsonList.get(0) instanceof AA);
-            System.out.println(jsonList);
+        @Test
+        @DisplayName("对象类型转换 - JSONList嵌套JSON字符串解析")
+        void testJSONListNestedStringParsing() {
+            // 数组第一个元素是JSON字符串，后两个是JSON对象
+            JSONList list = new JSONList("[\"{\\\"b\\\":1,\\\"a\\\":2}\",{\"b\":1,\"a\":2},{\"b1\":1,\"a1\":2}]");
+
+            // 验证JSON字符串可以被解析为Map并获取属性
+            assertEquals("1", list.getMap(0).getStr("b"));
+            assertEquals("2", list.getMap(0).getStr("a"));
+
         }
 
-        @org.junit.Test
-        public void test9(){
-            String a="[\"a\",1]";
-            String[] c= ValUtil.toArray(a, String.class);
-            System.out.println(JacksonUtil.getJson(c));
+        /**
+         * 测试指定类型的JSONList构造
+         * <p>
+         * 验证JSONList可以指定元素类型
+         */
+        @Test
+        @DisplayName("对象类型转换 - 指定类型的JSONList")
+        void testTypedJSONList() {
+            String json = "[{\"xxx\":null,\"c\":[{\"d\":1}]}]";
 
+            JSONList jsonList = new JSONList(json, AA.class);
 
-            String[] c3=ValUtil.toArray(a, String.class);
-            List<String> c2=ValUtil.toList(a, String.class);
-            System.out.println(c2.get(0));
-            System.out.println(c[1]);
+            // 验证元素是指定的类型
+            assertFalse(jsonList.get(0) instanceof JSONMap);
+            assertInstanceOf(AA.class, jsonList.get(0));
         }
 
-        @org.junit.Test
-        public void test10(){
-            String a="[\"a\",1]";
-            String[] c=ValUtil.toArray(a, String.class);
-            System.out.println(JacksonUtil.getJson(c));
-            List<String> c2=ValUtil.toList(a, String.class);
-            System.out.println(c2.get(0));
-            System.out.println(c[1]);
+        // ==================== JSON序列化与反序列化测试 ====================
+
+        /**
+         * 测试JSON构造与还原
+         * <p>
+         * 验证对象序列化为JSON字符串后可以正确还原
+         */
+        @Test
+        @DisplayName("JSON序列化 - 构造与还原")
+        void testJsonSerializationAndDeserialization() {
+            // 构造嵌套结构
+            JSONMap paras = new JSONMap();
+            JSONMap paras2 = new JSONMap();
+            JSONMap paras3 = new JSONMap();
+            paras.put("a", paras2);
+            paras2.put("b", paras3);
+            paras3.put("c", 1);
+
+            // 序列化
+            String json = paras.toString();
+            assertEquals("{\"a\":{\"b\":{\"c\":1}}}", json);
+
+            // 反序列化并验证
+            JSONMap restored = JacksonUtil.readValue(json);
+            assertNotNull(restored);
+            assertEquals(Integer.valueOf(1), restored.getMap("a.b").getInt("c"));
+            assertEquals("1", restored.getStr("a.b.c"));
         }
 
+        /**
+         * 测试set方法后的数据访问
+         * <p>
+         * 验证使用set方法设置深层数据后可以正确访问
+         */
+        @Test
+        @DisplayName("set后get访问 - 深层路径设置与访问")
+        void testSetThenGetAccess() {
+            JSONMap paras = new JSONMap("{\"a\":{\"b\":{\"c1\":\"22\",\"c2\":\"221\"}}}");
 
-        @org.junit.Test
-        public void test11(){
-            String a="{\"a\":\"1,2,3,4,5\"}";
-            List<String> a1 = new JSONMap(a).getList("a",String.class);
-            System.out.println(a1);
-        }
+            // 使用set设置深层数据
+            Map<String, Object> newData = new HashMap<>();
+            newData.put("d", 1);
+            paras.set("a.b.c.d", newData);
 
-        @org.junit.Test
-        public void test12(){
-            String a="1,2,3,4,5";
-            List<Integer> listObj = ValUtil.toList(a, Integer.class);
-            System.out.println(listObj);
+            // 验证设置后的结构
+            assertEquals(Integer.valueOf(1), paras.getInt("a.b.c.d.d"));
+
+            // 原有数据不受影响
+            assertEquals("22", paras.getStr("a.b.c1"));
+            assertEquals("221", paras.getStr("a.b.c2"));
         }
     }
-
 
     @Nested
     @DisplayName("添加操作方法测试")

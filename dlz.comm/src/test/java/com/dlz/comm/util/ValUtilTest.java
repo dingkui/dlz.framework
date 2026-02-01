@@ -2,6 +2,9 @@ package com.dlz.comm.util;
 
 import com.dlz.comm.json.JSONList;
 import com.dlz.comm.json.JSONMap;
+import com.dlz.test.beans.SourceBean;
+import com.dlz.test.beans.TargetBean;
+import lombok.Data;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -240,10 +243,7 @@ class ValUtilTest {
             assertEquals(Integer.valueOf(2), list.getInt(1));
             assertEquals(Integer.valueOf(3), list.getInt(2));
 
-
-            assertThrows(NumberFormatException.class, () -> ValUtil.toList(jsonArray, Integer.class));
-
-            List<Integer> intList = list.asList(Integer.class);
+            List<Integer> intList = ValUtil.toList(jsonArray, Integer.class);
             assertEquals(3, intList.size());
             assertEquals(Integer.valueOf(1), intList.get(0));
             assertEquals(Integer.valueOf(2), intList.get(1));
@@ -582,25 +582,7 @@ class ValUtilTest {
     @DisplayName("对象拷贝测试")
     class ObjectCopyTests {
 
-        class SourceBean {
-            private String name = "源名称";
-            private int age = 30;
-            private String email = "test@example.com";
-            
-            public String getName() { return name; }
-            public int getAge() { return age; }
-            public String getEmail() { return email; }
-        }
 
-        class TargetBean {
-            private String name;
-            private int age;
-            
-            public String getName() { return name; }
-            public void setName(String name) { this.name = name; }
-            public int getAge() { return age; }
-            public void setAge(int age) { this.age = age; }
-        }
 
         @Test
         @DisplayName("普通对象拷贝测试")

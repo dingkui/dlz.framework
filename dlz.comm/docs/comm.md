@@ -149,8 +149,6 @@ System.out.println("f所在对象："+JacksonUtil.at(data,"info.a[1][-1]"));
 
 		paras.put("a","12");
 		TestBean as = paras.as(TestBean.class);
-		System.out.println(as);
-		//输出：com.dlz.test.comm.json.TestBean@10db82ae
 		System.out.println(as.getA());
 		//输出：12
 		System.out.println(as.getB());
