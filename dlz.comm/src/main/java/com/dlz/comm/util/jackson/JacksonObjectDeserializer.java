@@ -216,7 +216,7 @@ public class JacksonObjectDeserializer extends StdDeserializer<Object> implement
 
 	@Override
 	public Object deserialize(JsonParser p, DeserializationContext ctxt) throws IOException {
-		switch (p.getCurrentTokenId()) {
+		switch (p.currentTokenId()) {
 		case JsonTokenId.ID_START_OBJECT:
 		case JsonTokenId.ID_FIELD_NAME:
 			// 28-Oct-2015, tatu: [databind#989] We may also be given END_OBJECT
@@ -284,7 +284,7 @@ public class JacksonObjectDeserializer extends StdDeserializer<Object> implement
 
 	@Override
 	public Object deserializeWithType(JsonParser p, DeserializationContext ctxt, TypeDeserializer typeDeserializer) throws IOException {
-		switch (p.getCurrentTokenId()) {
+		switch (p.currentTokenId()) {
 		// First: does it look like we had type id wrapping of some kind?
 		case JsonTokenId.ID_START_ARRAY:
 		case JsonTokenId.ID_START_OBJECT:
@@ -344,7 +344,7 @@ public class JacksonObjectDeserializer extends StdDeserializer<Object> implement
 			return deserialize(p, ctxt);
 		}
 
-		switch (p.getCurrentTokenId()) {
+		switch (p.currentTokenId()) {
 		case JsonTokenId.ID_START_OBJECT:
 		case JsonTokenId.ID_FIELD_NAME:
 			// 28-Oct-2015, tatu: [databind#989] We may also be given END_OBJECT
@@ -622,7 +622,7 @@ public class JacksonObjectDeserializer extends StdDeserializer<Object> implement
 
 		@Override
 		public Object deserialize(JsonParser p, DeserializationContext ctxt) throws IOException {
-			switch (p.getCurrentTokenId()) {
+			switch (p.currentTokenId()) {
 			case JsonTokenId.ID_START_OBJECT: {
 				JsonToken t = p.nextToken();
 				if (t == JsonToken.END_OBJECT) {
@@ -684,7 +684,7 @@ public class JacksonObjectDeserializer extends StdDeserializer<Object> implement
 
 		@Override
 		public Object deserializeWithType(JsonParser p, DeserializationContext ctxt, TypeDeserializer typeDeserializer) throws IOException {
-			switch (p.getCurrentTokenId()) {
+			switch (p.currentTokenId()) {
 			case JsonTokenId.ID_START_ARRAY:
 			case JsonTokenId.ID_START_OBJECT:
 			case JsonTokenId.ID_FIELD_NAME:
@@ -726,7 +726,7 @@ public class JacksonObjectDeserializer extends StdDeserializer<Object> implement
 				return deserialize(p, ctxt);
 			}
 
-			switch (p.getCurrentTokenId()) {
+			switch (p.currentTokenId()) {
 			case JsonTokenId.ID_END_OBJECT:
 			case JsonTokenId.ID_END_ARRAY:
 				return intoValue;
