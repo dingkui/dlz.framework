@@ -251,7 +251,10 @@ public class JSONList extends ArrayList<Object> implements IUniversalVals, IUniv
 	 * @return JSONMap对象
 	 */
 	public JSONMap getMap(int index) {
-		Object o = get(index);
+		Object o = getIndexObject(index, null);
+        if(o==null){
+            return null;
+        }
 		if(o instanceof JSONMap) {
 			return (JSONMap) o;
 		}
