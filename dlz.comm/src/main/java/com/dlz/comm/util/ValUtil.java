@@ -278,7 +278,11 @@ public class ValUtil {
             return toArray((Object[]) input, clazz);
         }
         if (input instanceof CharSequence) {
-            return toArray(input.toString().split(","), clazz);
+            String string = input.toString();
+            if(JacksonUtil.isJsonArray(string)){
+                return toArray(JacksonUtil.readListValue(string, clazz), clazz);
+            }
+            return toArray(string.split(","), clazz);
         }
         try {
             String string = toStr(input);
