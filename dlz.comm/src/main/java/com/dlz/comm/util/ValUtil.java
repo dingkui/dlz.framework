@@ -148,6 +148,9 @@ public class ValUtil {
         if (input instanceof Boolean) {
             return (Boolean) input;
         }
+        if (input instanceof Number) {
+            return ((Number) input).intValue()!=0;
+        }
         String r = input.toString();
 
         return !"false".equalsIgnoreCase(r) && !"0".equals(r) && !"".equals(r);
