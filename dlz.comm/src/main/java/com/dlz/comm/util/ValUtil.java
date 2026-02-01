@@ -10,13 +10,13 @@ import com.fasterxml.jackson.databind.JavaType;
 import lombok.extern.slf4j.Slf4j;
 
 import java.lang.reflect.Array;
+import java.lang.reflect.Field;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.math.BigDecimal;
 import java.nio.charset.Charset;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.ZoneId;
 import java.util.*;
 import java.util.function.Function;
 
@@ -181,6 +181,9 @@ public class ValUtil {
         return new String(input,charset);
     }
     public static String toStr(byte[] input) {
+        if(input==null){
+            return null;
+        }
         return new String(input, Charsets.UTF_8);
     }
 
@@ -584,12 +587,12 @@ public class ValUtil {
     }
 
     /**
-     * 对象拷贝
+     * 对象拷贝 将 源数据对象拷贝成目标数据，根据目标数据的属性进行赋值
      * @param source 源数据，支持pojo对象,map,数组和list
      * @param target 支持pojo对象
      * @param onlySetValue 是否只复制注解了@SetValue的属性
      */
-    public static <T> T copy(Object source, T target, boolean onlySetValue) {
+    public static <T> T copyAsTarget(Object source, T target, boolean onlySetValue) {
         if (target instanceof CharSequence || target instanceof Map || target instanceof List || target.getClass().isArray()) {
             throw new IllegalArgumentException("不支持的复制类型：" + target.getClass());
         }
@@ -611,24 +614,27 @@ public class ValUtil {
         return target;
     }
     /**
-     * 对象拷贝
-     * @param source 支持pojo对象
+     * 对象拷贝 将 pojo对象转换成多级的map
+     * @param source pojo对象，支持 SetValue 注解，复制到目标生成多级属性
      * @param target 目标数据，支持JSONMap
      * @param onlySetValue 是否只复制注解了@SetValue的属性
      */
-    public static void copy(Object source, JSONMap target, boolean onlySetValue) {
+    public static void copyAsSource(Object source, JSONMap target, boolean onlySetValue) {
         if (source instanceof CharSequence || source instanceof Map || source instanceof List || source.getClass().isArray()) {
             throw new IllegalArgumentException("不支持的复制类型：" + source.getClass());
         }
-        FieldReflections.getFields(target.getClass()).forEach(method ->{
+        List<Field> fields = FieldReflections.getFields(source.getClass());
+        fields.forEach(method ->{
+            String name = method.getName();
+            Object o = getValue(source, name, true);
+
             SetValue annotation = method.getAnnotation(SetValue.class);
+            String annotationValue = annotation==null?"":annotation.value();;
             if(annotation==null && onlySetValue){
                 return;
             }
-            String name = method.getName();
-            Object o = getValue(source, name, true);
-            if(!"".equals(annotation.value())){
-                target.set(annotation.value()+"."+name,o);
+            if(!"".equals(annotationValue)){
+                target.set(annotationValue+"."+name,o);
             }else{
                 target.set(name,o);
             }
