@@ -671,7 +671,7 @@ public class JacksonUtil {
     }
 
     private static Pattern JsonObjPattern = Pattern.compile("^\\{(([\"\\w]+:.+)||)\\}$");
-    private static Pattern JsonArrayPattern = Pattern.compile("^\\[[^\\[^\\]]*\\]$");
+    private static Pattern JsonArrayPattern = Pattern.compile("^\\[.*\\]$");
 
     /**
      * 判断字符串是否为JSON对象格式
