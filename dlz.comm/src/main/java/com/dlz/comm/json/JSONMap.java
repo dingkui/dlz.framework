@@ -129,7 +129,7 @@ public class JSONMap extends HashMap<String, Object> implements IUniversalVals {
 	}
 	
 	/**
-	 * 清除空属性
+	 * 清除空属性 null，""
 	 * 
 	 * @return 当前实例
 	 */
@@ -271,12 +271,12 @@ public class JSONMap extends HashMap<String, Object> implements IUniversalVals {
 	 * @return 当前实例
 	 */
 	public JSONMap add2List(String key, Object obj) {
-		List list = this.getList(key);
+		List<Object> list = this.getList(key);
 		if(list == null) {
-			list = new ArrayList();
+			list = new ArrayList<>();
 		}
 		if(obj instanceof Collection || obj instanceof Object[]) {
-			list = ValUtil.toList(obj);
+            list.addAll(ValUtil.toList(obj));
 		} else {
 			list.add(obj);
 		}
