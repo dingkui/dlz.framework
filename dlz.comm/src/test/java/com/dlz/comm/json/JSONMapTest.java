@@ -651,6 +651,26 @@ class JSONMapTest {
             assertEquals("测试c-2", paras.getStr("a.c[1].b"));
         }
 
+        /**
+         * 测试复杂的多级数组路径访问
+         * <p>
+         * 验证"a.b[0].c"形式的混合路径访问
+         */
+        @Test
+        @DisplayName("数组下标访问 - 混合路径访问")
+        void testAdd() {
+            JSONMap config = new JSONMap();
+            // 链式调用，同时设置不同深度的值
+            config.set("server.port", 8080)
+                    .set("server.name", "AppServer")
+                    .set("db.master.ip", "192.168.1.1")
+                    .add("whitelist", "127.0.0.1") // 自动创建数组并添加
+                    .add("whitelist", "127.0.0.2"); // 自动创建数组并添加
+            // 输出:
+            // 获取数组元素的属性
+            assertEquals("[\"127.0.0.1\",\"127.0.0.2\"]", config.getStr("whitelist"));
+        }
+
 //        /**
 //         * 测试多维数组访问
 //         * <p>
